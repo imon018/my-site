@@ -1,35 +1,20 @@
-import { Link } from "react-router-dom";
+import Hero from "../components/Hero";
+import FeaturedProducts from "../components/FeaturedProducts";
+import CategoryGrid from "../components/CategoryGrid";
+import OfferBanner from "../components/OfferBanner";
 
 export default function Home() {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
+    <div>
 
-      <h1 className="text-5xl font-bold text-primary">
-        Welcome to Dream Mode
-      </h1>
+      <Hero />
 
-      <p className="mt-6 text-lg text-gray-600">
-        Bangladesh's Smart AI Powered E-Commerce Platform
-      </p>
+      <FeaturedProducts />
 
-      <div className="mt-8 flex gap-4">
+      <CategoryGrid />
 
-        <Link
-          to="/shop"
-          className="bg-primary text-white px-6 py-3 rounded-lg"
-        >
-          Shop Now
-        </Link>
+      <OfferBanner />
 
-        <Link
-          to="/login"
-          className="border border-primary px-6 py-3 rounded-lg"
-        >
-          Login
-        </Link>
-
-      </div>
-
-    </section>
+    </div>
   );
 }
