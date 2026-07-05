@@ -1,0 +1,13 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #f8fafc;
+}
+
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
