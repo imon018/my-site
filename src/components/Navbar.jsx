@@ -13,13 +13,13 @@ export default function Navbar() {
 
       <div className="flex gap-6 items-center">
 
+        <Link to="/">Home</Link>
         <Link to="/shop">Shop</Link>
         <Link to="/wishlist">Wishlist</Link>
+        <Link to="/profile">Profile</Link>
         <Link to="/cart">
           Cart ({cart.length})
         </Link>
-
-        <Link to="/login">Login</Link>
 
       </div>
 
