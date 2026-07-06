@@ -16,6 +16,12 @@ import Contact from "../pages/Contact";
 import OrderSuccess from "../pages/OrderSuccess";
 import NotFound from "../pages/NotFound";
 
+// Admin
+import ProtectedAdminRoute from "../routes/ProtectedAdminRoute";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminProducts from "../pages/admin/Products";
+import AddProduct from "../pages/admin/AddProduct";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -32,6 +38,32 @@ export default function AppRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Admin routes - protected */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedAdminRoute>
+              <AdminProducts />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/add-product"
+          element={
+            <ProtectedAdminRoute>
+              <AddProduct />
+            </ProtectedAdminRoute>
+          }
+        />
       </Route>
 
       <Route path="*" element={<NotFound />} />
