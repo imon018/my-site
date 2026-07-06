@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import Button from "./ui/Button";
 
 export default function CartPage() {
+  const navigate = useNavigate();
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
 
   const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
@@ -60,7 +62,7 @@ export default function CartPage() {
             Total: ৳ {total}
           </div>
 
-          <Button className="mt-4 w-full" onClick={() => window.location.href = '/checkout'}>
+          <Button className="mt-4 w-full" onClick={() => navigate('/checkout')}>
             Proceed to Checkout
           </Button>
         </>
