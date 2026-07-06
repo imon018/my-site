@@ -30,6 +30,8 @@ export default function CartProvider({ children }) {
   const addToCart = (product, qty = 1) => {
     if (!product || !product.id) return;
 
+    console.debug("CartContext.addToCart", { id: product.id, qty });
+
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.id === product.id);
       if (idx >= 0) {
@@ -45,6 +47,8 @@ export default function CartProvider({ children }) {
   // Remove quantity (or whole item if qty >= current). Default removes one unit.
   const removeFromCart = (id, qty = 1) => {
     if (!id) return;
+
+    console.debug("CartContext.removeFromCart", { id, qty });
 
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.id === id);
@@ -63,6 +67,9 @@ export default function CartProvider({ children }) {
   // Set exact quantity (if newQty <= 0 item is removed)
   const updateQuantity = (id, newQty) => {
     if (!id) return;
+
+    console.debug("CartContext.updateQuantity", { id, newQty });
+
     setCart((prev) => {
       if (newQty <= 0) return prev.filter((p) => p.id !== id);
       return prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p));
