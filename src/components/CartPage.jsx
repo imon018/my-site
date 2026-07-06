@@ -2,9 +2,9 @@ import useCart from "../hooks/useCart";
 import Button from "./ui/Button";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -24,15 +24,35 @@ export default function CartPage() {
             >
               <div>
                 <h3 className="font-bold">{item.name}</h3>
-                <p>৳ {item.price}</p>
+                <p>৳ {item.price} x {item.quantity || 1} = ৳ {item.price * (item.quantity || 1)}</p>
               </div>
 
-              <Button
-                onClick={() => removeFromCart(item.id)}
-                className="bg-red-500"
-              >
-                Remove
-              </Button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
+                  className="px-3 py-1 bg-gray-200 rounded"
+                  aria-label={`Decrease quantity for ${item.name}`}
+                >
+                  −
+                </button>
+
+                <div className="px-3">{item.quantity || 1}</div>
+
+                <button
+                  onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
+                  className="px-3 py-1 bg-gray-200 rounded"
+                  aria-label={`Increase quantity for ${item.name}`}
+                >
+                  +
+                </button>
+
+                <Button
+                  onClick={() => removeFromCart(item.id)}
+                  className="bg-red-500"
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
           ))}
 
@@ -40,7 +60,7 @@ export default function CartPage() {
             Total: ৳ {total}
           </div>
 
-          <Button className="mt-4 w-full">
+          <Button className="mt-4 w-full" onClick={() => window.location.href = '/checkout'}>
             Proceed to Checkout
           </Button>
         </>
