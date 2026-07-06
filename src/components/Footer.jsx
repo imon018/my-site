@@ -1,5 +1,6 @@
 import { siteConfig } from "../config/siteConfig";
-default function Footer() {
+
+export default function Footer() {
   return (
     <footer className="bg-slate-900 text-white mt-16">
 
