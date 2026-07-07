@@ -4,7 +4,7 @@ import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import AdminProfile from "../pages/admin/AdminProfile";
-
+import Users from "../pages/admin/Users";
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
@@ -47,6 +47,10 @@ export default function AppRoutes() {
     path="profile"
     element={<AdminProfile />}
   />
+        <Route
+  path="users"
+  element={<Users />}
+/>
 
 </Route>
 
