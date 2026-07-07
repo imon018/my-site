@@ -1,3 +1,12 @@
+import { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../../firebase/firestore";
+
 import {
   FiUsers,
   FiShoppingCart,
@@ -6,47 +15,97 @@ import {
 } from "react-icons/fi";
 
 export default function Dashboard() {
+  const [stats, setStats] = useState({
+    users: 0,
+    admins: 0,
+    premium: 0,
+    products: 0,
+    orders: 0,
+    revenue: 0,
+  });
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  async function loadDashboard() {
+    try {
+      const usersSnap = await getDocs(collection(db, "users"));
+
+      const adminsSnap = await getDocs(
+        query(
+          collection(db, "users"),
+          where("role", "==", "admin")
+        )
+      );
+
+      const premiumSnap = await getDocs(
+        query(
+          collection(db, "users"),
+          where("premium", "==", true)
+        )
+      );
+
+      setStats({
+        users: usersSnap.size,
+        admins: adminsSnap.size,
+        premium: premiumSnap.size,
+        products: 0,
+        orders: 0,
+        revenue: 0,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const cards = [
     {
+      title: "Users",
+      value: stats.users,
+      icon: <FiUsers size={30} />,
+    },
+    {
+      title: "Admins",
+      value: stats.admins,
+      icon: <FiUsers size={30} />,
+    },
+    {
+      title: "Premium",
+      value: stats.premium,
+      icon: <FiDollarSign size={30} />,
+    },
+    {
       title: "Products",
-      value: "0",
+      value: stats.products,
       icon: <FiBox size={30} />,
     },
     {
       title: "Orders",
-      value: "0",
+      value: stats.orders,
       icon: <FiShoppingCart size={30} />,
     },
     {
-      title: "Users",
-      value: "0",
-      icon: <FiUsers size={30} />,
-    },
-    {
       title: "Revenue",
-      value: "৳ 0",
+      value: "৳ " + stats.revenue,
       icon: <FiDollarSign size={30} />,
     },
   ];
 
   return (
     <div>
-
       <h1 className="text-4xl font-bold mb-8">
         Dashboard
       </h1>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
         {cards.map((card) => (
           <div
             key={card.title}
             className="bg-white rounded-2xl shadow p-6"
           >
             <div className="flex justify-between items-center">
-
               <div>
-
                 <p className="text-gray-500">
                   {card.title}
                 </p>
@@ -54,19 +113,15 @@ export default function Dashboard() {
                 <h2 className="text-3xl font-bold mt-2">
                   {card.value}
                 </h2>
-
               </div>
 
               <div className="text-blue-600">
                 {card.icon}
               </div>
-
             </div>
           </div>
         ))}
-
       </div>
-
     </div>
   );
 }
