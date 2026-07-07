@@ -42,7 +42,7 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button className="w-full">
+        <Button type="submit" className="w-full">
           Register
         </Button>
 
