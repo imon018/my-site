@@ -40,6 +40,7 @@ export const register = async (email, password) => {
     });
 
     console.log("FIRESTORE CREATED");
+    console.log("UID:", result.user.uid);
 
     return result;
 
