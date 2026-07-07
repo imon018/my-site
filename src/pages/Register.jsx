@@ -8,23 +8,24 @@ export default function Register() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-  const data = await register(email, password);
+  console.log("Register button clicked");
 
-  console.log("REGISTER SUCCESS:", data);
+  try {
+    const result = await register(email, password);
 
-  successToast("Account Created Successfully");
+    console.log("Register function finished:", result);
 
-} catch (err) {
+    successToast("Account Created Successfully");
 
-  console.log("REGISTER FAILED:", err);
+    console.log("Toast called");
 
-  errorToast(err.message);
-
-}
-  };
+  } catch (err) {
+    console.log("Register Error:", err);
+    errorToast(err.message);
+  }
+};
 
   return (
     <div className="max-w-md mx-auto py-20">
