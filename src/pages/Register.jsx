@@ -11,11 +11,19 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await register(email, password);
-      successToast("Account Created Successfully");
-    } catch (err) {
-      errorToast(err.message);
-    }
+  const data = await register(email, password);
+
+  console.log("REGISTER SUCCESS:", data);
+
+  successToast("Account Created Successfully");
+
+} catch (err) {
+
+  console.log("REGISTER FAILED:", err);
+
+  errorToast(err.message);
+
+}
   };
 
   return (
