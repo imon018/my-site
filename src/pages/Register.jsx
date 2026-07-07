@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { register } from "../services/authService";
 import { successToast, errorToast } from "../components/ui/Toast";
 import Button from "../components/ui/Button";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,10 +13,16 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await register(email, password);
+      const data = await register(email, password);
+      console.log("REGISTER SUCCESS:", data);
+
       successToast("Account Created Successfully");
+      // redirect to profile after success so user sees their account
+      navigate("/profile");
+
     } catch (err) {
-      errorToast(err.message);
+      console.log("REGISTER FAILED:", err);
+      errorToast(err.message || "Registration failed");
     }
   };
 
