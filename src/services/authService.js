@@ -50,6 +50,7 @@ export const register = async (email, password) => {
     await setDoc(userRef, {
       email: result.user.email,
       role: "user",
+      premium: false,
       createdAt: serverTimestamp(),
     });
 
