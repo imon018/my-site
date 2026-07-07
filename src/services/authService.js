@@ -19,20 +19,36 @@ export const login = (email, password) =>
 
 
 export const register = async (email, password) => {
+  try {
 
-  const result = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+    const result = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-  await setDoc(doc(db, "users", result.user.uid), {
-    email: result.user.email,
-    role: "user",
-    createdAt: serverTimestamp(),
-  });
+    console.log("AUTH CREATED:", result.user.uid);
 
-  return result;
+    const userRef = doc(db, "users", result.user.uid);
+
+    console.log("WRITING TO FIRESTORE...");
+
+    await setDoc(userRef, {
+      email: result.user.email,
+      role: "user",
+      createdAt: serverTimestamp(),
+    });
+
+    console.log("FIRESTORE CREATED");
+
+    return result;
+
+  } catch (error) {
+
+    console.error("REGISTER/FIRESTORE ERROR:", error);
+
+    throw error;
+  }
 };
 
 
