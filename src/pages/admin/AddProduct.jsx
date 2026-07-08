@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/ui/Button";
 import { addProductToDB } from "../../services/firestoreProductService";
-import { uploadImage } from "../../services/uploadService";
+import { uploadImages } from "../../services/uploadService";
 import { successToast, errorToast } from "../../components/ui/Toast";
 
 export default function AddProduct() {
@@ -10,7 +10,7 @@ export default function AddProduct() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,14 +21,14 @@ export default function AddProduct() {
       !description ||
       !price ||
       !stock ||
-      !image
+      images.length === 0
     ) {
       errorToast("Please fill in all fields.");
       return;
     }
 
     try {
-      const uploaded = await uploadImage(image);
+      const uploadedImages = await uploadImages(images);
 
       await addProductToDB({
         name,
@@ -37,8 +37,11 @@ export default function AddProduct() {
         price: Number(price),
         stock: Number(stock),
 
-        image: uploaded.imageUrl,
-        publicId: uploaded.publicId,
+        image: uploadedImages[0].imageUrl,
+
+        images: uploadedImages.map((img) => img.imageUrl),
+
+        publicIds: uploadedImages.map((img) => img.publicId),
 
         createdAt: new Date(),
       });
@@ -50,7 +53,7 @@ export default function AddProduct() {
       setDescription("");
       setPrice("");
       setStock("");
-      setImage(null);
+      setImages([]);
 
       const fileInput = document.getElementById("product-image");
       if (fileInput) fileInput.value = "";
@@ -107,9 +110,10 @@ export default function AddProduct() {
         <input
           id="product-image"
           type="file"
+          multiple
           className="w-full"
           accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
+          onChange={(e) => setImages(Array.from(e.target.files))}
         />
 
         <Button
