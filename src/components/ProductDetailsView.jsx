@@ -15,12 +15,20 @@ export default function ProductDetailsView() {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     const loadProduct = async () => {
       const data = await getProductById(id);
 
       setProduct(data);
+
+      if (data?.images?.length > 0) {
+        setSelectedImage(data.images[0]);
+      } else {
+        setSelectedImage(data.image);
+      }
+
       setLoading(false);
     };
 
@@ -43,17 +51,41 @@ export default function ProductDetailsView() {
     );
   }
 
+  const galleryImages =
+    product.images?.length > 0
+      ? product.images
+      : [product.image];
+
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10">
 
-      <img
-        src={product.image}
-        alt={product.name}
-        className="rounded-2xl shadow-lg w-full"
-      />
+      <div>
+        <img
+          src={selectedImage}
+          alt={product.name}
+          className="rounded-2xl shadow-lg w-full"
+        />
+
+        {galleryImages.length > 1 && (
+          <div className="flex gap-3 mt-4 flex-wrap">
+            {galleryImages.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`${product.name}-${index}`}
+                onClick={() => setSelectedImage(img)}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 ${
+                  selectedImage === img
+                    ? "border-blue-500"
+                    : "border-gray-200"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <div>
-
         <h1 className="text-4xl font-bold">
           {product.name}
         </h1>
@@ -83,7 +115,6 @@ export default function ProductDetailsView() {
         </p>
 
         <div className="flex gap-4 mt-8">
-
           <Button onClick={() => addToCart(product)}>
             Add to Cart
           </Button>
@@ -94,9 +125,7 @@ export default function ProductDetailsView() {
           >
             Wishlist
           </button>
-
         </div>
-
       </div>
 
     </div>
