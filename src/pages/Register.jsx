@@ -1,12 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { register } from "../services/authService";
+
 import {
   successToast,
   errorToast,
 } from "../components/ui/Toast";
+
 import Button from "../components/ui/Button";
 
 export default function Register() {
+  const navigate =
+    useNavigate();
+
   const [email, setEmail] =
     useState("");
 
@@ -25,11 +32,15 @@ export default function Register() {
       );
 
       successToast(
-        "Account created. Please verify your email."
+        "Verification email sent."
       );
 
-      setEmail("");
-      setPassword("");
+      navigate(
+        "/verify-email",
+        {
+          state: { email },
+        }
+      );
     } catch (err) {
       console.log(err);
 
