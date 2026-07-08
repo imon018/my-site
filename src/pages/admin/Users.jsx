@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { getUsers } from "../../services/adminService";
 import {
+  getUsers,
   changeRole,
   togglePremium,
 } from "../../services/adminService";
@@ -67,6 +67,9 @@ async function makePremium(user) {
               <th className="p-4">
                 Premium
               </th>
+              <th className="p-4">
+  Action
+</th>
 
             </tr>
 
@@ -98,6 +101,27 @@ async function makePremium(user) {
                     : "NO"}
 
                 </td>
+                <td className="text-center space-x-2">
+
+  <button
+    onClick={() => makeAdmin(user)}
+    className="bg-blue-600 text-white px-3 py-1 rounded"
+  >
+    {user.role === "admin"
+      ? "Remove Admin"
+      : "Make Admin"}
+  </button>
+
+  <button
+    onClick={() => makePremium(user)}
+    className="bg-green-600 text-white px-3 py-1 rounded ml-2"
+  >
+    {user.premium
+      ? "Remove Premium"
+      : "Make Premium"}
+  </button>
+
+</td>
 
               </tr>
 
