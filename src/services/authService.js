@@ -1,22 +1,30 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut
+  signOut,
+  sendEmailVerification,
 } from "firebase/auth";
 
 import {
   doc,
   setDoc,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 
 import { auth } from "../firebase/auth";
 import { db } from "../firebase/firestore";
 
 export const login = (email, password) =>
-  signInWithEmailAndPassword(auth, email, password);
+  signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
-export const register = async (email, password) => {
+export const register = async (
+  email,
+  password
+) => {
   try {
     const result =
       await createUserWithEmailAndPassword(
@@ -25,9 +33,8 @@ export const register = async (email, password) => {
         password
       );
 
-    console.log(
-      "AUTH CREATED:",
-      result.user.uid
+    await sendEmailVerification(
+      result.user
     );
 
     const userRef = doc(
@@ -36,18 +43,11 @@ export const register = async (email, password) => {
       result.user.uid
     );
 
-    console.log(
-      "WRITING TO FIRESTORE..."
-    );
-
     await setDoc(userRef, {
       email: result.user.email,
       role: "user",
       createdAt: serverTimestamp(),
     });
-
-    console.log("FIRESTORE CREATED");
-    console.log("UID:", result.user.uid);
 
     return result;
   } catch (error) {
