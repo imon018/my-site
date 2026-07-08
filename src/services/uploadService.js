@@ -1,12 +1,31 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase/storage";
-
 export const uploadImage = async (file) => {
-  const imageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+  const formData = new FormData();
 
-  await uploadBytes(imageRef, file);
+  formData.append("file", file);
 
-  const url = await getDownloadURL(imageRef);
+  formData.append(
+    "upload_preset",
+    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+  );
 
-  return url;
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${
+      import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+    }/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Cloudinary upload failed");
+  }
+
+  const data = await response.json();
+
+  return {
+    imageUrl: data.secure_url,
+    publicId: data.public_id,
+  };
 };
