@@ -23,6 +23,7 @@ export default function EditProduct() {
 
   const [image, setImage] = useState("");
   const [images, setImages] = useState([]);
+const [newImages, setNewImages] = useState([]);
 const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -147,15 +148,6 @@ const moveImageDown = (index) => {
     setSaving(false);
   }
 };
-
-      alert("Product updated successfully");
-
-      navigate("/admin/products");
-    } catch (error) {
-      console.log(error);
-      alert("Update failed");
-    }
-  };
 
   if (loading) {
     return (
