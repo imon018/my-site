@@ -36,9 +36,9 @@ export default function AppRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<AdminLayout />}>
+        
       </Route>
-      
+      <Route path="/admin" element={<AdminLayout />}>
 
   <Route
     index
