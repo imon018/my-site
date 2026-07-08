@@ -1,5 +1,5 @@
+import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { useState, useEffect } from "react";
 
 import { uploadImages } from "../../services/uploadService";
 
@@ -13,14 +13,20 @@ import { db } from "../../firebase/firestore";
 export default function AdminProfile() {
   const { user } = useAuth();
 
-  const [uploading, setUploading] = useState(false);
-  const [photo, setPhoto] = useState("");
+  const [uploading, setUploading] =
+    useState(false);
 
-  useEffect(() => {
-    if (user?.photoURL) {
-      setPhoto(user.photoURL);
-    }
-  }, [user]);
+  const createdAt = user?.metadata?.creationTime
+    ? new Date(
+        user.metadata.creationTime
+      ).toLocaleString()
+    : "N/A";
+
+  const lastLogin = user?.metadata?.lastSignInTime
+    ? new Date(
+        user.metadata.lastSignInTime
+      ).toLocaleString()
+    : "N/A";
 
   const handlePhotoUpload = async (e) => {
     try {
@@ -30,11 +36,12 @@ export default function AdminProfile() {
 
       if (!file) return;
 
-      const uploaded = await uploadImages([file]);
+      const uploaded = await uploadImages([
+        file,
+      ]);
 
-      const photoURL = uploaded[0].imageUrl;
-
-      setPhoto(photoURL);
+      const photoURL =
+        uploaded[0].imageUrl;
 
       await updateDoc(
         doc(db, "users", user.uid),
@@ -42,8 +49,6 @@ export default function AdminProfile() {
           photoURL,
         }
       );
-
-      alert("Photo uploaded successfully");
 
       window.location.reload();
     } catch (err) {
@@ -55,74 +60,130 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow p-8">
+    <div className="max-w-5xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-      <h1 className="text-3xl font-bold mb-8">
-        Admin Profile
-      </h1>
+        <div className="bg-slate-900 text-white p-8">
+          <div className="flex flex-col md:flex-row items-center gap-6">
 
-      <div className="mb-8 flex flex-col items-center">
+            <div className="relative">
 
-        <img
-          src={
-            photo ||
-            "https://via.placeholder.com/150"
-          }
-          alt="Admin"
-          className="w-32 h-32 rounded-full object-cover border-4 border-blue-600"
-        />
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Admin"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-blue-600"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-4xl font-bold">
+                  {user?.email
+                    ?.charAt(0)
+                    ?.toUpperCase()}
+                </div>
+              )}
 
-        <label className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-xl cursor-pointer">
+              <label className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-blue-600 text-xs px-3 py-1 rounded-full cursor-pointer whitespace-nowrap">
 
-          {uploading
-            ? "Uploading..."
-            : "Change Photo"}
+                {uploading
+                  ? "Uploading..."
+                  : "Change"}
 
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handlePhotoUpload}
-          />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={
+                    handlePhotoUpload
+                  }
+                />
+              </label>
 
-        </label>
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-bold">
+                Admin Profile
+              </h1>
+
+              <p className="text-gray-300 mt-2">
+                {user?.email}
+              </p>
+
+              <span className="inline-block mt-3 bg-blue-600 px-4 py-2 rounded-full text-sm">
+                Administrator
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <div className="p-8">
+
+          <div className="grid md:grid-cols-2 gap-6">
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Email Address
+              </p>
+
+              <h2 className="font-semibold break-all">
+                {user?.email}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                User ID
+              </p>
+
+              <h2 className="break-all text-sm">
+                {user?.uid}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Account Created
+              </p>
+
+              <h2>{createdAt}</h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Last Login
+              </p>
+
+              <h2>{lastLogin}</h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Email Verified
+              </p>
+
+              <h2>
+                {user?.emailVerified
+                  ? "Yes"
+                  : "No"}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Role
+              </p>
+
+              <span className="bg-blue-600 text-white px-4 py-2 rounded-full">
+                {user?.role || "Admin"}
+              </span>
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
-
-      <div className="space-y-5">
-
-        <div>
-          <p className="text-gray-500">
-            Email
-          </p>
-
-          <h2 className="text-xl font-semibold">
-            {user?.email}
-          </h2>
-        </div>
-
-        <div>
-          <p className="text-gray-500">
-            UID
-          </p>
-
-          <h2 className="text-lg break-all">
-            {user?.uid}
-          </h2>
-        </div>
-
-        <div>
-          <p className="text-gray-500">
-            Role
-          </p>
-
-          <span className="bg-blue-600 text-white px-4 py-2 rounded-full">
-            {user?.role || "Admin"}
-          </span>
-        </div>
-
-      </div>
-
     </div>
   );
 }
