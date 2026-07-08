@@ -1,19 +1,43 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import products from "../data/products";
+
 import Button from "./ui/Button";
 import useCart from "../hooks/useCart";
 import useWishlist from "../hooks/useWishlist";
 
+import { getProductById } from "../services/firestoreProductService";
+
 export default function ProductDetailsView() {
   const { id } = useParams();
+
   const { addToCart } = useCart();
   const { addToWishlist } = useWishlist();
 
-  const product = products.find((p) => p.id === Number(id));
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      const data = await getProductById(id);
+
+      setProduct(data);
+      setLoading(false);
+    };
+
+    loadProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20">
+        Loading...
+      </div>
+    );
+  }
 
   if (!product) {
     return (
-      <div className="p-10 text-center text-red-500">
+      <div className="text-center py-20 text-red-600 text-2xl">
         Product Not Found
       </div>
     );
@@ -24,7 +48,8 @@ export default function ProductDetailsView() {
 
       <img
         src={product.image}
-        className="rounded-2xl shadow-lg"
+        alt={product.name}
+        className="rounded-2xl shadow-lg w-full"
       />
 
       <div>
@@ -33,15 +58,31 @@ export default function ProductDetailsView() {
           {product.name}
         </h1>
 
-        <p className="text-2xl text-primary mt-4">
+        <p className="text-gray-500 mt-2">
+          {product.category}
+        </p>
+
+        <p className="text-3xl text-primary font-bold mt-4">
           ৳ {product.price}
         </p>
 
-        <p className="mt-6 text-gray-600">
-          Premium quality product available in Dream Mode store.
+        <p className="mt-6 text-gray-700 leading-7">
+          {product.description}
         </p>
 
-        <div className="mt-8 flex gap-4">
+        <p
+          className={`mt-6 font-semibold ${
+            product.stock > 0
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {product.stock > 0
+            ? `In Stock (${product.stock})`
+            : "Out of Stock"}
+        </p>
+
+        <div className="flex gap-4 mt-8">
 
           <Button onClick={() => addToCart(product)}>
             Add to Cart
@@ -49,7 +90,7 @@ export default function ProductDetailsView() {
 
           <button
             onClick={() => addToWishlist(product)}
-            className="border px-6 py-3 rounded-xl"
+            className="border rounded-xl px-6 py-3 hover:bg-gray-100"
           >
             Wishlist
           </button>
