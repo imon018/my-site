@@ -1,59 +1,71 @@
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 
-import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/auth";
+
+import {
+  onAuthStateChanged,
+} from "firebase/auth";
 
 import {
   doc,
   getDoc,
 } from "firebase/firestore";
 
-import { auth } from "../firebase/auth";
 import { db } from "../firebase/firestore";
 
-export const AuthContext = createContext();
+export const AuthContext =
+  createContext();
 
-export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+export default function AuthProvider({
+  children,
+}) {
+  const [user, setUser] =
+    useState(null);
 
   const [loading, setLoading] =
     useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(
-      auth,
-      async (firebaseUser) => {
-        try {
-          if (!firebaseUser) {
-            setUser(null);
-            setLoading(false);
-            return;
-          }
+    const unsub =
+      onAuthStateChanged(
+        auth,
+        async (firebaseUser) => {
+          try {
+            if (!firebaseUser) {
+              setUser(null);
+              setLoading(false);
+              return;
+            }
 
-          const userRef = doc(
-            db,
-            "users",
-            firebaseUser.uid
-          );
+            const userRef = doc(
+              db,
+              "users",
+              firebaseUser.uid
+            );
 
-          const userSnap =
-            await getDoc(userRef);
+            const userSnap =
+              await getDoc(userRef);
 
-          if (userSnap.exists()) {
-            setUser({
-              ...firebaseUser,
-              ...userSnap.data(),
-            });
-          } else {
+            if (userSnap.exists()) {
+              setUser({
+                ...firebaseUser,
+                ...userSnap.data(),
+              });
+            } else {
+              setUser(firebaseUser);
+            }
+          } catch (err) {
+            console.log(err);
             setUser(firebaseUser);
+          } finally {
+            setLoading(false);
           }
-        } catch (error) {
-          console.log(error);
-          setUser(firebaseUser);
-        } finally {
-          setLoading(false);
         }
-      }
-    );
+      );
 
     return () => unsub();
   }, []);
@@ -66,4 +78,6 @@ export default function AuthProvider({ children }) {
       }}
     >
       {children}
-   
+    </AuthContext.Provider>
+  );
+}
