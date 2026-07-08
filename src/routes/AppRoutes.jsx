@@ -2,10 +2,12 @@ import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
+
 import Dashboard from "../pages/admin/Dashboard";
 import AdminProfile from "../pages/admin/AdminProfile";
 import Users from "../pages/admin/Users";
 import Products from "../pages/admin/Products";
+
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
@@ -18,51 +20,121 @@ import Profile from "../pages/Profile";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import OrderSuccess from "../pages/OrderSuccess";
+
 import NotFound from "../pages/NotFound";
 
+
 export default function AppRoutes() {
+
   return (
+
     <Routes>
+
+
+      {/* Public Website Routes */}
+
       <Route element={<MainLayout />}>
+
         <Route path="/" element={<Home />} />
+
         <Route path="/shop" element={<Shop />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+
+        <Route
+          path="/product/:id"
+          element={<ProductDetails />}
+        />
+
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
+
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
+
+        <Route
+          path="/order-success"
+          element={<OrderSuccess />}
+        />
+
+        <Route
+          path="/wishlist"
+          element={<Wishlist />}
+        />
+
+        <Route
+          path="/profile"
+          element={<Profile />}
+        />
+
+        <Route
+          path="/about"
+          element={<About />}
+        />
+
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
       </Route>
-      <Route path="/admin" element={<AdminLayout />}>
 
-  <Route
-    index
-    element={<Dashboard />}
-  />
 
-  <Route
-    path="profile"
-    element={<AdminProfile />}
-  />
 
-  <Route
-    path="users"
-    element={<Users />}
-  />
+      {/* Admin Dashboard Routes */}
 
-  <Route
-    path="products"
-    element={<Products />}
-  />
+      <Route
+        path="/admin"
+        element={<AdminLayout />}
+      >
 
-</Route>
+        <Route
+          index
+          element={<Dashboard />}
+        />
 
-      <Route path="*" element={<NotFound />} />
+
+        <Route
+          path="profile"
+          element={<AdminProfile />}
+        />
+
+
+        <Route
+          path="users"
+          element={<Users />}
+        />
+
+
+        <Route
+          path="products"
+          element={<Products />}
+        />
+
+
+      </Route>
+
+
+
+      {/* 404 Page */}
+
+      <Route
+        path="*"
+        element={<NotFound />}
+      />
+
+
     </Routes>
+
   );
+
 }
