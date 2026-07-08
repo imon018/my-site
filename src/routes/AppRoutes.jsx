@@ -8,6 +8,7 @@ import AdminProfile from "../pages/admin/AdminProfile";
 import Users from "../pages/admin/Users";
 import Products from "../pages/admin/Products";
 import AddProduct from "../pages/admin/AddProduct";
+import EditProduct from "../pages/admin/EditProduct";
 
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
@@ -124,6 +125,11 @@ export default function AppRoutes() {
         <Route
   path="add-product"
   element={<AddProduct />}
+/>
+
+        <Route
+  path="edit-product/:id"
+  element={<EditProduct />}
 />
 
 
