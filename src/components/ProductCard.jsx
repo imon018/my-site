@@ -23,13 +23,38 @@ export default function ProductCard({ product }) {
           {product.name}
         </h3>
 
+        <p className="text-sm text-gray-500 mt-1">
+  {product.category}
+</p>
+       <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+  {product.description}
+</p>
+        
         <p className="text-primary text-xl mt-2">
           ৳ {product.price}
         </p>
 
+        <p
+  className={`mt-2 font-medium ${
+    product.stock > 0
+      ? "text-green-600"
+      : "text-red-600"
+  }`}
+>
+  {product.stock > 0
+    ? `In Stock (${product.stock})`
+    : "Out of Stock"}
+</p>
+
         <Button onClick={handleAdd} className="w-full mt-4">
           Add to Cart
         </Button>
+
+        <Button
+    className="flex-1 bg-gray-800 hover:bg-black"
+  >
+    View
+  </Button>
       </div>
     </div>
   );
