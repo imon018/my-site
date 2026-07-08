@@ -3,53 +3,117 @@ import useAuth from "../../hooks/useAuth";
 export default function AdminProfile() {
   const { user } = useAuth();
 
+  const createdAt = user?.metadata?.creationTime
+    ? new Date(
+        user.metadata.creationTime
+      ).toLocaleString()
+    : "N/A";
+
+  const lastLogin = user?.metadata?.lastSignInTime
+    ? new Date(
+        user.metadata.lastSignInTime
+      ).toLocaleString()
+    : "N/A";
+
   return (
-    <div className="bg-white rounded-2xl shadow p-8">
+    <div className="max-w-5xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-      <h1 className="text-3xl font-bold mb-8">
-        Admin Profile
-      </h1>
+        <div className="bg-slate-900 text-white p-8">
+          <div className="flex flex-col md:flex-row items-center gap-6">
 
-      <div className="space-y-5">
+            <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-4xl font-bold">
+              {user?.email?.charAt(0)?.toUpperCase()}
+            </div>
 
-        <div>
+            <div>
+              <h1 className="text-3xl font-bold">
+                Admin Profile
+              </h1>
 
-          <p className="text-gray-500">
-            Email
-          </p>
+              <p className="text-gray-300 mt-2">
+                {user?.email}
+              </p>
 
-          <h2 className="text-xl font-semibold">
-            {user?.email}
-          </h2>
+              <span className="inline-block mt-3 bg-blue-600 px-4 py-2 rounded-full text-sm">
+                Administrator
+              </span>
+            </div>
 
+          </div>
         </div>
 
-        <div>
+        <div className="p-8">
 
-          <p className="text-gray-500">
-            UID
-          </p>
+          <div className="grid md:grid-cols-2 gap-6">
 
-          <h2 className="text-lg break-all">
-            {user?.uid}
-          </h2>
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Email Address
+              </p>
 
-        </div>
+              <h2 className="font-semibold break-all">
+                {user?.email}
+              </h2>
+            </div>
 
-        <div>
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                User ID
+              </p>
 
-          <p className="text-gray-500">
-            Role
-          </p>
+              <h2 className="break-all text-sm">
+                {user?.uid}
+              </h2>
+            </div>
 
-          <span className="bg-blue-600 text-white px-4 py-2 rounded-full">
-            Admin
-          </span>
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Account Created
+              </p>
+
+              <h2>
+                {createdAt}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Last Login
+              </p>
+
+              <h2>
+                {lastLogin}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Email Verified
+              </p>
+
+              <h2>
+                {user?.emailVerified
+                  ? "Yes"
+                  : "No"}
+              </h2>
+            </div>
+
+            <div className="border rounded-xl p-5">
+              <p className="text-gray-500 mb-2">
+                Role
+              </p>
+
+              <span className="bg-blue-600 text-white px-4 py-2 rounded-full">
+                Admin
+              </span>
+            </div>
+
+          </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }
