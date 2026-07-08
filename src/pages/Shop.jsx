@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getProductsFromDB } from "../services/firestoreProductService";
 import ProductCard from "../components/ProductCard";
 import Spinner from "../components/Spinner";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/ui/SearchBar";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
