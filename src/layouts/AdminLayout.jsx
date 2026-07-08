@@ -1,19 +1,25 @@
+import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import {
   FiGrid,
-FiBox,
-FiPlusCircle,
-FiUsers,
-FiShoppingCart,
-FiBarChart2,
-FiSettings,
-FiUser,
-FiLogOut,
+  FiBox,
+  FiPlusCircle,
+  FiUsers,
+  FiShoppingCart,
+  FiBarChart2,
+  FiSettings,
+  FiUser,
+  FiLogOut,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 
 import { logout } from "../services/authService";
 
 export default function AdminLayout() {
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const menu = [
     {
       name: "Dashboard",
@@ -60,7 +66,43 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
 
-      <aside className="w-72 bg-slate-900 text-white flex flex-col">
+      <button
+  onClick={() => setSidebarOpen(true)}
+  className="lg:hidden fixed top-4 left-4 z-50 bg-slate-900 text-white p-3 rounded-xl shadow-lg"
+>
+  <FiMenu size={24} />
+</button>
+
+      <aside
+  className={`
+    fixed lg:static
+    top-0 left-0
+    h-screen
+    w-72
+    bg-slate-900
+    text-white
+    flex
+    flex-col
+    z-50
+    transform
+    transition-transform
+    duration-300
+    ${
+      sidebarOpen
+        ? "translate-x-0"
+        : "-translate-x-full lg:translate-x-0"
+    }
+  `}
+>
+        <div className="lg:hidden flex justify-end p-4">
+
+  <button
+    onClick={() => setSidebarOpen(false)}
+  >
+    <FiX size={28} />
+  </button>
+
+</div>
 
         <div className="p-6 border-b border-slate-700">
 
