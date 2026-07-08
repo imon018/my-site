@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { uploadImages } from "../../services/uploadService";
 
 import Button from "../../components/ui/Button";
 
@@ -22,6 +23,7 @@ export default function EditProduct() {
 
   const [image, setImage] = useState("");
   const [images, setImages] = useState([]);
+const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadProduct();
@@ -79,20 +81,72 @@ export default function EditProduct() {
     }
   };
 
+  const moveImageUp = (index) => {
+  if (index === 0) return;
+
+  const updated = [...images];
+
+  [updated[index - 1], updated[index]] = [
+    updated[index],
+    updated[index - 1],
+  ];
+
+  setImages(updated);
+  setImage(updated[0]);
+};
+
+const moveImageDown = (index) => {
+  if (index === images.length - 1) return;
+
+  const updated = [...images];
+
+  [updated[index], updated[index + 1]] = [
+    updated[index + 1],
+    updated[index],
+  ];
+
+  setImages(updated);
+  setImage(updated[0]);
+};
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      await updateProductInDB(id, {
-        name,
-        category,
-        description,
-        price: Number(price),
-        stock: Number(stock),
+  try {
+    setSaving(true);
 
-        image,
-        images,
-      });
+    let finalImages = [...images];
+
+    if (newImages.length > 0) {
+      const uploaded = await uploadImages(newImages);
+
+      finalImages = [
+        ...finalImages,
+        ...uploaded.map((img) => img.imageUrl),
+      ];
+    }
+
+    await updateProductInDB(id, {
+      name,
+      category,
+      description,
+      price: Number(price),
+      stock: Number(stock),
+
+      image: finalImages[0] || "",
+      images: finalImages,
+    });
+
+    alert("Product updated successfully");
+
+    navigate("/admin/products");
+  } catch (error) {
+    console.log(error);
+    alert("Update failed");
+  } finally {
+    setSaving(false);
+  }
+};
 
       alert("Product updated successfully");
 
@@ -169,6 +223,22 @@ export default function EditProduct() {
           }
         />
 
+        <div>
+  <label className="font-semibold block mb-2">
+    Add More Images
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={(e) =>
+      setNewImages(Array.from(e.target.files))
+    }
+    className="w-full border p-3 rounded-xl"
+  />
+</div>
+
         {images.length > 0 && (
           <div>
             <h3 className="font-bold mb-3">
@@ -188,25 +258,40 @@ export default function EditProduct() {
                   />
 
                   <div className="mt-2 flex flex-col gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleCoverImage(index)
-                      }
-                      className="bg-blue-600 text-white rounded-lg py-2"
-                    >
-                      Set Cover
-                    </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeImage(index)
-                      }
-                      className="bg-red-600 text-white rounded-lg py-2"
-                    >
-                      Remove
-                    </button>
+  <button
+    type="button"
+    onClick={() => handleCoverImage(index)}
+    className="bg-blue-600 text-white rounded-lg py-2"
+  >
+    Set Cover
+  </button>
+
+  <button
+    type="button"
+    onClick={() => moveImageUp(index)}
+    className="bg-gray-700 text-white rounded-lg py-2"
+  >
+    Move Up
+  </button>
+
+  <button
+    type="button"
+    onClick={() => moveImageDown(index)}
+    className="bg-gray-700 text-white rounded-lg py-2"
+  >
+    Move Down
+  </button>
+
+  <button
+    type="button"
+    onClick={() => removeImage(index)}
+    className="bg-red-600 text-white rounded-lg py-2"
+  >
+    Remove
+  </button>
+
+</div>
                   </div>
                 </div>
               ))}
@@ -215,9 +300,12 @@ export default function EditProduct() {
         )}
 
         <div className="flex gap-3">
-          <Button type="submit">
-            Save Changes
-          </Button>
+          <Button
+  type="submit"
+  disabled={saving}
+>
+  {saving ? "Saving..." : "Save Changes"}
+</Button>
 
           <Button
             type="button"
