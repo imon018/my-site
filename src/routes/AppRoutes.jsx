@@ -10,6 +10,7 @@ import Products from "../pages/admin/Products";
 import AddProduct from "../pages/admin/AddProduct";
 import EditProduct from "../pages/admin/EditProduct";
 import Orders from "../pages/admin/Orders";
+import Analytics from "../pages/admin/Analytics";
 
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
@@ -136,6 +137,11 @@ export default function AppRoutes() {
         <Route
   path="orders"
   element={<Orders />}
+/>
+
+        <Route
+  path="analytics"
+  element={<Analytics />}
 />
 
 
