@@ -15,12 +15,31 @@ export default function Users() {
   }, []);
 
   async function loadUsers() {
-    async function makeAdmin() {
-
+  const data = await getUsers();
+  setUsers(data);
 }
-    const data = await getUsers();
-    setUsers(data);
-  }
+
+async function makeAdmin(user) {
+
+  await changeRole(
+    user.id,
+    user.role === "admin"
+      ? "user"
+      : "admin"
+  );
+
+  loadUsers();
+}
+
+async function makePremium(user) {
+
+  await togglePremium(
+    user.id,
+    !user.premium
+  );
+
+  loadUsers();
+}
 
   return (
     <div>
