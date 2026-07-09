@@ -5,6 +5,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   updatePassword,
+  deleteUser,
 } from "firebase/auth";
 
 import {
@@ -70,6 +71,15 @@ export const changePassword = async (
   newPassword
 ) => {
   await updatePassword(user, newPassword);
+};
+
+export const sendVerificationEmail = async (user) => {
+  await sendEmailVerification(user);
+};
+
+
+export const deleteUserAccount = async (user) => {
+  await deleteUser(user);
 };
 
 export const logout = () => signOut(auth);
