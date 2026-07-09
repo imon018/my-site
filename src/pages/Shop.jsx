@@ -1,60 +1,115 @@
-import { useEffect, useState } from "react";
-import { getProductsFromDB } from "../services/firestoreProductService";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import ProductCard from "../components/ProductCard";
+
 import Spinner from "../components/Spinner";
+
 import SearchBar from "../components/ui/SearchBar";
 
+import {
+  getProductsFromDB,
+} from "../services/firestoreProductService";
+
 export default function Shop() {
-  const [products, setProducts] = useState([]);
-const [filteredProducts, setFilteredProducts] = useState([]);
-const [loading, setLoading] = useState(true);
+  const [products, setProducts] =
+    useState([]);
+
+  const [filteredProducts,
+    setFilteredProducts] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
   useEffect(() => {
-  const fetchData = async () => {
-    const data = await getProductsFromDB();
+    const fetchData =
+      async () => {
+        const data =
+          await getProductsFromDB();
 
-    setProducts(data);
-    setFilteredProducts(data);
-    setLoading(false);
-  };
+        setProducts(data);
 
-  fetchData();
-}, []);
+        setFilteredProducts(data);
+
+        setLoading(false);
+      };
+
+    fetchData();
+  }, []);
 
   const handleSearch = (text) => {
-  const keyword = text.toLowerCase();
+    const keyword =
+      text.toLowerCase();
 
-  const filtered = products.filter(
-    (product) =>
-      product.name?.toLowerCase().includes(keyword) ||
-      product.category?.toLowerCase().includes(keyword)
-  );
+    const filtered =
+      products.filter(
+        (product) =>
+          product.name
+            ?.toLowerCase()
+            .includes(keyword)
+      );
 
-  setFilteredProducts(filtered);
-};
+    setFilteredProducts(filtered);
+  };
 
-  if (loading) return <Spinner />;
+  if (loading)
+    return <Spinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <>
+      <section className="bg-[#faf7f2] py-20 text-center">
 
-      <h1 className="text-4xl font-bold mb-8">
-        Shop
-      </h1>
+        <div className="container-box">
 
-      <div className="mb-8">
-  <SearchBar onSearch={handleSearch} />
-</div>
+          <h1 className="text-5xl font-bold">
+            Shop Collection
+          </h1>
 
-      {filteredProducts.length === 0 ? (
-        <p>No products found</p>
-      ) : (
-        <div className="grid md:grid-cols-3 gap-8">
-          {filteredProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+          <p className="mt-4 text-gray-500">
+            Premium products curated
+            for you
+          </p>
+
         </div>
-      )}
 
-    </div>
+      </section>
+
+      <section className="section">
+
+        <div className="container-box">
+
+          <div className="mb-10">
+            <SearchBar
+              onSearch={
+                handleSearch
+              }
+            />
+          </div>
+
+          <p className="mb-6 text-gray-500">
+            {filteredProducts.length}
+            {" "}Products Found
+          </p>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+
+            {filteredProducts.map(
+              (product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                />
+              )
+            )}
+
+          </div>
+
+        </div>
+
+      </section>
+    </>
   );
 }
