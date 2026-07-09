@@ -72,11 +72,6 @@ export default function AppRoutes() {
         />
 
         <Route
-  path="/profile"
-  element={<Profile />}
-/>
-
-        <Route
           path="/about"
           element={<About />}
         />
@@ -117,6 +112,10 @@ export default function AppRoutes() {
   element={<UserLayout />}
 >
 
+  <Route
+  path="/profile"
+  element={<Profile />}
+/>
 
   <Route
     path="account"
