@@ -14,6 +14,8 @@ import {
 
 import {
   deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 
 import {
@@ -1042,12 +1044,10 @@ shadow-lg
           {photoURL && (
 
             <button
-
-              onClick={handleRemovePhoto}
-
-              className="mt-3 text-red-600"
-
-            >
+  onClick={handleRemovePhoto}
+  disabled={saving}
+  className="mt-3 text-red-600"
+>
 
               Remove Photo
 
