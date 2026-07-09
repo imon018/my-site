@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { getLatestProducts } from "../services/firestoreProductService";
+import {
+  getLatestProducts,
+} from "../services/firestoreProductService";
 
 export default function FeaturedProducts() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
     loadProducts();
@@ -12,43 +17,50 @@ export default function FeaturedProducts() {
 
   const loadProducts = async () => {
     try {
-      const data = await getLatestProducts();
+      const data =
+        await getLatestProducts();
+
       setProducts(data);
-    } catch (error) {
-      console.log("Failed to load products:", error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="py-20 max-w-7xl mx-auto px-6">
-      <h2 className="text-3xl font-bold text-center mb-3">
-        Latest Arrivals
-      </h2>
+    <section className="section">
 
-      <p className="text-center text-gray-500 mb-12">
-        Discover our newest products
-      </p>
+      <div className="container-box">
 
-      {loading ? (
-        <div className="text-center text-lg">
-          Loading products...
+        <div className="text-center mb-14">
+
+          <h2 className="section-title">
+            New Arrivals
+          </h2>
+
+          <p className="section-subtitle">
+            Discover our latest premium
+            collection
+          </p>
+
         </div>
-      ) : products.length === 0 ? (
-        <div className="text-center text-gray-500">
-          No products available.
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
-        </div>
-      )}
+
+        {loading ? (
+          <div className="text-center">
+            Loading...
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
+            ))}
+          </div>
+        )}
+
+      </div>
+
     </section>
   );
 }
