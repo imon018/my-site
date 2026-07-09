@@ -4,148 +4,206 @@ import useAuth from "../hooks/useAuth";
 
 import {
   getUserOrders,
+  requestCancelOrder,
+  requestReturnOrder,
 } from "../services/orderService";
 
 import {
+  successToast,
   errorToast,
 } from "../components/ui/Toast";
 
-
-
 export default function MyOrders() {
-
 
   const { user } = useAuth();
 
-
-  const [orders,setOrders] =
+  const [orders, setOrders] =
     useState([]);
 
-
-  const [loading,setLoading] =
+  const [loading, setLoading] =
     useState(true);
 
+  const [processingId, setProcessingId] =
+    useState("");
 
 
 
-
-  useEffect(()=>{
-
+  useEffect(() => {
 
     const loadOrders =
-    async()=>{
+      async () => {
 
+        if (!user) {
 
-      if(!user){
+          setLoading(false);
 
-        setLoading(false);
+          return;
 
-        return;
+        }
 
-      }
+        try {
 
+          const data =
+            await getUserOrders(
+              user.email
+            );
 
+          const sorted =
+            data.sort(
+              (a, b) =>
 
-      try{
+                new Date(
+                  b.createdAt
+                )
 
+                -
 
-        const data =
-          await getUserOrders(
-            user.email
+                new Date(
+                  a.createdAt
+                )
+
+            );
+
+          setOrders(sorted);
+
+        } catch (error) {
+
+          console.log(error);
+
+          errorToast(
+            "Failed to load orders."
           );
 
+        } finally {
 
+          setLoading(false);
 
-        const sorted =
-          data.sort(
-            (a,b)=>
+        }
 
-            new Date(
-              b.createdAt
-            )
+      };
 
-            -
+    loadOrders();
 
-            new Date(
-              a.createdAt
-            )
-
-          );
+  }, [user]);
 
 
 
-        setOrders(sorted);
+  const statusStyle =
+    (status) => {
 
+      if (status === "Delivered")
+        return "bg-green-100 text-green-700";
 
+      if (status === "Shipped")
+        return "bg-purple-100 text-purple-700";
 
-      }catch(error){
+      if (status === "Processing")
+        return "bg-blue-100 text-blue-700";
 
+      if (status === "Cancelled")
+        return "bg-red-100 text-red-700";
 
-        console.log(error);
-
-
-        errorToast(
-          "Failed to load orders"
-        );
-
-
-      }
-
-
-
-      setLoading(false);
-
+      return "bg-yellow-100 text-yellow-700";
 
     };
 
 
 
-    loadOrders();
+  const handleCancelRequest =
+    async (id) => {
+
+      try {
+
+        setProcessingId(id);
+
+        await requestCancelOrder(id);
+
+        setOrders((prev) =>
+
+          prev.map((order) =>
+
+            order.id === id
+
+              ? {
+                  ...order,
+                  cancelRequested: true,
+                }
+
+              : order
+
+          )
+
+        );
+
+        successToast(
+          "Cancel request sent."
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        errorToast(
+          "Failed to send request."
+        );
+
+      } finally {
+
+        setProcessingId("");
+
+      }
+
+    };
+
+  const handleReturnRequest =
+    async (id) => {
+
+      try {
+
+        setProcessingId(id);
+
+        await requestReturnOrder(id);
+
+        setOrders((prev) =>
+
+          prev.map((order) =>
+
+            order.id === id
+
+              ? {
+                  ...order,
+                  returnRequested: true,
+                }
+
+              : order
+
+          )
+
+        );
+
+        successToast(
+          "Return request sent."
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        errorToast(
+          "Failed to send request."
+        );
+
+      } finally {
+
+        setProcessingId("");
+
+      }
+
+    };
 
 
 
-  },[user]);
-
-
-
-
-
-
-
-
-  const statusStyle =
-  (status)=>{
-
-
-    if(status==="Delivered")
-      return "bg-green-100 text-green-700";
-
-
-    if(status==="Shipped")
-      return "bg-purple-100 text-purple-700";
-
-
-    if(status==="Processing")
-      return "bg-blue-100 text-blue-700";
-
-
-    if(status==="Cancelled")
-      return "bg-red-100 text-red-700";
-
-
-    return "bg-yellow-100 text-yellow-700";
-
-
-  };
-
-
-
-
-
-
-
-
-  if(!user){
+  if (!user) {
 
     return (
 
@@ -161,10 +219,7 @@ export default function MyOrders() {
 
 
 
-
-
-
-  if(loading){
+  if (loading) {
 
     return (
 
@@ -180,16 +235,9 @@ export default function MyOrders() {
 
 
 
-
-
-
-
-
   return (
 
-
     <div className="max-w-7xl mx-auto px-6 py-12">
-
 
       <h1 className="text-4xl font-bold mb-8">
 
@@ -199,318 +247,330 @@ export default function MyOrders() {
 
 
 
-
-
-
-
       {
-        orders.length===0
 
-        ?
+        orders.length === 0
 
-        (
+          ?
 
-          <div className="bg-white shadow rounded-3xl p-10 text-center">
+          (
 
+            <div className="bg-white shadow rounded-3xl p-10 text-center">
 
-            <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold">
 
-              No Orders Found
+                No Orders Found
 
-            </h2>
+              </h2>
 
+              <p className="text-gray-500 mt-3">
 
-            <p className="text-gray-500 mt-3">
+                You have not placed any order yet.
 
-              You have not placed any order yet.
+              </p>
 
-            </p>
+            </div>
 
+          )
 
-          </div>
+          :
 
-        )
+          (
 
+            <div className="space-y-8">
 
-        :
+              {
 
+                orders.map((order) => (
 
-        (
+                  <div
 
-          <div className="space-y-8">
+                    key={order.id}
 
-
-          {
-            orders.map((order)=>(
-
-
-              <div
-
-                key={order.id}
-
-                className="bg-white rounded-3xl shadow-lg p-6"
-
-              >
-
-
-
-
-                <div className="flex justify-between items-start border-b pb-5">
-
-
-                  <div>
-
-
-                    <h2 className="font-bold text-lg">
-
-                      Order ID
-
-                    </h2>
-
-
-                    <p className="text-sm text-gray-500 break-all">
-
-                      {order.id}
-
-                    </p>
-
-
-                  </div>
-
-
-
-
-                  <span
-
-                    className={`px-4 py-2 rounded-full text-sm font-semibold ${statusStyle(order.status)}`}
+                    className="bg-white rounded-3xl shadow-lg p-6"
 
                   >
 
-                    {order.status}
+                    <div className="flex justify-between items-start border-b pb-5">
 
-                  </span>
+                      <div>
 
+                        <h2 className="font-bold text-lg">
 
+                          Order ID
 
-                </div>
+                        </h2>
 
+                        <p className="text-sm text-gray-500 break-all">
 
-
-
-
-
-
-
-                <div className="mt-6">
-
-
-                  <h3 className="font-bold text-xl mb-4">
-
-                    Products
-
-                  </h3>
-
-
-
-
-                  <div className="space-y-4">
-
-
-                  {
-                    order.items?.map(
-                      (item,index)=>(
-
-
-                      <div
-
-                        key={index}
-
-                        className="flex items-center justify-between border-b pb-4"
-
-                      >
-
-
-                        <div className="flex items-center gap-4">
-
-
-                          <img
-
-                            src={
-                              item.image ||
-                              "https://via.placeholder.com/80"
-                            }
-
-                            className="w-20 h-20 rounded-xl object-cover"
-
-                            alt={item.name}
-
-                          />
-
-
-
-                          <div>
-
-
-                            <h4 className="font-bold">
-
-                              {item.name}
-
-                            </h4>
-
-
-                            <p className="text-gray-500">
-
-                              Quantity:
-                              {" "}
-                              {item.quantity || 1}
-
-                            </p>
-
-
-                          </div>
-
-
-                        </div>
-
-
-
-
-
-                        <p className="font-bold">
-
-                          ৳
-                          {
-                            item.price *
-                            (item.quantity || 1)
-
-                          }
+                          {order.id}
 
                         </p>
 
+                      </div>
+
+                      <span
+
+                        className={`px-4 py-2 rounded-full text-sm font-semibold ${statusStyle(order.status)}`}
+
+                      >
+
+                        {order.status}
+
+                      </span>
+
+                    </div>
+
+                                        <div className="mt-6">
+
+                      <h3 className="font-bold text-xl mb-4">
+
+                        Products
+
+                      </h3>
+
+                      <div className="space-y-4">
+
+                        {
+
+                          order.items?.map(
+
+                            (item, index) => (
+
+                              <div
+
+                                key={index}
+
+                                className="flex items-center justify-between border-b pb-4"
+
+                              >
+
+                                <div className="flex items-center gap-4">
+
+                                  <img
+
+                                    src={
+                                      item.image ||
+                                      "https://via.placeholder.com/80"
+                                    }
+
+                                    alt={item.name}
+
+                                    className="w-20 h-20 rounded-xl object-cover"
+
+                                  />
+
+                                  <div>
+
+                                    <h4 className="font-bold">
+
+                                      {item.name}
+
+                                    </h4>
+
+                                    <p className="text-gray-500">
+
+                                      Quantity: {item.quantity || 1}
+
+                                    </p>
+
+                                  </div>
+
+                                </div>
+
+                                <p className="font-bold">
+
+                                  ৳
+
+                                  {
+
+                                    item.price *
+
+                                    (item.quantity || 1)
+
+                                  }
+
+                                </p>
+
+                              </div>
+
+                            )
+
+                          )
+
+                        }
+
+                      </div>
+
+                    </div>
 
 
+
+                    <div className="mt-6 space-y-3">
+
+                      <div className="flex justify-between">
+
+                        <span>Total</span>
+
+                        <span className="font-bold">
+
+                          ৳ {order.total}
+
+                        </span>
 
                       </div>
 
 
-                    ))
 
-                  }
+                      <div className="flex justify-between gap-5">
 
+                        <span>Address</span>
 
-                  </div>
+                        <span className="text-gray-600 text-right">
 
+                          {order.address}
 
-                </div>
+                        </span>
 
-
-
-
-
+                      </div>
 
 
 
-                <div className="mt-6 space-y-3">
+                      <div className="flex justify-between">
 
+                        <span>Date</span>
 
-                  <div className="flex justify-between">
+                        <span>
 
-                    <span>
+                          {
 
-                      Total
+                            new Date(
 
-                    </span>
+                              order.createdAt
 
+                            ).toLocaleString()
 
-                    <span className="font-bold">
+                          }
 
-                      ৳ {order.total}
+                        </span>
 
-                    </span>
+                      </div>
 
-
-                  </div>
-
-
-
-
-
-                  <div className="flex justify-between gap-5">
-
-
-                    <span>
-
-                      Address
-
-                    </span>
-
-
-                    <span className="text-gray-600 text-right">
-
-                      {order.address}
-
-                    </span>
-
-
-                  </div>
+                    </div>
 
 
 
+                    <div className="mt-6 flex gap-4">
 
+                                            {
 
+                        (order.status === "Pending" ||
 
-                  <div className="flex justify-between">
+                         order.status === "Processing") && (
 
+                          <button
 
-                    <span>
+                            onClick={() =>
 
-                      Date
+                              handleCancelRequest(order.id)
 
-                    </span>
+                            }
 
+                            disabled={
 
-                    <span>
+                              processingId === order.id ||
 
-                      {
-                        new Date(
-                          order.createdAt
-                        ).toLocaleString()
+                              order.cancelRequested
+
+                            }
+
+                            className="bg-red-600 text-white px-5 py-2 rounded-xl disabled:opacity-50"
+
+                          >
+
+                            {
+
+                              order.cancelRequested
+
+                                ? "Cancel Requested"
+
+                                : processingId === order.id
+
+                                ? "Sending..."
+
+                                : "Cancel Order"
+
+                            }
+
+                          </button>
+
+                        )
+
                       }
 
-                    </span>
 
+
+                      {
+
+                        order.status === "Delivered" && (
+
+                          <button
+
+                            onClick={() =>
+
+                              handleReturnRequest(order.id)
+
+                            }
+
+                            disabled={
+
+                              processingId === order.id ||
+
+                              order.returnRequested
+
+                            }
+
+                            className="bg-blue-600 text-white px-5 py-2 rounded-xl disabled:opacity-50"
+
+                          >
+
+                            {
+
+                              order.returnRequested
+
+                                ? "Return Requested"
+
+                                : processingId === order.id
+
+                                ? "Sending..."
+
+                                : "Return Order"
+
+                            }
+
+                          </button>
+
+                        )
+
+                      }
+
+                    </div>
 
                   </div>
 
+                ))
 
+              }
 
-                </div>
+            </div>
 
-
-
-
-
-              </div>
-
-
-            ))
-
-          }
-
-
-          </div>
-
-        )
+          )
 
       }
 
-
-
-
-
     </div>
-
 
   );
 
 }
+
