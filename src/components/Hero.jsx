@@ -6,87 +6,143 @@ import {
 import { Link } from "react-router-dom";
 
 import {
-  getHeroBannerProduct,
-} from "../services/firestoreProductService";
+  getLatestBanner,
+} from "../services/firestoreBannerService";
 
 export default function Hero() {
-  const [heroProduct, setHeroProduct] =
+
+  const [banner, setBanner] =
     useState(null);
 
   useEffect(() => {
-    const loadHero =
-      async () => {
-        const product =
-          await getHeroBannerProduct();
 
-        setHeroProduct(product);
+    const loadBanner =
+      async () => {
+
+        const data =
+          await getLatestBanner();
+
+        setBanner(data);
+
       };
 
-    loadHero();
+    loadBanner();
+
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[#faf7f2]">
 
-      <div className="container-box py-16 lg:py-28">
+    <section className="relative overflow-hidden">
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Background */}
 
-          <div>
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100" />
 
-            <span className="inline-block px-5 py-2 rounded-full bg-white shadow text-sm">
+      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 py-14 md:py-20 lg:py-28">
 
-              Premium Collection
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
+          {/* LEFT */}
+
+          <div className="fade-up">
+
+            <span
+              className="
+                inline-flex
+                items-center
+                px-4
+                py-2
+                rounded-full
+                bg-white
+                border
+                border-gray-200
+                shadow-sm
+                text-sm
+                font-medium
+              "
+            >
+              ✨ New Arrival
             </span>
 
-            <h1 className="mt-6 text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
-
-              {heroProduct?.name ||
-                "Dream Mode Collection"}
-
+            <h1
+              className="
+                mt-6
+                text-4xl
+                md:text-6xl
+                lg:text-7xl
+                font-black
+                leading-tight
+              "
+            >
+              {banner?.title ||
+                "Dream Mode"}
             </h1>
 
-            <p className="mt-6 text-gray-600 text-lg leading-8">
-
-              {heroProduct?.description ||
-                "Discover premium fashion collections designed for modern style and elegance."}
-
+            <p
+              className="
+                mt-6
+                text-gray-600
+                text-lg
+                leading-8
+                max-w-xl
+              "
+            >
+              {banner?.subtitle ||
+                "Premium fashion for modern lifestyle."}
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
               <Link
                 to="/shop"
                 className="primary-btn text-center"
               >
-                Shop Now
+                {banner?.buttonText ||
+                  "Shop Now"}
               </Link>
 
               <Link
-                to={`/product/${heroProduct?.id || ""}`}
+                to="/shop"
                 className="outline-btn text-center"
               >
-                View Product
+                Explore Collection
               </Link>
 
             </div>
 
           </div>
 
-          <div>
+          {/* RIGHT */}
 
-            <img
-              src={
-                heroProduct?.image ||
-                "https://via.placeholder.com/800x900"
-              }
-              alt={
-                heroProduct?.name ||
-                "Dream Mode"
-              }
-              className="rounded-[35px] shadow-premium h-[350px] md:h-[500px] lg:h-[650px] w-full object-cover"
-            />
+          <div className="fade-up">
+
+            <div
+              className="
+                overflow-hidden
+                rounded-[35px]
+                shadow-premium
+              "
+            >
+
+              <img
+                src={
+                  banner?.image ||
+                  "https://images.unsplash.com/photo-1523381210434-271e8be1f52b"
+                }
+                alt="Banner"
+                className="
+                  w-full
+                  h-[350px]
+                  md:h-[500px]
+                  lg:h-[650px]
+                  object-cover
+                  hover:scale-105
+                  transition
+                  duration-700
+                "
+              />
+
+            </div>
 
           </div>
 
@@ -95,5 +151,6 @@ export default function Hero() {
       </div>
 
     </section>
+
   );
 }
