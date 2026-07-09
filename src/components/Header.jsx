@@ -31,14 +31,12 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
 
 
-
         <Link
           to="/"
           className="text-2xl font-bold text-primary"
         >
           Dream Mode
         </Link>
-
 
 
 
@@ -51,12 +49,9 @@ export default function Header() {
           </Link>
 
 
-
           <Link to="/shop">
             Shop
           </Link>
-
-
 
 
           <Link to="/cart">
@@ -67,7 +62,46 @@ export default function Header() {
 
 
 
-          {user ? (
+          {!user ? (
+
+            <>
+
+
+              <Link to="/admin">
+                Admin
+              </Link>
+
+
+              <Link to="/login">
+                Login
+              </Link>
+
+
+            </>
+
+
+          ) : user.role === "admin" ? (
+
+            <>
+
+
+              <Link to="/admin">
+                Admin Dashboard
+              </Link>
+
+
+              <button
+                onClick={handleLogout}
+                className="text-red-600"
+              >
+                Logout
+              </button>
+
+
+            </>
+
+
+          ) : (
 
             <>
 
@@ -77,46 +111,15 @@ export default function Header() {
               </Link>
 
 
-
-
-              {user.role === "admin" && (
-
-                <Link to="/admin">
-                  Admin
-                </Link>
-
-              )}
-
-
-
-
-
               <button
-
                 onClick={handleLogout}
-
                 className="text-red-600"
-
               >
-
                 Logout
-
               </button>
 
 
-
             </>
-
-
-          ) : (
-
-
-            <Link to="/login">
-
-              Login
-
-            </Link>
-
 
           )}
 
@@ -125,10 +128,7 @@ export default function Header() {
         </nav>
 
 
-
-
       </div>
-
 
     </header>
 
