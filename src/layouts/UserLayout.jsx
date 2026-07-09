@@ -30,51 +30,50 @@ export default function UserLayout() {
 
 
   const menu = [
+const menu = [
 
-    {
-      name:"Account Information",
-      path:"/profile/account",
-      icon:<FiUser />,
-    },
-
-
-    {
-      name:"Recent Activities",
-      path:"/profile/activity",
-      icon:<FiActivity />,
-    },
+  {
+    name:"Account Information",
+    path:"/profile/dashboard/account",
+    icon:<FiUser />,
+  },
 
 
-    {
-      name:"My Orders",
-      path:"/my-orders",
-      icon:<FiShoppingBag />,
-    },
+  {
+    name:"Recent Activities",
+    path:"/profile/dashboard/activity",
+    icon:<FiActivity />,
+  },
 
 
-    {
-      name:"Wishlist",
-      path:"/wishlist",
-      icon:<FiHeart />,
-    },
+  {
+    name:"My Orders",
+    path:"/profile/dashboard/orders",
+    icon:<FiShoppingBag />,
+  },
 
 
-    {
-      name:"Change Password",
-      path:"/profile/security/password",
-      icon:<FiLock />,
-    },
+  {
+    name:"Wishlist",
+    path:"/profile/dashboard/wishlist",
+    icon:<FiHeart />,
+  },
 
 
-    {
-      name:"Delete Account",
-      path:"/profile/security/delete",
-      icon:<FiTrash2 />,
-    },
+  {
+    name:"Change Password",
+    path:"/profile/dashboard/security/password",
+    icon:<FiLock />,
+  },
 
 
-  ];
+  {
+    name:"Delete Account",
+    path:"/profile/dashboard/security/delete",
+    icon:<FiTrash2 />,
+  },
 
+];
 
 
   return (
