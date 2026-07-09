@@ -20,6 +20,7 @@ import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ForgotPassword from "../pages/ForgotPassword";
 import ProductDetails from "../pages/ProductDetails";
 import Checkout from "../pages/Checkout";
 import Wishlist from "../pages/Wishlist";
@@ -92,6 +93,11 @@ export default function AppRoutes() {
           path="/register"
           element={<Register />}
         />
+
+        <Route
+  path="/forgot-password"
+  element={<ForgotPassword />}
+/>
 
         <Route
   path="/verify-email"
