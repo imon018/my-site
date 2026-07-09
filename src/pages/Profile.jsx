@@ -3,46 +3,23 @@ import {
   useState,
 } from "react";
 
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  setDoc,
-  serverTimestamp,
-} from "firebase/firestore";
-
-import {
-  deleteUser,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-} from "firebase/auth";
-
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
+
 
 import {
   getUserProfile,
   updateUserProfile,
 } from "../services/userService";
 
+
 import {
   uploadSingleImage,
 } from "../services/uploadService";
 
-import {
-  changePassword,
-} from "../services/authService";
-
-import {
-  db,
-} from "../firebase/firestore";
 
 import Button from "../components/ui/Button";
+
 
 import {
   successToast,
@@ -51,16 +28,12 @@ import {
 
 
 
-export default function Profile() {
+export default function Profile(){
 
 
   const {
     user,
   } = useAuth();
-
-
-  const navigate =
-    useNavigate();
 
 
 
@@ -70,15 +43,6 @@ export default function Profile() {
 
   const [saving,setSaving] =
     useState(false);
-
-
-  const [changingPassword,setChangingPassword] =
-    useState(false);
-
-
-  const [deletingAccount,setDeletingAccount] =
-    useState(false);
-
 
 
 
@@ -99,39 +63,9 @@ export default function Profile() {
     useState("");
 
 
-
   const [photoFile,setPhotoFile] =
     useState(null);
 
-
-
-
-  const [newPassword,setNewPassword] =
-    useState("");
-
-
-  const [confirmPassword,setConfirmPassword] =
-    useState("");
-
-
-  const [showPassword,setShowPassword] =
-    useState(false);
-
-  const [deletePassword, setDeletePassword] =
-  useState("");
-
-const [showDeletePassword, setShowDeletePassword] =
-  useState(false);
-
-
-
-  const [activities,setActivities] =
-    useState([]);
-
-
-
-  const [activityLoading,setActivityLoading] =
-    useState(true);
 
 
 
@@ -142,370 +76,53 @@ const [showDeletePassword, setShowDeletePassword] =
 
 
     const loadProfile =
-      async()=>{
-
-
-        if(!user){
-
-          setLoading(false);
-
-          return;
-
-        }
-
-
-
-        try{
-
-
-          const profile =
-            await getUserProfile(
-              user.uid
-            );
-
-
-
-          if(profile){
-
-
-            setName(
-              profile.name || ""
-            );
-
-
-            setPhone(
-              profile.phone || ""
-            );
-
-
-            setAddress(
-              profile.address || ""
-            );
-
-
-            setPhotoURL(
-              profile.photoURL || ""
-            );
-
-
-          }
-
-
-
-        }catch(error){
-
-
-          console.log(error);
-
-
-          errorToast(
-            "Failed to load profile."
-          );
-
-
-        }finally{
-
-
-          setLoading(false);
-
-
-        }
-
-
-      };
-
-
-
-    loadProfile();
-
-
-  },[user]);
-
-
-
-
-
-
-
-  const addActivity =
-    async(
-      type,
-      message
-    )=>{
-
-
-      if(!user)
-        return;
-
-
-
-      try{
-
-
-        const activityRef =
-          doc(
-            db,
-            "users",
-            user.uid,
-            "activity",
-            crypto.randomUUID()
-          );
-
-
-
-        await setDoc(
-          activityRef,
-          {
-
-            type,
-
-            message,
-
-            createdAt:
-              serverTimestamp(),
-
-          }
-        );
-
-
-
-      }catch(error){
-
-
-        console.log(
-          "Activity error:",
-          error
-        );
-
-
-      }
-
-
-    };
-
-  useEffect(()=>{
-
-
-    const loadActivities =
-      async()=>{
-
-
-        if(!user)
-          return;
-
-
-
-        try{
-
-
-          const activityRef =
-            collection(
-              db,
-              "users",
-              user.uid,
-              "activity"
-            );
-
-
-
-          const snapshot =
-            await getDocs(
-              activityRef
-            );
-
-
-
-          const data =
-            snapshot.docs
-              .map((item)=>({
-
-                id:item.id,
-
-                ...item.data(),
-
-              }))
-              .sort(
-                (a,b)=>{
-
-                  const first =
-                    a.createdAt?.seconds || 0;
-
-
-                  const second =
-                    b.createdAt?.seconds || 0;
-
-
-                  return second - first;
-
-                }
-              );
-
-
-
-          setActivities(data);
-
-
-
-        }catch(error){
-
-
-          console.log(error);
-
-
-        }finally{
-
-
-          setActivityLoading(false);
-
-
-        }
-
-
-      };
-
-
-
-    loadActivities();
-
-
-  },[user]);
-
-
-
-
-
-
-  const profileCompletion =
-    (
-      [
-        name,
-        phone,
-        address,
-        photoURL,
-      ].filter(Boolean).length / 4
-    ) * 100;
-
-  const handleSave =
     async()=>{
 
 
-      if(!user)
+      if(!user){
+
+        setLoading(false);
+
         return;
 
-
-
-
-      if(phone){
-
-
-        const phoneRegex =
-          /^01[3-9]\d{8}$/;
-
-
-
-        if(!phoneRegex.test(phone)){
-
-
-          errorToast(
-            "Enter valid Bangladesh phone number."
-          );
-
-
-          return;
-
-
-        }
-
-
       }
-
 
 
 
       try{
 
 
-        setSaving(true);
+        const profile =
+          await getUserProfile(
+            user.uid
+          );
 
 
 
-        let imageUrl =
-          photoURL;
+        if(profile){
 
 
+          setName(
+            profile.name || ""
+          );
 
 
-        if(photoFile){
+          setPhone(
+            profile.phone || ""
+          );
 
 
-          const uploaded =
-            await uploadSingleImage(
-              photoFile
-            );
+          setAddress(
+            profile.address || ""
+          );
 
 
-
-          imageUrl =
-            uploaded.imageUrl;
+          setPhotoURL(
+            profile.photoURL || ""
+          );
 
 
         }
-
-
-
-
-
-        await updateUserProfile(
-
-          user.uid,
-
-          {
-
-            name,
-
-            phone,
-
-            address,
-
-            photoURL:imageUrl,
-
-          }
-
-        );
-
-
-
-
-
-        setPhotoURL(
-          imageUrl
-        );
-
-
-
-        setPhotoFile(null);
-
-
-
-
-
-        await addActivity(
-
-          "profile_update",
-
-          "Profile information updated"
-
-        );
-
-
-
-
-
-        successToast(
-
-          "Profile updated successfully."
-
-        );
 
 
 
@@ -515,24 +132,193 @@ const [showDeletePassword, setShowDeletePassword] =
         console.log(error);
 
 
-
         errorToast(
-          error.message
+          "Failed to load profile."
         );
-
 
 
       }finally{
 
 
-        setSaving(false);
+        setLoading(false);
+
+
+      }
+
+
+    };
+
+
+
+    loadProfile();
+
+
+
+  },[user]);
+
+
+
+
+
+
+
+
+  const profileCompletion =
+  (
+    [
+      name,
+      phone,
+      address,
+      photoURL,
+
+    ].filter(Boolean).length / 4
+
+  ) * 100;
+
+
+
+
+
+
+
+  const handleSave =
+  async()=>{
+
+
+    if(!user)
+      return;
+
+
+
+
+
+    if(phone){
+
+
+      const phoneRegex =
+      /^01[3-9]\d{8}$/;
+
+
+
+      if(!phoneRegex.test(phone)){
+
+
+        errorToast(
+          "Enter valid Bangladesh phone number."
+        );
+
+
+        return;
+
+      }
+
+
+    }
+
+
+
+
+
+
+
+    try{
+
+
+      setSaving(true);
+
+
+
+      let imageUrl =
+        photoURL;
+
+
+
+
+
+      if(photoFile){
+
+
+        const uploaded =
+          await uploadSingleImage(
+            photoFile
+          );
+
+
+
+        imageUrl =
+          uploaded.imageUrl;
 
 
       }
 
 
 
-    };
+
+
+
+
+      await updateUserProfile(
+
+        user.uid,
+
+        {
+
+          name,
+
+          phone,
+
+          address,
+
+          photoURL:imageUrl,
+
+        }
+
+      );
+
+
+
+
+
+      setPhotoURL(
+        imageUrl
+      );
+
+
+      setPhotoFile(null);
+
+
+
+
+
+      successToast(
+        "Profile updated successfully."
+      );
+
+
+
+    }catch(error){
+
+
+      console.log(error);
+
+
+      errorToast(
+        error.message
+      );
+
+
+
+    }finally{
+
+
+      setSaving(false);
+
+
+    }
+
+
+  };
+
 
 
 
@@ -541,403 +327,62 @@ const [showDeletePassword, setShowDeletePassword] =
 
 
   const handleRemovePhoto =
-    async()=>{
+  async()=>{
 
 
-      try{
+    try{
 
 
-        setPhotoURL("");
+      setPhotoURL("");
 
-        setPhotoFile(null);
+      setPhotoFile(null);
 
 
 
 
-        await updateUserProfile(
+      await updateUserProfile(
 
-          user.uid,
+        user.uid,
 
-          {
+        {
 
-            photoURL:"",
-
-          }
-
-        );
-
-
-
-
-
-        await addActivity(
-
-          "photo_remove",
-
-          "Profile photo removed"
-
-        );
-
-
-
-
-
-        successToast(
-
-          "Profile photo removed."
-
-        );
-
-
-
-      }catch(error){
-
-
-        errorToast(
-          error.message
-        );
-
-
-      }
-
-
-
-    };
-
-  const handleChangePassword =
-    async()=>{
-
-      if(!user){
-
-  errorToast(
-    "User not found."
-  );
-
-  return;
-
-}
-
-
-      if(
-        !newPassword ||
-        !confirmPassword
-      ){
-
-
-        errorToast(
-          "Fill all password fields."
-        );
-
-
-        return;
-
-
-      }
-
-
-
-
-
-      if(newPassword.length < 6){
-
-
-        errorToast(
-          "Password must be at least 6 characters."
-        );
-
-
-        return;
-
-
-      }
-
-
-
-
-
-
-      if(newPassword !== confirmPassword){
-
-
-        errorToast(
-          "Passwords do not match."
-        );
-
-
-        return;
-
-
-      }
-
-
-
-
-
-      try{
-
-
-        setChangingPassword(true);
-
-
-
-
-        await changePassword(
-
-          user,
-
-          newPassword
-
-        );
-
-
-
-
-
-        await addActivity(
-
-          "password_change",
-
-          "Password changed"
-
-        );
-
-
-
-
-
-        setNewPassword("");
-
-        setConfirmPassword("");
-
-
-
-
-
-        successToast(
-
-          "Password changed successfully."
-
-        );
-
-
-
-      }catch(error){
-
-
-        console.log(error);
-
-
-
-        errorToast(
-          error.message
-        );
-
-
-
-      }finally{
-
-
-        setChangingPassword(false);
-
-
-      }
-
-
-
-    };
-
-
-
-
-
-
-
-
-
-  const handleDeleteAccount =
-    async()=>{
-
-      if(!user){
-
-  return;
-
-}
-
-
-if(!user.email){
-
-  errorToast(
-    "Email account required for verification."
-  );
-
-  return;
-
-}
-
-
-      if(!user)
-        return;
-
-
-
-
-      const confirmDelete =
-        window.confirm(
-
-          "Are you sure you want to delete your account?"
-
-        );
-
-
-
-
-      if(!confirmDelete)
-        return;
-
-
-if (!deletePassword) {
-
-  errorToast(
-    "Enter your password."
-  );
-
-  return;
-
-}
-
-const credential =
-  EmailAuthProvider.credential(
-    user.email,
-    deletePassword
-  );
-
-
-      try {
-
-  await reauthenticateWithCredential(
-    user,
-    credential
-  );
-
-  setDeletingAccount(true);
-
-
-
-
-
-        const activityRef =
-          collection(
-
-            db,
-
-            "users",
-
-            user.uid,
-
-            "activity"
-
-          );
-
-
-
-
-
-        const snapshot =
-          await getDocs(
-            activityRef
-          );
-
-
-
-
-
-        for(
-          const item of snapshot.docs
-        ){
-
-
-          await deleteDoc(
-
-            doc(
-
-              db,
-
-              "users",
-
-              user.uid,
-
-              "activity",
-
-              item.id
-
-            )
-
-          );
-
+          photoURL:"",
 
         }
 
+      );
 
 
 
 
-        await deleteDoc(
-
-          doc(
-
-            db,
-
-            "users",
-
-            user.uid
-
-          )
-
-        );
+      successToast(
+        "Profile photo removed."
+      );
 
 
 
+    }catch(error){
 
 
-        await deleteUser(user);
-
-setDeletePassword("");
-
-successToast(
-  "Account deleted successfully."
-);
-
-navigate("/");
+      errorToast(
+        error.message
+      );
 
 
-      }catch(error){
+    }
 
 
-        console.log(error);
+  };
 
 
 
-        errorToast(
-          error.message
-        );
 
 
 
-      }
-      
-      finally{
 
-  setDeletingAccount(false);
-
-  setDeletePassword("");
-
-}
-
-
-
-    };
 
   if(!user){
+
 
     return (
 
@@ -949,11 +394,15 @@ navigate("/");
 
     );
 
+
   }
 
 
 
+
+
   if(loading){
+
 
     return (
 
@@ -965,6 +414,7 @@ navigate("/");
 
     );
 
+
   }
 
 
@@ -973,7 +423,7 @@ navigate("/");
 
   return (
 
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-6xl mx-auto px-6 py-12">
 
 
       <h1 className="text-4xl font-bold mb-8">
@@ -981,7 +431,6 @@ navigate("/");
         My Profile
 
       </h1>
-
 
 
 
@@ -997,26 +446,24 @@ navigate("/");
 
           <img
 
-src={
- photoURL ||
- "https://via.placeholder.com/200"
-}
+            src={
+              photoURL ||
+              "https://via.placeholder.com/200"
+            }
 
-alt="Profile"
+            alt="Profile"
 
-className="
-w-40
-h-40
-rounded-full
-object-cover
-mx-auto
-border-4
-border-primary
-shadow-lg
-"
+            className="
+            w-40
+            h-40
+            rounded-full
+            object-cover
+            mx-auto
+            border-4
+            shadow-lg
+            "
 
-/>
-
+          />
 
 
 
@@ -1031,36 +478,38 @@ shadow-lg
             className="mt-5 w-full"
 
             onChange={(e)=>
+
               setPhotoFile(
                 e.target.files[0]
               )
+
             }
 
           />
 
 
 
+          {
+            photoURL && (
 
-          {photoURL && (
+              <button
 
-            <button
-  onClick={handleRemovePhoto}
-  disabled={saving}
-  className="mt-3 text-red-600"
->
+                onClick={handleRemovePhoto}
 
-              Remove Photo
+                disabled={saving}
 
-            </button>
+                className="mt-3 text-red-600"
 
-          )}
+              >
 
+                Remove Photo
 
+              </button>
 
+            )
+          }
 
-
-
-          <h2 className="text-2xl font-bold mt-6">
+                    <h2 className="text-2xl font-bold mt-6">
 
             {name || "Dream Mode User"}
 
@@ -1078,16 +527,19 @@ shadow-lg
 
 
 
+
           <div className="mt-6 text-left">
 
 
             <div className="flex justify-between mb-2">
+
 
               <span>
 
                 Profile Completion
 
               </span>
+
 
 
               <span className="font-bold">
@@ -1098,6 +550,7 @@ shadow-lg
 
 
             </div>
+
 
 
 
@@ -1121,7 +574,6 @@ shadow-lg
             </div>
 
 
-
           </div>
 
 
@@ -1134,7 +586,6 @@ shadow-lg
 
 
         {/* Edit Profile */}
-
 
 
         <div className="lg:col-span-2">
@@ -1165,10 +616,15 @@ shadow-lg
                 value={name}
 
                 onChange={(e)=>
-                  setName(e.target.value)
+
+                  setName(
+                    e.target.value
+                  )
+
                 }
 
               />
+
 
 
 
@@ -1177,11 +633,14 @@ shadow-lg
 
                 className="border rounded-xl p-3 bg-gray-100"
 
-                value={user.email}
+                value={
+                  user.email
+                }
 
                 readOnly
 
               />
+
 
 
 
@@ -1196,10 +655,15 @@ shadow-lg
                 value={phone}
 
                 onChange={(e)=>
-                  setPhone(e.target.value)
+
+                  setPhone(
+                    e.target.value
+                  )
+
                 }
 
               />
+
 
 
 
@@ -1214,7 +678,11 @@ shadow-lg
                 value={address}
 
                 onChange={(e)=>
-                  setAddress(e.target.value)
+
+                  setAddress(
+                    e.target.value
+                  )
+
                 }
 
               />
@@ -1222,6 +690,7 @@ shadow-lg
 
 
             </div>
+
 
 
 
@@ -1244,421 +713,17 @@ shadow-lg
                 "Save Changes"
               }
 
-            </Button>
-
-
-
-          </div>
-
-                    <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
-
-
-            <h2 className="text-2xl font-bold mb-6">
-
-              Account Information
-
-            </h2>
-
-
-
-            <div className="space-y-4">
-
-
-              <p>
-
-                <b>User ID:</b>
-
-                <br />
-
-                {user.uid}
-
-              </p>
-
-
-
-              <p>
-
-                <b>Email:</b>
-
-                <br />
-
-                {user.email}
-
-              </p>
-
-              <p>
-  <b>Member Since:</b>
-  <br />
-
-  {
-    user.metadata?.creationTime
-    ?
-    new Date(
-      user.metadata.creationTime
-    ).toLocaleDateString()
-    :
-    "N/A"
-  }
-
-</p>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-          <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
-
-
-            <h2 className="text-2xl font-bold mb-6">
-
-              Recent Activity
-
-            </h2>
-
-
-
-
-            {
-              activityLoading
-
-              ?
-
-              <p>
-                Loading activity...
-              </p>
-
-
-              :
-
-
-              activities.length === 0
-
-
-              ?
-
-              <p className="text-gray-500">
-
-                No activity found.
-
-              </p>
-
-
-              :
-
-
-              <div className="space-y-4">
-
-
-                {
-                  activities.map(
-                    (activity)=>(
-
-
-                      <div
-
-                        key={activity.id}
-
-                        className="border rounded-xl p-4"
-
-                      >
-
-
-                        <p className="font-medium">
-
-                          {activity.message}
-
-                        </p>
-
-                        <p className="text-sm text-gray-500 mt-2">
-
-{
-  activity.createdAt?.toDate
-  ?
-  activity.createdAt
-  .toDate()
-  .toLocaleString()
-  :
-  ""
-}
-
-</p>
-                      
-
-
-
-                      </div>
-
-
-                    )
-
-                  )
-
-                }
-
-
-              </div>
-
-
-            }
-
-
-          </div>
-
-
-
-
-
-
-          <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
-
-
-            <h2 className="text-2xl font-bold mb-6">
-
-              Quick Actions
-
-            </h2>
-
-
-
-
-            <div className="grid md:grid-cols-2 gap-4">
-
-
-
-              <Link
-
-                to="/my-orders"
-
-                className="border rounded-2xl p-5"
-
-              >
-
-                📦 My Orders
-
-              </Link>
-
-
-
-
-              <Link
-
-                to="/wishlist"
-
-                className="border rounded-2xl p-5"
-
-              >
-
-                ❤️ Wishlist
-
-              </Link>
-
-
-
-            </div>
-
-
-
-          </div>
-
-                    <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
-
-
-            <h2 className="text-2xl font-bold mb-6">
-
-              Security
-
-            </h2>
-
-
-
-            <input
-
-              type={
-                showPassword
-                ?
-                "text"
-                :
-                "password"
-              }
-
-              className="w-full border rounded-xl p-3 mb-4"
-
-              placeholder="New Password"
-
-              value={newPassword}
-
-              onChange={(e)=>
-                setNewPassword(
-                  e.target.value
-                )
-              }
-
-            />
-
-
-
-
-            <input
-
-              type={
-                showPassword
-                ?
-                "text"
-                :
-                "password"
-              }
-
-              className="w-full border rounded-xl p-3"
-
-              placeholder="Confirm Password"
-
-              value={confirmPassword}
-
-              onChange={(e)=>
-                setConfirmPassword(
-                  e.target.value
-                )
-              }
-
-            />
-
-                      <label className="flex items-center gap-2 mt-4">
-
-  <input
-    type="checkbox"
-    checked={showPassword}
-    onChange={() =>
-      setShowPassword(!showPassword)
-    }
-  />
-
-  Show Password
-
-</label>
-
-
-
-
-            <Button
-
-  onClick={handleChangePassword}
-
-  disabled={changingPassword}
-
-  className="w-full mt-5"
-
->
-
-  {
-    changingPassword
-    ?
-    "Updating..."
-    :
-    "Change Password"
-  }
-
-</Button>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
-
-
-            <h2 className="text-2xl font-bold text-red-600">
-
-              Danger Zone
-
-            </h2>
-
-
-
-            <p className="mt-3 text-gray-600">
-
-              Delete your account permanently.
-
-            </p>
-
-            <input
-  type={
-    showDeletePassword
-      ? "text"
-      : "password"
-  }
-  className="w-full border rounded-xl p-3 mt-5"
-  placeholder="Enter your password"
-  value={deletePassword}
-  onChange={(e) =>
-    setDeletePassword(
-      e.target.value
-    )
-  }
-/>
-
-<label className="flex items-center gap-2 mt-4">
-
-  <input
-    type="checkbox"
-    checked={showDeletePassword}
-    onChange={() =>
-      setShowDeletePassword(
-        !showDeletePassword
-      )
-    }
-  />
-
-  Show Password
-
-</label>
-
-
-
-
-            <Button
-
-              onClick={handleDeleteAccount}
-
-              disabled={deletingAccount}
-
-              className="bg-red-600 w-full mt-5"
-
-            >
-
-              {
-                deletingAccount
-                ?
-                "Deleting..."
-                :
-                "Delete Account"
-              }
-
 
             </Button>
 
 
 
           </div>
-
 
 
 
         </div>
+
 
 
 
@@ -1667,6 +732,7 @@ shadow-lg
 
 
     </div>
+
 
   );
 
