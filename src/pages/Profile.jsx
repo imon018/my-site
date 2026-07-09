@@ -3,81 +3,64 @@ import {
   useState,
 } from "react";
 
-
 import useAuth from "../hooks/useAuth";
-
 
 import {
   getUserProfile,
   updateUserProfile,
 } from "../services/userService";
 
-
 import {
   uploadSingleImage,
 } from "../services/uploadService";
 
-
 import Button from "../components/ui/Button";
-
 
 import {
   successToast,
   errorToast,
 } from "../components/ui/Toast";
 
-
-
 export default function Profile(){
-
 
   const {
     user,
   } = useAuth();
 
-
-
   const [loading,setLoading] =
     useState(true);
-
 
   const [saving,setSaving] =
     useState(false);
 
-
-
   const [name,setName] =
     useState("");
-
 
   const [phone,setPhone] =
     useState("");
 
-
   const [address,setAddress] =
     useState("");
-
-
 
   const [photoURL,setPhotoURL] =
     useState("");
 
-
   const [photoFile,setPhotoFile] =
     useState(null);
 
+  const [memberSince,setMemberSince] =
+    useState("");
 
+  const [lastUpdated,setLastUpdated] =
+    useState("");
 
-
-
-
+  const [lastLogin,setLastLogin] =
+    useState("");
 
   useEffect(()=>{
 
-
     const loadProfile =
     async()=>{
-
 
       if(!user){
 
@@ -87,175 +70,148 @@ export default function Profile(){
 
       }
 
-
-
       try{
-
 
         const profile =
           await getUserProfile(
             user.uid
           );
 
-
-
         if(profile){
-
 
           setName(
             profile.name || ""
           );
 
-
           setPhone(
             profile.phone || ""
           );
-
 
           setAddress(
             profile.address || ""
           );
 
-
           setPhotoURL(
             profile.photoURL || ""
           );
 
+          setMemberSince(
+
+            profile.createdAt?.toDate
+            ?
+
+            profile.createdAt
+            .toDate()
+            .toLocaleString()
+
+            :
+
+            user.metadata?.creationTime || ""
+
+          );
+
+          setLastUpdated(
+
+            profile.updatedAt?.toDate
+            ?
+
+            profile.updatedAt
+            .toDate()
+            .toLocaleString()
+
+            :
+
+            "Never"
+
+          );
+
+          setLastLogin(
+
+            user.metadata?.lastSignInTime
+            || "Unknown"
+
+          );
 
         }
 
-
-
       }catch(error){
 
-
         console.log(error);
-
 
         errorToast(
           "Failed to load profile."
         );
 
-
       }finally{
-
 
         setLoading(false);
 
-
       }
-
 
     };
 
-
-
     loadProfile();
-
-
 
   },[user]);
 
-
-
-
-
-
-
-
   const profileCompletion =
+
   (
     [
+
       name,
+
       phone,
+
       address,
+
       photoURL,
 
     ].filter(Boolean).length / 4
 
   ) * 100;
 
-
-
-
-
-
-
   const handleSave =
   async()=>{
-
 
     if(!user)
       return;
 
-
-
-
-
     if(phone){
-
 
       const phoneRegex =
       /^01[3-9]\d{8}$/;
 
-
-
       if(!phoneRegex.test(phone)){
-
 
         errorToast(
           "Enter valid Bangladesh phone number."
         );
 
-
         return;
 
       }
 
-
     }
-
-
-
-
-
-
 
     try{
 
-
       setSaving(true);
-
-
 
       let imageUrl =
         photoURL;
 
-
-
-
-
       if(photoFile){
-
 
         const uploaded =
           await uploadSingleImage(
             photoFile
           );
 
-
-
         imageUrl =
           uploaded.imageUrl;
 
-
       }
-
-
-
-
-
-
 
       await updateUserProfile(
 
@@ -275,70 +231,47 @@ export default function Profile(){
 
       );
 
-
-
-
-
       setPhotoURL(
         imageUrl
       );
 
-
       setPhotoFile(null);
 
-
-
-
+      setLastUpdated(
+        new Date()
+        .toLocaleString()
+      );
 
       successToast(
         "Profile updated successfully."
       );
 
-
-
     }catch(error){
 
-
       console.log(error);
-
 
       errorToast(
         error.message
       );
 
-
-
     }finally{
-
 
       setSaving(false);
 
-
     }
 
-
   };
-
-
-
-
-
 
 
 
   const handleRemovePhoto =
   async()=>{
 
-
     try{
-
 
       setPhotoURL("");
 
       setPhotoFile(null);
-
-
-
 
       await updateUserProfile(
 
@@ -352,39 +285,30 @@ export default function Profile(){
 
       );
 
-
-
+      setLastUpdated(
+        new Date()
+        .toLocaleString()
+      );
 
       successToast(
         "Profile photo removed."
       );
 
-
-
     }catch(error){
-
 
       errorToast(
         error.message
       );
 
-
     }
-
 
   };
 
 
 
-
-
-
-
-
   if(!user){
 
-
-    return (
+    return(
 
       <div className="max-w-6xl mx-auto py-20 text-center">
 
@@ -394,17 +318,13 @@ export default function Profile(){
 
     );
 
-
   }
-
-
 
 
 
   if(loading){
 
-
-    return (
+    return(
 
       <div className="max-w-6xl mx-auto py-20 text-center">
 
@@ -414,17 +334,13 @@ export default function Profile(){
 
     );
 
-
   }
 
 
 
-
-
-  return (
+  return(
 
     <div className="max-w-6xl mx-auto px-6 py-12">
-
 
       <h1 className="text-4xl font-bold mb-8">
 
@@ -432,17 +348,11 @@ export default function Profile(){
 
       </h1>
 
-
-
       <div className="grid lg:grid-cols-3 gap-8">
-
-
 
         {/* Profile Card */}
 
-
         <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
-
 
           <img
 
@@ -465,9 +375,7 @@ export default function Profile(){
 
           />
 
-
-
-          <input
+                    <input
 
             type="file"
 
@@ -487,9 +395,8 @@ export default function Profile(){
 
           />
 
-
-
           {
+
             photoURL && (
 
               <button
@@ -507,15 +414,14 @@ export default function Profile(){
               </button>
 
             )
+
           }
 
-                    <h2 className="text-2xl font-bold mt-6">
+          <h2 className="text-2xl font-bold mt-6">
 
             {name || "Dream Mode User"}
 
           </h2>
-
-
 
           <p className="text-gray-500 mt-2">
 
@@ -523,16 +429,9 @@ export default function Profile(){
 
           </p>
 
-
-
-
-
-
           <div className="mt-6 text-left">
 
-
             <div className="flex justify-between mb-2">
-
 
               <span>
 
@@ -540,22 +439,15 @@ export default function Profile(){
 
               </span>
 
-
-
               <span className="font-bold">
 
                 {Math.round(profileCompletion)}%
 
               </span>
 
-
             </div>
 
-
-
-
             <div className="w-full bg-gray-200 rounded-full h-3">
-
 
               <div
 
@@ -570,29 +462,69 @@ export default function Profile(){
 
               />
 
-
             </div>
-
 
           </div>
 
+          <div className="mt-8 border-t pt-6 text-left space-y-3">
 
+            <div>
+
+              <span className="font-semibold">
+
+                Member Since:
+
+              </span>
+
+              <p className="text-gray-600">
+
+                {memberSince}
+
+              </p>
+
+            </div>
+
+            <div>
+
+              <span className="font-semibold">
+
+                Last Profile Update:
+
+              </span>
+
+              <p className="text-gray-600">
+
+                {lastUpdated}
+
+              </p>
+
+            </div>
+
+            <div>
+
+              <span className="font-semibold">
+
+                Last Login:
+
+              </span>
+
+              <p className="text-gray-600">
+
+                {lastLogin}
+
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
-
-
-
-
-
         {/* Edit Profile */}
-
 
         <div className="lg:col-span-2">
 
-
           <div className="bg-white rounded-3xl shadow-xl p-8">
-
 
             <h2 className="text-2xl font-bold mb-6">
 
@@ -600,14 +532,9 @@ export default function Profile(){
 
             </h2>
 
-
-
-
             <div className="grid md:grid-cols-2 gap-5">
 
-
-
-              <input
+                            <input
 
                 className="border rounded-xl p-3"
 
@@ -625,26 +552,15 @@ export default function Profile(){
 
               />
 
-
-
-
-
               <input
 
                 className="border rounded-xl p-3 bg-gray-100"
 
-                value={
-                  user.email
-                }
+                value={user.email}
 
                 readOnly
 
               />
-
-
-
-
-
 
               <input
 
@@ -664,11 +580,6 @@ export default function Profile(){
 
               />
 
-
-
-
-
-
               <input
 
                 className="border rounded-xl p-3"
@@ -687,13 +598,7 @@ export default function Profile(){
 
               />
 
-
-
             </div>
-
-
-
-
 
             <Button
 
@@ -706,35 +611,29 @@ export default function Profile(){
             >
 
               {
-                saving
-                ?
-                "Saving..."
-                :
-                "Save Changes"
-              }
 
+                saving
+
+                ?
+
+                "Saving..."
+
+                :
+
+                "Save Changes"
+
+              }
 
             </Button>
 
-
-
           </div>
-
-
 
         </div>
 
-
-
-
       </div>
-
-
 
     </div>
 
-
   );
-
 
 }
