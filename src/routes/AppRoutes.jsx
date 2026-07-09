@@ -108,7 +108,7 @@ export default function AppRoutes() {
 
 
 <Route
-  path="/profile/dashboard"
+  path="/profile"
   element={<UserLayout />}
 >
 
