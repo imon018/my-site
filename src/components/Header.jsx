@@ -1,232 +1,140 @@
+import { useState } from "react";
 import {
   Link,
   useNavigate,
 } from "react-router-dom";
 
-
 import useAuth from "../hooks/useAuth";
-
 import useCart from "../hooks/useCart";
-
-
-import {
-  logout,
-} from "../services/authService";
-
-
+import { logout } from "../services/authService";
 
 export default function Header() {
+  const { user } = useAuth();
+  const { cartCount } = useCart();
 
+  const navigate = useNavigate();
 
-  const {
-    user
-  } = useAuth();
+  const [mobileMenu, setMobileMenu] =
+    useState(false);
 
-
-
-  const {
-    cartCount
-  } = useCart();
-
-
-
-
-  const navigate =
-    useNavigate();
-
-
-
-
-
-  const handleLogout =
-  async()=>{
-
-
+  const handleLogout = async () => {
     await logout();
-
     navigate("/login");
-
-
   };
 
-
-
-
-
-
-
   return (
-
-
-    <header className="bg-white shadow">
-
-
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-
-
-
-
-
-        <Link
-
-          to="/"
-
-          className="text-2xl font-bold text-primary"
-
-        >
-
-          Dream Mode
-
-        </Link>
-
-
-
-
-
-
-
-        <nav className="flex gap-6 font-medium items-center">
-
-
-
-
-
-          <Link to="/">
-            Home
-          </Link>
-
-
-
-
-
-          <Link to="/shop">
-            Shop
-          </Link>
-
-
-
-
-
-          <Link to="/cart">
-
-            Cart ({cartCount})
-
-          </Link>
-
-
-
-
-
-
-
-          {!user ? (
-
-            <>
-
-
-              <Link to="/admin">
-
-                Admin
-
-              </Link>
-
-
-
-
-              <Link to="/login">
-
-                Login
-
-              </Link>
-
-
-            </>
-
-
-
-          ) : user.role === "admin" ? (
-
-
-            <>
-
-
-
-              <Link to="/admin">
-
-                Admin Dashboard
-
-              </Link>
-
-
-
-
-
-              <button
-
-                onClick={handleLogout}
-
-                className="text-red-600"
-
-              >
-
-                Logout
-
-              </button>
-
-
-            </>
-
-
-
-
-          ) : (
-
-
-
-            <>
-
-
-              <Link to="/profile">
-
-                Profile
-
-              </Link>
-
-
-
-
-
-              <button
-
-                onClick={handleLogout}
-
-                className="text-red-600"
-
-              >
-
-                Logout
-
-              </button>
-
-
-            </>
-
-
-
-          )}
-
-
-
-        </nav>
-
-
-
+    <>
+      {/* Top Bar */}
+
+      <div className="bg-black text-white text-sm py-2 px-4 text-center">
+        🚚 Fast Delivery All Over Bangladesh
       </div>
 
+      {/* Header */}
 
-    </header>
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
 
+        <div className="container-box">
 
+          <div className="h-20 flex items-center justify-between">
+
+            <Link
+              to="/"
+              className="text-3xl font-bold"
+            >
+              Dream Mode
+            </Link>
+
+            {/* Desktop */}
+
+            <nav className="hidden lg:flex items-center gap-8 font-medium">
+
+              <Link to="/">Home</Link>
+
+              <Link to="/shop">Shop</Link>
+
+              <Link to="/about">
+                About
+              </Link>
+
+              <Link to="/contact">
+                Contact
+              </Link>
+
+              <Link to="/cart">
+                Cart ({cartCount})
+              </Link>
+
+              {!user ? (
+                <>
+                  <Link to="/login">
+                    Login
+                  </Link>
+
+                  <Link
+                    to="/register"
+                    className="primary-btn"
+                  >
+                    Join
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/profile">
+                    Profile
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="text-red-600"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+            </nav>
+
+            {/* Mobile */}
+
+            <button
+              onClick={() =>
+                setMobileMenu(!mobileMenu)
+              }
+              className="lg:hidden text-2xl"
+            >
+              ☰
+            </button>
+
+          </div>
+
+        </div>
+
+        {mobileMenu && (
+          <div className="lg:hidden bg-white border-t">
+
+            <div className="flex flex-col p-6 gap-5">
+
+              <Link to="/">
+                Home
+              </Link>
+
+              <Link to="/shop">
+                Shop
+              </Link>
+
+              <Link to="/cart">
+                Cart ({cartCount})
+              </Link>
+
+              <Link to="/contact">
+                Contact
+              </Link>
+
+            </div>
+
+          </div>
+        )}
+      </header>
+    </>
   );
-
 }
