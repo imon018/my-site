@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 
 import {
-  getRelatedProducts,
+  getProductsFromDB,
 } from "../services/firestoreProductService";
 
 export default function RelatedProducts({
-  category,
   currentId,
 }) {
   const [products, setProducts] =
@@ -15,17 +14,26 @@ export default function RelatedProducts({
 
   useEffect(() => {
     loadProducts();
-  }, [category, currentId]);
+  }, [currentId]);
 
   const loadProducts =
     async () => {
-      const data =
-        await getRelatedProducts(
-          category,
-          currentId
-        );
+      try {
+        const data =
+          await getProductsFromDB();
 
-      setProducts(data);
+        const filtered =
+          data
+            .filter(
+              (item) =>
+                item.id !== currentId
+            )
+            .slice(0, 4);
+
+        setProducts(filtered);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
   if (!products.length)
@@ -34,24 +42,28 @@ export default function RelatedProducts({
   return (
     <section className="mt-24">
 
-      <div className="text-center mb-10">
+      <div className="text-center mb-12">
 
-        <h2 className="text-3xl font-bold">
-          Related Products
+        <span className="text-sm uppercase tracking-[4px] text-gray-400">
+          Discover More
+        </span>
+
+        <h2 className="text-3xl md:text-4xl font-bold mt-3">
+          ✨ You May Also Like
         </h2>
 
-        <p className="text-gray-500 mt-2">
-          You may also like
+        <p className="text-gray-500 mt-3">
+          Handpicked products selected for you
         </p>
 
       </div>
 
-      <div className="grid md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
 
-        {products.map((item) => (
+        {products.map((product) => (
           <ProductCard
-            key={item.id}
-            product={item}
+            key={product.id}
+            product={product}
           />
         ))}
 
