@@ -1,17 +1,30 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
 
 
-export default function OrderSuccess() {
+
+export default function OrderSuccess(){
+
+
+  const location =
+    useLocation();
+
+
+
+  const orderId =
+    location.state?.orderId;
+
+
 
 
   return (
-
 
     <div className="min-h-screen flex items-center justify-center px-6">
 
 
       <div className="bg-white shadow-xl rounded-3xl p-10 text-center max-w-lg w-full">
-
 
 
         <div className="text-6xl mb-6">
@@ -32,13 +45,46 @@ export default function OrderSuccess() {
 
 
 
-
-        <p className="mt-4 text-gray-600 text-lg">
+        <p className="mt-4 text-gray-600">
 
           Thank you for your purchase.
+
           Your order has been placed successfully.
 
         </p>
+
+
+
+
+
+
+        {
+          orderId && (
+
+            <div className="mt-6 bg-gray-100 rounded-xl p-4">
+
+
+              <p className="font-bold">
+
+                Order ID
+
+              </p>
+
+
+
+              <p className="text-sm break-all mt-2">
+
+                {orderId}
+
+              </p>
+
+
+
+            </div>
+
+          )
+
+        }
 
 
 
@@ -53,7 +99,7 @@ export default function OrderSuccess() {
 
             to="/my-orders"
 
-            className="bg-primary text-white py-3 rounded-xl font-semibold hover:opacity-90"
+            className="bg-primary text-white py-3 rounded-xl font-semibold"
 
           >
 
@@ -65,12 +111,11 @@ export default function OrderSuccess() {
 
 
 
-
           <Link
 
             to="/shop"
 
-            className="border border-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50"
+            className="border py-3 rounded-xl font-semibold"
 
           >
 
@@ -81,17 +126,12 @@ export default function OrderSuccess() {
 
 
 
-
         </div>
 
 
 
 
-
       </div>
-
-
-
 
 
     </div>
