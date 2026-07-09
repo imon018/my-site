@@ -115,6 +115,12 @@ export default function Profile() {
   const [showPassword,setShowPassword] =
     useState(false);
 
+  const [deletePassword, setDeletePassword] =
+  useState("");
+
+const [showDeletePassword, setShowDeletePassword] =
+  useState(false);
+
 
 
   const [activities,setActivities] =
@@ -787,13 +793,31 @@ if(!user.email){
         return;
 
 
+if (!deletePassword) {
+
+  errorToast(
+    "Enter your password."
+  );
+
+  return;
+
+}
+
+const credential =
+  EmailAuthProvider.credential(
+    user.email,
+    deletePassword
+  );
 
 
+      try {
 
-      try{
+  await reauthenticateWithCredential(
+    user,
+    credential
+  );
 
-
-        setDeletingAccount(true);
+  setDeletingAccount(true);
 
 
 
@@ -873,26 +897,15 @@ if(!user.email){
 
 
 
-        await deleteUser(
-          user
-        );
+        await deleteUser(user);
 
+setDeletePassword("");
 
+successToast(
+  "Account deleted successfully."
+);
 
-
-
-        successToast(
-
-          "Account deleted successfully."
-
-        );
-
-
-
-
-
-        navigate("/");
-
+navigate("/");
 
 
       }catch(error){
@@ -908,13 +921,15 @@ if(!user.email){
 
 
 
-      }finally{
-
-
-        setDeletingAccount(false);
-
-
       }
+      
+      finally{
+
+  setDeletingAccount(false);
+
+  setDeletePassword("");
+
+}
 
 
 
@@ -1579,6 +1594,38 @@ shadow-lg
               Delete your account permanently.
 
             </p>
+
+            <input
+  type={
+    showDeletePassword
+      ? "text"
+      : "password"
+  }
+  className="w-full border rounded-xl p-3 mt-5"
+  placeholder="Enter your password"
+  value={deletePassword}
+  onChange={(e) =>
+    setDeletePassword(
+      e.target.value
+    )
+  }
+/>
+
+<label className="flex items-center gap-2 mt-4">
+
+  <input
+    type="checkbox"
+    checked={showDeletePassword}
+    onChange={() =>
+      setShowDeletePassword(
+        !showDeletePassword
+      )
+    }
+  />
+
+  Show Password
+
+</label>
 
 
 
