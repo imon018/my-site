@@ -1,8 +1,13 @@
-import { useState } from "react";
+import {
+  useState,
+} from "react";
+
 import {
   useNavigate,
   useLocation,
+  Link,
 } from "react-router-dom";
+
 
 import {
   login,
@@ -10,196 +15,460 @@ import {
   resendVerificationEmail,
 } from "../services/authService";
 
+
 import {
   successToast,
   errorToast,
 } from "../components/ui/Toast";
 
+
 import Button from "../components/ui/Button";
 
-import {
-  getUserProfile,
-} from "../services/userService";
+
 
 export default function Login() {
+
+
   const navigate =
     useNavigate();
 
+
   const location =
-  useLocation();
+    useLocation();
 
-const redirectPath =
-  new URLSearchParams(
-    location.search
-  ).get("redirect");
 
-  const [email, setEmail] =
+
+
+
+  const [email,setEmail] =
     useState("");
 
-  const [password, setPassword] =
+
+
+  const [password,setPassword] =
     useState("");
 
-  const [unverifiedUser, setUnverifiedUser] =
+
+
+  const [unverifiedUser,setUnverifiedUser] =
     useState(null);
 
-  const handleLogin = async (
-    e
-  ) => {
+
+
+
+
+
+
+  const handleLogin =
+  async(e)=>{
+
+
     e.preventDefault();
 
-    try {
+
+
+    try{
+
+
       const result =
         await login(
           email,
           password
         );
 
+
+
       await result.user.reload();
 
-      if (
-        !result.user.emailVerified
-      ) {
+
+
+
+
+      if(!result.user.emailVerified){
+
+
         setUnverifiedUser(
           result.user
         );
 
+
         await logout();
+
+
 
         errorToast(
           "Please verify your email first."
         );
 
+
         return;
+
+
       }
 
+
+
+
+
       successToast(
-  "Login Successful"
-);
+        "Login Successful"
+      );
 
 
-const profile =
-  await getUserProfile(
-    result.user.uid
-  );
 
 
-if (redirectPath) {
-
-  navigate(
-    `/${redirectPath}`
-  );
 
 
-} else if (
-  profile?.role === "admin"
-) {
+      const redirect =
+        new URLSearchParams(
+          location.search
+        )
+        .get("redirect");
 
 
-  navigate(
-    "/admin/profile"
-  );
 
 
-} else {
+
+      if(redirect){
 
 
-  navigate(
-    "/profile"
-  );
+        navigate(
+          `/${redirect}`
+        );
 
 
-}
-      
-    } catch (err) {
+        return;
+
+
+      }
+
+
+
+
+
+
+
+      if(
+        result.user.role === "admin"
+      ){
+
+        navigate(
+          "/admin"
+        );
+
+
+      }else{
+
+
+        navigate(
+          "/profile"
+        );
+
+
+      }
+
+
+
+
+
+
+    }catch(err){
+
+
+
+      let message =
+        "Login failed. Please try again.";
+
+
+
+
+
+      switch(err.code){
+
+
+        case "auth/user-not-found":
+
+          message =
+          "এই email দিয়ে কোনো account পাওয়া যায়নি.";
+
+          break;
+
+
+
+
+        case "auth/wrong-password":
+
+          message =
+          "Password ভুল হয়েছে.";
+
+          break;
+
+
+
+
+        case "auth/invalid-credential":
+
+          message =
+          "Email অথবা Password ভুল হয়েছে.";
+
+          break;
+
+
+
+
+        case "auth/invalid-email":
+
+          message =
+          "সঠিক email address দিন.";
+
+          break;
+
+
+
+
+        case "auth/too-many-requests":
+
+          message =
+          "অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন.";
+
+          break;
+
+
+
+
+        default:
+
+          message =
+          "Login failed. Please try again.";
+
+      }
+
+
+
+
+
+      errorToast(
+        message
+      );
+
+
+
+    }
+
+
+  };
+
+
+
+
+
+
+
+
+
+  const handleResendVerification =
+  async()=>{
+
+
+    try{
+
+
+      if(!unverifiedUser)
+        return;
+
+
+
+
+      await resendVerificationEmail(
+        unverifiedUser
+      );
+
+
+
+      successToast(
+        "Verification email sent again."
+      );
+
+
+
+    }catch(err){
+
+
       errorToast(
         err.message
       );
+
+
     }
+
+
   };
 
-  const handleResendVerification =
-    async () => {
-      try {
-        if (!unverifiedUser)
-          return;
 
-        await resendVerificationEmail(
-          unverifiedUser
-        );
 
-        successToast(
-          "Verification email sent again."
-        );
-      } catch (err) {
-        errorToast(
-          err.message
-        );
-      }
-    };
+
+
+
+
+
 
   return (
-    <div className="max-w-md mx-auto py-20">
+
+
+    <div className="max-w-md mx-auto py-20 px-6">
+
+
 
       <h1 className="text-3xl font-bold mb-6">
+
         Login
+
       </h1>
 
+
+
+
+
+
+
       <form
+
         onSubmit={handleLogin}
+
         className="space-y-4"
+
       >
+
+
+
+
+
         <input
+
           className="w-full border p-3 rounded-xl"
+
           placeholder="Email"
+
           value={email}
-          onChange={(e) =>
+
+          onChange={(e)=>
             setEmail(
               e.target.value
             )
           }
+
         />
 
+
+
+
+
+
+
         <input
+
           type="password"
+
           className="w-full border p-3 rounded-xl"
+
           placeholder="Password"
+
           value={password}
-          onChange={(e) =>
+
+          onChange={(e)=>
             setPassword(
               e.target.value
             )
           }
+
         />
 
+
+
+
+
+
+
         <Button
+
           type="submit"
+
           className="w-full"
+
         >
+
           Login
+
         </Button>
 
-        <div className="text-right">
-  <a
-    href="/forgot-password"
-    className="text-blue-600 hover:underline text-sm"
-  >
-    Forgot Password?
-  </a>
-</div>
 
-        {unverifiedUser && (
-          <button
-            type="button"
-            onClick={
-              handleResendVerification
-            }
-            className="w-full text-blue-600 font-medium mt-3"
+
+
+
+
+
+
+        <div className="text-right">
+
+
+          <Link
+
+            to="/forgot-password"
+
+            className="text-blue-600 hover:underline text-sm"
+
           >
-            Resend Verification Email
-          </button>
-        )}
+
+            Forgot Password?
+
+          </Link>
+
+
+        </div>
+
+
+
+
+
+
+
+        {
+          unverifiedUser && (
+
+
+            <button
+
+              type="button"
+
+              onClick={
+                handleResendVerification
+              }
+
+              className="w-full text-blue-600 font-medium mt-3"
+
+            >
+
+              Resend Verification Email
+
+            </button>
+
+
+          )
+
+        }
+
+
+
+
+
+
       </form>
 
+
+
     </div>
+
+
   );
+
 }
