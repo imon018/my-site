@@ -15,24 +15,15 @@ import {
 export default function MyOrders() {
 
 
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
 
 
-
-  const [
-    orders,
-    setOrders
-  ] = useState([]);
+  const [orders,setOrders] =
+    useState([]);
 
 
-
-  const [
-    loading,
-    setLoading
-  ] = useState(true);
-
+  const [loading,setLoading] =
+    useState(true);
 
 
 
@@ -42,61 +33,110 @@ export default function MyOrders() {
 
 
     const loadOrders =
-      async()=>{
+    async()=>{
 
 
-        if(!user){
-
-          setLoading(false);
-
-          return;
-
-        }
-
-
-
-
-        try{
-
-
-          const data =
-            await getUserOrders(
-              user.email
-            );
-
-
-          setOrders(data);
-
-
-
-        }catch(err){
-
-
-          console.log(err);
-
-
-          errorToast(
-            "Failed to load orders."
-          );
-
-
-        }
-
-
-
+      if(!user){
 
         setLoading(false);
 
+        return;
 
-      };
+      }
+
+
+
+      try{
+
+
+        const data =
+          await getUserOrders(
+            user.email
+          );
+
+
+
+        const sorted =
+          data.sort(
+            (a,b)=>
+
+            new Date(
+              b.createdAt
+            )
+
+            -
+
+            new Date(
+              a.createdAt
+            )
+
+          );
+
+
+
+        setOrders(sorted);
+
+
+
+      }catch(error){
+
+
+        console.log(error);
+
+
+        errorToast(
+          "Failed to load orders"
+        );
+
+
+      }
+
+
+
+      setLoading(false);
+
+
+    };
 
 
 
     loadOrders();
 
 
+
   },[user]);
 
+
+
+
+
+
+
+
+  const statusStyle =
+  (status)=>{
+
+
+    if(status==="Delivered")
+      return "bg-green-100 text-green-700";
+
+
+    if(status==="Shipped")
+      return "bg-purple-100 text-purple-700";
+
+
+    if(status==="Processing")
+      return "bg-blue-100 text-blue-700";
+
+
+    if(status==="Cancelled")
+      return "bg-red-100 text-red-700";
+
+
+    return "bg-yellow-100 text-yellow-700";
+
+
+  };
 
 
 
@@ -109,7 +149,7 @@ export default function MyOrders() {
 
     return (
 
-      <div className="max-w-6xl mx-auto py-20 text-center">
+      <div className="text-center py-20">
 
         Please login first.
 
@@ -124,12 +164,11 @@ export default function MyOrders() {
 
 
 
-
   if(loading){
 
     return (
 
-      <div className="max-w-6xl mx-auto py-20 text-center">
+      <div className="text-center py-20">
 
         Loading Orders...
 
@@ -146,12 +185,10 @@ export default function MyOrders() {
 
 
 
-
   return (
 
 
     <div className="max-w-7xl mx-auto px-6 py-12">
-
 
 
       <h1 className="text-4xl font-bold mb-8">
@@ -165,14 +202,15 @@ export default function MyOrders() {
 
 
 
+
       {
-        orders.length === 0
+        orders.length===0
 
         ?
 
         (
 
-          <div className="bg-white rounded-3xl shadow p-10 text-center">
+          <div className="bg-white shadow rounded-3xl p-10 text-center">
 
 
             <h2 className="text-2xl font-bold">
@@ -182,18 +220,17 @@ export default function MyOrders() {
             </h2>
 
 
-
             <p className="text-gray-500 mt-3">
 
-              You haven't placed any order yet.
+              You have not placed any order yet.
 
             </p>
 
 
           </div>
 
-
         )
+
 
         :
 
@@ -204,7 +241,7 @@ export default function MyOrders() {
 
 
           {
-            orders.map(order=>(
+            orders.map((order)=>(
 
 
               <div
@@ -218,10 +255,11 @@ export default function MyOrders() {
 
 
 
-                <div className="flex justify-between items-center border-b pb-4">
+                <div className="flex justify-between items-start border-b pb-5">
 
 
                   <div>
+
 
                     <h2 className="font-bold text-lg">
 
@@ -242,14 +280,18 @@ export default function MyOrders() {
 
 
 
+                  <span
 
-                  <span className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full font-semibold">
+                    className={`px-4 py-2 rounded-full text-sm font-semibold ${statusStyle(order.status)}`}
+
+                  >
 
                     {order.status}
 
                   </span>
 
 
+
                 </div>
 
 
@@ -259,80 +301,104 @@ export default function MyOrders() {
 
 
 
-                <div className="mt-6 space-y-4">
+                <div className="mt-6">
 
 
-                {
-                  order.items?.map(item=>(
+                  <h3 className="font-bold text-xl mb-4">
 
+                    Products
 
-                    <div
-
-                      key={item.id}
-
-                      className="flex items-center gap-4 border-b pb-4"
-
-                    >
-
-
-
-                      <img
-
-                        src={item.image}
-
-                        alt={item.name}
-
-                        className="w-20 h-20 rounded-xl object-cover"
-
-                      />
+                  </h3>
 
 
 
 
-
-                      <div className="flex-1">
-
-
-                        <h3 className="font-bold">
-
-                          {item.name}
-
-                        </h3>
+                  <div className="space-y-4">
 
 
-                        <p className="text-gray-600">
+                  {
+                    order.items?.map(
+                      (item,index)=>(
 
-                          Qty: {item.quantity}
+
+                      <div
+
+                        key={index}
+
+                        className="flex items-center justify-between border-b pb-4"
+
+                      >
+
+
+                        <div className="flex items-center gap-4">
+
+
+                          <img
+
+                            src={
+                              item.image ||
+                              "https://via.placeholder.com/80"
+                            }
+
+                            className="w-20 h-20 rounded-xl object-cover"
+
+                            alt={item.name}
+
+                          />
+
+
+
+                          <div>
+
+
+                            <h4 className="font-bold">
+
+                              {item.name}
+
+                            </h4>
+
+
+                            <p className="text-gray-500">
+
+                              Quantity:
+                              {" "}
+                              {item.quantity || 1}
+
+                            </p>
+
+
+                          </div>
+
+
+                        </div>
+
+
+
+
+
+                        <p className="font-bold">
+
+                          ৳
+                          {
+                            item.price *
+                            (item.quantity || 1)
+
+                          }
 
                         </p>
+
+
 
 
                       </div>
 
 
+                    ))
+
+                  }
 
 
-
-                      <p className="font-bold">
-
-                        ৳
-                        {
-                          item.price *
-                          item.quantity
-
-                        }
-
-                      </p>
-
-
-
-
-                    </div>
-
-
-                  ))
-
-                }
+                  </div>
 
 
                 </div>
@@ -344,13 +410,15 @@ export default function MyOrders() {
 
 
 
-                <div className="mt-6 space-y-2">
+                <div className="mt-6 space-y-3">
 
 
                   <div className="flex justify-between">
 
                     <span>
+
                       Total
+
                     </span>
 
 
@@ -360,20 +428,24 @@ export default function MyOrders() {
 
                     </span>
 
+
                   </div>
 
 
 
 
 
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-5">
+
 
                     <span>
+
                       Address
+
                     </span>
 
 
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 text-right">
 
                       {order.address}
 
@@ -386,18 +458,24 @@ export default function MyOrders() {
 
 
 
+
                   <div className="flex justify-between">
 
+
                     <span>
+
                       Date
+
                     </span>
 
 
                     <span>
 
-                      {new Date(
-                        order.createdAt
-                      ).toLocaleString()}
+                      {
+                        new Date(
+                          order.createdAt
+                        ).toLocaleString()
+                      }
 
                     </span>
 
@@ -407,7 +485,6 @@ export default function MyOrders() {
 
 
                 </div>
-
 
 
 
@@ -422,7 +499,6 @@ export default function MyOrders() {
 
 
           </div>
-
 
         )
 
