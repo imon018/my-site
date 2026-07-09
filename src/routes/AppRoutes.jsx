@@ -2,8 +2,13 @@ import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
+import UserLayout from "../layouts/UserLayout";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
+import AccountInformation from "../pages/user/AccountInformation";
+import RecentActivities from "../pages/user/RecentActivities";
+import ChangePassword from "../pages/user/ChangePassword";
+import DeleteAccount from "../pages/user/DeleteAccount";
 import Dashboard from "../pages/admin/Dashboard";
 import AdminProfile from "../pages/admin/AdminProfile";
 import Users from "../pages/admin/Users";
@@ -67,19 +72,54 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/wishlist"
-          element={<Wishlist />}
-        />
-
-        <Route
-          path="/profile"
-          element={<Profile />}
-        />
-
-        <Route
-  path="/my-orders"
-  element={<MyOrders />}
+  path="/profile"
+  element={<Profile />}
 />
+
+
+<Route
+  path="/profile/dashboard"
+  element={<UserLayout />}
+>
+
+
+  <Route
+    path="account"
+    element={<AccountInformation />}
+  />
+
+
+  <Route
+    path="activity"
+    element={<RecentActivities />}
+  />
+
+
+  <Route
+    path="orders"
+    element={<MyOrders />}
+  />
+
+
+  <Route
+    path="wishlist"
+    element={<Wishlist />}
+  />
+
+
+  <Route
+    path="security/password"
+    element={<ChangePassword />}
+  />
+
+
+  <Route
+    path="security/delete"
+    element={<DeleteAccount />}
+  />
+
+
+</Route>
 
         <Route
           path="/about"
