@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import useCart from "../hooks/useCart";
-
 import useAuth from "../hooks/useAuth";
 
 import Button from "../components/ui/Button";
 
-import { createOrder } from "../services/orderService";
+import {
+  createOrder,
+} from "../services/orderService";
 
 import {
   successToast,
@@ -22,13 +23,13 @@ export default function Checkout() {
 
   const {
     cart,
-    clearCart
+    clearCart,
   } = useCart();
 
 
 
   const {
-    user
+    user,
   } = useAuth();
 
 
@@ -53,6 +54,37 @@ export default function Checkout() {
 
 
 
+  useEffect(()=>{
+
+
+    if(user){
+
+
+      setName(
+        user.name || ""
+      );
+
+
+      setPhone(
+        user.phone || ""
+      );
+
+
+      setAddress(
+        user.address || ""
+      );
+
+
+    }
+
+
+  },[user]);
+
+
+
+
+
+
 
   const total =
     cart.reduce(
@@ -61,7 +93,7 @@ export default function Checkout() {
 
         sum +
         item.price *
-        item.quantity,
+        (item.quantity || 1),
 
       0
 
@@ -73,124 +105,149 @@ export default function Checkout() {
 
 
 
-  const handleOrder = async()=>{
 
+  const handleOrder =
+    async()=>{
 
-    if(!user){
 
-      return errorToast(
-        "Login required"
-      );
 
-    }
+      if(!user){
 
+        errorToast(
+          "Login required"
+        );
 
+        navigate("/login");
 
+        return;
 
-    if(cart.length===0){
+      }
 
-      return errorToast(
-        "Cart is empty"
-      );
 
-    }
 
 
 
+      if(cart.length===0){
 
+        errorToast(
+          "Cart is empty"
+        );
 
-    if(
-      !name ||
-      !phone ||
-      !address
-    ){
+        return;
 
-      return errorToast(
-        "Please fill all information"
-      );
+      }
 
-    }
 
 
 
 
 
+      if(
+        !name ||
+        !phone ||
+        !address
+      ){
 
-    try{
+        errorToast(
+          "Please fill all information"
+        );
 
+        return;
 
-      await createOrder({
+      }
 
-        userId:
-          user.uid,
 
-        email:
-          user.email,
 
 
-        customerName:
-          name,
 
 
-        phone,
 
+      try{
 
-        address,
 
+        await createOrder({
 
-        items:
-          cart,
 
+          userId:
+            user.uid,
 
-        total,
 
+          customerName:
+            name,
 
-        status:
-          "Pending",
 
+          email:
+            user.email,
 
-        createdAt:
-          new Date()
-          .toISOString(),
 
-      });
+          phone,
 
 
+          address,
 
 
-      successToast(
-        "Order placed successfully!"
-      );
 
+          items:
+            cart,
 
 
-      clearCart();
 
+          total,
 
 
-      navigate(
-        "/order-success"
-      );
 
+          status:
+            "Pending",
 
 
-    }catch(err){
 
+          createdAt:
+            new Date()
+            .toISOString(),
 
-      console.log(err);
 
 
-      errorToast(
-        err.message ||
-        "Order failed"
-      );
+        });
 
 
-    }
 
 
 
-  };
+        successToast(
+          "Order placed successfully!"
+        );
+
+
+
+        clearCart();
+
+
+
+        navigate(
+          "/order-success"
+        );
+
+
+
+      }catch(error){
+
+
+        console.log(error);
+
+
+
+        errorToast(
+          error.message ||
+          "Failed to place order"
+        );
+
+
+      }
+
+
+    };
+
+
 
 
 
@@ -222,47 +279,86 @@ export default function Checkout() {
 
 
 
+        {/* Customer Information */}
 
-        <div className="bg-white shadow rounded-2xl p-6">
+
+        <div className="bg-white rounded-3xl shadow p-6">
 
 
-          <h2 className="text-2xl font-bold mb-5">
+          <h2 className="text-2xl font-bold mb-6">
 
-            Shipping Information
+            User Information
 
           </h2>
 
 
 
 
+          <label className="block mb-2 font-medium">
+
+            Full Name
+
+          </label>
+
+
           <input
 
-            className="w-full border p-3 rounded-xl mb-4"
-
-            placeholder="Full Name"
+            className="w-full border rounded-xl p-3 mb-5"
 
             value={name}
 
-            onChange={
-              e=>setName(e.target.value)
+            onChange={(e)=>
+              setName(e.target.value)
             }
 
           />
 
 
 
+
+
+
+          <label className="block mb-2 font-medium">
+
+            Email
+
+          </label>
 
 
           <input
 
-            className="w-full border p-3 rounded-xl mb-4"
+            className="w-full border rounded-xl p-3 mb-5 bg-gray-100"
 
-            placeholder="Phone Number"
+            value={
+              user?.email || ""
+            }
+
+            readOnly
+
+          />
+
+
+
+
+
+
+
+
+          <label className="block mb-2 font-medium">
+
+            Phone Number
+
+          </label>
+
+
+          <input
+
+            className="w-full border rounded-xl p-3 mb-5"
 
             value={phone}
 
-            onChange={
-              e=>setPhone(e.target.value)
+            onChange={(e)=>
+              setPhone(e.target.value)
             }
 
           />
@@ -270,18 +366,25 @@ export default function Checkout() {
 
 
 
+
+
+          <label className="block mb-2 font-medium">
+
+            Shipping Address
+
+          </label>
 
 
           <textarea
 
-            className="w-full border p-3 rounded-xl"
+            className="w-full border rounded-xl p-3"
 
-            placeholder="Full Address"
+            rows="4"
 
             value={address}
 
-            onChange={
-              e=>setAddress(e.target.value)
+            onChange={(e)=>
+              setAddress(e.target.value)
             }
 
           />
@@ -297,10 +400,14 @@ export default function Checkout() {
 
 
 
-        <div className="bg-white shadow rounded-2xl p-6">
+        {/* Order Summary */}
 
 
-          <h2 className="text-2xl font-bold mb-5">
+
+        <div className="bg-white rounded-3xl shadow p-6">
+
+
+          <h2 className="text-2xl font-bold mb-6">
 
             Order Summary
 
@@ -310,9 +417,8 @@ export default function Checkout() {
 
 
 
-
           {
-            cart.map(item=>(
+            cart.map((item)=>(
 
 
               <div
@@ -323,12 +429,14 @@ export default function Checkout() {
 
               >
 
+
                 <span>
 
                   {item.name}
-                  {" "}
-                  x
-                  {item.quantity}
+
+                  {" x "}
+
+                  {item.quantity || 1}
 
                 </span>
 
@@ -337,10 +445,14 @@ export default function Checkout() {
                 <span>
 
                   ৳
-                  {item.price *
-                  item.quantity}
+                  {
+                    item.price *
+                    (item.quantity || 1)
+
+                  }
 
                 </span>
+
 
 
               </div>
@@ -355,12 +467,24 @@ export default function Checkout() {
 
 
 
-          <h3 className="text-2xl font-bold mt-6">
+          <div className="flex justify-between text-2xl font-bold mt-6">
 
-            Total:
-            ৳ {total}
 
-          </h3>
+            <span>
+
+              Total
+
+            </span>
+
+
+            <span>
+
+              ৳ {total}
+
+            </span>
+
+
+          </div>
 
 
 
@@ -369,7 +493,7 @@ export default function Checkout() {
 
           <Button
 
-            className="w-full mt-6"
+            className="w-full mt-8"
 
             onClick={handleOrder}
 
