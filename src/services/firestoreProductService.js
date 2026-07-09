@@ -93,3 +93,23 @@ export const getHeroBannerProduct =
       null
     );
   };
+
+export const getRelatedProducts = async (
+  category,
+  currentId
+) => {
+  const snapshot = await getDocs(productRef);
+
+  const products = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return products
+    .filter(
+      (item) =>
+        item.category === category &&
+        item.id !== currentId
+    )
+    .slice(0, 4);
+};
