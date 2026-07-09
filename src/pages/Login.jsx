@@ -14,6 +14,10 @@ import {
 
 import Button from "../components/ui/Button";
 
+import {
+  getUserProfile,
+} from "../services/userService";
+
 export default function Login() {
   const navigate =
     useNavigate();
@@ -58,10 +62,28 @@ export default function Login() {
       }
 
       successToast(
-        "Login Successful"
-      );
+  "Login Successful"
+);
 
-      navigate("/profile");
+
+const profile =
+  await getUserProfile(
+    result.user.uid
+  );
+
+
+if (
+  profile?.role === "admin"
+) {
+
+  navigate("/admin/profile");
+
+} else {
+
+  navigate("/profile");
+
+}
+      
     } catch (err) {
       errorToast(
         err.message
