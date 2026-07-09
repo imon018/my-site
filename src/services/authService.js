@@ -4,6 +4,7 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updatePassword,
 } from "firebase/auth";
 
 import {
@@ -16,13 +17,10 @@ import { auth } from "../firebase/auth";
 import { db } from "../firebase/firestore";
 
 export const login = (email, password) =>
-  signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+  signInWithEmailAndPassword(auth, email, password);
 
 export const register = async (
+  name,
   email,
   password
 ) => {
@@ -34,9 +32,7 @@ export const register = async (
         password
       );
 
-    await sendEmailVerification(
-      result.user
-    );
+    await sendEmailVerification(result.user);
 
     const userRef = doc(
       db,
@@ -45,35 +41,35 @@ export const register = async (
     );
 
     await setDoc(userRef, {
+      name,
       email: result.user.email,
+      phone: "",
+      address: "",
+      photoURL: "",
       role: "user",
       createdAt: serverTimestamp(),
     });
 
     return result;
   } catch (error) {
-    console.error(
-      "REGISTER/FIRESTORE ERROR:",
-      error
-    );
-
+    console.error(error);
     throw error;
   }
 };
 
-export const resendVerificationEmail =
-  async (user) => {
-    await sendEmailVerification(user);
-  };
-
-export const forgotPassword = async (
-  email
-) => {
-  await sendPasswordResetEmail(
-    auth,
-    email
-  );
+export const resendVerificationEmail = async (user) => {
+  await sendEmailVerification(user);
 };
 
-export const logout = () =>
-  signOut(auth);
+export const forgotPassword = async (email) => {
+  await sendPasswordResetEmail(auth, email);
+};
+
+export const changePassword = async (
+  user,
+  newPassword
+) => {
+  await updatePassword(user, newPassword);
+};
+
+export const logout = () => signOut(auth);
