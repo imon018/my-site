@@ -43,6 +43,11 @@ const [collapsed, setCollapsed] = useState(false);
       path: "/admin/orders",
     },
     {
+  name: "Add Order",
+  icon: <FiPlusCircle />,
+  path: "/admin/add-order",
+},
+    {
       name: "Users",
       icon: <FiUsers />,
       path: "/admin/users",
