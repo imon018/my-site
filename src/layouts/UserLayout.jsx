@@ -30,7 +30,6 @@ export default function UserLayout() {
 
 
   const menu = [
-const menu = [
 
   {
     name:"Account Information",
