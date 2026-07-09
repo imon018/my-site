@@ -8,7 +8,20 @@ export default function Button({
     <button
       type={type}
       {...props}
-      className={`bg-primary hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl ${className}`}
+      className={`
+      h-12
+      rounded-xl
+      px-5
+      font-medium
+      bg-black
+      text-white
+      transition-all
+      duration-300
+      hover:scale-[1.03]
+      hover:shadow-xl
+      active:scale-95
+      ${className}
+      `}
     >
       {children}
     </button>
