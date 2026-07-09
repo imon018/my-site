@@ -33,6 +33,11 @@ const [collapsed, setCollapsed] = useState(false);
       path: "/admin/products",
     },
     {
+  name: "Hero Banners",
+  icon: <FiPlusCircle />,
+  path: "/admin/banners",
+},
+    {
   name: "Add Product",
   icon: <FiPlusCircle />,
   path: "/admin/add-product",
