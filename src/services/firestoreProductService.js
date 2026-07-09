@@ -69,3 +69,27 @@ export const updateProductInDB = async (
 export const deleteProductFromDB = async (id) => {
   await deleteDoc(doc(db, "products", id));
 };
+
+export const getHeroBannerProduct =
+  async () => {
+    const snapshot =
+      await getDocs(productRef);
+
+    const products =
+      snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+    const heroProduct =
+      products.find(
+        (product) =>
+          product.heroBanner === true
+      );
+
+    return (
+      heroProduct ||
+      products[0] ||
+      null
+    );
+  };
