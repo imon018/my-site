@@ -6,15 +6,19 @@ import {
   where,
   doc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { db } from "../firebase/firestore";
-
 
 const orderRef =
   collection(db, "orders");
 
 
+
+// =========================
+// Create Order (Customer)
+// =========================
 
 export const createOrder = async (
   order
@@ -26,18 +30,19 @@ export const createOrder = async (
       order
     );
 
-
   return docRef.id;
 
 };
 
 
 
+// =========================
+// Get User Orders
+// =========================
 
 export const getUserOrders = async (
   email
 ) => {
-
 
   const q =
     query(
@@ -49,12 +54,8 @@ export const getUserOrders = async (
       )
     );
 
-
-
   const snapshot =
     await getDocs(q);
-
-
 
   return snapshot.docs.map(
     (doc) => ({
@@ -66,24 +67,21 @@ export const getUserOrders = async (
     })
   );
 
-
 };
 
 
 
-
-
+// =========================
+// Get All Orders (Admin)
+// =========================
 
 export const getAllOrders = async () => {
-
 
   const snapshot =
     await getDocs(
       orderRef
     );
 
-
-
   return snapshot.docs.map(
     (doc) => ({
 
@@ -94,21 +92,19 @@ export const getAllOrders = async () => {
     })
   );
 
-
 };
 
 
 
-
-
-
+// =========================
+// Update Order Status
+// =========================
 
 export const updateOrderStatus =
 async (
   id,
   status
 ) => {
-
 
   const orderDoc =
     doc(
@@ -117,8 +113,6 @@ async (
       id
     );
 
-
-
   await updateDoc(
     orderDoc,
     {
@@ -126,5 +120,103 @@ async (
     }
   );
 
+};
+
+
+
+// =========================
+// Admin Add Order
+// =========================
+
+export const addOrderByAdmin =
+async (
+  order
+) => {
+
+  const docRef =
+    await addDoc(
+      orderRef,
+      order
+    );
+
+  return docRef.id;
+
+};
+
+
+
+// =========================
+// Delete Order
+// =========================
+
+export const deleteOrder =
+async (
+  id
+) => {
+
+  const orderDoc =
+    doc(
+      db,
+      "orders",
+      id
+    );
+
+  await deleteDoc(
+    orderDoc
+  );
+
+};
+
+
+
+// =========================
+// Customer Cancel Request
+// =========================
+
+export const requestCancelOrder =
+async (
+  id
+) => {
+
+  const orderDoc =
+    doc(
+      db,
+      "orders",
+      id
+    );
+
+  await updateDoc(
+    orderDoc,
+    {
+      cancelRequested: true,
+    }
+  );
+
+};
+
+
+
+// =========================
+// Customer Return Request
+// =========================
+
+export const requestReturnOrder =
+async (
+  id
+) => {
+
+  const orderDoc =
+    doc(
+      db,
+      "orders",
+      id
+    );
+
+  await updateDoc(
+    orderDoc,
+    {
+      returnRequested: true,
+    }
+  );
 
 };
