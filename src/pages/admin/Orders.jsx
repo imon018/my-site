@@ -316,6 +316,56 @@ const handleDeleteOrder = async (id) => {
 
                   </select>
 
+                    <div className="mt-4 flex flex-col gap-3">
+
+
+  {
+    order.cancelRequested && (
+
+      <p className="bg-red-100 text-red-700 px-4 py-2 rounded-xl">
+
+        ⚠️ Cancel Request Received
+
+      </p>
+
+    )
+  }
+
+
+
+  {
+    order.returnRequested && (
+
+      <p className="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl">
+
+        🔄 Return Request Received
+
+      </p>
+
+    )
+  }
+
+
+
+  <button
+
+    onClick={() =>
+      handleDeleteOrder(
+        order.id
+      )
+    }
+
+    className="bg-red-600 text-white px-5 py-2 rounded-xl"
+
+  >
+
+    Delete Order
+
+  </button>
+
+
+</div>
+
 
 
                 </div>
