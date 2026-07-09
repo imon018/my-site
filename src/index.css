@@ -1,8 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Reset */
 
 *{
   margin:0;
@@ -15,11 +17,23 @@ html{
 }
 
 body{
-  font-family:"Outfit",sans-serif;
-  background:#f7f8fc;
+  font-family:'Poppins',sans-serif;
+  background:#ffffff;
   color:#111827;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* Typography */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+  font-family:'Playfair Display',serif;
 }
 
 ::selection{
@@ -42,7 +56,7 @@ img{
 button{
   font-family:inherit;
   cursor:pointer;
-  transition:.3s;
+  transition:all .3s ease;
 }
 
 input,
@@ -52,51 +66,55 @@ select{
   outline:none;
 }
 
+/* Scrollbar */
+
 ::-webkit-scrollbar{
-  width:9px;
+  width:8px;
 }
 
 ::-webkit-scrollbar-track{
-  background:#edf1f7;
+  background:#f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb{
-  background:#1f2937;
-  border-radius:30px;
+  background:#0f172a;
+  border-radius:999px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
-  background:#111827;
+  background:#020617;
 }
+
+/* Reusable Components */
 
 @layer components{
 
   .container-box{
-    @apply max-w-7xl mx-auto px-5 lg:px-8;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .section{
-    @apply py-20 lg:py-28;
+    @apply py-16 lg:py-24;
   }
 
   .section-title{
-    @apply text-4xl lg:text-5xl font-bold tracking-tight;
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-center;
   }
 
   .section-subtitle{
-    @apply mt-4 text-gray-500 text-lg leading-8;
+    @apply mt-4 text-center text-gray-500 text-base lg:text-lg max-w-2xl mx-auto;
   }
 
   .premium-card{
-    @apply bg-white rounded-[30px] shadow-sm border border-gray-100 transition-all duration-300;
+    @apply bg-white rounded-[24px] border border-gray-100 shadow-sm transition-all duration-500;
   }
 
   .premium-card:hover{
-    @apply shadow-2xl -translate-y-2;
+    @apply -translate-y-2 shadow-2xl;
   }
 
   .primary-btn{
-    @apply px-8 py-4 rounded-full bg-black text-white font-semibold transition-all duration-300;
+    @apply inline-flex items-center justify-center px-7 py-3 rounded-full bg-black text-white font-medium transition-all duration-300;
   }
 
   .primary-btn:hover{
@@ -104,64 +122,25 @@ select{
   }
 
   .outline-btn{
-    @apply px-8 py-4 rounded-full border border-black font-semibold transition-all duration-300;
+    @apply inline-flex items-center justify-center px-7 py-3 rounded-full border border-black text-black font-medium transition-all duration-300;
   }
 
   .outline-btn:hover{
     @apply bg-black text-white;
   }
-
 }
 
-.fade-up{
-  animation:fadeUp .8s ease;
-}
-
-@keyframes fadeUp{
-
-  from{
-    opacity:0;
-    transform:translateY(40px);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-
-}
+/* Glass Effect */
 
 .glass{
-
-  background:rgba(255,255,255,.72);
-
-  backdrop-filter:blur(18px);
-
-  -webkit-backdrop-filter:blur(18px);
-
-  border:1px solid rgba(255,255,255,.35);
-
+  background:rgba(255,255,255,.75);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.3);
 }
 
-.gradient-text{
-
-  background:linear-gradient(90deg,#111827,#6366f1);
-
-  -webkit-background-clip:text;
-
-  -webkit-text-fill-color:transparent;
-
-}
+/* Premium Shadow */
 
 .shadow-premium{
-
   box-shadow:
-  0 20px 60px rgba(0,0,0,.08);
-
-}
-
-.radius-premium{
-
-  border-radius:32px;
-
-}
+  0 10
