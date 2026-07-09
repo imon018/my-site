@@ -42,3 +42,20 @@ export const deleteBanner =
       )
     );
   };
+
+export const getLatestBanner =
+  async () => {
+    const snapshot =
+      await getDocs(bannerRef);
+
+    const banners =
+      snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+    return banners.sort(
+      (a, b) =>
+        b.createdAt - a.createdAt
+    )[0];
+  };
