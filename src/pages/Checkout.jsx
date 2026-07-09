@@ -54,11 +54,11 @@ export default function Checkout() {
 
 
 
+
   useEffect(()=>{
 
 
     if(user){
-
 
       setName(
         user.name || ""
@@ -74,11 +74,11 @@ export default function Checkout() {
         user.address || ""
       );
 
-
     }
 
 
   },[user]);
+
 
 
 
@@ -91,9 +91,9 @@ export default function Checkout() {
 
       (sum,item)=>
 
-        sum +
-        item.price *
-        (item.quantity || 1),
+      sum +
+      item.price *
+      (item.quantity || 1),
 
       0
 
@@ -107,105 +107,84 @@ export default function Checkout() {
 
 
   const handleOrder =
-    async()=>{
+  async()=>{
+
+
+    if(!user){
+
+      errorToast(
+        "Login required"
+      );
+
+      navigate("/login");
+
+      return;
+
+    }
 
 
 
-      if(!user){
+    if(cart.length===0){
 
-        errorToast(
-          "Login required"
-        );
+      errorToast(
+        "Cart is empty"
+      );
 
-        navigate("/login");
+      return;
 
-        return;
-
-      }
-
-
-
-
-
-      if(cart.length===0){
-
-        errorToast(
-          "Cart is empty"
-        );
-
-        return;
-
-      }
-
+    }
 
 
 
 
+    if(
+      !name ||
+      !phone ||
+      !address
+    ){
 
-      if(
-        !name ||
-        !phone ||
-        !address
-      ){
+      errorToast(
+        "Please fill all information"
+      );
 
-        errorToast(
-          "Please fill all information"
-        );
+      return;
 
-        return;
-
-      }
+    }
 
 
 
 
 
+    try{
 
 
-      try{
-
-
+      const orderId =
         await createOrder({
-
 
           userId:
             user.uid,
 
-
           customerName:
             name,
-
 
           email:
             user.email,
 
-
           phone,
 
-
           address,
-
-
 
           items:
             cart,
 
-
-
           total,
-
-
 
           status:
             "Pending",
 
-
-
           createdAt:
             new Date()
             .toISOString(),
-
-
 
         });
 
@@ -213,41 +192,48 @@ export default function Checkout() {
 
 
 
-        successToast(
-          "Order placed successfully!"
-        );
+
+      successToast(
+        "Order placed successfully!"
+      );
 
 
 
-        clearCart();
+
+      clearCart();
 
 
 
-        navigate(
-          "/order-success"
-        );
+
+      navigate(
+        "/order-success",
+        {
+          state:{
+            orderId
+          }
+        }
+      );
 
 
 
-      }catch(error){
 
 
-        console.log(error);
+    }catch(error){
 
 
-
-        errorToast(
-          error.message ||
-          "Failed to place order"
-        );
+      console.log(error);
 
 
-      }
+      errorToast(
+        error.message ||
+        "Failed to place order"
+      );
 
 
-    };
+    }
 
 
+  };
 
 
 
@@ -256,7 +242,6 @@ export default function Checkout() {
 
 
   return (
-
 
     <div className="max-w-5xl mx-auto px-6 py-12">
 
@@ -271,15 +256,10 @@ export default function Checkout() {
 
 
 
-
-
       <div className="grid md:grid-cols-2 gap-8">
 
 
 
-
-
-        {/* Customer Information */}
 
 
         <div className="bg-white rounded-3xl shadow p-6">
@@ -294,16 +274,11 @@ export default function Checkout() {
 
 
 
-          <label className="block mb-2 font-medium">
-
-            Full Name
-
-          </label>
-
-
           <input
 
-            className="w-full border rounded-xl p-3 mb-5"
+            className="w-full border rounded-xl p-3 mb-4"
+
+            placeholder="Full Name"
 
             value={name}
 
@@ -316,18 +291,9 @@ export default function Checkout() {
 
 
 
-
-
-          <label className="block mb-2 font-medium">
-
-            Email
-
-          </label>
-
-
           <input
 
-            className="w-full border rounded-xl p-3 mb-5 bg-gray-100"
+            className="w-full border rounded-xl p-3 mb-4 bg-gray-100"
 
             value={
               user?.email || ""
@@ -341,19 +307,11 @@ export default function Checkout() {
 
 
 
-
-
-
-          <label className="block mb-2 font-medium">
-
-            Phone Number
-
-          </label>
-
-
           <input
 
-            className="w-full border rounded-xl p-3 mb-5"
+            className="w-full border rounded-xl p-3 mb-4"
+
+            placeholder="Phone Number"
 
             value={phone}
 
@@ -367,17 +325,11 @@ export default function Checkout() {
 
 
 
-
-          <label className="block mb-2 font-medium">
-
-            Shipping Address
-
-          </label>
-
-
           <textarea
 
             className="w-full border rounded-xl p-3"
+
+            placeholder="Shipping Address"
 
             rows="4"
 
@@ -397,10 +349,6 @@ export default function Checkout() {
 
 
 
-
-
-
-        {/* Order Summary */}
 
 
 
@@ -429,13 +377,10 @@ export default function Checkout() {
 
               >
 
-
                 <span>
 
                   {item.name}
-
                   {" x "}
-
                   {item.quantity || 1}
 
                 </span>
@@ -454,7 +399,6 @@ export default function Checkout() {
                 </span>
 
 
-
               </div>
 
 
@@ -466,34 +410,19 @@ export default function Checkout() {
 
 
 
+          <h2 className="text-2xl font-bold mt-6">
 
-          <div className="flex justify-between text-2xl font-bold mt-6">
+            Total:
+            ৳ {total}
 
-
-            <span>
-
-              Total
-
-            </span>
-
-
-            <span>
-
-              ৳ {total}
-
-            </span>
-
-
-          </div>
-
-
+          </h2>
 
 
 
 
           <Button
 
-            className="w-full mt-8"
+            className="w-full mt-6"
 
             onClick={handleOrder}
 
@@ -502,7 +431,6 @@ export default function Checkout() {
             Place Order
 
           </Button>
-
 
 
 
@@ -517,11 +445,7 @@ export default function Checkout() {
       </div>
 
 
-
-
-
     </div>
-
 
   );
 
