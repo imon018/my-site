@@ -165,6 +165,11 @@ export default function AppRoutes() {
 />
 
         <Route
+  path="/admin/add-order"
+  element={<AddOrder />}
+/>
+
+        <Route
   path="analytics"
   element={<Analytics />}
 />
@@ -174,10 +179,7 @@ export default function AppRoutes() {
   element={<Settings />}
 />
 
-        <Route
-  path="/admin/add-order"
-  element={<AddOrder />}
-/>
+        
 
 
       </Route>
