@@ -13,6 +13,8 @@ import {
 
 import {
   changePassword,
+  sendVerificationEmail,
+  deleteUserAccount,
 } from "../services/authService";
 
 import {
@@ -31,13 +33,20 @@ export default function Profile() {
   const { user } = useAuth();
 
 
+
   const [loading, setLoading] =
     useState(true);
+
 
   const [saving, setSaving] =
     useState(false);
 
+
   const [changingPassword, setChangingPassword] =
+    useState(false);
+
+
+  const [sendingVerification, setSendingVerification] =
     useState(false);
 
 
@@ -59,14 +68,35 @@ export default function Profile() {
 
 
 
+  const [createdAt, setCreatedAt] =
+    useState(null);
+
+
+  const [lastLogin, setLastLogin] =
+    useState(null);
+
+
+
+  const [profilePercent, setProfilePercent] =
+    useState(0);
+
+
+
   const [newPassword, setNewPassword] =
     useState("");
 
   const [confirmPassword, setConfirmPassword] =
     useState("");
 
+
   const [showPassword, setShowPassword] =
     useState(false);
+
+
+
+  const [deletingAccount, setDeletingAccount] =
+    useState(false);
+
 
 
 
@@ -95,27 +125,34 @@ export default function Profile() {
         if (profile) {
 
 
-          setName(
-            profile.name || ""
+          setName(profile.name || "");
+
+          setPhone(profile.phone || "");
+
+          setAddress(profile.address || "");
+
+          setPhotoURL(profile.photoURL || "");
+
+
+
+          setCreatedAt(
+            profile.createdAt || null
           );
 
 
-          setPhone(
-            profile.phone || ""
-          );
-
-
-          setAddress(
-            profile.address || ""
-          );
-
-
-          setPhotoURL(
-            profile.photoURL || ""
+          setLastLogin(
+            profile.lastLogin || null
           );
 
 
         }
+
+
+
+        calculateProfileCompletion(
+          profile
+        );
+
 
 
       } catch (err) {
@@ -148,6 +185,51 @@ export default function Profile() {
 
 
 
+  const calculateProfileCompletion =
+    (profile) => {
+
+
+      if (!profile) return;
+
+
+
+      let completed = 0;
+
+
+      const fields = [
+
+        profile.name,
+
+        profile.phone,
+
+        profile.address,
+
+        profile.photoURL,
+
+      ];
+
+
+
+      fields.forEach((item)=>{
+
+        if(item){
+
+          completed++;
+
+        }
+
+      });
+
+
+
+      setProfilePercent(
+        Math.round(
+          (completed / fields.length) * 100
+        )
+      );
+
+
+    };
 
   const handleSave = async () => {
 
@@ -185,25 +267,58 @@ export default function Profile() {
 
 
 
+
+      const updatedData = {
+
+        name,
+
+        phone,
+
+        address,
+
+        photoURL: imageUrl,
+
+      };
+
+
+
+
+
       await updateUserProfile(
+
         user.uid,
-        {
-          name,
-          phone,
-          address,
-          photoURL: imageUrl,
-        }
+
+        updatedData
+
       );
 
 
 
-      setPhotoURL(imageUrl);
+
+
+      setPhotoURL(
+        imageUrl
+      );
+
+
+
+
+
+      calculateProfileCompletion(
+        updatedData
+      );
+
+
 
 
 
       successToast(
+
         "Profile updated successfully."
+
       );
+
+
 
 
 
@@ -214,7 +329,9 @@ export default function Profile() {
 
 
       errorToast(
+
         err.message
+
       );
 
 
@@ -228,7 +345,10 @@ export default function Profile() {
     }
 
 
+
   };
+
+
 
 
 
@@ -238,11 +358,14 @@ export default function Profile() {
     async () => {
 
 
+
       if (!newPassword) {
 
 
         errorToast(
+
           "Enter new password."
+
         );
 
 
@@ -250,13 +373,19 @@ export default function Profile() {
 
 
       }
+
+
+
+
 
 
       if (newPassword.length < 6) {
 
 
         errorToast(
+
           "Password must be at least 6 characters."
+
         );
 
 
@@ -264,6 +393,11 @@ export default function Profile() {
 
 
       }
+
+
+
+
+
 
 
       if (
@@ -273,7 +407,9 @@ export default function Profile() {
 
 
         errorToast(
+
           "Passwords do not match."
+
         );
 
 
@@ -281,6 +417,8 @@ export default function Profile() {
 
 
       }
+
+
 
 
 
@@ -291,10 +429,17 @@ export default function Profile() {
 
 
 
+
+
         await changePassword(
+
           user,
+
           newPassword
+
         );
+
+
 
 
 
@@ -304,20 +449,29 @@ export default function Profile() {
 
 
 
+
+
         successToast(
+
           "Password changed successfully."
+
         );
 
 
 
-      } catch (err) {
+
+
+      } catch(err) {
 
 
         console.error(err);
 
 
+
         errorToast(
+
           err.message
+
         );
 
 
@@ -331,9 +485,146 @@ export default function Profile() {
       }
 
 
+
     };
 
+
+
+
+
+
+
+  const handleVerifyEmail =
+    async () => {
+
+
+      try {
+
+
+        setSendingVerification(true);
+
+
+
+        await sendVerificationEmail(
+          user
+        );
+
+
+
+        successToast(
+
+          "Verification email sent."
+
+        );
+
+
+
+      } catch(err) {
+
+
+        console.error(err);
+
+
+        errorToast(
+
+          err.message
+
+        );
+
+
+
+      } finally {
+
+
+        setSendingVerification(false);
+
+
+      }
+
+
+    };
+
+
+
+
+
+
+
+
+  const handleDeleteAccount =
+    async () => {
+
+
+      const confirmDelete =
+        window.confirm(
+
+          "Are you sure you want to delete your account?"
+
+        );
+
+
+
+      if(!confirmDelete)
+        return;
+
+
+
+
+
+      try {
+
+
+        setDeletingAccount(true);
+
+
+
+        await deleteUserAccount(
+          user
+        );
+
+
+
+        successToast(
+
+          "Account deleted."
+
+        );
+
+
+
+      } catch(err) {
+
+
+        console.error(err);
+
+
+        errorToast(
+
+          err.message
+
+        );
+
+
+
+      } finally {
+
+
+        setDeletingAccount(false);
+
+
+      }
+
+
+
+    };
+
+
+
+
+
+
   if (!user) {
+
 
     return (
 
@@ -345,11 +636,16 @@ export default function Profile() {
 
     );
 
+
   }
 
 
 
+
+
+
   if (loading) {
+
 
     return (
 
@@ -361,21 +657,20 @@ export default function Profile() {
 
     );
 
+
   }
+
 
 
 
 
   return (
 
-
-    <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="max-w-7xl mx-auto px-6 py-12">
 
 
       <h1 className="text-4xl font-bold mb-8">
-
         My Profile
-
       </h1>
 
 
@@ -385,7 +680,9 @@ export default function Profile() {
 
 
 
-        {/* Left Profile Card */}
+
+
+        {/* Profile Card */}
 
 
         <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
@@ -408,6 +705,7 @@ export default function Profile() {
 
 
 
+
           <input
 
             type="file"
@@ -416,13 +714,18 @@ export default function Profile() {
 
             className="mt-5 w-full"
 
-            onChange={(e) =>
+            onChange={(e)=>
+
               setPhotoFile(
                 e.target.files[0] || null
               )
+
             }
 
           />
+
+
+
 
 
 
@@ -432,6 +735,7 @@ export default function Profile() {
             {name || "Dream Mode User"}
 
           </h2>
+
 
 
 
@@ -446,10 +750,71 @@ export default function Profile() {
 
 
 
-          <div className="mt-4">
+
+
+          {/* Profile Completion */}
+
+
+
+          <div className="mt-8 text-left">
+
+
+            <div className="flex justify-between mb-2">
+
+
+              <span className="font-medium">
+
+                Profile Complete
+
+              </span>
+
+
+
+              <span className="font-semibold">
+
+                {profilePercent}%
+
+              </span>
+
+
+            </div>
+
+
+
+
+
+            <div className="w-full bg-gray-200 rounded-full h-3">
+
+
+              <div
+
+                className="bg-indigo-600 h-3 rounded-full transition-all"
+
+                style={{
+                  width:
+                    `${profilePercent}%`
+                }}
+
+              />
+
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div className="mt-6">
 
 
             {user.emailVerified ? (
+
 
               <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
 
@@ -458,20 +823,56 @@ export default function Profile() {
               </span>
 
 
+
             ) : (
 
 
-              <span className="bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-medium">
+              <div className="space-y-3">
 
-                ❌ Email Not Verified
 
-              </span>
+                <span className="block bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-medium">
+
+                  ❌ Email Not Verified
+
+                </span>
+
+
+
+
+
+                <Button
+
+                  onClick={handleVerifyEmail}
+
+                  disabled={sendingVerification}
+
+                  className="w-full"
+
+                >
+
+                  {sendingVerification
+
+                    ? "Sending..."
+
+                    : "Verify Email"
+
+                  }
+
+
+                </Button>
+
+
+
+              </div>
+
 
 
             )}
 
 
+
           </div>
+
 
 
 
@@ -492,12 +893,12 @@ export default function Profile() {
 
 
 
-
           {/* Edit Profile */}
 
 
 
           <div className="bg-white rounded-3xl shadow-xl p-8">
+
 
 
             <h2 className="text-2xl font-bold mb-6">
@@ -515,8 +916,8 @@ export default function Profile() {
 
 
 
-
               <div>
+
 
                 <label className="block font-medium mb-2">
 
@@ -532,11 +933,14 @@ export default function Profile() {
 
                   value={name}
 
-                  onChange={(e) =>
+                  onChange={(e)=>
+
                     setName(e.target.value)
+
                   }
 
                 />
+
 
 
               </div>
@@ -545,8 +949,8 @@ export default function Profile() {
 
 
 
-
               <div>
+
 
                 <label className="block font-medium mb-2">
 
@@ -567,14 +971,11 @@ export default function Profile() {
                 />
 
 
+
               </div>
 
+                            <div>
 
-
-
-
-
-              <div>
 
                 <label className="block font-medium mb-2">
 
@@ -584,14 +985,19 @@ export default function Profile() {
 
 
 
+
                 <input
 
                   className="w-full border rounded-xl p-3"
 
                   value={phone}
 
-                  onChange={(e) =>
-                    setPhone(e.target.value)
+                  onChange={(e)=>
+
+                    setPhone(
+                      e.target.value
+                    )
+
                   }
 
                 />
@@ -603,8 +1009,8 @@ export default function Profile() {
 
 
 
-
               <div>
+
 
                 <label className="block font-medium mb-2">
 
@@ -614,18 +1020,79 @@ export default function Profile() {
 
 
 
+
                 <input
 
                   className="w-full border rounded-xl p-3"
 
                   value={address}
 
-                  onChange={(
+                  onChange={(e)=>
 
-                              {/* Account Information */}
+                    setAddress(
+                      e.target.value
+                    )
+
+                  }
+
+                />
+
+
+              </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+            <Button
+
+              onClick={handleSave}
+
+              disabled={saving}
+
+              className="w-full mt-8"
+
+            >
+
+
+              {saving
+
+                ? "Saving..."
+
+                : "Save Changes"
+
+              }
+
+
+            </Button>
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+          {/* Account Information */}
+
+
+
 
 
           <div className="bg-white rounded-3xl shadow-xl p-8">
+
 
 
             <h2 className="text-2xl font-bold mb-6">
@@ -637,22 +1104,35 @@ export default function Profile() {
 
 
 
+
             <div className="space-y-4">
 
 
+
+
+
               <div className="flex justify-between items-center border-b pb-3">
 
+
                 <span className="font-medium">
+
                   User ID
+
                 </span>
+
 
 
                 <span className="text-gray-600 text-sm break-all">
+
                   {user.uid}
+
                 </span>
 
 
+
               </div>
+
+
 
 
 
@@ -661,16 +1141,23 @@ export default function Profile() {
 
 
                 <span className="font-medium">
+
                   Email
+
                 </span>
+
 
 
                 <span className="text-gray-600">
+
                   {user.email}
+
                 </span>
 
 
+
               </div>
+
 
 
 
@@ -680,26 +1167,119 @@ export default function Profile() {
 
 
                 <span className="font-medium">
-                  Verification
+
+                  Account Created
+
                 </span>
 
 
-                <span
-                  className={
-                    user.emailVerified
-                      ? "text-green-600 font-semibold"
-                      : "text-red-600 font-semibold"
+
+                <span className="text-gray-600 text-sm">
+
+
+                  {createdAt
+
+                    ? new Date(
+                        createdAt
+                      ).toLocaleDateString()
+
+                    : "Not Available"
+
                   }
-                >
 
-                  {user.emailVerified
-                    ? "Verified"
-                    : "Not Verified"}
 
                 </span>
+
 
 
               </div>
+
+
+
+
+
+
+              <div className="flex justify-between items-center border-b pb-3">
+
+
+                <span className="font-medium">
+
+                  Last Login
+
+                </span>
+
+
+
+
+                <span className="text-gray-600 text-sm">
+
+
+                  {lastLogin
+
+                    ? new Date(
+                        lastLogin
+                      ).toLocaleString()
+
+                    : "Not Available"
+
+                  }
+
+
+
+                </span>
+
+
+
+              </div>
+
+
+
+
+
+
+              <div className="flex justify-between items-center">
+
+
+                <span className="font-medium">
+
+                  Verification
+
+                </span>
+
+
+
+                <span
+
+                  className={
+
+                    user.emailVerified
+
+                      ? "text-green-600 font-semibold"
+
+                      : "text-red-600 font-semibold"
+
+                  }
+
+                >
+
+
+                  {user.emailVerified
+
+                    ? "Verified"
+
+                    : "Not Verified"
+
+                  }
+
+
+
+                </span>
+
+
+
+              </div>
+
+
 
 
 
@@ -707,18 +1287,15 @@ export default function Profile() {
 
 
 
+
           </div>
 
-
-
-
-
-
-          {/* Quick Actions */}
+                    {/* Quick Actions */}
 
 
 
           <div className="bg-white rounded-3xl shadow-xl p-8">
+
 
 
             <h2 className="text-2xl font-bold mb-6">
@@ -730,7 +1307,10 @@ export default function Profile() {
 
 
 
+
             <div className="grid md:grid-cols-2 gap-4">
+
+
 
 
 
@@ -742,11 +1322,13 @@ export default function Profile() {
 
               >
 
+
                 <h3 className="text-lg font-semibold">
 
                   📦 My Orders
 
                 </h3>
+
 
 
                 <p className="text-gray-500 mt-2">
@@ -756,7 +1338,10 @@ export default function Profile() {
                 </p>
 
 
+
               </Link>
+
+
 
 
 
@@ -770,11 +1355,13 @@ export default function Profile() {
 
               >
 
+
                 <h3 className="text-lg font-semibold">
 
                   ❤️ Wishlist
 
                 </h3>
+
 
 
                 <p className="text-gray-500 mt-2">
@@ -784,14 +1371,111 @@ export default function Profile() {
                 </p>
 
 
+
               </Link>
+
+
 
 
 
             </div>
 
 
+
           </div>
+
+
+
+
+
+
+
+
+
+          {/* Activity Timeline */}
+
+
+
+
+
+          <div className="bg-white rounded-3xl shadow-xl p-8">
+
+
+
+            <h2 className="text-2xl font-bold mb-6">
+
+              Recent Activity
+
+            </h2>
+
+
+
+
+
+            <div className="space-y-4">
+
+
+
+              <div className="border rounded-xl p-4">
+
+
+                <p className="font-medium">
+
+                  Profile Created
+
+                </p>
+
+
+
+                <p className="text-gray-500 text-sm">
+
+                  Your account has been created successfully.
+
+                </p>
+
+
+
+              </div>
+
+
+
+
+
+
+
+              <div className="border rounded-xl p-4">
+
+
+                <p className="font-medium">
+
+                  Profile Updated
+
+                </p>
+
+
+
+                <p className="text-gray-500 text-sm">
+
+                  Your latest profile information will appear here.
+
+                </p>
+
+
+
+              </div>
+
+
+
+
+
+            </div>
+
+
+
+
+          </div>
+
+
 
 
 
@@ -804,7 +1488,9 @@ export default function Profile() {
 
 
 
+
           <div className="bg-white rounded-3xl shadow-xl p-8">
+
 
 
             <h2 className="text-2xl font-bold mb-6">
@@ -816,7 +1502,10 @@ export default function Profile() {
 
 
 
+
             <div className="space-y-5">
+
+
 
 
 
@@ -828,6 +1517,7 @@ export default function Profile() {
                   New Password
 
                 </label>
+
 
 
 
@@ -845,22 +1535,21 @@ export default function Profile() {
 
                   value={newPassword}
 
-                  onChange={(e) =>
+                  onChange={(e)=>
+
                     setNewPassword(
                       e.target.value
                     )
+
                   }
 
                 />
 
 
+
               </div>
 
-
-
-
-
-              <div>
+                            <div>
 
 
                 <label className="block font-medium mb-2">
@@ -868,6 +1557,7 @@ export default function Profile() {
                   Confirm Password
 
                 </label>
+
 
 
 
@@ -885,16 +1575,21 @@ export default function Profile() {
 
                   value={confirmPassword}
 
-                  onChange={(e) =>
+                  onChange={(e)=>
+
                     setConfirmPassword(
                       e.target.value
                     )
+
                   }
 
                 />
 
 
+
               </div>
+
+
 
 
 
@@ -910,20 +1605,27 @@ export default function Profile() {
                   checked={showPassword}
 
                   onChange={() =>
+
                     setShowPassword(
                       !showPassword
                     )
+
                   }
 
                 />
 
 
+
                 <span>
+
                   Show Password
+
                 </span>
 
 
+
               </label>
+
 
 
 
@@ -944,6 +1646,8 @@ export default function Profile() {
 
               >
 
+
+
                 {changingPassword
 
                   ? "Updating Password..."
@@ -953,12 +1657,15 @@ export default function Profile() {
                 }
 
 
+
               </Button>
 
 
 
 
+
             </div>
+
 
 
 
@@ -968,7 +1675,83 @@ export default function Profile() {
 
 
 
+
+
+
+
+          {/* Danger Zone */}
+
+
+
+
+
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-red-200">
+
+
+
+            <h2 className="text-2xl font-bold mb-4 text-red-600">
+
+              Danger Zone
+
+            </h2>
+
+
+
+
+
+            <p className="text-gray-500 mb-5">
+
+              Deleting your account is permanent and cannot be undone.
+
+            </p>
+
+
+
+
+
+
+            <Button
+
+              onClick={
+                handleDeleteAccount
+              }
+
+              disabled={
+                deletingAccount
+              }
+
+              className="w-full bg-red-600 hover:bg-red-700"
+
+            >
+
+
+
+              {deletingAccount
+
+                ? "Deleting..."
+
+                : "Delete Account"
+
+              }
+
+
+
+            </Button>
+
+
+
+
+
+          </div>
+
+
+
+
+
+
         </div>
+
+
 
 
 
@@ -976,7 +1759,12 @@ export default function Profile() {
 
 
 
+
+
     </div>
+
+
+
 
 
   );
