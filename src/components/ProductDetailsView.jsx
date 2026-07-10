@@ -132,7 +132,6 @@ export default function ProductDetailsView() {
                 px-3
                 py-2
                 rounded-full
-                backdrop-blur
               "
             >
               Zoom
@@ -324,6 +323,64 @@ export default function ProductDetailsView() {
               "
             >
               💎 Premium Quality Guaranteed
+            </div>
+
+          </div>
+
+          {/* DELIVERY INFO */}
+
+          <div className="mt-8">
+
+            <div
+              className="
+              rounded-[24px]
+              border
+              border-gray-200
+              overflow-hidden
+              bg-white
+            "
+            >
+
+              <div className="p-5 border-b">
+
+                <h3 className="font-bold text-lg">
+                  Delivery Information
+                </h3>
+
+              </div>
+
+              <div className="p-5 space-y-4 text-gray-600">
+
+                <div className="flex gap-3">
+                  <span>🚚</span>
+                  <span>
+                    Inside Dhaka: 1–2 Days
+                  </span>
+                </div>
+
+                <div className="flex gap-3">
+                  <span>📦</span>
+                  <span>
+                    Outside Dhaka: 2–5 Days
+                  </span>
+                </div>
+
+                <div className="flex gap-3">
+                  <span>💵</span>
+                  <span>
+                    Cash On Delivery Available
+                  </span>
+                </div>
+
+                <div className="flex gap-3">
+                  <span>🔄</span>
+                  <span>
+                    7 Days Easy Return Policy
+                  </span>
+                </div>
+
+              </div>
+
             </div>
 
           </div>
