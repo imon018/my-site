@@ -7,11 +7,7 @@ import {
   FiShoppingBag,
   FiUser,
   FiSearch,
-  FiHome,
-  FiGrid,
-  FiPhone,
   FiLogOut,
-  FiChevronRight,
 } from "react-icons/fi";
 
 import useAuth from "../hooks/useAuth";
@@ -44,14 +40,12 @@ export default function Header() {
 
     <>
 
-      {/*==========================
-            TOP BAR
-      ==========================*/}
+      {/* TOP BAR */}
 
       <div
         className="
-        bg-[#071F57]
         h-8
+        bg-[#071F57]
         overflow-hidden
         flex
         items-center
@@ -79,19 +73,13 @@ export default function Header() {
 
           &nbsp;&nbsp;&nbsp;
 
-          🚚 Fast Shipping
-
-          &nbsp;&nbsp;&nbsp;
-
           🔥 Dream Mode Premium Collection
 
         </div>
 
       </div>
 
-      {/*==========================
-              HEADER
-      ==========================*/}
+      {/* HEADER */}
 
       <header
         className="
@@ -101,7 +89,7 @@ export default function Header() {
         bg-white
         border-b
         border-slate-100
-        shadow-lg
+        shadow-md
       "
       >
 
@@ -153,19 +141,21 @@ export default function Header() {
                   src="/logo.png"
                   alt="Dream Mode"
                   className="
-                  w-12
-                  h-12
+                  w-10
+                  h-10
+                  md:w-12
+                  md:h-12
                   object-contain
                 "
                 />
 
-                <div>
+                <div className="leading-none">
 
                   <h2
                     className="
-                    text-[24px]
+                    text-[20px]
+                    md:text-[24px]
                     font-bold
-                    leading-none
                     tracking-wide
                     text-[#071F57]
                   "
@@ -182,7 +172,7 @@ export default function Header() {
                   <p
                     className="
                     hidden
-                    sm:block
+                    md:block
                     text-[10px]
                     text-gray-500
                     mt-1
@@ -208,7 +198,6 @@ export default function Header() {
               lg:flex
               items-center
               gap-8
-              text-[15px]
               font-medium
             "
             >
@@ -227,20 +216,6 @@ export default function Header() {
                 Shop
               </Link>
 
-              <Link
-                to="/categories"
-                className="hover:text-[#071F57]"
-              >
-                Categories
-              </Link>
-
-              <Link
-                to="/contact"
-                className="hover:text-[#071F57]"
-              >
-                Contact
-              </Link>
-
             </nav>
 
             {/* RIGHT */}
@@ -249,17 +224,20 @@ export default function Header() {
               className="
               flex
               items-center
-              gap-5
+              gap-4
             "
             >
 
-              <button>
+              <button
+                className="
+                hidden
+                lg:flex
+              "
+              >
 
                 <FiSearch
-                  size={22}
-                  className="
-                  text-[#071F57]
-                "
+                  size={21}
+                  className="text-[#071F57]"
                 />
 
               </button>
@@ -271,9 +249,7 @@ export default function Header() {
 
                 <FiShoppingBag
                   size={24}
-                  className="
-                  text-[#071F57]
-                "
+                  className="text-[#071F57]"
                 />
 
                 {cartCount > 0 && (
@@ -286,8 +262,8 @@ export default function Header() {
                     bg-[#071F57]
                     text-white
                     text-[10px]
-                    min-w-[18px]
                     h-[18px]
+                    min-w-[18px]
                     rounded-full
                     flex
                     items-center
@@ -303,8 +279,7 @@ export default function Header() {
 
               </Link>
 
-
-              {/* DESKTOP USER */}
+                            {/* DESKTOP USER */}
 
               {!user ? (
 
@@ -327,9 +302,9 @@ export default function Header() {
                     border-[#071F57]
                     text-[#071F57]
                     font-medium
-                    transition
                     hover:bg-[#071F57]
                     hover:text-white
+                    transition
                   "
                   >
                     Login
@@ -344,8 +319,8 @@ export default function Header() {
                     bg-[#071F57]
                     text-white
                     font-medium
+                    hover:bg-[#0A2E82]
                     transition
-                    hover:bg-[#0b2f84]
                   "
                   >
                     Join Now
@@ -388,7 +363,7 @@ export default function Header() {
                   "
                   >
 
-                    <FiUser />
+                    <FiUser size={20} />
 
                     Profile
 
@@ -397,11 +372,18 @@ export default function Header() {
                   <button
                     onClick={handleLogout}
                     className="
+                    flex
+                    items-center
+                    gap-2
                     text-red-600
                     font-medium
                   "
                   >
+
+                    <FiLogOut size={18} />
+
                     Logout
+
                   </button>
 
                 </div>
@@ -416,28 +398,26 @@ export default function Header() {
 
       </header>
 
-      {/*==========================
-          MOBILE DRAWER
-      ==========================*/}
+      {/* MOBILE DRAWER */}
 
       <div
         className={`
-          fixed
-          top-0
-          left-0
-          h-screen
-          w-[320px]
-          bg-white
-          z-[70]
-          shadow-2xl
-          transition-all
-          duration-300
-          ${
-            mobileOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }
-        `}
+        fixed
+        top-0
+        left-0
+        h-screen
+        w-[320px]
+        bg-white
+        z-[70]
+        transition-all
+        duration-300
+        shadow-2xl
+        ${
+          mobileOpen
+            ? "translate-x-0"
+            : "-translate-x-full"
+        }
+      `}
       >
 
         <div
@@ -468,8 +448,8 @@ export default function Header() {
                 src="/logo.png"
                 alt=""
                 className="
-                w-12
-                h-12
+                w-10
+                h-10
                 object-contain
               "
               />
@@ -481,17 +461,13 @@ export default function Header() {
                   text-xl
                   font-bold
                 "
-                  style={{
-                    fontFamily:
-                      "Playfair Display",
-                  }}
                 >
                   DREAM MODE
                 </h2>
 
                 <p
                   className="
-                  text-[11px]
+                  text-xs
                   text-white/70
                 "
                 >
@@ -533,20 +509,7 @@ export default function Header() {
             transition
           "
           >
-
-            <div className="flex items-center gap-4">
-
-              <FiHome
-                size={20}
-                className="text-[#071F57]"
-              />
-
-              <span>Home</span>
-
-            </div>
-
-            <FiChevronRight />
-
+            <span>Home</span>
           </Link>
 
           <Link
@@ -564,20 +527,7 @@ export default function Header() {
             transition
           "
           >
-
-            <div className="flex items-center gap-4">
-
-              <FiGrid
-                size={20}
-                className="text-[#071F57]"
-              />
-
-              <span>Shop</span>
-
-            </div>
-
-            <FiChevronRight />
-
+            <span>Shop</span>
           </Link>
 
           <Link
@@ -596,24 +546,15 @@ export default function Header() {
           "
           >
 
-            <div className="flex items-center gap-4">
-
-              <FiShoppingBag
-                size={20}
-                className="text-[#071F57]"
-              />
-
-              <span>Cart</span>
-
-            </div>
+            <span>Cart</span>
 
             <span
               className="
               bg-[#071F57]
               text-white
               text-xs
-              min-w-[24px]
-              h-6
+              min-w-[22px]
+              h-[22px]
               rounded-full
               flex
               items-center
@@ -622,37 +563,6 @@ export default function Header() {
             >
               {cartCount}
             </span>
-
-          </Link>
-
-          <Link
-            to="/contact"
-            onClick={() =>
-              setMobileOpen(false)
-            }
-            className="
-            flex
-            items-center
-            justify-between
-            px-6
-            py-4
-            hover:bg-slate-50
-            transition
-          "
-          >
-
-            <div className="flex items-center gap-4">
-
-              <FiPhone
-                size={20}
-                className="text-[#071F57]"
-              />
-
-              <span>Contact</span>
-
-            </div>
-
-            <FiChevronRight />
 
           </Link>
 
@@ -668,25 +578,16 @@ export default function Header() {
                   setMobileOpen(false)
                 }
                 className="
-                flex
-                items-center
-                gap-4
+                block
                 px-6
                 py-4
                 hover:bg-slate-50
               "
               >
-
-                <FiUser
-                  size={20}
-                  className="text-[#071F57]"
-                />
-
                 Login
-
               </Link>
 
-              <div className="px-6 mt-5">
+              <div className="px-6 mt-4">
 
                 <Link
                   to="/register"
@@ -696,16 +597,15 @@ export default function Header() {
                   className="
                   w-full
                   flex
-                  items-center
                   justify-center
-                  py-3
                   rounded-xl
                   bg-[#071F57]
                   text-white
+                  py-3
                   font-semibold
                 "
                 >
-                  Create Account
+                  Join Now
                 </Link>
 
               </div>
@@ -722,23 +622,14 @@ export default function Header() {
                   setMobileOpen(false)
                 }
                 className="
-                flex
-                items-center
-                gap-4
+                block
                 px-6
                 py-4
                 hover:bg-slate-50
                 transition
               "
               >
-
-                <FiUser
-                  size={20}
-                  className="text-[#071F57]"
-                />
-
                 My Profile
-
               </Link>
 
               {user.role === "admin" && (
@@ -749,20 +640,14 @@ export default function Header() {
                     setMobileOpen(false)
                   }
                   className="
-                  flex
-                  items-center
-                  justify-between
+                  block
                   px-6
                   py-4
                   hover:bg-slate-50
                   transition
                 "
                 >
-
-                  <span>Admin Dashboard</span>
-
-                  <FiChevronRight />
-
+                  Dashboard
                 </Link>
 
               )}
@@ -771,9 +656,7 @@ export default function Header() {
                 onClick={handleLogout}
                 className="
                 w-full
-                flex
-                items-center
-                gap-4
+                text-left
                 px-6
                 py-4
                 text-red-600
@@ -781,11 +664,7 @@ export default function Header() {
                 transition
               "
               >
-
-                <FiLogOut size={20} />
-
                 Logout
-
               </button>
 
             </>
@@ -794,7 +673,7 @@ export default function Header() {
 
         </div>
 
-        {/* Drawer Footer */}
+        {/* DRAWER FOOTER */}
 
         <div
           className="
@@ -802,9 +681,9 @@ export default function Header() {
           bottom-0
           left-0
           w-full
-          p-6
           border-t
           border-slate-200
+          p-6
         "
         >
 
@@ -820,13 +699,13 @@ export default function Header() {
 
             <img
               src="/logo.png"
-              alt=""
+              alt="Dream Mode"
               className="
-              w-16
-              h-16
-              object-contain
+              w-14
+              h-14
               mx-auto
               mb-3
+              object-contain
             "
             />
 
@@ -835,10 +714,6 @@ export default function Header() {
               text-xl
               font-bold
             "
-            style={{
-              fontFamily:
-                "Playfair Display",
-            }}
             >
               Dream Mode
             </h3>
@@ -862,13 +737,13 @@ export default function Header() {
               className="
               mt-5
               flex
-              justify-center
               items-center
+              justify-center
+              py-3
               rounded-xl
               bg-white
               text-[#071F57]
               font-semibold
-              py-3
             "
             >
               Shop Now
