@@ -201,7 +201,7 @@ return (
   className="
     relative
     h-[460px]
-    md:h-[430px]
+    md:h-[300px]
     lg:h-[500px]
     overflow-hidden
     rounded-b-[30px]
@@ -359,7 +359,7 @@ pt-6
   {banner.title}
 </p>
 
-         <div className="h-[40px]" />
+      
          
                       {/* PRICE BOX */}
           
@@ -367,7 +367,7 @@ pt-6
   className="
     absolute
     left-5
-    bottom-20
+    bottom-24
     grid
     grid-cols-3
     gap-2
@@ -521,7 +521,7 @@ md:text-lg
   className="
     absolute
     left-5
-    bottom-12
+    bottom-6
     grid
     grid-cols-3
     gap-2
