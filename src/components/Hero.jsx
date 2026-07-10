@@ -355,7 +355,9 @@ pt-8
     max-w-[320px]
     leading-6
   "
-            </p>
+>
+  {banner.title}
+</p>
 
                       {/* PRICE BOX */}
 
