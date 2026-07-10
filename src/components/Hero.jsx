@@ -367,11 +367,13 @@ pt-6
   className="
     absolute
     left-5
-    bottom-20
+    bottom-22
     grid
     grid-cols-3
     gap-1
     max-w-[270px]
+    h-auto
+
   "
 >
   
@@ -521,11 +523,12 @@ md:text-lg
   className="
     absolute
     left-5
-    bottom-12
+    bottom-8
     grid
     grid-cols-3
     gap-1
     max-w-[270px]
+  	h-auto
   "
 >
 
