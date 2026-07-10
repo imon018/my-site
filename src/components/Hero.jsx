@@ -3,15 +3,15 @@ import {
   useState,
 } from "react";
 
-import {
-  Link,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import Button from "./ui/Button";
 
 import {
-  Link,
-} from "react-router-dom";
-
-import Button from "../ui/Button";
+  FiArrowRight,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 
 import {
   getAllBanners,
