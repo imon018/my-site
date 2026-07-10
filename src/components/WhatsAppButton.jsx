@@ -14,29 +14,22 @@ export default function WhatsAppButton() {
     >
       <div
         className="
-        flex
-        items-center
-        gap-3
-
-        bg-gradient-to-r
-        from-blue-700
-        to-yellow-500
-
-        text-white
-
-        px-5
-        py-4
-
-        rounded-full
-
-        shadow-2xl
-
-        hover:scale-105
-
-        transition-all
-        duration-300
-
-        animate-pulse
+  flex
+  items-center
+  gap-3
+  bg-gradient-to-r
+  from-blue-700
+  to-yellow-500
+  text-white
+  px-5
+  py-4
+  rounded-full
+  shadow-2xl
+  hover:scale-105
+  transition-all
+  duration-300
+  animate-pulse
+"
       "
       >
         <span className="text-2xl">
