@@ -4,33 +4,114 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
+  getDoc,
+  query,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 
 import { db } from "../firebase/firestore";
 
-const bannerRef =
-  collection(db, "heroBanners");
+const bannerRef = collection(
+  db,
+  "heroBanners"
+);
+
+/* =========================
+   ADD BANNER
+========================= */
 
 export const addBanner = async (
-  banner
+  bannerData
 ) => {
-  await addDoc(
+  return await addDoc(
     bannerRef,
-    banner
+    {
+      ...bannerData,
+      createdAt: Date.now(),
+    }
   );
 };
 
-export const getBanners = async () => {
-  const snapshot =
-    await getDocs(bannerRef);
+/* =========================
+   GET ALL BANNERS
+========================= */
 
-  return snapshot.docs.map(
-    (doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })
-  );
-};
+export const getAllBanners =
+  async () => {
+    const q = query(
+      bannerRef,
+      orderBy(
+        "createdAt",
+        "desc"
+      )
+    );
+
+    const snapshot =
+      await getDocs(q);
+
+    return snapshot.docs.map(
+      (doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })
+    );
+  };
+
+/* =========================
+   GET SINGLE BANNER
+========================= */
+
+export const getBannerById =
+  async (id) => {
+    const bannerDoc = doc(
+      db,
+      "heroBanners",
+      id
+    );
+
+    const snapshot =
+      await getDoc(
+        bannerDoc
+      );
+
+    if (
+      !snapshot.exists()
+    ) {
+      return null;
+    }
+
+    return {
+      id: snapshot.id,
+      ...snapshot.data(),
+    };
+  };
+
+/* =========================
+   UPDATE BANNER
+========================= */
+
+export const updateBanner =
+  async (
+    id,
+    updatedData
+  ) => {
+    const bannerDoc = doc(
+      db,
+      "heroBanners",
+      id
+    );
+
+    await updateDoc(
+      bannerDoc,
+      updatedData
+    );
+  };
+
+/* =========================
+   DELETE BANNER
+========================= */
 
 export const deleteBanner =
   async (id) => {
@@ -43,37 +124,61 @@ export const deleteBanner =
     );
   };
 
-export const getLatestBanner =
+/* =========================
+   TOTAL BANNER COUNT
+========================= */
+
+export const getBannerCount =
   async () => {
     const snapshot =
-      await getDocs(bannerRef);
+      await getDocs(
+        bannerRef
+      );
 
-    const banners =
-      snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-    return banners.sort(
-      (a, b) =>
-        b.createdAt - a.createdAt
-    )[0];
+    return snapshot.size;
   };
 
-export const getAllBanners =
+/* =========================
+   MAX 5 BANNERS CHECK
+========================= */
+
+export const canAddBanner =
   async () => {
+    const count =
+      await getBannerCount();
+
+    return count < 5;
+  };
+
+/* =========================
+   GET LATEST BANNER
+========================= */
+
+export const getLatestBanner =
+  async () => {
+    const q = query(
+      bannerRef,
+      orderBy(
+        "createdAt",
+        "desc"
+      ),
+      limit(1)
+    );
 
     const snapshot =
-      await getDocs(bannerRef);
+      await getDocs(q);
 
-    const banners =
-      snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    if (
+      snapshot.empty
+    ) {
+      return null;
+    }
 
-    return banners.sort(
-      (a, b) =>
-        b.createdAt - a.createdAt
-    );
+    const banner =
+      snapshot.docs[0];
+
+    return {
+      id: banner.id,
+      ...banner.data(),
+    };
   };
