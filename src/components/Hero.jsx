@@ -8,10 +8,13 @@ import { Link } from "react-router-dom";
 import Button from "./ui/Button";
 
 import {
-  FiArrowRight,
-  FiChevronLeft,
-  FiChevronRight,
+  FiShoppingBag,
+  FiEye,
 } from "react-icons/fi";
+
+import {
+  FaWhatsapp,
+} from "react-icons/fa";
 
 import {
   getAllBanners,
@@ -193,39 +196,41 @@ export default function Hero() {
   banners[current];
 
 return (
-
-  <section
+  
+<section
     className="
       relative
-      h-[85vh]
-      md:h-[95vh]
-      lg:h-screen
+      h-[560px]
+      md:h-[650px]
+      lg:h-[720px]
       overflow-hidden
+      rounded-b-[30px]
     "
   >
       {/* BACKGROUND IMAGE */}
 
       <img
-        src={banner.image}
-        alt={banner.title}
-        className="
-          absolute
-          inset-0
-          w-full
-          h-full
-          object-cover
-        "
-      />
+  src={banner.image}
+  alt={banner.title}
+  className="
+    absolute
+    inset-0
+    w-full
+    h-full
+    object-contain
+    bg-black
+  "
+/>
 
       {/* DARK OVERLAY */}
 
-      <div
-        className="
-        absolute
-        inset-0
-        bg-black/45
-      "
-      />
+   <div
+  className="
+  absolute
+  inset-0
+  bg-black/40
+  "
+/>
 
       {/* GRADIENT */}
 
@@ -260,154 +265,359 @@ return (
         "
         >
 
-          <span
-            className="
-            inline-flex
-            px-5
-            py-2
-            rounded-full
-            bg-yellow-400
-            text-black
-            font-bold
-            text-sm
-            shadow-xl
-          "
-          >
-            {banner.badgeText ||
-              "🔥 Premium Collection"}
-          </span>
+<div
+  className="
+  relative
+  inline-flex
+  overflow-hidden
+  rounded-full
+  border
+  border-yellow-400
+  "
+>
+
+  {/* BLUR BACKGROUND */}
+
+  <img
+    src={banner.image}
+    alt=""
+    className="
+    absolute
+    inset-0
+    w-full
+    h-full
+    object-cover
+    blur-md
+    scale-110
+    "
+  />
+
+  {/* GLASS OVERLAY */}
+
+  <div
+    className="
+    absolute
+    inset-0
+    bg-black/30
+    backdrop-blur-sm
+    "
+  />
+
+  {/* TEXT */}
+
+  <span
+    className="
+    relative
+    z-10
+    px-6
+    py-3
+    text-yellow-300
+    font-bold
+    text-sm
+    "
+  >
+
+    {banner.badgeText ||
+      "💥 Premium Collection"}
+
+  </span>
+
+</div>
 
           <h1
-            className="
-            mt-6
-            text-4xl
-            md:text-6xl
-            lg:text-7xl
-            font-black
-            leading-tight
-          "
-          >
-            {banner.title}
-          </h1>
+  className="
+    mt-6
+    text-4xl
+    md:text-6xl
+    lg:text-7xl
+    font-black
+    leading-tight
+    text-yellow-400
+  "
+>
+  {product?.name || "Premium Product"}
+</h1>
 
           <p
-            className="
-            mt-5
-            text-lg
-            md:text-xl
-            text-white/90
-            max-w-2xl
-            leading-8
-          "
-          >
-            {banner.subtitle}
-          </p>
+  className="
+    mt-4
+    text-base
+    md:text-lg
+    text-white
+    max-w-2xl
+    leading-7
+  "
+>
+  {banner.title}
+</p>
 
                       {/* PRICE BOX */}
 
-            <div
-              className="
-                mt-8
-                flex
-                flex-wrap
-                items-center
-                gap-4
-              "
-            >
-              {banner?.offerPrice && (
-                <span
-                  className="
-                    text-4xl
-                    md:text-5xl
-                    font-black
-                    text-yellow-300
-                  "
-                >
-                  ৳ {banner.offerPrice}
-                </span>
-              )}
+<div
+  className="
+    mt-8
+    grid
+    grid-cols-3
+    gap-3
+    max-w-3xl
+  "
+>
 
-              {banner?.regularPrice && (
-                <span
-                  className="
-                    text-xl
-                    text-white/60
-                    line-through
-                  "
-                >
-                  ৳ {banner.regularPrice}
-                </span>
-              )}
-            </div>
+
+  {/* OFFER PRICE */}
+
+  <div
+    className="
+      rounded-xl
+      bg-black/30
+      backdrop-blur-md
+      border
+      border-yellow-400/30
+      p-3
+      text-center
+    "
+  >
+
+    <p
+      className="
+        text-xs
+        text-white/70
+        mb-1
+      "
+    >
+      Offer Price
+    </p>
+
+
+    <h3
+      className="
+        text-2xl
+        md:text-3xl
+        font-black
+        text-yellow-400
+      "
+    >
+      ৳ {banner.offerPrice}
+    </h3>
+
+
+  </div>
+
+
+
+
+
+  {/* REGULAR PRICE */}
+
+  <div
+    className="
+      rounded-xl
+      bg-black/30
+      backdrop-blur-md
+      border
+      border-white/20
+      p-3
+      text-center
+    "
+  >
+
+    <p
+      className="
+        text-xs
+        text-white/70
+        mb-1
+      "
+    >
+      Regular Price
+    </p>
+
+
+    <h3
+      className="
+        text-xl
+        md:text-2xl
+        font-bold
+        text-white
+        line-through
+      "
+    >
+      ৳ {banner.regularPrice}
+    </h3>
+
+
+  </div>
+
+
+
+
+
+
+  {/* SAVE */}
+
+  <div
+    className="
+      rounded-xl
+      bg-yellow-400
+      p-3
+      text-center
+      flex
+      flex-col
+      justify-center
+    "
+  >
+
+    <p
+      className="
+        text-xs
+        text-black
+        font-bold
+      "
+    >
+      Save
+    </p>
+
+
+    <h3
+      className="
+        text-xl
+        md:text-2xl
+        font-black
+        text-black
+      "
+    >
+
+      ৳ {
+        banner.regularPrice -
+        banner.offerPrice
+      }
+
+    </h3>
+
+
+  </div>
+
+
+
+</div>
 
             {/* BUTTONS */}
 
-            <div
-              className="
-                mt-10
-                flex
-                flex-wrap
-                gap-4
-              "
-            >
-              {/* SHOP NOW */}
+<div
+  className="
+    mt-8
+    grid
+    grid-cols-3
+    gap-3
+    w-full
+    max-w-3xl
+  "
+>
 
-              <Link
-                to="/shop"
-              >
-                <Button
-                  className="
-                    bg-yellow-400
-                    text-black
-                    font-bold
-                    px-8
-                  "
-                >
-                  🛍 Shop Now
-                </Button>
-              </Link>
+  {/* SHOP NOW */}
 
-              {/* WHATSAPP */}
+  <Link
+    to="/shop"
+    className="w-full"
+  >
+    <Button
+      className="
+  w-full
+  h-14
+  rounded-xl
 
-              <a
-                href={`https://wa.me/${
-                  banner?.whatsappNumber ||
-                  "8801406978619"
-                }`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button
-                  className="
-                    bg-green-600
-                    hover:bg-green-700
-                    px-8
-                  "
-                >
-                  💬 WhatsApp Order
-                </Button>
-              </a>
+  bg-yellow-400
+  hover:bg-yellow-300
 
-              {/* VIEW PRODUCT */}
+  text-black
+  font-bold
+  text-sm
+  md:text-base
+"
+    >
+      
+      <span className="flex items-center justify-center gap-2">
+    <FiShoppingBag className="text-xl" />
+    Shop Now
+  </span>
+      
+    </Button>
+  </Link>
 
-              {banner?.productId && (
-                <Link
-                  to={`/product/${banner.productId}`}
-                >
-                  <Button
-                    className="
-                      bg-white
-                      text-black
-                      px-8
-                    "
-                  >
-                    👁 View Product
-                  </Button>
-                </Link>
-              )}
-            </div>
 
-          </div>
+  {/* VIEW PRODUCT */}
+
+  {banner?.productId && (
+
+    <Link
+      to={`/product/${banner.productId}`}
+      className="w-full"
+    >
+
+      <Button
+        className="
+          w-full
+          h-14
+          rounded-xl
+          bg-purple-700/40
+          backdrop-blur-md
+          border
+          border-purple-300
+          text-white
+          font-bold
+          text-sm
+          md:text-base
+        "
+      >
+        
+        <span className="flex items-center justify-center gap-2">
+    <FiEye className="text-xl" />
+    View
+  </span>
+        
+      </Button>
+
+    </Link>
+
+  )}
+
+
+  {/* WHATSAPP */}
+
+  <a
+    href={`https://wa.me/${
+      banner?.whatsappNumber ||
+      "8801406978619"
+    }`}
+    target="_blank"
+    rel="noreferrer"
+    className="w-full"
+  >
+
+    <Button
+      className="
+  w-full
+  h-14
+  rounded-xl
+  bg-white/10
+  backdrop-blur-md
+  border
+  border-yellow-400
+  text-white
+  font-bold
+"
+    >
+      
+<span className="flex items-center justify-center gap-2">
+    <FaWhatsapp className="text-xl" />
+    WhatsApp
+  </span>
+      
+    </Button>
+
+  </a>
+
+
+</div>
 
           {/* RIGHT SIDE EMPTY FOR FULL BACKGROUND HERO */}
 
@@ -415,58 +625,7 @@ return (
 
         </div>
 
-        {/* ARROWS */}
-
-        {banners.length > 1 && (
-          <>
-            <button
-              onClick={prevSlide}
-              className="
-                absolute
-                left-4
-                md:left-8
-                top-1/2
-                -translate-y-1/2
-                z-30
-                w-14
-                h-14
-                rounded-full
-                bg-black/40
-                backdrop-blur
-                text-white
-                text-2xl
-                hover:bg-black/60
-                transition
-              "
-            >
-              ←
-            </button>
-
-            <button
-              onClick={nextSlide}
-              className="
-                absolute
-                right-4
-                md:right-8
-                top-1/2
-                -translate-y-1/2
-                z-30
-                w-14
-                h-14
-                rounded-full
-                bg-black/40
-                backdrop-blur
-                text-white
-                text-2xl
-                hover:bg-black/60
-                transition
-              "
-            >
-              →
-            </button>
-          </>
-        )}
-
+       
         {/* DOTS */}
 
         {banners.length > 1 && (
