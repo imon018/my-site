@@ -372,7 +372,7 @@ pt-6
     grid-cols-3
     gap-1
     max-w-[270px]
-    h-[70px]
+    h-[45px]
 
   "
 >
@@ -395,7 +395,7 @@ pt-6
     <p
       className="
         text-xs
-        text-white/70
+        text-amber-300
         mb-1
       "
     >
