@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 
 import App from "./App";
-import "../index.css";
+import "./index.css";
 import "swiper/css";
 import "swiper/css/pagination";
 
