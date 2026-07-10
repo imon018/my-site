@@ -153,16 +153,15 @@ export default function Header() {
 
   <h2
     className="
-      text-[22px]
-      md:text-[34px]
+      text-[28px]
+      md:text-[42px]
       font-bold
-      tracking-wide
-      text-[#0A3D91]
       leading-none
+      text-[#1A1A1A]
     "
     style={{
       fontFamily: "'Lobster', cursive",
-      textShadow: "0 2px 8px rgba(7,31,87,.15)"
+      textShadow: "0 2px 10px rgba(0,0,0,.08)"
     }}
   >
     Dream Mode
@@ -170,13 +169,13 @@ export default function Header() {
 
   <p
     className="
-      text-[9px]
-      md:text-[11px]
+      text-[10px]
+      md:text-[12px]
       mt-1
-      tracking-[1px]
       text-[#D4AF37]
       font-medium
-      leading-none
+      tracking-[1.8px]
+      uppercase
     "
   >
     Dress Your Dream, Live Your Style
