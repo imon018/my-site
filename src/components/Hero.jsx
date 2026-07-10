@@ -200,9 +200,9 @@ return (
 <section
   className="
     relative
-    h-[460px]
-    md:h-[300px]
-    lg:h-[500px]
+    h-[300px]
+    md:h-[380px]
+    lg:h-[450px]
     overflow-hidden
     rounded-b-[30px]
   "
@@ -521,7 +521,7 @@ md:text-lg
   className="
     absolute
     left-5
-    bottom-6
+    bottom-8
     grid
     grid-cols-3
     gap-2
