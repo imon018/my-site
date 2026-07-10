@@ -359,7 +359,7 @@ pt-6
   {banner.title}
 </p>
 
-         <div className="h-[65px]" />
+         <div className="h-[60px]" />
          
                       {/* PRICE BOX */}
           
@@ -367,7 +367,7 @@ pt-6
   className="
     absolute
     left-5
-    bottom-22
+    bottom-21
     grid
     grid-cols-3
     gap-2
