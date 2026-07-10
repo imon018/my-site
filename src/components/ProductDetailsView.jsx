@@ -15,6 +15,7 @@ export default function ProductDetailsView() {
   const { id } = useParams();
 
   const { addToCart } = useCart();
+
   const { addToWishlist } =
     useWishlist();
 
@@ -90,11 +91,9 @@ export default function ProductDetailsView() {
           <div
             className="
               bg-white
-              rounded-[32px]
+              rounded-[28px]
               overflow-hidden
-              shadow-2xl
-              border
-              border-slate-100
+              shadow-premium
               relative
               cursor-zoom-in
             "
@@ -113,7 +112,7 @@ export default function ProductDetailsView() {
                 w-full
                 object-cover
                 transition-all
-                duration-700
+                duration-500
                 ${
                   zoom
                     ? "scale-125"
@@ -127,16 +126,16 @@ export default function ProductDetailsView() {
                 absolute
                 bottom-4
                 right-4
-                bg-slate-900/80
+                bg-black/70
                 text-white
                 text-xs
-                px-4
+                px-3
                 py-2
                 rounded-full
                 backdrop-blur
               "
             >
-              🔍 Zoom
+              Zoom
             </div>
 
           </div>
@@ -168,7 +167,7 @@ export default function ProductDetailsView() {
                       hover:scale-105
                       ${
                         selectedImage === img
-                          ? "border-yellow-500 shadow-lg"
+                          ? "border-black shadow-lg"
                           : "border-gray-200"
                       }
                     `}
@@ -184,65 +183,28 @@ export default function ProductDetailsView() {
 
         {/* PRODUCT INFO */}
 
-        <div className="flex flex-col justify-center">
+        <div
+          className="
+          flex
+          flex-col
+          justify-center
+          lg:sticky
+          lg:top-28
+          h-fit
+        "
+        >
 
-          <div
-            className="
-            inline-flex
-            w-fit
-            px-5
-            py-2
-            rounded-full
-            bg-gradient-to-r
-            from-yellow-400
-            to-yellow-500
-            text-slate-900
-            text-sm
-            font-semibold
-          "
-          >
-            ✨ Premium Collection
-          </div>
+          <span className="inline-flex w-fit px-4 py-2 rounded-full bg-gray-100 text-sm font-medium">
+            Premium Collection
+          </span>
 
-          <h1
-            className="
-            text-4xl
-            md:text-5xl
-            lg:text-6xl
-            font-black
-            mt-5
-            leading-tight
-          "
-          >
+          <h1 className="text-4xl md:text-5xl font-bold mt-5 leading-tight">
             {product.name}
           </h1>
 
-          <div className="flex items-center gap-2 mt-4">
-
-            <span className="text-yellow-500">
-              ⭐⭐⭐⭐⭐
-            </span>
-
-            <span className="text-gray-500 text-sm">
-              (4.9 Rating)
-            </span>
-
-          </div>
-
           <div className="mt-6">
 
-            <span
-              className="
-              text-4xl
-              md:text-5xl
-              font-black
-              bg-gradient-to-r
-              from-blue-700
-              to-yellow-500
-              bg-clip-text
-              text-transparent
-            "
-            >
+            <span className="text-4xl font-bold text-primary">
               ৳ {product.price}
             </span>
 
@@ -251,61 +213,24 @@ export default function ProductDetailsView() {
           <div className="mt-5">
 
             {product.stock > 0 ? (
-              <span
-                className="
-                inline-flex
-                items-center
-                gap-2
-                px-4
-                py-2
-                rounded-full
-                bg-green-100
-                text-green-700
-                font-semibold
-              "
-              >
+              <span className="text-green-600 font-semibold">
                 ✓ In Stock ({product.stock})
               </span>
             ) : (
-              <span
-                className="
-                inline-flex
-                px-4
-                py-2
-                rounded-full
-                bg-red-100
-                text-red-600
-                font-semibold
-              "
-              >
+              <span className="text-red-600 font-semibold">
                 Out Of Stock
               </span>
             )}
 
           </div>
 
-          <div
-            className="
-            mt-8
-            p-6
-            rounded-[24px]
-            bg-slate-50
-            border
-            border-slate-200
-          "
-          >
+          <p className="mt-8 text-gray-600 leading-8">
+            {product.description}
+          </p>
 
-            <h3 className="font-bold text-lg mb-3">
-              Description
-            </h3>
+          {/* ACTION BUTTONS */}
 
-            <p className="text-gray-600 leading-8">
-              {product.description}
-            </p>
-
-          </div>
-
-          <div className="flex flex-wrap gap-4 mt-8">
+          <div className="flex flex-wrap gap-4 mt-10">
 
             <Button
               onClick={() =>
@@ -324,13 +249,82 @@ export default function ProductDetailsView() {
                 py-3
                 rounded-xl
                 border
-                border-slate-300
-                hover:bg-slate-100
+                border-gray-300
+                hover:bg-gray-100
                 transition
               "
             >
               Wishlist
             </button>
+
+            <a
+              href={`https://wa.me/8801406978619?text=I'm interested in ${product.name}`}
+              target="_blank"
+              rel="noreferrer"
+              className="
+                px-6
+                py-3
+                rounded-xl
+                bg-green-600
+                hover:bg-green-700
+                text-white
+                font-medium
+                transition
+              "
+            >
+              WhatsApp Order
+            </a>
+
+          </div>
+
+          {/* TRUST BADGES */}
+
+          <div className="mt-10 space-y-4">
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                p-4
+                rounded-2xl
+                bg-green-50
+                border
+                border-green-100
+              "
+            >
+              🚚 Free Delivery Available
+            </div>
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                p-4
+                rounded-2xl
+                bg-blue-50
+                border
+                border-blue-100
+              "
+            >
+              🔒 100% Secure Payment
+            </div>
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                p-4
+                rounded-2xl
+                bg-yellow-50
+                border
+                border-yellow-100
+              "
+            >
+              💎 Premium Quality Guaranteed
+            </div>
 
           </div>
 
