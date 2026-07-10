@@ -255,7 +255,7 @@ return (
         container-box
         flex
         items-start
-pt-20
+pt-4
       "
       >
 
@@ -358,19 +358,20 @@ pt-20
 >
   {banner.title}
 </p>
-          <div className="h-[120px]" />
 
                       {/* PRICE BOX */}
-
+          
 <div
   className="
-  mt-0
-  grid
-  grid-cols-3
-  gap-2
-  max-w-[310px]
-"
-  >
+    absolute
+    left-5
+    bottom-20
+    grid
+    grid-cols-3
+    gap-2
+    max-w-[310px]
+  "
+>
   
   {/* OFFER PRICE */}
 
@@ -513,15 +514,17 @@ md:text-lg
 </div>
 </div>
             {/* BUTTONS */}
-
+          
 <div
   className="
-  mt-2
-  grid
-  grid-cols-3
-  gap-2
-  max-w-[310px]
-"
+    absolute
+    left-5
+    bottom-8
+    grid
+    grid-cols-3
+    gap-2
+    max-w-[310px]
+  "
 >
 
   {/* SHOP NOW */}
@@ -648,7 +651,7 @@ shadow-[0_0_20px_rgba(245,158,11,.18)]
           <div
             className="
               absolute
-              bottom-8
+              bottom-3
               left-1/2
               -translate-x-1/2
               flex
