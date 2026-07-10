@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { Link } from "react-router-dom";
-import { getAllBanners } from "../services/firestoreBannerService";
+
+import {
+  getAllBanners,
+} from "../services/firestoreBannerService";
 
 export default function Hero() {
   const [banners, setBanners] =
@@ -45,45 +52,46 @@ export default function Hero() {
       className="
       relative
       overflow-hidden
+
       bg-gradient-to-br
       from-slate-950
       via-blue-950
-      to-blue-900
+      to-slate-900
+
+      text-white
     "
     >
-      <div className="absolute inset-0 opacity-20">
+      {/* Glow Effects */}
 
-        <div
-          className="
-          absolute
-          -top-40
-          -left-40
-          w-[500px]
-          h-[500px]
-          rounded-full
-          bg-yellow-400
-          blur-[180px]
-        "
-        />
+      <div
+        className="
+        absolute
+        top-0
+        left-0
+        w-96
+        h-96
+        rounded-full
+        bg-yellow-400/10
+        blur-[140px]
+      "
+      />
 
-        <div
-          className="
-          absolute
-          bottom-0
-          right-0
-          w-[500px]
-          h-[500px]
-          rounded-full
-          bg-blue-400
-          blur-[180px]
-        "
-        />
-
-      </div>
+      <div
+        className="
+        absolute
+        bottom-0
+        right-0
+        w-96
+        h-96
+        rounded-full
+        bg-blue-500/20
+        blur-[140px]
+      "
+      />
 
       <div className="container-box relative z-10 py-16 lg:py-24">
 
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           {/* LEFT */}
 
@@ -92,16 +100,12 @@ export default function Hero() {
             <span
               className="
               inline-flex
-              items-center
-              gap-2
               px-5
               py-2
               rounded-full
-              bg-white/10
-              border
-              border-white/20
-              text-yellow-300
-              backdrop-blur
+              bg-yellow-400
+              text-slate-900
+              font-semibold
             "
             >
               ✨ Premium Collection
@@ -110,12 +114,11 @@ export default function Hero() {
             <h1
               className="
               mt-6
-              text-white
-              text-4xl
+              text-5xl
               md:text-6xl
               lg:text-7xl
               font-black
-              leading-tight
+              leading-[1.05]
             "
             >
               {banner?.title ||
@@ -125,8 +128,8 @@ export default function Hero() {
             <p
               className="
               mt-6
-              text-blue-100
               text-lg
+              text-blue-100
               leading-8
               max-w-xl
             "
@@ -144,64 +147,45 @@ export default function Hero() {
               mt-10
             "
             >
+
               <Link
                 to="/shop"
-                className="primary-btn"
+                className="
+                px-8
+                py-4
+                rounded-full
+                bg-yellow-400
+                text-slate-900
+                font-semibold
+                text-center
+                hover:scale-105
+                transition
+              "
               >
-                {banner?.buttonText ||
-                  "Shop Now"}
+                Shop Now
               </Link>
 
               <Link
                 to="/shop"
-                className="outline-btn"
+                className="
+                px-8
+                py-4
+                rounded-full
+                border
+                border-white/20
+                bg-white/10
+                backdrop-blur
+                text-center
+                hover:bg-white/20
+                transition
+              "
               >
-                Explore Collection
+                Explore
               </Link>
 
             </div>
 
-            <div
-              className="
-              grid
-              grid-cols-3
-              gap-6
-              mt-12
-              text-white
-            "
-            >
-              <div>
-                <h3 className="text-2xl font-bold text-yellow-400">
-                  5K+
-                </h3>
-
-                <p className="text-sm text-blue-100">
-                  Customers
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-yellow-400">
-                  2K+
-                </h3>
-
-                <p className="text-sm text-blue-100">
-                  Orders
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-yellow-400">
-                  24/7
-                </h3>
-
-                <p className="text-sm text-blue-100">
-                  Support
-                </p>
-              </div>
-            </div>
-
-            {/* SLIDER DOTS */}
+            {/* Dots */}
 
             <div className="flex gap-3 mt-10">
 
@@ -212,14 +196,50 @@ export default function Hero() {
                     onClick={() =>
                       setCurrent(index)
                     }
-                    className={`h-3 rounded-full transition-all duration-300 ${
-                      current === index
-                        ? "w-10 bg-yellow-400"
-                        : "w-3 bg-white/30"
-                    }`}
+                    className={`
+                      h-3
+                      rounded-full
+                      transition-all
+                      duration-300
+                      ${
+                        current === index
+                          ? "w-10 bg-yellow-400"
+                          : "w-3 bg-white/30"
+                      }
+                    `}
                   />
                 )
               )}
+
+            </div>
+
+            {/* Features */}
+
+            <div
+              className="
+              grid
+              grid-cols-2
+              gap-4
+              mt-12
+              text-sm
+            "
+            >
+
+              <div>
+                ✓ Premium Quality
+              </div>
+
+              <div>
+                ✓ Fast Delivery
+              </div>
+
+              <div>
+                ✓ Secure Payment
+              </div>
+
+              <div>
+                ✓ Cash On Delivery
+              </div>
 
             </div>
 
@@ -235,21 +255,24 @@ export default function Hero() {
               rounded-[40px]
               border
               border-white/10
-              shadow-premium
+              bg-white/5
+              backdrop-blur
+              shadow-2xl
             "
             >
 
               <img
-                src={
-                  banner?.image
-                }
+                src={banner?.image}
                 alt=""
                 className="
-                  h-[350px]
-                  md:h-[500px]
+                  h-[450px]
+                  md:h-[550px]
                   lg:h-[700px]
                   w-full
                   object-cover
+                  transition-all
+                  duration-700
+                  hover:scale-105
                 "
               />
 
@@ -260,6 +283,7 @@ export default function Hero() {
         </div>
 
       </div>
+
     </section>
   );
 }
