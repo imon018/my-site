@@ -97,45 +97,34 @@ export default function ProductCard({
 
         <img
 
-          src={
-            product.image ||
-            "https://via.placeholder.com/600"
-          }
+  src={
+    product.image ||
+    "https://via.placeholder.com/600"
+  }
 
-          alt={
-            product.name
-          }
+  alt={
+    product.name
+  }
 
-          <p
-  className="
-    mt-1
-    text-sm
-    font-bold
-    text-amber-600
-  "
->
-  ৳ {product.price}
-</p>
+  className={`
+    w-full
+    object-cover
 
+    transition
+    duration-700
 
-          className={`
-            w-full
-            object-cover
+    group-hover:scale-110
 
-            transition
-            duration-700
+    ${
+      compact
+      ?
+      "h-36 md:h-44"
+      :
+      "h-64 sm:h-72 md:h-80"
+    }
+  `}
 
-            group-hover:scale-110
-
-            ${
-              compact
-              ?
-              "h-36 md:h-44"
-              :
-              "h-64 sm:h-72 md:h-80"
-            }
-          `}
-        />
+/>
 
 
 
@@ -205,7 +194,7 @@ export default function ProductCard({
             left-2
 
             px-2
-            py-9
+            py-1
 
             rounded-full
 
@@ -280,6 +269,17 @@ export default function ProductCard({
           {product.name}
 
         </h3>
+
+        <p
+  className="
+    mt-1
+    text-sm
+    font-bold
+    text-amber-600
+  "
+>
+  ৳ {product.price}
+</p>
 
 
 
