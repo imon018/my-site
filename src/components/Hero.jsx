@@ -369,7 +369,8 @@ pt-8
   gap-2
   max-w-[310px]
 "
->
+        </div>
+  
 
 
   {/* OFFER PRICE */}
@@ -568,8 +569,8 @@ md:text-lg
       <Button
         className="
           w-full
-          h-14
-          rounded-xl
+          h-10
+          rounded-lg
           bg-purple-700/40
 backdrop-blur-md
 border
