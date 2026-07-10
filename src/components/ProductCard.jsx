@@ -26,10 +26,10 @@ export default function ProductCard({
       rounded-[32px]
       overflow-hidden
       border
-      border-gray-100
+      border-slate-100
       shadow-sm
       hover:shadow-2xl
-      hover:-translate-y-2
+      hover:-translate-y-3
       transition-all
       duration-500
     "
@@ -42,54 +42,56 @@ export default function ProductCard({
           src={product.image}
           alt={product.name}
           className="
-            h-64
+            h-60
             sm:h-72
             md:h-80
-            lg:h-[360px]
+            lg:h-[380px]
             w-full
             object-cover
-            group-hover:scale-110
             transition-all
             duration-700
+            group-hover:scale-110
           "
         />
 
-        {/* STOCK BADGE */}
-
-        {product.stock > 0 && (
-          <span
-            className="
-              absolute
-              top-4
-              left-4
-              bg-black
-              text-white
-              text-xs
-              px-4
-              py-2
-              rounded-full
-              backdrop-blur
-            "
-          >
-            ✨ Available
-          </span>
-        )}
-
-        {/* PRICE FLOAT */}
+        {/* Premium Badge */}
 
         <div
           className="
-            absolute
-            bottom-4
-            right-4
-            bg-white/90
-            backdrop-blur-md
-            px-4
-            py-2
-            rounded-full
-            font-bold
-            shadow-lg
-          "
+          absolute
+          top-4
+          left-4
+          bg-gradient-to-r
+          from-yellow-400
+          to-amber-500
+          text-black
+          text-xs
+          font-semibold
+          px-4
+          py-2
+          rounded-full
+          shadow-lg
+        "
+        >
+          ✨ Premium
+        </div>
+
+        {/* Price */}
+
+        <div
+          className="
+          absolute
+          bottom-4
+          right-4
+          bg-white/90
+          backdrop-blur-md
+          px-4
+          py-2
+          rounded-full
+          shadow-lg
+          font-bold
+          text-slate-900
+        "
         >
           ৳ {product.price}
         </div>
@@ -102,32 +104,52 @@ export default function ProductCard({
 
         <h3
           className="
-            text-xl
-            md:text-2xl
-            font-bold
-            line-clamp-1
-          "
+          text-lg
+          md:text-xl
+          font-bold
+          line-clamp-1
+        "
         >
           {product.name}
         </h3>
 
         <p
           className="
-            mt-3
-            text-gray-500
-            text-sm
-            leading-6
-            line-clamp-2
-          "
+          mt-3
+          text-gray-500
+          text-sm
+          leading-6
+          line-clamp-2
+        "
         >
           {product.description}
         </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
+        {/* Stock */}
+
+        <div className="mt-4">
+
+          {product.stock > 0 ? (
+            <span className="text-green-600 text-sm font-medium">
+              ✓ In Stock
+            </span>
+          ) : (
+            <span className="text-red-500 text-sm font-medium">
+              Out Of Stock
+            </span>
+          )}
+
+        </div>
+
+        {/* Buttons */}
+
+        <div className="grid grid-cols-2 gap-3 mt-6">
 
           <Button
             onClick={handleAdd}
-            className="rounded-2xl"
+            className="
+            rounded-2xl
+          "
           >
             Add Cart
           </Button>
@@ -139,8 +161,8 @@ export default function ProductCard({
               )
             }
             className="
-              bg-black
-              hover:bg-gray-900
+              bg-slate-900
+              hover:bg-black
               rounded-2xl
             "
           >
