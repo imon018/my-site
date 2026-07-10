@@ -372,25 +372,26 @@ pt-6
     grid-cols-3
     gap-1
     max-w-[270px]
-    h-[45px]
-
+    items-stretch
   "
 >
   
   {/* OFFER PRICE */}
 
   <div
-    className="
-  rounded-lg
-  bg-black/35
-  backdrop-blur-md
-  border
-  border-amber-500
-  shadow-[0_0_20px_rgba(245,158,11,.20)]
-  p-2
-  text-center
-"
-  >
+  className="
+    rounded-lg
+    bg-black/35
+    backdrop-blur-md
+    border
+    border-amber-500
+    p-1.5
+    text-center
+    flex
+    flex-col
+    justify-center
+  "
+>
 
     <p
       className="
@@ -424,16 +425,19 @@ pt-6
   {/* REGULAR PRICE */}
 
   <div
-    className="
-      rounded-xl
-      bg-black/30
-      backdrop-blur-md
-      border
-      border-amber-500
-      p-3
-      text-center
-    "
-  >
+  className="
+    rounded-xl
+    bg-black/30
+    backdrop-blur-md
+    border
+    border-amber-500
+    p-1.5
+    text-center
+    flex
+    flex-col
+    justify-center
+  "
+>
 
     <p
       className="
@@ -473,8 +477,9 @@ md:text-lg
 
 <div
   className="
+    aspect-square
     w-full
-    h-full
+    max-w-[60px]
     rounded-full
     bg-gradient-to-br
     from-amber-200
@@ -482,7 +487,6 @@ md:text-lg
     to-amber-600
     border-[3px]
     border-amber-500
-    shadow-[0_0_20px_rgba(245,158,11,.45)]
     flex
     flex-col
     justify-center
