@@ -259,14 +259,37 @@ export default function FeaturedProducts() {
         >
 
           <h2
-            className="
-              section-title
-            "
-          >
+  className="
+    inline-flex
+    items-center
+    justify-center
 
-            Featured Products
+    px-5
+    py-2
 
-          </h2>
+    rounded-full
+
+    border
+    border-amber-500
+
+    bg-transparent
+
+    text-amber-500
+
+    font-black
+
+    text-lg
+    md:text-2xl
+
+    shadow-[0_0_20px_rgba(245,158,11,.35)]
+
+    backdrop-blur-md
+  "
+>
+
+  ✨ Featured Products
+
+</h2>
 
 
           <p
