@@ -143,3 +143,34 @@ export async function hasUserReviewed(
 
 
 }
+
+// ================================
+// GET LATEST REVIEWS (Homepage)
+// ================================
+
+export async function getLatestReviews() {
+
+  const q = query(
+
+    reviewsCollection,
+
+    orderBy(
+      "createdAt",
+      "desc"
+    ),
+
+    limit(10)
+
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map(doc => ({
+
+    id: doc.id,
+
+    ...doc.data(),
+
+  }));
+
+}
