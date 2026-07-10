@@ -370,10 +370,8 @@ pt-6
     bottom-20
     grid
     grid-cols-3
-    gap-2
-    max-w-[310px]
-    origin-left
-    scale-60
+    gap-1
+    max-w-[270px]
   "
 >
   
@@ -526,10 +524,8 @@ md:text-lg
     bottom-12
     grid
     grid-cols-3
-    gap-2
-    max-w-[310px]
-    origin-left
-    scale-60
+    gap-1
+    max-w-[270px]
   "
 >
 
