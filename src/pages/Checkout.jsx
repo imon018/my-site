@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+// src/pages/Checkout.jsx
 
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useCart from "../hooks/useCart";
 import useAuth from "../hooks/useAuth";
@@ -17,9 +18,7 @@ import {
 } from "../components/ui/Toast";
 
 
-
 export default function Checkout() {
-
 
   const {
     cart,
@@ -27,39 +26,29 @@ export default function Checkout() {
   } = useCart();
 
 
-
   const {
     user,
   } = useAuth();
 
 
-
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
 
-
-
-  const [name,setName] =
+  const [name, setName] =
     useState("");
 
-  const [phone,setPhone] =
+  const [phone, setPhone] =
     useState("");
 
-  const [address,setAddress] =
+  const [address, setAddress] =
     useState("");
 
-
-
-  const [deliveryArea,setDeliveryArea] =
+  const [deliveryArea, setDeliveryArea] =
     useState("");
 
 
 
-
-
-  useEffect(()=>{
-
+  useEffect(() => {
 
     if(user){
 
@@ -67,11 +56,9 @@ export default function Checkout() {
         user.name || ""
       );
 
-
       setPhone(
         user.phone || ""
       );
-
 
       setAddress(
         user.address || ""
@@ -79,74 +66,38 @@ export default function Checkout() {
 
     }
 
-
   },[user]);
-
-
-
-
 
 
 
 
   const subtotal =
     cart.reduce(
-
       (sum,item)=>
-
-      sum +
-      item.price *
-      (item.quantity || 1),
-
+        sum +
+        item.price *
+        (item.quantity || 1),
       0
-
     );
 
 
 
-
-
-
   const deliveryCharge =
-
     deliveryArea === "Dhaka City"
-
-    ?
-
-    80
-
-    :
-
+      ? 80
+      :
     deliveryArea === "Dhaka Sub Area"
-
-    ?
-
-    100
-
-    :
-
+      ? 100
+      :
     deliveryArea === "Outside Dhaka"
-
-    ?
-
-    120
-
-    :
-
-    0;
-
-
+      ? 120
+      :
+      0;
 
 
 
   const total =
     subtotal + deliveryCharge;
-
-
-
-
-
-
 
 
 
@@ -168,7 +119,7 @@ export default function Checkout() {
 
 
 
-    if(cart.length===0){
+    if(cart.length === 0){
 
       errorToast(
         "Cart is empty"
@@ -177,8 +128,6 @@ export default function Checkout() {
       return;
 
     }
-
-
 
 
 
@@ -198,8 +147,6 @@ export default function Checkout() {
 
 
 
-
-
     if(!deliveryArea){
 
       errorToast(
@@ -212,53 +159,33 @@ export default function Checkout() {
 
 
 
-
-
-
-
     try{
 
 
       const orderId =
         await createOrder({
 
-          userId:
-            user.uid,
+          userId:user.uid,
 
+          customerName:name,
 
-          customerName:
-            name,
-
-
-          email:
-            user.email,
-
+          email:user.email,
 
           phone,
 
-
           address,
-
 
           deliveryArea,
 
-
           deliveryCharge,
 
-
-          items:
-            cart,
-
+          items:cart,
 
           subtotal,
 
-
           total,
 
-
-          status:
-            "Pending",
-
+          status:"Pending",
 
           createdAt:
             new Date()
@@ -268,18 +195,12 @@ export default function Checkout() {
 
 
 
-
-
       successToast(
         "Order placed successfully!"
       );
 
 
-
-
       clearCart();
-
-
 
 
       navigate(
@@ -292,171 +213,84 @@ export default function Checkout() {
       );
 
 
-
-
-
     }catch(error){
 
-
       console.log(error);
-
 
       errorToast(
         error.message ||
         "Failed to place order"
       );
 
-
     }
 
 
   };
 
+
+
   return (
 
-    <div className="max-w-5xl mx-auto px-6 py-12">
-
-
-      <h1 className="text-4xl font-bold mb-8">
-
-        Checkout
-
-      </h1>
-
-
-
-
-
-      <div className="grid md:grid-cols-2 gap-8">
-
-
-
-
-
-        <div className="bg-white rounded-3xl shadow p-6">
-
-
-          <h2 className="text-2xl font-bold mb-6">
-
-            User Information
-
-          </h2>
-
-
-
-
-
-          <input
-
-            className="w-full border rounded-xl p-3 mb-4"
-
-            placeholder="Full Name"
-
-            value={name}
-
-            onChange={(e)=>
-              setName(e.target.value)
-            }
-
-          />
-
-
-
-
-
-          <input
-
-            className="w-full border rounded-xl p-3 mb-4 bg-gray-100"
-
-            value={
-              user?.email || ""
-            }
-
-            readOnly
-
-          />
-
-
-
-
-
-          <input
-
-            className="w-full border rounded-xl p-3 mb-4"
-
-            placeholder="Phone Number"
-
-            value={phone}
-
-            onChange={(e)=>
-              setPhone(e.target.value)
-            }
-
-          />
-
-
-
-
-
-          <textarea
-
-            className="w-full border rounded-xl p-3 mb-4"
-
-            placeholder="Shipping Address"
-
-            rows="4"
-
-            value={address}
-
-            onChange={(e)=>
-              setAddress(e.target.value)
-            }
-
-          />
-
-
-
-
-
-
-          <select
-
-            className="w-full border rounded-xl p-3"
-
-            value={deliveryArea}
-
-            onChange={(e)=>
-
-              setDeliveryArea(
-                e.target.value
-              )
-
-            }
-
-          >
-
-            <option value="">
-              Select Delivery Area
-            </option>
-
-
-            <option value="Dhaka City">
-              Dhaka City - ৳80
-            </option>
-
-
-            <option value="Dhaka Sub Area">
-              Dhaka Sub Area - ৳100
-            </option>
-
-
-            <option value="Outside Dhaka">
-              Outside Dhaka - ৳120
-            </option>
-
-
-          </select>
-
+    <div className="
+      min-h-screen
+      bg-gradient-to-br
+      from-gray-50
+      via-white
+      to-blue-50
+      px-4
+      md:px-6
+      py-12
+    ">
+
+
+      <div className="
+        max-w-6xl
+        mx-auto
+      ">
+
+
+        <div className="
+          text-center
+          mb-12
+        ">
+
+
+          <span className="
+            inline-flex
+            px-5
+            py-2
+            rounded-full
+            bg-blue-100
+            text-blue-700
+            font-semibold
+          ">
+            🔒 Secure Checkout
+          </span>
+
+
+
+          <h1 className="
+            mt-5
+            text-4xl
+            md:text-6xl
+            font-black
+            bg-gradient-to-r
+            from-blue-600
+            to-purple-600
+            bg-clip-text
+            text-transparent
+          ">
+            Complete Your Order
+          </h1>
+
+
+
+          <p className="
+            mt-3
+            text-gray-500
+          ">
+            Premium shopping experience with trusted delivery
+          </p>
 
 
         </div>
@@ -465,230 +299,440 @@ export default function Checkout() {
 
 
 
+        <div className="
+          grid
+          lg:grid-cols-2
+          gap-8
+        ">
+
+
+
+          {/* CUSTOMER INFO */}
+
+          <div className="
+            bg-white/80
+            backdrop-blur
+            rounded-[32px]
+            shadow-xl
+            border
+            border-gray-100
+            p-6
+            md:p-8
+          ">
+
+
+            <h2 className="
+              text-2xl
+              font-black
+              mb-8
+            ">
+              Customer Information
+            </h2>
+
+
+
+            <input
+              className="
+                w-full
+                p-4
+                rounded-2xl
+                border
+                mb-4
+                outline-none
+                focus:ring-2
+                focus:ring-blue-500
+              "
+              placeholder="Full Name"
+              value={name}
+              onChange={(e)=>
+                setName(e.target.value)
+              }
+            />
+
+
+
+            <input
+              className="
+                w-full
+                p-4
+                rounded-2xl
+                border
+                mb-4
+                bg-gray-100
+              "
+              value={
+                user?.email || ""
+              }
+              readOnly
+            />
+
+
+
+            <input
+              className="
+                w-full
+                p-4
+                rounded-2xl
+                border
+                mb-4
+                outline-none
+                focus:ring-2
+                focus:ring-blue-500
+              "
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e)=>
+                setPhone(e.target.value)
+              }
+            />
+
+
+
+            <textarea
+              className="
+                w-full
+                p-4
+                rounded-2xl
+                border
+                mb-4
+                outline-none
+                focus:ring-2
+                focus:ring-blue-500
+              "
+              rows="4"
+              placeholder="Shipping Address"
+              value={address}
+              onChange={(e)=>
+                setAddress(e.target.value)
+              }
+            />
+
+
+
+            <select
+              className="
+                w-full
+                p-4
+                rounded-2xl
+                border
+                outline-none
+              "
+              value={deliveryArea}
+              onChange={(e)=>
+                setDeliveryArea(
+                  e.target.value
+                )
+              }
+            >
+
+              <option value="">
+                Select Delivery Area
+              </option>
+
+              <option value="Dhaka City">
+                Dhaka City - ৳80
+              </option>
+
+              <option value="Dhaka Sub Area">
+                Dhaka Sub Area - ৳100
+              </option>
+
+              <option value="Outside Dhaka">
+                Outside Dhaka - ৳120
+              </option>
+
+            </select>
+
+
+          </div>
+
+                    {/* ORDER SUMMARY */}
+
+
+          <div className="
+            bg-white/90
+            backdrop-blur
+            rounded-[32px]
+            shadow-xl
+            border
+            border-gray-100
+            p-6
+            md:p-8
+          ">
+
+
+            <h2 className="
+              text-2xl
+              font-black
+              mb-8
+            ">
+              Order Summary
+            </h2>
 
 
 
 
-        <div className="bg-white rounded-3xl shadow p-6">
+            <div className="
+              space-y-5
+            ">
 
 
-          <h2 className="text-2xl font-bold mb-6">
+              {
+                cart.length === 0 ? (
 
-            Order Summary
+                  <div className="
+                    text-center
+                    py-10
+                    text-gray-400
+                  ">
+                    Your cart is empty
+                  </div>
 
-          </h2>
-
-
-
-
-
-
-
-          <div className="space-y-5">
-
-
-          {
-            cart.map((item)=>(
+                ) : (
 
 
-              <div
+                cart.map((item)=>(
 
-                key={item.id}
-
-                className="border-b pb-5"
-
-              >
-
-
-
-
-
-                <div className="flex gap-4">
-
-
-                  <img
-
-                    src={
-                      item.image ||
-                      "https://via.placeholder.com/120"
-                    }
-
-                    alt={item.name}
-
-                    className="w-28 h-28 rounded-2xl object-cover"
-
-                  />
+                  <div
+                    key={item.id}
+                    className="
+                      flex
+                      gap-4
+                      items-center
+                      border-b
+                      pb-5
+                    "
+                  >
 
 
-
-
-
-                  <div className="flex-1">
-
-
-                    <h3 className="font-bold text-lg">
-
-                      {item.name}
-
-                    </h3>
-
-
-
-
-                    <p className="text-gray-500">
-
-                      Quantity:
-                      {" "}
-                      {item.quantity || 1}
-
-                    </p>
-
-
-
-
-                    <p className="font-bold mt-2">
-
-                      ৳
-                      {
-                        item.price *
-                        (item.quantity || 1)
+                    <img
+                      src={
+                        item.image ||
+                        "https://via.placeholder.com/120"
                       }
+                      alt={item.name}
+                      className="
+                        w-24
+                        h-24
+                        rounded-2xl
+                        object-cover
+                      "
+                    />
 
-                    </p>
+
+
+                    <div className="
+                      flex-1
+                    ">
+
+
+                      <h3 className="
+                        font-bold
+                        text-lg
+                      ">
+                        {item.name}
+                      </h3>
 
 
 
+                      <p className="
+                        text-gray-500
+                        text-sm
+                      ">
+                        Quantity:
+                        {" "}
+                        {item.quantity || 1}
+                      </p>
 
-                    <Link
 
-                      to={`/product/${item.id}`}
 
-                      className="inline-block mt-3 text-blue-600 font-semibold"
+                      <p className="
+                        mt-2
+                        font-black
+                      ">
+                        ৳
+                        {
+                          item.price *
+                          (item.quantity || 1)
+                        }
+                      </p>
 
-                    >
 
-                      View Product
-
-                    </Link>
-
+                    </div>
 
 
                   </div>
 
 
+                ))
 
-                </div>
+                )
 
+              }
+
+
+            </div>
+
+
+
+
+
+            <div className="
+              mt-8
+              space-y-4
+            ">
+
+
+
+              <div className="
+                flex
+                justify-between
+                text-gray-600
+              ">
+
+                <span>
+                  Subtotal
+                </span>
+
+                <b>
+                  ৳ {subtotal}
+                </b>
+
+              </div>
+
+
+
+
+              <div className="
+                flex
+                justify-between
+                text-gray-600
+              ">
+
+                <span>
+                  Delivery Charge
+                </span>
+
+                <b>
+                  ৳ {deliveryCharge}
+                </b>
+
+              </div>
+
+
+
+
+
+              <div className="
+                flex
+                justify-between
+                text-xl
+                font-black
+                border-t
+                pt-5
+              ">
+
+
+                <span>
+                  Total
+                </span>
+
+
+                <span className="
+                  text-blue-600
+                ">
+                  ৳ {total}
+                </span>
 
 
               </div>
 
 
-            ))
 
-          }
+            </div>
+
+
+
+
+
+
+            {/* TRUST SECTION */}
+
+
+            <div className="
+              mt-8
+              space-y-3
+            ">
+
+
+              <div className="
+                p-4
+                rounded-2xl
+                bg-green-50
+                text-green-700
+                font-semibold
+              ">
+                🚚 Fast & Secure Delivery
+              </div>
+
+
+
+              <div className="
+                p-4
+                rounded-2xl
+                bg-blue-50
+                text-blue-700
+                font-semibold
+              ">
+                💵 Cash On Delivery Available
+              </div>
+
+
+
+
+              <div className="
+                p-4
+                rounded-2xl
+                bg-purple-50
+                text-purple-700
+                font-semibold
+              ">
+                💎 Premium Quality Guarantee
+              </div>
+
+
+
+            </div>
+
+
+
+
+
+
+            <Button
+              className="
+                w-full
+                mt-8
+                h-14
+                rounded-2xl
+                text-lg
+                font-bold
+                bg-gradient-to-r
+                from-blue-600
+                to-purple-600
+                hover:shadow-2xl
+              "
+              onClick={handleOrder}
+            >
+              Complete Order 🚀
+            </Button>
+
 
 
           </div>
-
-
-
-
-
-
-
-
-          <div className="mt-6 space-y-3">
-
-
-            <div className="flex justify-between">
-
-              <span>
-                Subtotal
-              </span>
-
-
-              <span className="font-bold">
-
-                ৳ {subtotal}
-
-              </span>
-
-
-            </div>
-
-
-
-
-
-
-            <div className="flex justify-between">
-
-              <span>
-                Delivery Charge
-              </span>
-
-
-              <span className="font-bold">
-
-                ৳ {deliveryCharge}
-
-              </span>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div className="flex justify-between text-xl font-bold border-t pt-4">
-
-              <span>
-                Total
-              </span>
-
-
-              <span>
-
-                ৳ {total}
-
-              </span>
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-          <Button
-
-            className="w-full mt-6"
-
-            onClick={handleOrder}
-
-          >
-
-            Place Order
-
-          </Button>
-
-
 
 
         </div>
-
-
-
-
 
 
       </div>
@@ -697,5 +741,6 @@ export default function Checkout() {
     </div>
 
   );
+
 
 }
