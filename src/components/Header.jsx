@@ -152,7 +152,7 @@ export default function Header() {
                 <div
   className="
     leading-none
-    ml-3
+    ml-4
     flex
     flex-col
   "
@@ -172,12 +172,12 @@ export default function Header() {
       textShadow: "0 2px 10px rgba(0,0,0,.08)"
     }}
   >
-    Dream Mode
+    DREAM MODE
   </h2>
 
   <p
     className="
-      text-[8px]
+      text-[7px]
       md:text-[11px]
       mt-1
       text-[#D4AF37]
