@@ -45,28 +45,32 @@ export default function WhyChooseUs() {
 
 
   return (
-    <section className="py-16 bg-white">
+
+    <section className="pt-0 pb-10 bg-white">
 
       <div className="container-box">
 
 
         {/* Title */}
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-4">
 
-          <h2 className="section-title">
+          <h2
+            className="
+            text-3xl
+            md:text-5xl
+            font-bold
+            whitespace-nowrap
+            "
+          >
             Why Choose Dream Mode
           </h2>
-
-          <p className="section-subtitle">
-            Premium shopping experience with trusted service
-          </p>
 
         </div>
 
 
 
-        {/* Feature Box */}
+        {/* Features */}
 
         <div
           className="
@@ -75,13 +79,12 @@ export default function WhyChooseUs() {
           via-[#172554]
           to-[#1e3a8a]
           rounded-3xl
-          p-6
+          p-5
           md:p-8
           grid
-          grid-cols-2
-          md:grid-cols-3
-          gap-y-8
-          gap-x-5
+          grid-cols-3
+          gap-y-7
+          gap-x-2
           shadow-xl
           "
         >
@@ -98,54 +101,46 @@ export default function WhyChooseUs() {
                 key={index}
                 className="
                 flex
+                flex-col
                 items-center
-                gap-3
+                text-center
                 "
               >
 
-
-                {/* Icon */}
-
-                <div
+                <Icon
                   className="
                   text-3xl
+                  md:text-4xl
                   text-amber-500
+                  mb-2
+                  "
+                />
+
+
+                <h3
+                  className="
+                  text-white
+                  text-xs
+                  md:text-base
+                  font-semibold
+                  leading-tight
                   "
                 >
-                  <Icon />
-                </div>
+                  {item.title}
+                </h3>
 
 
-
-                {/* Text */}
-
-                <div>
-
-                  <h3
-                    className="
-                    text-white
-                    text-sm
-                    md:text-base
-                    font-semibold
-                    "
-                  >
-                    {item.title}
-                  </h3>
-
-
-                  <p
-                    className="
-                    text-gray-300
-                    text-xs
-                    md:text-sm
-                    mt-1
-                    "
-                  >
-                    {item.desc}
-                  </p>
-
-
-                </div>
+                <p
+                  className="
+                  text-gray-300
+                  text-[10px]
+                  md:text-sm
+                  leading-tight
+                  mt-1
+                  "
+                >
+                  {item.desc}
+                </p>
 
 
               </div>
@@ -160,7 +155,7 @@ export default function WhyChooseUs() {
 
       </div>
 
-
     </section>
+
   );
 }
