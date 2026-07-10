@@ -204,8 +204,7 @@ export default function ProductCard({
               : "p-5"
           }
 
-          --mt-4
-					 md:-mt-4
+          -mt-[14px]
 
           relative
           z-20
