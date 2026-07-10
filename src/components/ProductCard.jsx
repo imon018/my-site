@@ -1,14 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import Button from "./ui/Button";
 
 import useCart from "../hooks/useCart";
+import useWishlist from "../hooks/useWishlist";
 
 import {
   successToast,
 } from "./ui/Toast";
 
 import ProductRating from "./product/ProductRating";
+
 
 
 export default function ProductCard({
@@ -20,9 +24,29 @@ export default function ProductCard({
     useNavigate();
 
 
+
   const {
     addToCart,
   } = useCart();
+
+
+
+
+  const {
+    toggleWishlist,
+    isWishlisted,
+  } = useWishlist();
+
+
+
+
+
+  const liked =
+    isWishlisted(
+      product.id
+    );
+
+
 
 
 
@@ -39,6 +63,7 @@ export default function ProductCard({
 
 
   };
+
 
 
 
@@ -65,13 +90,15 @@ export default function ProductCard({
 
 
 
-      {/* IMAGE SECTION */}
+
+      {/* IMAGE */}
 
 
       <div className="
         relative
         overflow-hidden
       ">
+
 
 
         <img
@@ -81,7 +108,10 @@ export default function ProductCard({
             "https://via.placeholder.com/600"
           }
 
-          alt={product.name}
+          alt={
+            product.name
+          }
+
 
           className="
             h-64
@@ -89,7 +119,7 @@ export default function ProductCard({
             md:h-80
             w-full
             object-cover
-            transition-all
+            transition
             duration-700
             group-hover:scale-110
           "
@@ -100,19 +130,52 @@ export default function ProductCard({
 
 
 
-        {/* DARK OVERLAY */}
+
+        {/* HEART BUTTON */}
 
 
-        <div className="
-          absolute
-          inset-0
-          bg-gradient-to-t
-          from-black/30
-          to-transparent
-          opacity-0
-          group-hover:opacity-100
-          transition
-        " />
+
+        <button
+
+          onClick={()=>
+            toggleWishlist(
+              product
+            )
+          }
+
+
+          className="
+            absolute
+            top-4
+            right-4
+            w-12
+            h-12
+            rounded-full
+            bg-white/95
+            backdrop-blur
+            shadow-xl
+            flex
+            items-center
+            justify-center
+            text-2xl
+            hover:scale-110
+            transition
+          "
+
+        >
+
+          {
+            liked
+            ?
+            "❤️"
+            :
+            "🤍"
+          }
+
+
+        </button>
+
+
 
 
 
@@ -123,7 +186,9 @@ export default function ProductCard({
         {/* PREMIUM BADGE */}
 
 
+
         <div
+
           className="
             absolute
             top-4
@@ -137,8 +202,9 @@ export default function ProductCard({
             text-black
             text-xs
             font-black
-            shadow-xl
+            shadow-lg
           "
+
         >
 
           ✨ Premium
@@ -151,10 +217,13 @@ export default function ProductCard({
 
 
 
+
         {/* PRICE */}
 
 
+
         <div
+
           className="
             absolute
             bottom-4
@@ -163,11 +232,11 @@ export default function ProductCard({
             py-3
             rounded-full
             bg-white/95
-            backdrop-blur
             shadow-xl
             font-black
             text-blue-900
           "
+
         >
 
           ৳ {product.price}
@@ -176,7 +245,9 @@ export default function ProductCard({
 
 
 
+
       </div>
+
 
 
 
@@ -196,12 +267,14 @@ export default function ProductCard({
 
 
         <h3
+
           className="
             text-xl
             font-black
             text-slate-900
             line-clamp-1
           "
+
         >
 
           {product.name}
@@ -211,9 +284,6 @@ export default function ProductCard({
 
 
 
-
-
-        {/* RATING */}
 
 
         <ProductRating
@@ -230,14 +300,17 @@ export default function ProductCard({
 
 
 
+
         <p
+
           className="
             mt-4
-            text-gray-500
             text-sm
+            text-gray-500
             leading-6
             line-clamp-2
           "
+
         >
 
           {product.description}
@@ -251,8 +324,8 @@ export default function ProductCard({
 
 
 
-
         {/* STOCK */}
+
 
 
         <div className="
@@ -266,9 +339,8 @@ export default function ProductCard({
             ?
 
             <span
+
               className="
-                inline-flex
-                items-center
                 px-4
                 py-2
                 rounded-full
@@ -276,7 +348,9 @@ export default function ProductCard({
                 text-green-700
                 text-sm
                 font-bold
+                inline-flex
               "
+
             >
 
               ✓ In Stock
@@ -287,9 +361,8 @@ export default function ProductCard({
             :
 
             <span
+
               className="
-                inline-flex
-                items-center
                 px-4
                 py-2
                 rounded-full
@@ -297,13 +370,14 @@ export default function ProductCard({
                 text-red-600
                 text-sm
                 font-bold
+                inline-flex
               "
+
             >
 
               Out Of Stock
 
             </span>
-
 
           }
 
@@ -318,7 +392,7 @@ export default function ProductCard({
 
 
 
-        {/* ACTION BUTTONS */}
+        {/* BUTTONS */}
 
 
 
@@ -331,18 +405,21 @@ export default function ProductCard({
 
 
 
+
           <Button
 
-            onClick={handleAdd}
+            onClick={
+              handleAdd
+            }
+
 
             className="
               rounded-2xl
               bg-gradient-to-r
               from-blue-900
               to-yellow-500
-              text-white
               font-bold
-              hover:shadow-xl
+              text-white
             "
 
           >
@@ -350,7 +427,6 @@ export default function ProductCard({
             🛒 Add Cart
 
           </Button>
-
 
 
 
@@ -385,7 +461,9 @@ export default function ProductCard({
 
 
 
+
         </div>
+
 
 
 
@@ -400,5 +478,6 @@ export default function ProductCard({
     </div>
 
   );
+
 
 }
