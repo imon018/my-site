@@ -473,8 +473,8 @@ md:text-lg
 
 <div
   className="
-    w-[72px]
-    h-[72px]
+    w-full
+    h-full
     rounded-full
     bg-gradient-to-br
     from-amber-200
@@ -631,7 +631,11 @@ shadow-[0_0_20px_rgba(245,158,11,.18)]
     >
       
 <span className="flex items-center justify-center gap-2">
-    <FaWhatsapp className="text-base" />
+    <FaWhatsapp className="
+    text-[20px]
+    text-[#25D366]
+      "
+      />
     WhatsApp Order
   </span>
       
