@@ -51,6 +51,7 @@ export default function FeaturedProducts() {
 
 
 
+
   useEffect(()=>{
 
     loadProducts();
@@ -88,158 +89,22 @@ export default function FeaturedProducts() {
 
 
 
-  const firstProducts =
-    products.slice(
-      0,
-      4
-    );
+  const slides = [];
 
-
-  const secondProducts =
-    products.slice(
-      4,
-      8
-    );
-
-
-
-
-
-  const createSlides =
-    (items)=>{
-
-      const result = [];
-
-      for(
-        let i = 0;
-        i < items.length;
-        i += 2
-      ){
-
-        result.push(
-          items.slice(
-            i,
-            i + 2
-          )
-        );
-
-      }
-
-      return result;
-
-    };
-
-
-
-
-
-  const renderSlider =
-    (items)=>{
-
-      const slides =
-        createSlides(
-          items
-        );
-
-
-      return (
-
-        <Swiper
-
-          modules={[
-            Pagination
-          ]}
-
-
-          pagination={{
-            clickable:true
-          }}
-
-
-          spaceBetween={16}
-
-
-          onSlideChange={(swiper)=>{
-
-  if(
-    swiper.isEnd &&
-    swiper.activeIndex > 0
+  for(
+    let i = 0;
+    i < products.length;
+    i += 4
   ){
 
-    setTimeout(()=>{
-      navigate("/shop");
-    },300);
+    slides.push(
+      products.slice(
+        i,
+        i + 4
+      )
+    );
 
   }
-
-}}
-
-
-          className="
-            pb-10
-          "
-
-        >
-
-          {
-            slides.map(
-              (
-                slide,
-                index
-              )=>(
-
-                <SwiperSlide
-                  key={index}
-                >
-
-                  <div
-                    className="
-                      grid
-                      grid-cols-2
-                      gap-4
-
-                      lg:grid-cols-4
-                    "
-                  >
-
-                    {
-                      slide.map(
-                        product=>(
-
-                          <ProductCard
-                            key={
-                              product.id
-                            }
-
-                            product={
-                              product
-                            }
-
-                            compact={
-                              true
-                            }
-
-                          />
-
-                        )
-                      )
-                    }
-
-                  </div>
-
-
-                </SwiperSlide>
-
-              )
-            )
-          }
-
-
-        </Swiper>
-
-      );
-
-    };
 
 
 
@@ -262,6 +127,8 @@ export default function FeaturedProducts() {
 
 
 
+        {/* HEADER */}
+
         <div
           className="
             text-center
@@ -269,38 +136,40 @@ export default function FeaturedProducts() {
           "
         >
 
+
           <h2
-  className="
-    inline-flex
-    items-center
-    justify-center
+            className="
+              inline-flex
+              items-center
+              justify-center
 
-    px-5
-    py-2
+              px-5
+              py-2
 
-    rounded-full
+              rounded-full
 
-    border
-    border-amber-500
+              border
+              border-amber-500
 
-    bg-transparent
+              bg-transparent
 
-    text-amber-500
+              text-amber-500
 
-    font-black
+              font-black
 
-    text-lg
-    md:text-2xl
+              text-lg
+              md:text-2xl
 
-    shadow-[0_0_20px_rgba(245,158,11,.35)]
+              shadow-[0_0_20px_rgba(245,158,11,.35)]
 
-    backdrop-blur-md
-  "
->
+              backdrop-blur-md
+            "
+          >
 
-  ✨ Featured Products
+            ✨ Featured Products
 
-</h2>
+          </h2>
+
 
 
           <p
@@ -312,6 +181,8 @@ export default function FeaturedProducts() {
             Discover our best selling products
 
           </p>
+
+
 
 
           <div
@@ -350,43 +221,125 @@ export default function FeaturedProducts() {
 
 
 
+
+
+
         {
           loading
 
           ?
 
-          <div
-            className="
-              text-center
-            "
-          >
+          (
 
-            Loading...
+            <div
+              className="
+                text-center
+              "
+            >
 
-          </div>
+              Loading...
+
+            </div>
+
+          )
 
 
           :
 
-          <>
+          (
+
+          <Swiper
+
+            modules={[
+              Pagination
+            ]}
+
+
+            pagination={{
+              clickable:true
+            }}
+
+
+            spaceBetween={20}
+
+
+            className="
+              pb-12
+            "
+
+          >
+
 
 
             {
-              renderSlider(
-                firstProducts
+              slides.map(
+                (
+                  slide,
+                  index
+                )=>(
+
+
+                <SwiperSlide
+                  key={index}
+                >
+
+
+                  <div
+                    className="
+                      grid
+                      grid-cols-2
+                      gap-4
+
+                      lg:grid-cols-4
+                    "
+                  >
+
+
+                    {
+                      slide.map(
+                        product=>(
+
+                          <ProductCard
+
+                            key={
+                              product.id
+                            }
+
+                            product={
+                              product
+                            }
+
+                            compact={
+                              true
+                            }
+
+                          />
+
+                        )
+
+                      )
+                    }
+
+
+                  </div>
+
+
+
+                </SwiperSlide>
+
+
+                )
+
               )
             }
 
 
 
-            {
-              renderSlider(
-                secondProducts
-              )
-            }
 
 
-          </>
+          </Swiper>
+
+          )
 
         }
 
