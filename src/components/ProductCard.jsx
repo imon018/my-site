@@ -11,6 +11,13 @@ import {
   successToast,
 } from "./ui/Toast";
 
+import ProductRating from "./product/ProductRating";
+
+import {
+  FiEye,
+  FiShoppingCart,
+} from "react-icons/fi";
+
 
 export default function ProductCard({
   product,
