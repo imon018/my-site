@@ -46,6 +46,9 @@ export default function Checkout() {
   const [deliveryArea, setDeliveryArea] =
     useState("");
 
+  const [loading, setLoading] =
+  useState(false);
+
 
 
   useEffect(() => {
@@ -102,7 +105,11 @@ export default function Checkout() {
 
 
   const handleOrder =
-  async()=>{
+async()=>{
+
+  if(loading) return;
+
+  setLoading(true);
 
 
     if(!user){
@@ -215,14 +222,19 @@ export default function Checkout() {
 
     }catch(error){
 
-      console.log(error);
+  console.log(error);
 
-      errorToast(
-        error.message ||
-        "Failed to place order"
-      );
+  errorToast(
+    error.message ||
+    "Failed to place order"
+  );
 
-    }
+}
+finally{
+
+  setLoading(false);
+
+}
 
 
   };
@@ -710,22 +722,29 @@ export default function Checkout() {
 
 
             <Button
-              className="
-                w-full
-                mt-8
-                h-14
-                rounded-2xl
-                text-lg
-                font-bold
-                bg-gradient-to-r
-                from-blue-600
-                to-purple-600
-                hover:shadow-2xl
-              "
-              onClick={handleOrder}
-            >
-              Complete Order 🚀
-            </Button>
+  className="
+    w-full
+    mt-8
+    h-14
+    rounded-2xl
+    text-lg
+    font-bold
+    bg-gradient-to-r
+    from-blue-600
+    to-purple-600
+    hover:shadow-2xl
+    disabled:opacity-60
+    disabled:cursor-not-allowed
+  "
+  onClick={handleOrder}
+  disabled={loading}
+>
+  {
+    loading
+      ? "Processing Order..."
+      : "Complete Order 🚀"
+  }
+</Button>
 
 
 
