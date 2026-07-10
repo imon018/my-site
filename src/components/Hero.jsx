@@ -201,8 +201,8 @@ return (
   className="
     relative
     h-[460px]
-    md:h-[540px]
-    lg:h-[620px]
+    md:h-[430px]
+    lg:h-[500px]
     overflow-hidden
     rounded-b-[30px]
   "
@@ -255,7 +255,7 @@ return (
         container-box
         flex
         items-start
-pt-4
+pt-5
       "
       >
 
@@ -359,7 +359,7 @@ pt-4
   {banner.title}
 </p>
 
-          <div className="h-[90px]" />
+          <div className="h-[45px]" />
           
                       {/* PRICE BOX */}
           
