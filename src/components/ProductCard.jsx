@@ -249,11 +249,19 @@ export default function ProductCard({
 
         </h3>
 
-        <ProductRating
-          productId={
-            product.id
-          }
-        />
+        {/* RATING */}
+
+        {!compact && (
+
+          <ProductRating
+            productId={
+              product.id
+            }
+          />
+
+        )}
+
+        {/* DESCRIPTION */}
 
         {!compact && (
 
@@ -273,83 +281,63 @@ export default function ProductCard({
 
         )}
 
-        <div
-          className={
-            compact
-              ? "mt-2"
-              : "mt-5"
-          }
-        >
+        {/* STOCK */}
 
-          {
-            product.stock > 0
+        {!compact && (
 
-              ? (
+          <div className="mt-5">
 
-                <span
-                  className={`
-                    rounded-full
-                    bg-green-50
-                    text-green-700
-                    font-bold
-                    inline-flex
+            {
+              product.stock > 0
 
-                    ${
-                      compact
-                        ? `
-                          px-2
-                          py-1
-                          text-[10px]
-                        `
-                        : `
-                          px-4
-                          py-2
-                          text-sm
-                        `
-                    }
-                  `}
-                >
+                ? (
 
-                  ✓ In Stock
+                  <span
+                    className="
+                      px-4
+                      py-2
+                      rounded-full
+                      bg-green-50
+                      text-green-700
+                      text-sm
+                      font-bold
+                      inline-flex
+                    "
+                  >
 
-                </span>
+                    ✓ In Stock
 
-              )
+                  </span>
 
-              : (
+                )
 
-                <span
-                  className={`
-                    rounded-full
-                    bg-red-50
-                    text-red-600
-                    font-bold
-                    inline-flex
+                : (
 
-                    ${
-                      compact
-                        ? `
-                          px-2
-                          py-1
-                          text-[10px]
-                        `
-                        : `
-                          px-4
-                          py-2
-                          text-sm
-                        `
-                    }
-                  `}
-                >
+                  <span
+                    className="
+                      px-4
+                      py-2
+                      rounded-full
+                      bg-red-50
+                      text-red-600
+                      text-sm
+                      font-bold
+                      inline-flex
+                    "
+                  >
 
-                  Out Of Stock
+                    Out Of Stock
 
-                </span>
+                  </span>
 
-              )
-          }
+                )
+            }
 
-        </div>
+          </div>
+
+        )}
+
+        {/* BUTTONS */}
 
         <div
           className={`
