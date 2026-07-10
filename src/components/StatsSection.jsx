@@ -20,6 +20,7 @@ import {
 
 import {
   getLatestReviews,
+  formatReviewDate,
 } from "../services/reviewService";
 
 export default function StatsSection() {
