@@ -367,12 +367,12 @@ pt-6
   className="
     absolute
     left-5
-    bottom-20
+    bottom-24
     grid
     grid-cols-3
     gap-1
     max-w-[270px]
-    h-[120px]
+    h-[380px]
 
   "
 >
