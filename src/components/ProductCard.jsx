@@ -303,7 +303,7 @@ export default function ProductCard({
   className="
     flex
     items-center
-    gap-2
+    gap-1
     mt-4
     w-full
   "
@@ -314,51 +314,54 @@ export default function ProductCard({
           {/* ADD CART */}
 
           <Button
+  onClick={handleAdd}
 
-            onClick={
-              handleAdd
-            }
+  className="
+    flex-1
 
-            className="
-  flex-1
+    h-8
 
-  h-8
+    rounded-lg
 
-  rounded-lg
+    bg-black
 
-  bg-black
+    border
+    border-amber-500
 
-  border
-  border-amber-500
+    text-white
 
-  text-white
+    text-[11px]
 
-  text-[11px]
+    font-semibold
 
-  font-semibold
+    px-4
 
-  px-3
+    whitespace-nowrap
 
-  whitespace-nowrap
+    flex
+    items-center
+    justify-center
+  "
+>
+  <span
+    className="
+      flex
+      items-center
+      justify-center
+      gap-1.5
+      whitespace-nowrap
+    "
+  >
 
-  flex
-  items-center
-  justify-center
-"
-          >
+    <FiShoppingCart
+      size={13}
+    />
 
-            <span className="flex items-center justify-center gap-2">
+    Add To Cart
 
-              <FiShoppingCart
-                className="text-base"
-              />
+  </span>
 
-              Add To Cart
-
-            </span>
-
-
-          </Button>
+</Button>
 
 
 
@@ -366,51 +369,46 @@ export default function ProductCard({
 
           {/* VIEW */}
 
-          <Button
-
-            onClick={() =>
-              navigate(
-                `/product/${product.id}`
-              )
-            }
-
+          <button
+  onClick={() =>
+    navigate(
+      `/product/${product.id}`
+    )
+  }
 
   className="
-  w-12
+    w-10
 
-  h-8
+    h-8
 
-  shrink-0
+    shrink-0
 
-  rounded-lg
+    -ml-1
 
-  bg-white/50
+    rounded-lg
 
-  backdrop-blur-xl
+    bg-white/40
 
-  border
-  border-amber-500
+    backdrop-blur-xl
 
-  text-amber-500
+    border
+    border-amber-500
 
-  flex
-  items-center
-  justify-center
-"
-          >
+    text-amber-500
 
-            <span className="flex items-center justify-center gap-2">
+    flex
+    items-center
+    justify-center
 
-              <FiEye
-                className="text-base"
-              />
+    transition
+  "
+>
 
-              View Details
+  <FiEye
+    size={16}
+  />
 
-            </span>
-
-
-          </Button>
+</button>
 
 
         </div>
