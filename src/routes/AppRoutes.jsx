@@ -5,10 +5,17 @@ import AdminLayout from "../layouts/AdminLayout";
 import UserLayout from "../layouts/UserLayout";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
+
+/* User */
+
 import AccountInformation from "../pages/user/AccountInformation";
 import RecentActivities from "../pages/user/RecentActivities";
 import ChangePassword from "../pages/user/ChangePassword";
 import DeleteAccount from "../pages/user/DeleteAccount";
+
+
+/* Admin */
+
 import Dashboard from "../pages/admin/Dashboard";
 import AdminProfile from "../pages/admin/AdminProfile";
 import Users from "../pages/admin/Users";
@@ -20,9 +27,11 @@ import EditProduct from "../pages/admin/EditProduct";
 import Orders from "../pages/admin/Orders";
 import Analytics from "../pages/admin/Analytics";
 import Settings from "../pages/admin/Settings";
-import VerifyEmail from "../pages/VerifyEmail";
 import Subscribers from "../pages/admin/Subscribers";
 import Newsletter from "../pages/admin/Newsletter";
+
+
+/* Public Pages */
 
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
@@ -38,262 +47,377 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import OrderSuccess from "../pages/OrderSuccess";
 import MyOrders from "../pages/MyOrders";
+import VerifyEmail from "../pages/VerifyEmail";
+
+
+/* Policies */
+
 import ReturnPolicy from "../pages/ReturnPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
 import ShippingPolicy from "../pages/ShippingPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Terms from "../pages/Terms";
 import SizeGuide from "../pages/SizeGuide";
-import Contact from "../pages/Contact";
+
 
 import NotFound from "../pages/NotFound";
 
 
-export default function AppRoutes() {
-
-  return (
-
-    <Routes>
 
 
-      {/* Public Website Routes */}
+export default function AppRoutes(){
 
-      <Route element={<MainLayout />}>
 
-        <Route path="/" element={<Home />} />
+return (
 
-        <Route path="/shop" element={<Shop />} />
+<Routes>
 
-        <Route
-  path="/profile"
-  element={<UserLayout />}
+
+
+{/* =========================
+      WEBSITE ROUTES
+========================= */}
+
+
+<Route element={<MainLayout />}>
+
+
+<Route
+path="/"
+element={<Home />}
+/>
+
+
+<Route
+path="/shop"
+element={<Shop />}
+/>
+
+
+
+<Route
+path="/product/:id"
+element={<ProductDetails />}
+/>
+
+
+
+<Route
+path="/cart"
+element={<Cart />}
+/>
+
+
+
+<Route
+path="/checkout"
+element={<Checkout />}
+/>
+
+
+
+<Route
+path="/order-success"
+element={<OrderSuccess />}
+/>
+
+
+
+<Route
+path="/about"
+element={<About />}
+/>
+
+
+
+<Route
+path="/contact"
+element={<Contact />}
+/>
+
+
+
+<Route
+path="/login"
+element={<Login />}
+/>
+
+
+
+<Route
+path="/register"
+element={<Register />}
+/>
+
+
+
+<Route
+path="/forgot-password"
+element={<ForgotPassword />}
+/>
+
+
+
+<Route
+path="/verify-email"
+element={<VerifyEmail />}
+/>
+
+
+
+
+
+{/* USER PROFILE */}
+
+
+<Route
+path="/profile"
+element={<UserLayout />}
 >
 
-  <Route
-    index
-    element={<Profile />}
-  />
 
-  <Route
-    path="account"
-    element={<AccountInformation />}
-  />
+<Route
+index
+element={<Profile />}
+/>
 
-  <Route
-    path="activity"
-    element={<RecentActivities />}
-  />
 
-  <Route
-    path="orders"
-    element={<MyOrders />}
-  />
+<Route
+path="account"
+element={<AccountInformation />}
+/>
 
-  <Route
-    path="wishlist"
-    element={<Wishlist />}
-  />
 
-  <Route
-    path="security/password"
-    element={<ChangePassword />}
-  />
+<Route
+path="activity"
+element={<RecentActivities />}
+/>
 
-  <Route
-    path="security/delete"
-    element={<DeleteAccount />}
-  />
+
+<Route
+path="orders"
+element={<MyOrders />}
+/>
+
+
+<Route
+path="wishlist"
+element={<Wishlist />}
+/>
+
+
+<Route
+path="security/password"
+element={<ChangePassword />}
+/>
+
+
+<Route
+path="security/delete"
+element={<DeleteAccount />}
+/>
+
 
 </Route>
 
-        <Route
-          path="/product/:id"
-          element={<ProductDetails />}
-        />
 
-        <Route path="/cart" element={<Cart />} />
 
-        <Route
-          path="/checkout"
-          element={<Checkout />}
-        />
 
-        <Route
-          path="/order-success"
-          element={<OrderSuccess />}
-        />
 
-        <Route
-          path="/about"
-          element={<About />}
-        />
+{/* =========================
+       POLICY PAGES
+========================= */}
 
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        <Route
-  path="/forgot-password"
-  element={<ForgotPassword />}
+<Route
+path="/return-policy"
+element={<ReturnPolicy />}
 />
 
-        <Route
-  path="/verify-email"
-  element={<VerifyEmail />}
+
+
+<Route
+path="/refund-policy"
+element={<RefundPolicy />}
 />
 
-      </Route>
 
-      {
- path:"/return-policy",
- element:<ReturnPolicy/>
-},
 
-{
- path:"/refund-policy",
- element:<RefundPolicy/>
-},
+<Route
+path="/shipping-policy"
+element={<ShippingPolicy />}
+/>
 
-{
- path:"/shipping-policy",
- element:<ShippingPolicy/>
-},
 
-{
- path:"/privacy-policy",
- element:<PrivacyPolicy/>
-},
 
-{
- path:"/terms",
- element:<Terms/>
-},
+<Route
+path="/privacy-policy"
+element={<PrivacyPolicy />}
+/>
 
-{
- path:"/size-guide",
- element:<SizeGuide/>
-},
 
-{
- path:"/contact",
- element:<Contact/>
-},
+
+<Route
+path="/terms"
+element={<Terms />}
+/>
+
+
+
+<Route
+path="/size-guide"
+element={<SizeGuide />}
+/>
+
+
+
+</Route>
 
 
 
 
 
 
-{/* Admin Dashboard Routes */}
+{/* =========================
+       ADMIN ROUTES
+========================= */}
 
 
 
-      {/* Admin Dashboard Routes */}
+<Route
 
-      <Route
-  path="/admin"
-  element={
-    <ProtectedAdminRoute>
-      <AdminLayout />
-    </ProtectedAdminRoute>
-  }
+path="/admin"
+
+element={
+
+<ProtectedAdminRoute>
+
+<AdminLayout />
+
+</ProtectedAdminRoute>
+
+}
+
 >
 
-        <Route
-          index
-          element={<Dashboard />}
-        />
 
-
-        <Route
-          path="profile"
-          element={<AdminProfile />}
-        />
-
-
-        <Route
-          path="users"
-          element={<Users />}
-        />
-
-
-        <Route
-          path="products"
-          element={<Products />}
-        />
-
-        <Route
-  path="add-product"
-  element={<AddProduct />}
+<Route
+index
+element={<Dashboard />}
 />
 
-        <Route
-  path="edit-product/:id"
-  element={<EditProduct />}
-/>
-        
-        <Route
-  path="orders"
-  element={<Orders />}
+
+
+<Route
+path="profile"
+element={<AdminProfile />}
 />
 
-        <Route
-  path="add-order"
-  element={<AddOrder />}
+
+
+<Route
+path="users"
+element={<Users />}
 />
 
-        <Route
-  path="analytics"
-  element={<Analytics />}
+
+
+<Route
+path="products"
+element={<Products />}
 />
 
-        <Route
-  path="settings"
-  element={<Settings />}
+
+
+<Route
+path="add-product"
+element={<AddProduct />}
 />
 
-        <Route
-  path="banners"
-  element={<HeroBanners />}
+
+
+<Route
+path="edit-product/:id"
+element={<EditProduct />}
 />
 
-        <Route
- path="subscribers"
- element={<Subscribers />}
+
+
+<Route
+path="orders"
+element={<Orders />}
 />
 
-        <Route
-  path="newsletter"
-  element={<Newsletter />}
+
+
+<Route
+path="add-order"
+element={<AddOrder />}
 />
-        
-
-
-      </Route>
 
 
 
-      {/* 404 Page */}
-
-      <Route
-        path="*"
-        element={<NotFound />}
-      />
+<Route
+path="analytics"
+element={<Analytics />}
+/>
 
 
-    </Routes>
 
-  );
+<Route
+path="settings"
+element={<Settings />}
+/>
+
+
+
+<Route
+path="banners"
+element={<HeroBanners />}
+/>
+
+
+
+<Route
+path="subscribers"
+element={<Subscribers />}
+/>
+
+
+
+<Route
+path="newsletter"
+element={<Newsletter />}
+/>
+
+
+</Route>
+
+
+
+
+
+
+{/* =========================
+       404
+========================= */}
+
+
+
+<Route
+
+path="*"
+
+element={<NotFound />}
+
+/>
+
+
+
+</Routes>
+
+);
+
 
 }
