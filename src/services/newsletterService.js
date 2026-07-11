@@ -62,3 +62,13 @@ export async function getSubscribers() {
   }));
 
 }
+
+// DELETE SUBSCRIBER
+
+export async function deleteSubscriber(id) {
+
+  await deleteDoc(
+    doc(db, "subscribers", id)
+  );
+
+}
