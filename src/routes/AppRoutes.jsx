@@ -58,7 +58,8 @@ import RefundPolicy from "../pages/RefundPolicy";
 import ShippingPolicy from "../pages/ShippingPolicy";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Terms from "../pages/Terms";
-
+import AboutUs from "../pages/AboutUs";
+import FAQs from "../pages/FAQs";
 
 import NotFound from "../pages/NotFound";
 
@@ -261,6 +262,16 @@ element={<PrivacyPolicy />}
 <Route
 path="/page/terms"
 element={<Terms />}
+/>
+
+      <Route
+path="/about-us"
+element={<AboutUs />}
+/>
+
+      <Route
+path="/faqs"
+element={<FAQs />}
 />
 
 
