@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 
 
+
 export default function Footer(){
 
 
@@ -25,6 +26,7 @@ pb-24
 px-6
 "
 
+
 >
 
 
@@ -35,26 +37,44 @@ max-w-7xl
 mx-auto
 "
 
+
 >
 
 
-{/* TOP GRID */}
+
+{/* MAIN SECTION */}
+
+
 
 <div
 
 className="
 grid
-grid-cols-1
+grid-cols-2
 md:grid-cols-3
-gap-10
+gap-8
 "
+
 
 >
 
 
+
+
 {/* BRAND */}
 
-<div>
+
+
+<div
+
+className="
+col-span-2
+md:col-span-1
+"
+
+
+>
+
 
 
 <div
@@ -66,7 +86,9 @@ gap-3
 mb-5
 "
 
+
 >
+
 
 <img
 
@@ -81,7 +103,9 @@ object-contain
 />
 
 
+
 <div>
+
 
 <h2
 
@@ -91,11 +115,27 @@ font-bold
 tracking-wide
 "
 
+
 >
 
-DREAM MODE
+
+DREAM
+
+<span
+
+className="
+text-amber-500
+"
+
+>
+
+ MODE
+
+</span>
+
 
 </h2>
+
 
 
 <p
@@ -105,15 +145,20 @@ text-xs
 text-amber-400
 "
 
+
 >
+
 Dress Your Dream, Live Your Style
+
 </p>
 
 
 </div>
 
 
+
 </div>
+
 
 
 
@@ -122,9 +167,10 @@ Dress Your Dream, Live Your Style
 
 className="
 text-gray-300
-leading-7
 text-sm
+leading-7
 "
+
 
 >
 
@@ -135,7 +181,12 @@ We ensure quality, style and customer satisfaction.
 
 
 
+
 </div>
+
+
+
+
 
 
 
@@ -144,7 +195,9 @@ We ensure quality, style and customer satisfaction.
 {/* QUICK LINKS */}
 
 
+
 <div>
+
 
 
 <h3
@@ -155,6 +208,7 @@ font-bold
 text-lg
 mb-5
 "
+
 
 >
 
@@ -172,48 +226,63 @@ text-gray-300
 text-sm
 "
 
+
 >
 
 
 <li>
-<Link to="/">
+
+<Link
+to="/"
+className="hover:text-amber-400"
+>
+
 Home
+
 </Link>
+
 </li>
 
 
+
+
 <li>
-<Link to="/shop">
+
+<Link
+to="/shop"
+className="hover:text-amber-400"
+>
+
 Shop
+
 </Link>
+
 </li>
 
 
-<li>
-<Link to="/cart">
-Cart
-</Link>
-</li>
 
 
 <li>
-<Link to="/profile">
+
+<Link
+to="/profile"
+className="hover:text-amber-400"
+>
+
 My Account
+
 </Link>
+
 </li>
 
-
-<li>
-<Link to="/orders">
-Track Order
-</Link>
-</li>
 
 
 </ul>
 
 
+
 </div>
+
 
 
 
@@ -225,7 +294,9 @@ Track Order
 {/* CUSTOMER SERVICE */}
 
 
+
 <div>
+
 
 
 <h3
@@ -237,11 +308,13 @@ text-lg
 mb-5
 "
 
+
 >
 
 Customer Service
 
 </h3>
+
 
 
 
@@ -253,63 +326,94 @@ text-gray-300
 text-sm
 "
 
+
 >
 
 
+
 <li>
 
-<Link to="/return-policy">
+<Link
+to="/return-policy"
+className="hover:text-amber-400"
+>
+
 Return Policy
+
 </Link>
 
 </li>
 
 
+
+
 <li>
 
-<Link to="/refund-policy">
+<Link
+to="/refund-policy"
+className="hover:text-amber-400"
+>
+
 Refund Policy
+
 </Link>
 
 </li>
 
 
 
+
 <li>
 
-<Link to="/shipping-policy">
+<Link
+to="/shipping-policy"
+className="hover:text-amber-400"
+>
+
 Shipping Policy
+
 </Link>
 
 </li>
 
 
 
+
 <li>
 
-<Link to="/privacy-policy">
+<Link
+to="/privacy-policy"
+className="hover:text-amber-400"
+>
+
 Privacy Policy
+
 </Link>
 
 </li>
+
 
 
 
 <li>
 
-<Link to="/terms">
+<Link
+to="/terms"
+className="hover:text-amber-400"
+>
+
 Terms & Conditions
+
 </Link>
 
 </li>
+
+
 
 
 </ul>
 
 
-</div>
-
-
 
 </div>
 
@@ -317,11 +421,19 @@ Terms & Conditions
 
 
 
+</div>
 
 
 
 
-{/* CONTACT */}
+
+
+
+
+
+{/* CONTACT + PAYMENT */}
+
+
 
 
 <div
@@ -332,15 +444,25 @@ border-t
 border-white/10
 pt-8
 grid
+grid-cols-1
 md:grid-cols-2
 gap-8
 "
+
 
 >
 
 
 
+
+
+
+{/* CONTACT */}
+
+
+
 <div>
+
 
 
 <h3
@@ -351,26 +473,44 @@ font-bold
 mb-5
 "
 
+
 >
+
 Contact Us
+
 </h3>
 
 
-<div className="space-y-4 text-gray-300 text-sm">
+
+<div
+
+className="
+space-y-4
+text-gray-300
+text-sm
+"
 
 
-<p className="flex gap-3 items-center">
+>
 
-<FiPhone className="text-amber-500"/>
+
+<p className="flex items-center gap-3">
+
+<FiPhone
+className="text-amber-500"
+/>
 
 +8801406978619
 
 </p>
 
 
-<p className="flex gap-3 items-center">
 
-<FiMail className="text-amber-500"/>
+<p className="flex items-center gap-3">
+
+<FiMail
+className="text-amber-500"
+/>
 
 dreammode27@gmail.com
 
@@ -378,16 +518,21 @@ dreammode27@gmail.com
 
 
 
-<p className="flex gap-3 items-center">
 
-<FiMapPin className="text-amber-500"/>
+<p className="flex items-center gap-3">
+
+<FiMapPin
+className="text-amber-500"
+/>
 
 Dhaka, Bangladesh
 
 </p>
 
 
+
 </div>
+
 
 
 </div>
@@ -407,6 +552,7 @@ Dhaka, Bangladesh
 <div>
 
 
+
 <h3
 
 className="
@@ -415,11 +561,13 @@ font-bold
 mb-5
 "
 
+
 >
 
 We Accept
 
 </h3>
+
 
 
 
@@ -432,67 +580,83 @@ flex-wrap
 items-center
 "
 
+
 >
 
 
-<img
-
-src="/payments/visa.png"
-
-className="
-h-8
-w-auto
-"
-
-/>
-
 
 <img
 
-src="/payments/mastercard.png"
+src="/payments/visa-logo.png"
 
 className="
-h-8
-w-auto
+h-10
+object-contain
 "
 
 />
 
 
 
+
+
 <img
 
-src="/payments/bkash.png"
+src="/payments/mastercard-logo.png"
 
 className="
-h-8
-w-auto
+h-10
+object-contain
 "
 
 />
 
 
 
+
+
 <img
 
-src="/payments/nagad.png"
+src="/payments/bkash-logo.png"
 
 className="
-h-8
-w-auto
+h-10
+object-contain
 "
 
 />
+
+
+
+
+
+<img
+
+src="/payments/nagad-logo.png"
+
+className="
+h-10
+object-contain
+"
+
+/>
+
+
+
 
 
 </div>
 
 
+
+</div>
+
+
+
+
 </div>
 
 
-
-</div>
 
 
 
@@ -502,6 +666,7 @@ w-auto
 
 
 {/* COPYRIGHT */}
+
 
 
 
@@ -517,17 +682,22 @@ text-gray-400
 text-sm
 "
 
+
 >
 
 
-© 2026 DREAM MODE. All Rights Reserved.
+© 2026 All Rights Reserved by DREAM MODE.
 
 
 </div>
 
 
 
+
+
+
 </div>
+
 
 
 </footer>
