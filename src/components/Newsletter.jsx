@@ -42,12 +42,10 @@ export default function Newsletter() {
 
     try{
 
-
       setLoading(true);
 
 
       await subscribeEmail(email);
-
 
 
       successToast(
@@ -56,7 +54,6 @@ export default function Newsletter() {
 
 
       setEmail("");
-
 
 
     }catch(error){
@@ -86,64 +83,73 @@ export default function Newsletter() {
 
   return (
 
-    <section className="
-      pb-20
-    ">
+    <section
+      className="
+        pb-1
+      "
+    >
+
+      <div
+        className="
+          container-box
+        "
+      >
+
+        <div
+          className="
+            rounded-[40px]
+            bg-white
+            border
+            border-slate-200
+            shadow-premium
+            px-6
+            py-10
+            md:px-12
+            md:py-14
+            text-center
+          "
+        >
 
 
-      <div className="
-        container-box
-      ">
-
-
-        <div className="
-          rounded-[40px]
-          bg-white
-          border
-          border-slate-200
-          shadow-premium
-          px-6
-          py-10
-          md:px-12
-          md:py-14
-          text-center
-        ">
-
-
-          <h2 className="
-            text-3xl
-            md:text-4xl
-            font-black
-            text-blue-950
-          ">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              font-black
+              text-blue-950
+            "
+          >
             Stay Updated
           </h2>
 
 
 
-          {/* Gold underline */}
+          <div
+            className="
+              w-full
+              max-w-xs
+              h-[2px]
+              bg-gradient-to-r
+              from-transparent
+              via-yellow-500
+              to-transparent
+              mx-auto
+              mt-4
+            "
+          />
 
-          <div className="
-            w-full
-            max-w-xs
-            h-[2px]
-            bg-gradient-to-r
-            from-transparent
-            via-yellow-500
-            to-transparent
-            mx-auto
-            mt-4
-          "/>
 
 
-
-          <p className="
-            mt-5
-            text-gray-500
-          ">
+          <p
+            className="
+              mt-5
+              text-gray-500
+            "
+          >
             Subscribe to get special offers,
             free gifts and exclusive deals.
           </p>
+
 
 
 
@@ -184,7 +190,7 @@ export default function Newsletter() {
                 py-4
                 outline-none
                 focus:ring-2
-                focus:ring-blue-500
+                focus:ring-blue-900
               "
 
             />
