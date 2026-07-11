@@ -61,7 +61,9 @@ export default function StatsSection() {
 
           <h2
   className="
-  section-title
+  text-2xl
+  md:text-5xl
+  font-bold
   whitespace-nowrap
   text-center
   "
@@ -70,15 +72,20 @@ export default function StatsSection() {
 </h2>
 
           <div
-            className="
-            w-24
-            h-1
-            bg-amber-500
-            rounded-full
-            mx-auto
-            mt-4
-            "
-          />
+  className="
+  w-72
+  max-w-full
+  h-1.5
+  bg-gradient-to-r
+  from-yellow-400
+  via-amber-500
+  to-yellow-400
+  rounded-full
+  mx-auto
+  mt-4
+  shadow-lg
+  "
+/>
 
         </div>
 
