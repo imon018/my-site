@@ -300,7 +300,6 @@ export default function ProductCard({
         {/* BUTTONS */}
 
         <div
-  cla<div
   className="
     flex
     items-center
