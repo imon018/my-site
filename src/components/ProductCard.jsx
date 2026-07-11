@@ -135,31 +135,29 @@ export default function ProductCard({
           }
 
           className="
-            absolute
-            top-3
-            right-3
+  absolute
 
-            w-8
-            h-8
+  top-1
+  right-1
 
-            rounded-full
+  text-sm
 
-            bg-white/90
+  bg-transparent
 
-            backdrop-blur-md
+  backdrop-blur-sm
 
-            shadow-xl
+  text-white
 
-            flex
-            items-center
-            justify-center
+  drop-shadow-[0_1px_4px_rgba(0,0,0,.9)]
 
-            text-base
+  opacity-90
 
-            hover:scale-110
+  hover:scale-110
 
-            transition
-          "
+  transition-all
+
+  duration-300
+"
         >
 
           {
@@ -177,36 +175,35 @@ export default function ProductCard({
         {/* NEW BADGE */}
 
         <div
-          className="
-            absolute
-            top-3
-            left-2
+  className="
+    absolute
 
-            px-2
-            py-1
+    top-1.5
+    left-1.5
 
-            rounded-full
+    px-1.5
+    py-[1px]
 
-            border
-            border-amber-500
+    rounded-full
 
-            bg-transparent
+    border
+    border-amber-400/70
 
-            text-amber-500
+    bg-black/20
 
-            font-bold
+    backdrop-blur-md
 
-            text-[9px]
+    text-amber-400
 
-            shadow-[0_0_20px_rgba(245,158,11,.35)]
+    font-semibold
 
-            backdrop-blur-md
-          "
-        >
+    text-[7px]
 
-          ✨ New
-
-        </div>
+    shadow-[0_0_10px_rgba(245,158,11,.25)]
+  "
+>
+  ✨ New
+</div>
 
 
       </div>
@@ -303,14 +300,14 @@ export default function ProductCard({
         {/* BUTTONS */}
 
         <div
-          className="
-            flex
-            flex-col
-            gap-2
-            mt-4
-            w-full
-          "
-        >
+  className="
+    flex
+    items-center
+    gap-2
+    mt-4
+    w-full
+  "
+>
 
 
 
@@ -323,8 +320,8 @@ export default function ProductCard({
             }
 
             className="
-              w-full
-              h-10
+  flex-1
+  h-10
 
               rounded-lg
 
@@ -373,8 +370,9 @@ export default function ProductCard({
 
 
             className="
-              w-full
-              h-10
+            w-12
+h-10
+shrink-0
 
               rounded-lg
 
