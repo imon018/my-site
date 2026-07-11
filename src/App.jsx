@@ -1,5 +1,3 @@
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
-
 import AppRoutes from "./routes/AppRoutes";
 
 import AuthProvider from "./context/AuthContext";
@@ -83,9 +81,6 @@ function AppContent() {
 
 
       <AppRoutes />
-
-
-      <FloatingWhatsApp />
 
 
       <Toaster
