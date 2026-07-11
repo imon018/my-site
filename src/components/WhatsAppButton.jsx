@@ -1,50 +1,265 @@
+import {
+  useEffect,
+  useState,
+  useRef,
+} from "react";
+
+import {
+  FaWhatsapp,
+} from "react-icons/fa";
+
+import {
+  siteConfig,
+} from "../config/siteConfig";
+
+
 export default function WhatsAppButton() {
+
+
+  const buttonRef = useRef(null);
+
+
+  const [position,setPosition] = useState({
+
+    x: window.innerWidth - 90,
+
+    y: window.innerHeight - 120,
+
+  });
+
+
+
+  const [dragging,setDragging] = useState(false);
+
+
+  const offset = useRef({
+
+    x:0,
+
+    y:0,
+
+  });
+
+
+
+
+
+  useEffect(()=>{
+
+
+    const saved =
+      localStorage.getItem(
+        "whatsapp-position"
+      );
+
+
+    if(saved){
+
+      setPosition(
+        JSON.parse(saved)
+      );
+
+    }
+
+
+  },[]);
+
+
+
+
+
+  const startDrag = (e)=>{
+
+
+    setDragging(true);
+
+
+    const clientX =
+      e.touches
+      ? e.touches[0].clientX
+      : e.clientX;
+
+
+    const clientY =
+      e.touches
+      ? e.touches[0].clientY
+      : e.clientY;
+
+
+
+    offset.current = {
+
+      x:
+      clientX - position.x,
+
+      y:
+      clientY - position.y,
+
+    };
+
+
+  };
+
+
+
+
+
+
+  const drag = (e)=>{
+
+
+    if(!dragging) return;
+
+
+
+    const clientX =
+      e.touches
+      ? e.touches[0].clientX
+      : e.clientX;
+
+
+    const clientY =
+      e.touches
+      ? e.touches[0].clientY
+      : e.clientY;
+
+
+
+    const newPosition = {
+
+
+      x:
+      clientX - offset.current.x,
+
+
+      y:
+      clientY - offset.current.y,
+
+
+    };
+
+
+
+    setPosition(newPosition);
+
+
+  };
+
+
+
+
+
+
+
+  const stopDrag = ()=>{
+
+
+    setDragging(false);
+
+
+    localStorage.setItem(
+
+      "whatsapp-position",
+
+      JSON.stringify(position)
+
+    );
+
+
+  };
+
+
+
+
+
+
+
   return (
+
+
     <a
-      href="https://wa.me/8801406978619?text=Hello%20Dream%20Mode,%20I'm%20interested%20in%20your%20products."
+
+      ref={buttonRef}
+
+      href={siteConfig.whatsapp}
+
       target="_blank"
+
       rel="noopener noreferrer"
+
+
+      onMouseDown={startDrag}
+
+      onMouseMove={drag}
+
+      onMouseUp={stopDrag}
+
+
+      onTouchStart={startDrag}
+
+      onTouchMove={drag}
+
+      onTouchEnd={stopDrag}
+
+
+      style={{
+
+        left:position.x,
+
+        top:position.y,
+
+        touchAction:"none",
+
+      }}
+
+
       className="
         fixed
-        bottom-6
-        right-6
-        z-[999]
-        group
-      "
-    >
-      <div
-        className="
-          flex
-          items-center
-          gap-3
-          bg-gradient-to-r
-          from-blue-700
-          to-yellow-500
-          text-white
-          px-5
-          py-4
-          rounded-full
-          shadow-2xl
-          hover:scale-105
-          transition-all
-          duration-300
-          animate-pulse
-        "
-      >
-        <span className="text-2xl">
-          💬
-        </span>
+        z-[9999]
+        w-14
+        h-14
+        rounded-full
+        flex
+        items-center
+        justify-center
 
-        <span
-          className="
-            hidden
-            sm:block
-            font-semibold
-          "
-        >
-          WhatsApp
-        </span>
-      </div>
+        border-2
+        border-amber-500
+
+        bg-white/20
+
+        backdrop-blur-xl
+
+        shadow-2xl
+
+        cursor-grab
+
+        active:cursor-grabbing
+
+        transition-transform
+
+        hover:scale-110
+
+      "
+
+
+    >
+
+
+      <FaWhatsapp
+
+        className="
+          text-3xl
+          text-amber-500
+        "
+
+      />
+
+
     </a>
+
+
   );
+
+
 }
