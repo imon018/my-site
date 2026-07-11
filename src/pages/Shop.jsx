@@ -93,15 +93,16 @@ export default function Shop() {
 
 
       <div
-         max-w-7xl
+  className="
+    max-w-7xl
     mx-auto
     px-4
     md:px-6
     pt-2
     pb-10
     md:pb-16
-        "
-      >
+  "
+>
 
 
 
