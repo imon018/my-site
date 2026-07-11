@@ -21,6 +21,7 @@ import Orders from "../pages/admin/Orders";
 import Analytics from "../pages/admin/Analytics";
 import Settings from "../pages/admin/Settings";
 import VerifyEmail from "../pages/VerifyEmail";
+import Subscribers from "../pages/admin/Subscribers";
 
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
@@ -222,6 +223,11 @@ export default function AppRoutes() {
         <Route
   path="banners"
   element={<HeroBanners />}
+/>
+
+        <Route
+ path="subscribers"
+ element={<Subscribers />}
 />
         
 
