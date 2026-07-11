@@ -1,185 +1,504 @@
 import PolicyLayout from "../components/PolicyLayout";
 
 import {
-FiPhone,
-FiMail,
-FiMapPin
+  FiPhone,
+  FiMail,
+  FiMapPin,
+  FiFacebook,
+  FiSend,
 } from "react-icons/fi";
 
 import { siteConfig } from "../config/siteConfig";
 
 
-export default function Contact(){
 
+export default function Contact() {
 
-return (
 
-<PolicyLayout
+  const submitHandler = (e) => {
 
-title="Contact Us"
+    e.preventDefault();
 
-description="We are always ready to help you with your shopping experience."
+    alert(
+      "Thank you for contacting Dream Mode. We will get back to you soon."
+    );
 
->
+  };
 
 
-<div className="space-y-8">
 
+  return (
 
+    <PolicyLayout
 
-<p>
-Have questions about products, orders or policies?
-Feel free to contact Dream Mode support team.
-</p>
+      title="Contact Us"
 
+      description="We are always ready to help you with your shopping experience."
 
+    >
 
 
-<div className="grid md:grid-cols-3 gap-5">
+      <div
+        className="
+        space-y-10
+        "
+      >
 
 
 
-<div
-className="
-bg-slate-50
-rounded-2xl
-p-5
-"
->
+        <p>
+          Have questions about products, orders, delivery or
+          policies? Contact Dream Mode support team and we
+          will assist you as soon as possible.
+        </p>
 
-<FiPhone
-className="
-text-amber-500
-text-3xl
-mb-3
-"
-/>
 
 
-<h3 className="font-bold">
-Phone
-</h3>
 
 
-<p>
-{siteConfig.phone}
-</p>
+        {/* Contact Cards */}
 
 
-</div>
+        <div
+          className="
+          grid
+          md:grid-cols-3
+          gap-5
+          "
+        >
 
 
 
+          <div
+            className="
+            bg-slate-50
+            rounded-3xl
+            p-6
+            border
+            border-slate-100
+            "
+          >
 
+            <FiPhone
+              className="
+              text-amber-500
+              text-3xl
+              mb-4
+              "
+            />
 
-<div
-className="
-bg-slate-50
-rounded-2xl
-p-5
-"
->
 
-<FiMail
-className="
-text-amber-500
-text-3xl
-mb-3
-"
-/>
+            <h3
+              className="
+              font-bold
+              text-blue-950
+              "
+            >
+              Phone
+            </h3>
 
 
-<h3 className="font-bold">
-Email
-</h3>
+            <p
+              className="
+              text-gray-600
+              mt-2
+              "
+            >
+              {siteConfig.phone}
+            </p>
 
 
-<p>
-{siteConfig.email}
-</p>
+          </div>
 
 
-</div>
 
 
 
 
+          <div
+            className="
+            bg-slate-50
+            rounded-3xl
+            p-6
+            border
+            border-slate-100
+            "
+          >
 
-<div
-className="
-bg-slate-50
-rounded-2xl
-p-5
-"
->
+            <FiMail
+              className="
+              text-amber-500
+              text-3xl
+              mb-4
+              "
+            />
 
-<FiMapPin
-className="
-text-amber-500
-text-3xl
-mb-3
-"
-/>
 
+            <h3
+              className="
+              font-bold
+              text-blue-950
+              "
+            >
+              Email
+            </h3>
 
-<h3 className="font-bold">
-Location
-</h3>
 
+            <p
+              className="
+              text-gray-600
+              mt-2
+              break-all
+              "
+            >
+              {siteConfig.email}
+            </p>
 
-<p>
-Dhaka, Bangladesh
-</p>
 
+          </div>
 
-</div>
 
 
 
-</div>
 
 
 
+          <div
+            className="
+            bg-slate-50
+            rounded-3xl
+            p-6
+            border
+            border-slate-100
+            "
+          >
 
+            <FiMapPin
+              className="
+              text-amber-500
+              text-3xl
+              mb-4
+              "
+            />
 
-<a
 
-href={siteConfig.whatsapp}
+            <h3
+              className="
+              font-bold
+              text-blue-950
+              "
+            >
+              Location
+            </h3>
 
-target="_blank"
 
-rel="noopener noreferrer"
+            <p
+              className="
+              text-gray-600
+              mt-2
+              "
+            >
+              Dhaka, Bangladesh
+            </p>
 
-className="
-inline-flex
-items-center
-justify-center
-bg-amber-500
-text-black
-font-bold
-px-8
-py-4
-rounded-full
-hover:scale-105
-transition
-"
 
->
+          </div>
 
-Chat On WhatsApp
 
-</a>
 
+        </div>
 
 
 
 
-</div>
 
 
-</PolicyLayout>
 
 
-);
+        {/* Social Buttons */}
+
+
+        <div
+          className="
+          flex
+          flex-wrap
+          gap-4
+          "
+        >
+
+
+
+          <a
+
+            href={siteConfig.facebook}
+
+            target="_blank"
+
+            rel="noopener noreferrer"
+
+            className="
+            inline-flex
+            items-center
+            gap-3
+            px-6
+            py-3
+            rounded-full
+            bg-blue-600
+            text-white
+            font-semibold
+            hover:scale-105
+            transition
+            "
+
+          >
+
+            <FiFacebook />
+
+            Facebook Page
+
+          </a>
+
+
+
+
+
+
+          <a
+
+            href={siteConfig.whatsapp}
+
+            target="_blank"
+
+            rel="noopener noreferrer"
+
+            className="
+            inline-flex
+            items-center
+            gap-3
+            px-6
+            py-3
+            rounded-full
+            bg-amber-500
+            text-black
+            font-semibold
+            hover:scale-105
+            transition
+            "
+
+          >
+
+            WhatsApp
+
+          </a>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        {/* Contact Form */}
+
+
+
+        <div
+          className="
+          bg-slate-50
+          rounded-[35px]
+          p-6
+          md:p-10
+          "
+        >
+
+
+          <h2
+            className="
+            text-2xl
+            md:text-3xl
+            font-bold
+            text-blue-950
+            mb-6
+            "
+          >
+
+            Send Us A Message
+
+          </h2>
+
+
+
+
+
+          <form
+
+            onSubmit={submitHandler}
+
+            className="
+            space-y-5
+            "
+
+          >
+
+
+
+            <input
+
+              type="text"
+
+              placeholder="Your Name"
+
+              required
+
+              className="
+              w-full
+              rounded-2xl
+              border
+              border-slate-200
+              px-5
+              py-4
+              outline-none
+              focus:ring-2
+              focus:ring-amber-500
+              "
+
+            />
+
+
+
+
+
+            <input
+
+              type="email"
+
+              placeholder="Your Email"
+
+              required
+
+              className="
+              w-full
+              rounded-2xl
+              border
+              border-slate-200
+              px-5
+              py-4
+              outline-none
+              focus:ring-2
+              focus:ring-amber-500
+              "
+
+            />
+
+
+
+
+
+
+            <input
+
+              type="text"
+
+              placeholder="Subject"
+
+              className="
+              w-full
+              rounded-2xl
+              border
+              border-slate-200
+              px-5
+              py-4
+              outline-none
+              focus:ring-2
+              focus:ring-amber-500
+              "
+
+            />
+
+
+
+
+
+
+
+            <textarea
+
+              rows="5"
+
+              placeholder="Your Message"
+
+              required
+
+              className="
+              w-full
+              rounded-2xl
+              border
+              border-slate-200
+              px-5
+              py-4
+              outline-none
+              focus:ring-2
+              focus:ring-amber-500
+              "
+
+            />
+
+
+
+
+
+
+
+            <button
+
+              type="submit"
+
+              className="
+              inline-flex
+              items-center
+              gap-3
+              bg-blue-950
+              text-white
+              px-8
+              py-4
+              rounded-full
+              font-bold
+              hover:bg-blue-900
+              transition
+              "
+
+            >
+
+              <FiSend />
+
+              Send Message
+
+
+            </button>
+
+
+
+          </form>
+
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+
+    </PolicyLayout>
+
+
+  );
 
 }
