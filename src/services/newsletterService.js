@@ -19,6 +19,8 @@ const subscribersRef = collection(db, "subscribers");
 
 export async function subscribeEmail(email) {
 
+  email = email.trim().toLowerCase();
+
   const q = query(
     subscribersRef,
     where("email", "==", email),
@@ -36,6 +38,7 @@ export async function subscribeEmail(email) {
     active: true,
     createdAt: serverTimestamp(),
   });
+
 }
 
 
