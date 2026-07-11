@@ -16,6 +16,10 @@ import {
 
 import { logout } from "../services/authService";
 
+import {
+ FiMail
+} from "react-icons/fi";
+
 export default function AdminLayout() {
 
 const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -72,6 +76,11 @@ const [collapsed, setCollapsed] = useState(false);
       icon: <FiUser />,
       path: "/admin/profile",
     },
+    {
+ title:"Subscribers",
+ path:"/admin/subscribers",
+ icon: FiMail
+}
   ];
 
   return (
