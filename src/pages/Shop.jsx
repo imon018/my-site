@@ -93,13 +93,13 @@ export default function Shop() {
 
 
       <div
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-6
-          py-10
-          md:py-16
+         max-w-7xl
+    mx-auto
+    px-4
+    md:px-6
+    pt-2
+    pb-10
+    md:pb-16
         "
       >
 
@@ -112,7 +112,7 @@ export default function Shop() {
           sticky
           top-24
           z-20
-          mt-6
+          mt-14
           mb-10
         "
       >
