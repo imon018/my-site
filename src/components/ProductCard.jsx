@@ -305,7 +305,7 @@ export default function ProductCard({
     items-center
     gap-2
     mt-4
-    w-[95%]
+    w-[90%]
   "
 >
 
