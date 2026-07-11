@@ -46,23 +46,40 @@ export default function WhatsAppButton() {
 
   useEffect(()=>{
 
-
-    const saved =
-      localStorage.getItem(
-        "whatsapp-position"
-      );
-
-
-    if(saved){
-
-      setPosition(
-        JSON.parse(saved)
-      );
-
-    }
+  const saved =
+    localStorage.getItem(
+      "whatsapp-position"
+    );
 
 
-  },[]);
+  if(saved){
+
+    const oldPosition =
+      JSON.parse(saved);
+
+
+    const safePosition = {
+
+      x: Math.min(
+        oldPosition.x,
+        window.innerWidth - 70
+      ),
+
+      y: Math.min(
+        oldPosition.y,
+        window.innerHeight - 70
+      ),
+
+    };
+
+
+    setPosition(safePosition);
+
+
+  }
+
+
+},[]);
 
 
 
