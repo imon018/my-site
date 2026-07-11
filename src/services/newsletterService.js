@@ -7,6 +7,8 @@ import {
   limit,
   serverTimestamp,
   orderBy,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 
 import { db } from "../firebase/firebaseConfig";
