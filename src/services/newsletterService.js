@@ -44,6 +44,19 @@ export async function subscribeEmail(email) {
 }
 
 
+// GET ONLY ACTIVE SUBSCRIBER EMAILS
+
+export async function getSubscriberEmails() {
+
+  const subscribers = await getSubscribers();
+
+  return subscribers
+    .filter(item => item.active)
+    .map(item => item.email);
+
+}
+
+
 
 // Admin List
 
