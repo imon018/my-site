@@ -7,12 +7,13 @@ import {
   orderBy,
   serverTimestamp,
   limit,
-  doc,
-  getDoc,
 } from "firebase/firestore";
 
 import { db } from "../firebase/firebaseConfig";
 
+import {
+  getUserProfile,
+} from "./userService";
 
 
 const reviewsCollection =
@@ -24,12 +25,9 @@ const reviewsCollection =
 
 
 
-// ================================
 // ADD REVIEW
-// ================================
 
-export async function addReview(reviewData) {
-
+export async function addReview(reviewData){
 
   await addDoc(
     reviewsCollection,
@@ -43,21 +41,17 @@ export async function addReview(reviewData) {
     }
   );
 
-
 }
 
 
 
 
 
-// ================================
 // GET PRODUCT REVIEWS
-// ================================
 
 export async function getProductReviews(
   productId
-) {
-
+){
 
   const q =
     query(
@@ -78,22 +72,18 @@ export async function getProductReviews(
     );
 
 
-
   const snapshot =
     await getDocs(q);
 
 
 
-  return snapshot.docs.map(
-    (doc)=>({
+  return snapshot.docs.map(doc=>({
 
-      id:doc.id,
+    id:doc.id,
 
-      ...doc.data(),
+    ...doc.data()
 
-    })
-  );
-
+  }));
 
 }
 
@@ -101,21 +91,17 @@ export async function getProductReviews(
 
 
 
-// ================================
-// CHECK USER ALREADY REVIEWED
-// ================================
+// CHECK REVIEW
 
 export async function hasUserReviewed(
   productId,
   userId
-) {
-
+){
 
   const q =
     query(
 
       reviewsCollection,
-
 
       where(
         "productId",
@@ -123,18 +109,15 @@ export async function hasUserReviewed(
         productId
       ),
 
-
       where(
         "userId",
         "==",
         userId
       ),
 
-
       limit(1)
 
     );
-
 
 
   const snapshot =
@@ -144,19 +127,21 @@ export async function hasUserReviewed(
 
   return !snapshot.empty;
 
-
 }
 
 
 
 
 
-// ================================
-// GET LATEST REVIEWS
-// ================================
 
-export async function getLatestReviews() {
+// HOMEPAGE REVIEWS
+// Mobile 10
+// Desktop 18
 
+
+export async function getLatestReviews(
+  count = 18
+){
 
   const q =
     query(
@@ -168,10 +153,9 @@ export async function getLatestReviews() {
         "desc"
       ),
 
-      limit(10)
+      limit(count)
 
     );
-
 
 
   const snapshot =
@@ -179,119 +163,68 @@ export async function getLatestReviews() {
 
 
 
-  return snapshot.docs.map(
-    (doc)=>({
-
-      id:doc.id,
-
-      ...doc.data(),
-
-    })
-  );
-
-
-}
-
-
-
-
-
-
-// ================================
-// GET REVIEWS WITH USER PROFILE
-// ================================
-
-export async function getLatestReviewsWithUser() {
-
-
   const reviews =
-    await getLatestReviews();
-
-
-
-  const updatedReviews =
     await Promise.all(
 
+      snapshot.docs.map(
+        async(doc)=>{
 
-      reviews.map(
-        async(review)=>{
 
-
-          if(!review.userId){
-
-            return review;
-
-          }
+          const data =
+            doc.data();
 
 
 
+          let name =
+            data.userName ||
+            "Dream Mode Customer";
 
-          try{
+
+          let photo =
+            data.photoURL ||
+            "";
 
 
-            const userRef =
-              doc(
-                db,
-                "users",
-                review.userId
+
+          // Sync profile data
+
+          if(data.userId){
+
+
+            const profile =
+              await getUserProfile(
+                data.userId
               );
 
 
+            if(profile){
 
-            const userSnap =
-              await getDoc(
-                userRef
-              );
-
-
-
-            if(userSnap.exists()){
+              name =
+                profile.name ||
+                name;
 
 
-              const user =
-                userSnap.data();
-
-
-
-              return {
-
-                ...review,
-
-
-                name:
-                  user.name ||
-                  review.userName ||
-                  "Dream Mode Customer",
-
-
-
-                photo:
-                  user.photoURL ||
-                  "",
-
-
-              };
-
+              photo =
+                profile.photoURL ||
+                photo;
 
             }
 
-
-
-
-            return review;
-
-
-
-          }catch(error){
-
-
-            console.log(error);
-
-
-            return review;
-
-
           }
+
+
+
+          return {
+
+            id:doc.id,
+
+            ...data,
+
+            name,
+
+            photo,
+
+          };
 
 
         }
@@ -302,8 +235,7 @@ export async function getLatestReviewsWithUser() {
 
 
 
-  return updatedReviews;
-
+  return reviews;
 
 }
 
@@ -312,31 +244,13 @@ export async function getLatestReviewsWithUser() {
 
 
 
+export function formatReviewDate(timestamp){
 
-// ================================
-// FORMAT REVIEW DATE
-// ================================
-
-export function formatReviewDate(
-  timestamp
-) {
-
-
-  if(!timestamp){
-
+  if(!timestamp)
     return "";
-
-  }
-
 
 
   try{
-
-
-    const date =
-      timestamp.toDate();
-
-
 
     return new Intl.DateTimeFormat(
       "en-BD",
@@ -350,16 +264,15 @@ export function formatReviewDate(
 
       }
 
-    ).format(date);
+    ).format(
+      timestamp.toDate()
+    );
 
 
-
-  }catch(error){
-
+  }catch{
 
     return "";
 
   }
-
 
 }
