@@ -60,7 +60,6 @@ function AppContent() {
         </div>
 
 
-
       </div>
 
 
@@ -84,7 +83,9 @@ function AppContent() {
 
 
       <Toaster
+
         position="top-right"
+
       />
 
 
@@ -116,6 +117,9 @@ export default function App(){
         <WishlistProvider>
 
 
+          <ScrollToTop />
+
+
           <AppContent />
 
 
@@ -126,8 +130,6 @@ export default function App(){
 
 
     </AuthProvider>
-
-    <ScrollToTop />
 
 
   );
