@@ -172,8 +172,15 @@ Shop
 
 
 <li>
-<Link to="/profile">
-My Account
+<Link to="/about">
+About Us
+</Link>
+</li>
+
+
+<li>
+<Link to="/faqs">
+FAQs
 </Link>
 </li>
 
