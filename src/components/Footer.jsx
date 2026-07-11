@@ -1,317 +1,317 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+} from "react-router-dom";
+
 
 import {
-  FiFacebook,
-  FiMail,
   FiPhone,
+  FiMail,
   FiMapPin,
 } from "react-icons/fi";
 
-import { siteConfig } from "../config/siteConfig";
 
-export default function Footer() {
+export default function Footer(){
 
-  return (
 
+return (
 
-    <footer
+<footer
 
-      className="
-      bg-gradient-to-br
-      from-slate-950
-      via-blue-950
-      to-slate-900
-      text-white
-      mt-2
-      "
+className="
+bg-[#061538]
+text-white
+pt-12
+pb-24
+px-6
+"
 
-    >
+>
 
 
+<div
 
-      <div
+className="
+max-w-7xl
+mx-auto
+"
 
-        className="
-        max-w-7xl
-        mx-auto
-        px-5
-        md:px-8
-        py-14
-        "
+>
 
-      >
 
-        <div
+{/* TOP GRID */}
 
-          className="
-          grid
-          md:grid-cols-2
-          lg:grid-cols-4
-          gap-10
-          "
+<div
 
-        >
+className="
+grid
+grid-cols-1
+md:grid-cols-3
+gap-10
+"
 
+>
 
 
-          {/* BRAND */}
+{/* BRAND */}
 
+<div>
 
-          <div>
 
+<div
 
+className="
+flex
+items-center
+gap-3
+mb-5
+"
 
-            <img
+>
 
-              src="/logo.png"
+<img
 
-              alt="Dream Mode"
+src="/logo.png"
 
-              className="
-              w-32
-              mb-5
-              "
+className="
+w-14
+h-14
+object-contain
+"
 
-            />
+/>
 
 
+<div>
 
+<h2
 
-            <p
+className="
+text-2xl
+font-bold
+tracking-wide
+"
 
-              className="
-              text-amber-500
-              italic
-              font-medium
-              text-lg
-              "
+>
 
-            >
+DREAM MODE
 
-              Dress Your Dream, Live Your Life
+</h2>
 
-            </p>
 
+<p
 
+className="
+text-xs
+text-amber-400
+"
 
-            <p
+>
+Dress Your Dream, Live Your Style
+</p>
 
-              className="
-              text-slate-300
-              mt-5
-              leading-7
-              "
 
-            >
+</div>
 
-              Dream Mode is your trusted destination
-              for Premium Dress. We ensure quality,
-              style & customer satisfaction.
 
-            </p>
+</div>
 
 
 
 
-          </div>
+<p
 
+className="
+text-gray-300
+leading-7
+text-sm
+"
 
+>
 
+Dream Mode is your trusted destination for premium dress.
+We ensure quality, style and customer satisfaction.
 
-          {/* QUICK LINKS */}
+</p>
 
 
-          <div>
 
+</div>
 
-            <h3
 
-              className="
-              text-xl
-              font-bold
-              mb-5
-              "
 
-            >
 
-              Quick Links
 
-            </h3>
+{/* QUICK LINKS */}
 
 
+<div>
 
 
-            <div
+<h3
 
-              className="
-              flex
-              flex-col
-              gap-3
-              text-slate-300
-              "
+className="
+text-amber-500
+font-bold
+text-lg
+mb-5
+"
 
-            >
+>
 
+Quick Links
 
-              <Link
-                to="/"
-                className="hover:text-amber-500 transition"
-              >
-                Home
-              </Link>
+</h3>
 
 
 
-              <Link
-                to="/shop"
-                className="hover:text-amber-500 transition"
-              >
-                Shop
-              </Link>
+<ul
 
+className="
+space-y-3
+text-gray-300
+text-sm
+"
 
+>
 
-              <Link
-                to="/cart"
-                className="hover:text-amber-500 transition"
-              >
-                Cart
-              </Link>
 
+<li>
+<Link to="/">
+Home
+</Link>
+</li>
 
 
-              <Link
-                to="/profile"
-                className="hover:text-amber-500 transition"
-              >
-                My Account
-              </Link>
+<li>
+<Link to="/shop">
+Shop
+</Link>
+</li>
 
 
+<li>
+<Link to="/cart">
+Cart
+</Link>
+</li>
 
-            </div>
 
+<li>
+<Link to="/profile">
+My Account
+</Link>
+</li>
 
 
-          </div>
+<li>
+<Link to="/orders">
+Track Order
+</Link>
+</li>
 
 
+</ul>
 
 
+</div>
 
 
 
 
 
-          {/* CUSTOMER SERVICE */}
 
 
-          <div>
 
+{/* CUSTOMER SERVICE */}
 
-            <h3
 
-              className="
-              text-xl
-              font-bold
-              mb-5
-              "
+<div>
 
-            >
 
-              Customer Service
+<h3
 
-            </h3>
+className="
+text-amber-500
+font-bold
+text-lg
+mb-5
+"
 
+>
 
+Customer Service
 
+</h3>
 
 
-            <div
 
-              className="
-              flex
-              flex-col
-              gap-3
-              text-slate-300
-              "
+<ul
 
-            >
+className="
+space-y-3
+text-gray-300
+text-sm
+"
 
+>
 
 
-              <Link
-                to="/contact"
-                className="hover:text-amber-500 transition"
-              >
-                Contact Us
-              </Link>
+<li>
 
+<Link to="/return-policy">
+Return Policy
+</Link>
 
+</li>
 
-              <Link
-                to="/shipping-policy"
-                className="hover:text-amber-500 transition"
-              >
-                Shipping Policy
-              </Link>
 
+<li>
 
+<Link to="/refund-policy">
+Refund Policy
+</Link>
 
+</li>
 
-              <Link
-                to="/return-policy"
-                className="hover:text-amber-500 transition"
-              >
-                Return Policy
-              </Link>
 
 
+<li>
 
+<Link to="/shipping-policy">
+Shipping Policy
+</Link>
 
-              <Link
-                to="/refund-policy"
-                className="hover:text-amber-500 transition"
-              >
-                Refund Policy
-              </Link>
+</li>
 
 
 
+<li>
 
-              <Link
-                to="/privacy-policy"
-                className="hover:text-amber-500 transition"
-              >
-                Privacy Policy
-              </Link>
+<Link to="/privacy-policy">
+Privacy Policy
+</Link>
 
+</li>
 
 
 
-              <Link
-                to="/terms"
-                className="hover:text-amber-500 transition"
-              >
-                Terms & Conditions
-              </Link>
+<li>
 
+<Link to="/terms">
+Terms & Conditions
+</Link>
 
+</li>
 
 
-              <Link
-                to="/size-guide"
-                className="hover:text-amber-500 transition"
-              >
-                Size Guide
-              </Link>
+</ul>
 
 
+</div>
 
-            </div>
 
 
-          </div>
+</div>
 
 
 
@@ -321,344 +321,219 @@ export default function Footer() {
 
 
 
-          {/* CONTACT */}
+{/* CONTACT */}
 
 
-          <div>
+<div
 
+className="
+mt-12
+border-t
+border-white/10
+pt-8
+grid
+md:grid-cols-2
+gap-8
+"
 
-            <h3
+>
 
-              className="
-              text-xl
-              font-bold
-              mb-5
-              "
 
-            >
 
-              Contact
+<div>
 
-            </h3>
 
+<h3
 
+className="
+text-amber-500
+font-bold
+mb-5
+"
 
+>
+Contact Us
+</h3>
 
 
-            <div
+<div className="space-y-4 text-gray-300 text-sm">
 
-              className="
-              space-y-5
-              text-slate-300
-              "
 
-            >
+<p className="flex gap-3 items-center">
 
+<FiPhone className="text-amber-500"/>
 
++8801406978619
 
+</p>
 
 
-              <div className="flex gap-3 items-center">
+<p className="flex gap-3 items-center">
 
+<FiMail className="text-amber-500"/>
 
-                <FiPhone
-                  className="
-                  text-amber-500
-                  text-xl
-                  "
-                />
+dreammode27@gmail.com
 
+</p>
 
-                <span>
-                  {siteConfig.phone}
-                </span>
 
 
-              </div>
+<p className="flex gap-3 items-center">
 
+<FiMapPin className="text-amber-500"/>
 
+Dhaka, Bangladesh
 
+</p>
 
 
+</div>
 
 
-              <div className="flex gap-3 items-center">
+</div>
 
 
-                <FiMail
-                  className="
-                  text-amber-500
-                  text-xl
-                  "
-                />
 
 
-                <span>
-                  {siteConfig.email}
-                </span>
 
 
-              </div>
 
 
 
+{/* PAYMENT */}
 
 
 
+<div>
 
 
-              <div className="flex gap-3 items-center">
+<h3
 
+className="
+text-amber-500
+font-bold
+mb-5
+"
 
-                <FiMapPin
-                  className="
-                  text-amber-500
-                  text-xl
-                  "
-                />
+>
 
+We Accept
 
-                <span>
-                  Dhaka, Bangladesh
-                </span>
+</h3>
 
 
-              </div>
 
+<div
 
+className="
+flex
+gap-4
+flex-wrap
+items-center
+"
 
+>
 
 
-            </div>
+<img
 
+src="/payments/visa.png"
 
+className="
+h-8
+w-auto
+"
 
+/>
 
 
+<img
 
-            <a
+src="/payments/mastercard.png"
 
-              href={siteConfig.facebook}
+className="
+h-8
+w-auto
+"
 
-              target="_blank"
+/>
 
-              rel="noopener noreferrer"
 
-              className="
-              inline-flex
-              items-center
-              gap-2
-              mt-6
-              bg-white/10
-              px-5
-              py-3
-              rounded-full
-              hover:bg-amber-500
-              hover:text-black
-              transition
-              "
 
-            >
+<img
 
-              <FiFacebook />
+src="/payments/bkash.png"
 
-              Facebook
+className="
+h-8
+w-auto
+"
 
-            </a>
+/>
 
 
 
-          </div>
+<img
 
+src="/payments/nagad.png"
 
+className="
+h-8
+w-auto
+"
 
+/>
 
 
+</div>
 
-        </div>
 
+</div>
 
 
 
+</div>
 
 
 
 
 
-        {/* PAYMENT */}
 
 
 
-        <div
+{/* COPYRIGHT */}
 
-          className="
-          mt-12
-          pt-8
-          border-t
-          border-white/10
-          "
 
-        >
 
+<div
 
+className="
+border-t
+border-white/10
+mt-8
+pt-6
+text-center
+text-gray-400
+text-sm
+"
 
-          <h3
+>
 
-            className="
-            text-lg
-            font-bold
-            mb-5
-            "
 
-          >
+© 2026 DREAM MODE. All Rights Reserved.
 
-            We Accept
 
-          </h3>
+</div>
 
 
 
+</div>
 
 
-          <div
+</footer>
 
-            className="
-            flex
-            flex-wrap
-            items-center
-            gap-5
-            "
 
-          >
+);
 
-
-            <img
-              src="/payments/visa.png"
-              alt="Visa"
-              className="h-10 w-auto"
-            />
-
-
-
-            <img
-              src="/payments/mastercard.png"
-              alt="Mastercard"
-              className="h-10 w-auto"
-            />
-
-
-
-            <img
-              src="/payments/bkash.png"
-              alt="bKash"
-              className="h-10 w-auto"
-            />
-
-
-
-            <img
-              src="/payments/nagad.png"
-              alt="Nagad"
-              className="h-10 w-auto"
-            />
-
-
-
-
-            <span
-              className="
-              text-slate-300
-              text-sm
-              "
-            >
-
-              bKash / Nagad:
-              <br/>
-              01628464209 (Personal)
-
-            </span>
-
-
-
-          </div>
-
-
-        </div>
-
-
-
-
-
-        {/* BOTTOM */}
-
-
-
-        <div
-
-          className="
-          mt-10
-          pt-6
-          border-t
-          border-white/10
-          flex
-          flex-col
-          md:flex-row
-          justify-between
-          items-center
-          gap-3
-          "
-
-        >
-
-
-
-          <p
-
-            className="
-            text-slate-400
-            text-sm
-            text-center
-            "
-
-          >
-
-            © 2026 DREAM MODE.
-            All Rights Reserved.
-
-          </p>
-
-
-
-
-          <p
-
-            className="
-            text-amber-500
-            italic
-            text-sm
-            "
-
-          >
-
-            Premium Fashion Store
-
-          </p>
-
-
-
-          
-        </div>
-
-
-
-      </div>
-
-
-
-    </footer>
-
-
-  );
 
 }
-
