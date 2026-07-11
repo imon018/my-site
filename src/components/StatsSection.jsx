@@ -235,16 +235,32 @@ export default function StatsSection() {
 
 
 
-                  <p
-                    className="
-                    mt-5
-                    text-gray-600
-                    leading-7
-                    flex-1
-                    "
-                  >
-                    “{review.review}”
-                  </p>
+                  <div className="mt-5 flex items-center justify-between">
+
+  <span
+    className="
+    text-xs
+    text-gray-400
+    "
+  >
+    {formatReviewDate(review.createdAt)}
+  </span>
+
+  <span
+    className="
+    text-xs
+    font-medium
+    bg-emerald-100
+    text-emerald-700
+    px-3
+    py-1
+    rounded-full
+    "
+  >
+    ✓ Verified Purchase
+  </span>
+
+</div>
 
                 </div>
 
