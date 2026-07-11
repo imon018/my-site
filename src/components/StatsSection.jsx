@@ -59,9 +59,15 @@ export default function StatsSection() {
 
         <div className="text-center mb-10">
 
-          <h2 className="section-title">
-            What Our Customers Say
-          </h2>
+          <h2
+  className="
+  section-title
+  whitespace-nowrap
+  text-center
+  "
+>
+  What Our Customers Say
+</h2>
 
           <div
             className="
