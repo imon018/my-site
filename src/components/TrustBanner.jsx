@@ -127,10 +127,13 @@ export default function TrustBanner() {
 
 
             <div
-              className="
-              space-y-5
-              "
-            >
+  className="
+  grid
+  grid-cols-1
+  md:grid-cols-3
+  gap-5
+  "
+>
 
 
               {
