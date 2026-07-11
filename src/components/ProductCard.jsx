@@ -300,6 +300,7 @@ export default function ProductCard({
         {/* BUTTONS */}
 
         <div
+  cla<div
   className="
     flex
     items-center
@@ -310,101 +311,101 @@ export default function ProductCard({
 >
 
 
+  {/* ADD CART */}
 
-          {/* ADD CART */}
+  <Button
+    onClick={handleAdd}
 
-          <Button
-  onClick={handleAdd}
-
-  className="
-    flex-1
-    min-w-0
-
-    h-8
-
-    rounded-lg
-
-    bg-black
-
-    border
-    border-amber-500
-
-    text-white
-
-    text-[10px]
-
-    font-semibold
-
-    px-2
-
-    flex
-    items-center
-    justify-center
-  "
->
-  <span
     className="
+      flex-1
+      h-8
+      rounded-lg
+      bg-black
+      border
+      border-amber-500
+      text-white
+      text-[10px]
+      font-semibold
+      px-2
       flex
       items-center
       justify-center
-      gap-1
-
-      whitespace-nowrap
     "
   >
 
-    <FiShoppingCart
-      size={12}
-    />
+    <span
+      className="
+        flex
+        items-center
+        justify-center
+        gap-1
+        whitespace-nowrap
+      "
+    >
 
-    Add To Cart
+      <FiShoppingCart size={12}/>
 
-  </span>
+      Add To Cart
 
-</Button>
-
-
-
-
-
-          {/* VIEW */}
-
-          <button
-  onClick={() =>
-    navigate(
-      `/product/${product.id}`
-    )
-  }
-
-  className="
-    w-9
-    h-8
-
-    shrink-0
-
-    rounded-lg
-
-    bg-white
-
-    border
-    border-amber-500
-
-    text-amber-500
-
-    flex
-    items-center
-    justify-center
-
-  "
->
-
-<FiEye size={15}/>
-
-</button>
+    </span>
 
 
-        </div>
+  </Button>
 
+
+
+
+
+  {/* VIEW DETAIL */}
+
+
+  <button
+
+    onClick={() =>
+      navigate(
+        `/product/${product.id}`
+      )
+    }
+
+
+    className="
+      flex-1
+      h-8
+      rounded-lg
+      bg-white
+      border
+      border-amber-500
+      text-amber-500
+      text-[10px]
+      font-semibold
+      flex
+      items-center
+      justify-center
+    "
+
+  >
+
+    <span
+      className="
+        flex
+        items-center
+        justify-center
+        gap-1
+        whitespace-nowrap
+      "
+    >
+
+      <FiEye size={12}/>
+
+      View Detail
+
+    </span>
+
+
+  </button>
+
+
+</div>
 
       </div>
 
