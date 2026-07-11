@@ -136,7 +136,10 @@ export default function AdminLayout() {
         `}
       >
         <div className="lg:hidden flex justify-end p-4">
-          <button onClick={() => setSidebarOpen(false)}>
+          <button 
+            onClick={() => setSidebarOpen(false)}
+            className="text-white hover:bg-slate-800 p-1 rounded transition"
+          >
             <FiX size={28} />
           </button>
         </div>
