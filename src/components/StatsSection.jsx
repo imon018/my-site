@@ -1,10 +1,24 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+
+import {
+  Swiper,
+  SwiperSlide,
+} from "swiper/react";
+
+
+import {
+  Autoplay,
+  Pagination,
+} from "swiper/modules";
+
 
 import "swiper/css";
 import "swiper/css/pagination";
+
 
 import {
   FaStar,
@@ -13,204 +27,317 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
+
 import {
-  getLatestReviews,
+  getLatestReviewsWithUser,
   formatReviewDate,
 } from "../services/reviewService";
 
-export default function StatsSection() {
 
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
 
-    async function loadReviews() {
+export default function StatsSection(){
 
-      try {
 
-        const data = await getLatestReviews();
+  const [
+    reviews,
+    setReviews,
+  ] = useState([]);
+
+
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    async function loadReviews(){
+
+
+      try{
+
+
+        const data =
+          await getLatestReviewsWithUser();
+
+
 
         setReviews(data);
 
-      } catch (error) {
 
-        console.error(error);
 
-      } finally {
+      }catch(error){
+
+
+        console.log(error);
+
+
+
+      }finally{
+
 
         setLoading(false);
 
+
       }
+
 
     }
 
+
+
     loadReviews();
 
-  }, []);
+
+
+  },[]);
+
+
+
+
+
 
   return (
 
-    <section className="py-14 md:py-20 bg-white">
+    <section className="
+      py-14
+      md:py-20
+      bg-white
+    ">
+
 
       <div className="container-box">
 
+
+
         {/* Heading */}
 
-        <div className="text-center mb-10">
+
+        <div className="
+          text-center
+          mb-10
+        ">
+
 
           <h2
-  className="
-  text-2xl
-  md:text-5xl
-  font-bold
-  whitespace-nowrap
-  text-center
-  "
->
-  What Our Customers Say
-</h2>
-
-          <div
-  className="
-  w-72
-  max-w-full
-  h-1.5
-  bg-gradient-to-r
-  from-yellow-400
-  via-amber-500
-  to-yellow-400
-  rounded-full
-  mx-auto
-  mt-4
-  shadow-lg
-  "
-/>
-
-        </div>
-
-        {loading ? (
-
-          <div className="text-center py-16">
-
-            <p className="text-gray-500 text-lg">
-              Loading Reviews...
-            </p>
-
-          </div>
-
-        ) : reviews.length === 0 ? (
-
-          <div
             className="
-            rounded-3xl
-            border
-            border-dashed
-            border-slate-300
-            py-16
-            text-center
+            text-2xl
+            md:text-5xl
+            font-black
+            whitespace-nowrap
+            text-blue-950
             "
           >
 
-            <h3 className="text-xl font-semibold">
+            What Our Customers Say
+
+          </h2>
+
+
+
+
+          <div
+            className="
+            w-full
+            max-w-xs
+            h-[2px]
+            bg-gradient-to-r
+            from-transparent
+            via-yellow-500
+            to-transparent
+            mx-auto
+            mt-4
+            "
+          />
+
+
+
+        </div>
+
+
+
+
+
+
+
+        {
+          loading ?
+
+
+          (
+
+            <div className="
+              text-center
+              py-16
+            ">
+
+              Loading Reviews...
+
+            </div>
+
+
+          )
+
+
+
+          : reviews.length===0 ?
+
+
+
+          (
+
+            <div className="
+              text-center
+              py-16
+              border
+              rounded-3xl
+            ">
+
               No Reviews Yet
-            </h3>
 
-            <p className="mt-3 text-gray-500">
-              Be the first customer to share your experience.
-            </p>
+            </div>
 
-          </div>
 
-        ) : (
+          )
+
+
+
+          :
+
+
+
+          (
 
           <Swiper
-  className="max-w-6xl mx-auto"
+
+
+            className="
+              max-w-6xl
+              mx-auto
+            "
+
 
             modules={[
               Autoplay,
               Pagination,
             ]}
 
-            loop={reviews.length > 3}
+
 
             autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
+              delay:3500,
+              disableOnInteraction:false,
             }}
 
+
+
+            loop={
+              reviews.length>3
+            }
+
+
+
             pagination={{
-              clickable: true,
+              clickable:true,
             }}
+
+
 
             spaceBetween={24}
 
+
+
             breakpoints={{
 
-              0: {
-                slidesPerView: 1.1,
+              0:{
+                slidesPerView:1.1,
               },
 
-              640: {
-                slidesPerView: 2,
+              640:{
+                slidesPerView:2,
               },
 
-              1024: {
-                slidesPerView: 3,
+
+              1024:{
+                slidesPerView:3,
               },
 
             }}
 
+
+
           >
 
-                        {reviews.map((review) => (
+
+
+
+          {
+            reviews.map(
+              (review)=>(
+
+
 
               <SwiperSlide
-  key={review.id}
-  className="flex justify-center"
->
+                key={review.id}
+              >
 
-                <div
-                  className="
-                  relative
-                  h-full
-                  overflow-hidden
+
+
+                <div className="
                   rounded-[32px]
                   border
                   border-slate-200
                   bg-white
                   p-7
                   shadow-lg
-                  transition-all
-                  duration-500
-                  hover:-translate-y-2
-                  hover:shadow-2xl
-                  "
-                >
+                ">
 
-                  {/* Quote Icon */}
+
 
                   <FaQuoteLeft
                     className="
-                    absolute
-                    top-6
-                    right-6
                     text-5xl
                     text-amber-100
+                    ml-auto
                     "
                   />
 
 
 
-                  {/* Customer */}
 
-                  <div className="flex items-center gap-4">
 
-                    {review.photo ? (
+                  <div className="
+                    flex
+                    items-center
+                    gap-4
+                  ">
+
+
+                    {
+                      review.photo ?
+
+
+                      (
 
                       <img
-                        src={review.photo}
-                        alt={review.name}
+
+                        src={
+                          review.photo
+                        }
+
+                        alt={
+                          review.name
+                        }
+
+
                         className="
                         h-16
                         w-16
@@ -219,9 +346,17 @@ export default function StatsSection() {
                         border-2
                         border-amber-400
                         "
+
                       />
 
-                    ) : (
+
+                      )
+
+
+                      :
+
+
+                      (
 
                       <FaUserCircle
                         className="
@@ -230,125 +365,199 @@ export default function StatsSection() {
                         "
                       />
 
-                    )}
+                      )
+
+
+                    }
+
 
 
 
                     <div>
 
-                      <h3
-                        className="
+
+                      <h3 className="
                         text-lg
                         font-bold
-                        "
-                      >
-                        {review.name || "Dream Mode Customer"}
+                      ">
+
+
+                        {
+                          review.name ||
+                          "Dream Mode Customer"
+                        }
+
+
                       </h3>
 
-                      <div className="mt-2 flex">
 
-                        {Array.from({
-                          length: 5,
-                        }).map((_, index) => (
+
+                      <div className="
+                        flex
+                        mt-2
+                      ">
+
+
+                      {
+                        Array.from({
+                          length:5
+                        }).map(
+                          (_,i)=>(
 
                           <FaStar
-                            key={index}
+
+                            key={i}
+
                             className={
-                              index < (review.rating || 5)
-                                ? "text-amber-500"
-                                : "text-gray-300"
+                              i <
+                              (
+                                review.rating ||
+                                5
+                              )
+
+                              ?
+
+                              "text-amber-500"
+
+                              :
+
+                              "text-gray-300"
+
                             }
+
                           />
 
-                        ))}
+
+                          )
+                        )
+
+                      }
+
 
                       </div>
 
+
+
                     </div>
+
 
                   </div>
 
 
 
-                  {/* Review */}
 
-                  <p
-                    className="
+
+
+
+                  <p className="
                     mt-6
-                    text-[15px]
+                    text-gray-600
                     leading-7
-                    text-slate-600
                     min-h-[120px]
-                    "
-                  >
-                    {review.review
-                      ? `“${review.review}”`
-                      : "Excellent quality product. Highly recommended."}
+                  ">
+
+
+                    {
+                      review.comment
+                      ?
+
+                      `“${review.comment}”`
+
+                      :
+
+                      "Excellent quality product. Highly recommended."
+
+                    }
+
+
                   </p>
 
 
 
-                  {/* Footer */}
 
-                  <div
-                    className="
+
+
+
+
+                  <div className="
                     mt-6
                     flex
-                    items-center
                     justify-between
+                    items-center
                     border-t
-                    border-slate-100
                     pt-5
-                    "
-                  >
+                  ">
 
-                    <span
-                      className="
+
+                    <span className="
                       text-xs
                       text-gray-400
-                      "
-                    >
-                      {formatReviewDate(
-                        review.createdAt
-                      )}
+                    ">
+
+                      {
+                        formatReviewDate(
+                          review.createdAt
+                        )
+                      }
+
                     </span>
 
-                    <span
-                      className="
-                      inline-flex
+
+
+
+
+                    <span className="
+                      flex
                       items-center
                       gap-1
-                      rounded-full
-                      bg-emerald-50
-                      px-3
-                      py-1
                       text-xs
                       font-semibold
                       text-emerald-700
-                      "
-                    >
+                    ">
 
-                      <FaCheckCircle />
+
+                      <FaCheckCircle/>
 
                       Verified Purchase
 
+
                     </span>
+
+
 
                   </div>
 
+
+
                 </div>
+
 
               </SwiperSlide>
 
-            ))}
 
-                      </Swiper>
+              )
+            )
+          }
 
-        )}
+
+
+
+          </Swiper>
+
+
+          )
+
+        }
+
+
+
+
 
       </div>
 
+
     </section>
+
 
   );
 
