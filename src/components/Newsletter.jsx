@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import {
-  addSubscriber,
+  subscribeEmail,
 } from "../services/newsletterService";
 
 import {
@@ -46,7 +46,7 @@ export default function Newsletter() {
       setLoading(true);
 
 
-      await addSubscriber(email);
+      await subscribeEmail(email);
 
 
 
