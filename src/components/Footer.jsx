@@ -9,10 +9,7 @@ import {
 
 import { siteConfig } from "../config/siteConfig";
 
-
-
 export default function Footer() {
-
 
   return (
 
@@ -44,10 +41,6 @@ export default function Footer() {
 
       >
 
-
-
-
-
         <div
 
           className="
@@ -58,10 +51,6 @@ export default function Footer() {
           "
 
         >
-
-
-
-
 
 
 
@@ -105,8 +94,6 @@ export default function Footer() {
 
 
 
-
-
             <p
 
               className="
@@ -127,11 +114,6 @@ export default function Footer() {
 
 
           </div>
-
-
-
-
-
 
 
 
@@ -607,10 +589,6 @@ export default function Footer() {
 
 
 
-
-
-
-
         {/* BOTTOM */}
 
 
@@ -668,10 +646,8 @@ export default function Footer() {
 
 
 
+          
         </div>
-
-
-
 
 
 
@@ -685,5 +661,4 @@ export default function Footer() {
   );
 
 }
-
 
