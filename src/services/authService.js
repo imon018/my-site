@@ -114,7 +114,4 @@ export const deleteUserAccount = async (user) => {
   await deleteUser(user);
 };
 
-
 export const logout = () => signOut(auth);
-
-
