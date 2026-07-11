@@ -5,6 +5,7 @@ import StatsSection from "../components/StatsSection";
 import TrustBanner from "../components/TrustBanner";
 import AnimatedWrapper from "../components/ui/AnimatedWrapper";
 import PremiumHighlights from "../components/PremiumHighlights";
+import Newsletter from "../components/Newsletter";
 
 export default function Home() {
   return (
@@ -21,6 +22,8 @@ export default function Home() {
       <StatsSection />
 
       <TrustBanner />
+
+      <Newsletter />
 
     </AnimatedWrapper>
   );
