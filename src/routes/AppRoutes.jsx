@@ -207,7 +207,7 @@ export default function AppRoutes() {
 />
 
         <Route
-  path="/admin/add-order"
+  path="add-order"
   element={<AddOrder />}
 />
 
