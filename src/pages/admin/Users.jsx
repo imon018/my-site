@@ -1239,46 +1239,98 @@ justify-center
 
 
 
-<button
+<div className="relative">
 
-onClick={()=>
-toggleAdmin(selectedUser)
+
+<select
+
+value={selectedUser.role}
+
+onChange={(e)=>{
+
+const newRole = e.target.value;
+
+
+const confirmChange = window.confirm(
+
+`Are you sure you want to change role to ${newRole}?`
+
+);
+
+
+if(!confirmChange){
+return;
 }
+
+
+
+changeRole(
+selectedUser.id,
+newRole
+)
+.then(()=>{
+
+loadUsers();
+
+setSelectedUser({
+...selectedUser,
+role:newRole
+});
+
+setShowAction(false);
+
+});
+
+
+}}
 
 className="
 w-full
 py-4
+px-4
 rounded-xl
 bg-amber-50
 text-amber-600
-flex
-items-center
-gap-3
-px-4
-font-medium
+font-semibold
+appearance-none
+outline-none
 "
 
 >
 
 
-<FiShield/>
+<option value="user">
+
+Make User
+
+</option>
 
 
-{
-selectedUser.role==="admin"
+<option value="admin">
 
-?
+Make Admin
 
-"Remove Admin"
-
-:
-
-"Make Admin"
-
-}
+</option>
 
 
-</button>
+</select>
+
+
+
+<FiChevronDown
+
+className="
+absolute
+right-4
+top-5
+text-amber-600
+pointer-events-none
+"
+
+/>
+
+
+</div>
 
 
 
