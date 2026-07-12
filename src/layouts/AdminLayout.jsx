@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 
 import {
   FiGrid,
@@ -9,17 +8,18 @@ import {
   FiUsers,
   FiBox,
   FiShoppingCart,
-  FiUpload,
   FiImage,
+  FiChevronDown,
+  FiChevronRight,
+  FiUpload,
   FiMail,
   FiSettings,
   FiLogOut,
-  FiChevronDown,
-  FiChevronRight,
   FiMenu,
   FiX,
 } from "react-icons/fi";
 
+import useAuth from "../hooks/useAuth";
 import { logout } from "../services/authService";
 
 export default function AdminLayout() {
@@ -30,395 +30,370 @@ export default function AdminLayout() {
 
   const [collapsed, setCollapsed] = useState(false);
 
-  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadsOpen, setUploadsOpen] = useState(true);
 
-  const [bannerOpen, setBannerOpen] = useState(false);
+  const [bannerOpen, setBannerOpen] = useState(true);
 
   const menu = [
 
     {
       name: "Dashboard",
-      icon: <FiGrid />,
+      icon: <FiGrid size={20} />,
       path: "/admin",
     },
 
     {
       name: "Home",
-      icon: <FiHome />,
+      icon: <FiHome size={20} />,
       path: "/",
     },
 
     {
       name: "Admin Profile",
-      icon: <FiUser />,
+      icon: <FiUser size={20} />,
       path: "/admin/profile",
     },
 
     {
       name: "Users Panel",
-      icon: <FiUsers />,
+      icon: <FiUsers size={20} />,
       path: "/admin/users",
     },
 
     {
-      divider: true,
-    },
-
-    {
       name: "Products",
-      icon: <FiBox />,
+      icon: <FiBox size={20} />,
       path: "/admin/products",
     },
 
     {
       name: "Orders",
-      icon: <FiShoppingCart />,
+      icon: <FiShoppingCart size={20} />,
       path: "/admin/orders",
     },
 
   ];
 
-<div className="min-h-screen flex bg-warm">
+      return (
+    <div className="min-h-screen flex bg-[#F8F5EF]">
 
-  {/* Overlay */}
-  {sidebarOpen && (
-    <div
-      onClick={() => setSidebarOpen(false)}
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
-    />
-  )}
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-  {/* Mobile Menu Button */}
-  <button
-    onClick={() => setSidebarOpen(true)}
-    className="lg:hidden fixed top-4 left-4 z-50 bg-gold-gradient text-white p-3 rounded-2xl shadow-gold"
-  >
-    <FiMenu size={24} />
-  </button>
-
-  {/* ================= SIDEBAR ================= */}
-
-  <aside
-    className={`
-      fixed lg:static top-0 left-0 h-screen
-      ${collapsed ? "lg:w-24" : "lg:w-72"}
-      w-72
-      bg-card
-      border-r
-      border-border
-      flex flex-col
-      transition-all duration-300
-      z-50
-      shadow-luxury
-      ${
-        sidebarOpen
-          ? "translate-x-0"
-          : "-translate-x-full lg:translate-x-0"
-      }
-    `}
-  >
-
-    {/* Mobile Close */}
-    <div className="lg:hidden flex justify-end p-5">
-
+      {/* Mobile Menu */}
       <button
-        onClick={() => setSidebarOpen(false)}
+        onClick={() => setSidebarOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 bg-amber-500 text-white p-3 rounded-xl shadow-lg"
       >
-        <FiX size={28} />
+        <FiMenu size={24} />
       </button>
 
-    </div>
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed lg:fixed
+          top-0 left-0
+          h-screen
+          bg-white
+          border-r border-amber-100
+          shadow-xl
+          transition-all duration-300
+          z-50
+          ${collapsed ? "lg:w-24" : "lg:w-72"}
+          w-72
+          ${
+            sidebarOpen
+              ? "translate-x-0"
+              : "-translate-x-full lg:translate-x-0"
+          }
+        `}
+      >
 
-    {/* Header */}
+        {/* Mobile Close */}
+        <div className="lg:hidden flex justify-end p-4">
+          <button onClick={() => setSidebarOpen(false)}>
+            <FiX size={28} />
+          </button>
+        </div>
 
-    <div className="px-6 pb-6 border-b border-border">
+        {/* Logo */}
+        <div className="px-6 py-6 border-b border-amber-100">
 
-      <div className="flex items-center justify-between">
+          {!collapsed && (
+            <>
+              <h1 className="text-2xl font-bold text-amber-600">
+                Dream Mode
+              </h1>
 
-        {!collapsed && (
+              <p className="text-sm text-gray-500">
+                Luxury Admin
+              </p>
+            </>
+          )}
 
-          <div>
+          {collapsed && (
+            <div className="text-center text-3xl font-bold text-amber-500">
+              D
+            </div>
+          )}
 
-            <h2 className="text-3xl font-bold text-amber-600">
+        </div>
 
-              Dream Mode
+        {/* Admin Profile */}
+        <div className="px-5 py-6 border-b border-amber-100">
 
-            </h2>
+          <div className="flex items-center gap-4">
 
-            <p className="text-gray-500">
+            <img
+              src={
+                user?.photoURL ||
+                "https://ui-avatars.com/api/?name=Admin&background=F59E0B&color=fff"
+              }
+              alt="Admin"
+              className="w-14 h-14 rounded-full object-cover border-4 border-amber-200"
+            />
 
-              Admin Panel
+            {!collapsed && (
+              <div>
+                <h3 className="font-bold text-slate-800">
+                  {user?.name || "Administrator"}
+                </h3>
 
-            </p>
+                <p className="text-sm text-gray-500">
+                  {user?.email}
+                </p>
+              </div>
+            )}
 
           </div>
 
-        )}
+        </div>
+
+        {/* Main Menu */}
+        <nav className="flex-1 overflow-y-auto px-4 py-5 space-y-2">
+
+          {menu.map((item) => (
+
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  isActive
+                    ? "bg-amber-500 text-white shadow"
+                    : "text-slate-700 hover:bg-amber-50"
+                }`
+              }
+            >
+              {item.icon}
+
+              {!collapsed && (
+                <span className="font-medium">
+                  {item.name}
+                </span>
+              )}
+            </NavLink>
+
+          ))}
+
+
+          {/* Uploads */}
+          <div className="pt-3">
+
+            <button
+              onClick={() => setUploadsOpen(!uploadsOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-amber-50 transition"
+            >
+              <div className="flex items-center gap-3 text-slate-700">
+                <FiUpload size={20} />
+                {!collapsed && <span className="font-medium">Uploads</span>}
+              </div>
+
+              {!collapsed &&
+                (uploadsOpen ? (
+                  <FiChevronDown />
+                ) : (
+                  <FiChevronRight />
+                ))}
+            </button>
+
+            {uploadsOpen && !collapsed && (
+              <div className="ml-8 mt-2 space-y-2">
+
+                <NavLink
+                  to="/admin/add-product"
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded-lg ${
+                      isActive
+                        ? "bg-amber-500 text-white"
+                        : "hover:bg-amber-50 text-slate-600"
+                    }`
+                  }
+                >
+                  Add Product
+                </NavLink>
+
+                <NavLink
+                  to="/admin/add-order"
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded-lg ${
+                      isActive
+                        ? "bg-amber-500 text-white"
+                        : "hover:bg-amber-50 text-slate-600"
+                    }`
+                  }
+                >
+                  Add Order
+                </NavLink>
+
+              </div>
+            )}
+
+          </div>
+
+          {/* Banners */}
+          <div>
+
+            <button
+              onClick={() => setBannerOpen(!bannerOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-amber-50 transition"
+            >
+              <div className="flex items-center gap-3 text-slate-700">
+                <FiImage size={20} />
+                {!collapsed && <span className="font-medium">Banners</span>}
+              </div>
+
+              {!collapsed &&
+                (bannerOpen ? (
+                  <FiChevronDown />
+                ) : (
+                  <FiChevronRight />
+                ))}
+            </button>
+
+            {bannerOpen && !collapsed && (
+              <div className="ml-8 mt-2 space-y-2">
+
+                <NavLink
+                  to="/admin/banners"
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded-lg ${
+                      isActive
+                        ? "bg-amber-500 text-white"
+                        : "hover:bg-amber-50 text-slate-600"
+                    }`
+                  }
+                >
+                  Home Banner
+                </NavLink>
+
+                <NavLink
+                  to="/admin/shop-hero"
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded-lg ${
+                      isActive
+                        ? "bg-amber-500 text-white"
+                        : "hover:bg-amber-50 text-slate-600"
+                    }`
+                  }
+                >
+                  Shop Banner
+                </NavLink>
+
+              </div>
+            )}
+
+          </div>
+
+          <NavLink
+            to="/admin/subscribers"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl ${
+                isActive
+                  ? "bg-amber-500 text-white"
+                  : "hover:bg-amber-50 text-slate-700"
+              }`
+            }
+          >
+            <FiUsers size={20} />
+            {!collapsed && <span>Subscribers</span>}
+          </NavLink>
+
+          <NavLink
+            to="/admin/newsletter"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl ${
+                isActive
+                  ? "bg-amber-500 text-white"
+                  : "hover:bg-amber-50 text-slate-700"
+              }`
+            }
+          >
+            <FiMail size={20} />
+            {!collapsed && <span>Newsletter</span>}
+          </NavLink>
+        </nav>
+
+      {/* Bottom Menu */}
+      <div className="border-t border-amber-100 p-4 space-y-2">
+
+        <NavLink
+          to="/admin/settings"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition ${
+              isActive
+                ? "bg-amber-500 text-white"
+                : "text-slate-700 hover:bg-amber-50"
+            }`
+          }
+        >
+          <FiSettings size={20} />
+          {!collapsed && <span>Settings</span>}
+        </NavLink>
 
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:block"
+          onClick={logout}
+          className="w-full flex items-center justify-center gap-3 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition"
         >
-          <FiMenu size={22} />
+          <FiLogOut size={20} />
+          {!collapsed && <span>Logout</span>}
         </button>
 
       </div>
 
-      {!collapsed && (
+    </aside>
 
-        <div className="mt-6 bg-white rounded-3xl border border-amber-100 p-5 text-center shadow-sm">
-
-          <img
-            src={
-              user?.photoURL ||
-              "https://ui-avatars.com/api/?background=F6C453&color=fff&name=Admin"
-            }
-            alt="Admin"
-            className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-amber-100"
-          />
-
-          <h3 className="mt-4 text-xl font-bold">
-
-            {user?.name || "Administrator"}
-
-          </h3>
-
-          <p className="text-amber-600 text-sm">
-
-            Administrator
-
-          </p>
-
-          <p className="text-gray-500 text-xs mt-1 break-all">
-
-            {user?.email}
-
-          </p>
-
-        </div>
-
-      )}
-
-    </div>
-
-    {/* Menu */}
-
-    <nav className="flex-1 overflow-y-auto px-4 py-5 space-y-2">
-
-      {menu.map((item) => {
-
-        if (item.divider) {
-
-          return (
-            <div
-              key={Math.random()}
-              className="my-4 border-t border-amber-100"
-            />
-          );
-
+    {/* Main Content */}
+    <main
+      className={`
+        flex-1
+        min-h-screen
+        bg-[#F8F5EF]
+        transition-all
+        duration-300
+        ${
+          collapsed
+            ? "lg:ml-24"
+            : "lg:ml-72"
         }
+      `}
+    >
 
-        return (
+      <div className="p-4 lg:p-8">
 
-          <NavLink
-            key={item.path}
-            to={item.path}
-            onClick={() => setSidebarOpen(false)}
-            className={({ isActive }) => `
-              flex
-              items-center
-              gap-3
-              px-4
-              py-3
-              rounded-2xl
-              transition
-              ${
-                isActive
-                  ? "bg-gold-gradient text-white shadow-gold"
-                  : "hover:bg-amber-50 text-gray-700"
-              }
-            `}
-          >
+        <Outlet />
 
-            <span className="text-xl">
+      </div>
 
-              {item.icon}
+    </main>
 
-            </span>
+  </div>
+);
+}
 
-            {!collapsed && (
-
-              <span className="font-semibold">
-
-                {item.name}
-
-              </span>
-
-            )}
-
-          </NavLink>
-
-        );
-
-      })}
-
-            {/* Uploads */}
-
-      <button
-        onClick={() => setUploadOpen(!uploadOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-amber-50 transition"
-      >
-        <div className="flex items-center gap-3">
-          <FiUpload className="text-xl" />
-          {!collapsed && (
-            <span className="font-semibold">
-              Uploads
-            </span>
-          )}
-        </div>
-
-        {!collapsed &&
-          (uploadOpen ? (
-            <FiChevronDown />
-          ) : (
-            <FiChevronRight />
-          ))}
-      </button>
-
-      {uploadOpen && !collapsed && (
-        <div className="ml-8 space-y-2">
-
-          <NavLink
-            to="/admin/add-product"
-            onClick={() => setSidebarOpen(false)}
-            className="block py-2 text-gray-600 hover:text-amber-600"
-          >
-            Add Product
-          </NavLink>
-
-          <NavLink
-            to="/admin/add-order"
-            onClick={() => setSidebarOpen(false)}
-            className="block py-2 text-gray-600 hover:text-amber-600"
-          >
-            Add Order
-          </NavLink>
-
-        </div>
-      )}
-
-      {/* Banners */}
-
-      <button
-        onClick={() => setBannerOpen(!bannerOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-amber-50 transition"
-      >
-        <div className="flex items-center gap-3">
-          <FiImage className="text-xl" />
-
-          {!collapsed && (
-            <span className="font-semibold">
-              Banners
-            </span>
-          )}
-
-        </div>
-
-        {!collapsed &&
-          (bannerOpen ? (
-            <FiChevronDown />
-          ) : (
-            <FiChevronRight />
-          ))}
-      </button>
-
-      {bannerOpen && !collapsed && (
-
-        <div className="ml-8 space-y-2">
-
-          <NavLink
-            to="/admin/banners"
-            onClick={() => setSidebarOpen(false)}
-            className="block py-2 text-gray-600 hover:text-amber-600"
-          >
-            Home Banner
-          </NavLink>
-
-          <NavLink
-            to="/admin/shop-hero"
-            onClick={() => setSidebarOpen(false)}
-            className="block py-2 text-gray-600 hover:text-amber-600"
-          >
-            Shop Banner
-          </NavLink>
-
-        </div>
-
-      )}
-
-      <div className="border-t border-amber-100 my-4"></div>
-
-      <NavLink
-        to="/admin/subscribers"
-        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
-      >
-        <FiMail />
-        {!collapsed && "Subscribers"}
-      </NavLink>
-
-      <NavLink
-        to="/admin/newsletter"
-        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
-      >
-        <FiMail />
-        {!collapsed && "Newsletter"}
-      </NavLink>
-
-      <NavLink
-        to="/admin/settings"
-        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
-      >
-        <FiSettings />
-        {!collapsed && "Settings"}
-      </NavLink>
-
-    </nav>
-
-    {/* Footer */}
-
-    <div className="p-5 border-t border-border">
-
-      <button
-        onClick={logout}
-        className="w-full bg-red-500 hover:bg-red-600 text-white rounded-2xl py-3 flex items-center justify-center gap-2 transition"
-      >
-        <FiLogOut />
-
-        {!collapsed && "Logout"}
-
-      </button>
-
-    </div>
-
-  </aside>
-
-  {/* MAIN */}
-
-  <main
-    className="
-      flex-1
-      min-h-screen
-      bg-warm
-      overflow-y-auto
-      pt-20
-      lg:pt-8
-      px-5
-      lg:px-8
-    "
-  >
-
-    <Outlet />
-
-  </main>
-
-</div>
