@@ -1,150 +1,879 @@
 import { useEffect, useState } from "react";
 
 import {
+  FiSearch,
+  FiFilter,
+  FiTrash2,
+  FiCrown,
+  FiChevronLeft,
+  FiChevronRight,
+  FiUsers,
+  FiShield,
+  FiUserCheck,
+} from "react-icons/fi";
+
+
+import {
   getUsers,
   changeRole,
   deleteUser,
 } from "../../services/adminService";
 
+
+
 export default function Users() {
-  const [users, setUsers] = useState([]);
-  const [search, setSearch] = useState("");
 
-  useEffect(() => {
-  loadUsers();
-}, [search]);
 
-  async function loadUsers() {
-  try {
-    const data = await getUsers(search);
-    setUsers(data);
-  } catch (error) {
-    console.error(error);
-  }
-}
+const [users,setUsers] = useState([]);
 
-  async function makeAdmin(user) {
-    try {
-      await changeRole(
-        user.id,
-        user.role === "admin" ? "user" : "admin"
-      );
+const [search,setSearch] = useState("");
 
-      await loadUsers();
-    } catch (error) {
-      console.error("Change Role Error:", error);
-    }
-  }
-  
-  async function removeUser(user) {
+const [role,setRole] = useState("all");
 
-  const ok = window.confirm(
-    `Delete ${user.email}?`
-  );
+const [page,setPage] = useState(1);
 
-  if (!ok) return;
+const [selectedUser,setSelectedUser] = useState(null);
 
-  await deleteUser(user.id);
 
-  await loadUsers();
+const usersPerPage = 6;
+
+
+
+useEffect(()=>{
+
+loadUsers();
+
+},[]);
+
+
+
+async function loadUsers(){
+
+try{
+
+const data = await getUsers();
+
+setUsers(data);
+
+
+}catch(error){
+
+console.log(error);
 
 }
 
-  return (
-    <div>
-      <h1 className="text-4xl font-bold mb-8">
-        Users
-      </h1>
-      <div className="mb-6">
+}
 
-  <input
-    type="text"
-    placeholder="Search user by email..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="w-full border rounded-xl px-4 py-3"
-  />
+
+
+
+async function toggleAdmin(user){
+
+await changeRole(
+
+user.id,
+
+user.role==="admin"
+?
+"user"
+:
+"admin"
+
+);
+
+
+loadUsers();
+
+}
+
+
+
+
+
+async function removeUser(user){
+
+
+const confirmDelete =
+window.confirm(
+`Delete ${user.email}?`
+);
+
+
+if(!confirmDelete)
+return;
+
+
+await deleteUser(user.id);
+
+
+loadUsers();
+
+
+}
+
+
+
+
+const filteredUsers = users.filter((user)=>{
+
+
+const matchSearch =
+user.email
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+);
+
+
+
+const matchRole =
+role==="all"
+?
+true
+:
+user.role===role;
+
+
+
+return matchSearch && matchRole;
+
+
+});
+
+
+
+
+
+const totalPages =
+Math.ceil(
+filteredUsers.length / usersPerPage
+);
+
+
+
+const currentUsers =
+filteredUsers.slice(
+(page-1)*usersPerPage,
+page*usersPerPage
+);
+
+
+
+
+
+const totalUsers =
+users.length;
+
+
+const totalAdmins =
+users.filter(
+u=>u.role==="admin"
+).length;
+
+
+
+
+
+
+
+return (
+
+<div className="
+space-y-6
+">
+
+
+{/* Title */}
+
+<div>
+
+<h1 className="
+text-3xl
+font-bold
+text-slate-800
+">
+Users
+</h1>
+
+
+<p className="
+text-gray-500
+mt-1
+">
+Dashboard  ›  Users
+</p>
+
 
 </div>
 
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
 
-        <table className="w-full">
 
-          <thead className="bg-slate-900 text-white">
 
-            <tr>
 
-              <th className="p-4 text-left">
-                Email
-              </th>
 
-              <th className="p-4 text-center">
-                Role
-              </th>
+{/* Stats */}
 
-              <th className="p-4 text-center">
-                Action
-              </th>
 
-            </tr>
+<div className="
+grid
+grid-cols-2
+lg:grid-cols-4
+gap-4
+">
 
-          </thead>
 
-          <tbody>
+<StatCard
 
-            {users.length === 0 ? (
-              <tr>
-                <td
-                  colSpan="3"
-                  className="text-center p-8"
-                >
-                  No Users Found
-                </td>
-              </tr>
-            ) : (
-              users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-b"
-                >
+icon={<FiUsers/>}
 
-                  <td className="p-4">
-                    {user.email}
-                  </td>
+title="Total Users"
 
-                  <td className="text-center">
-                    {user.role}
-                  </td>
+value={totalUsers}
 
-                  <td className="text-center">
+/>
 
-                    <button
-                      onClick={() => makeAdmin(user)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-                    >
-                      {user.role === "admin"
-                        ? "Remove Admin"
-                        : "Make Admin"}
-                    </button>
-                    <button
-  onClick={() => removeUser(user)}
-  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg ml-2"
+
+<StatCard
+
+icon={<FiShield/>}
+
+title="Admins"
+
+value={totalAdmins}
+
+/>
+
+
+<StatCard
+
+icon={<FiUserCheck/>}
+
+title="New This Month"
+
+value="32"
+
+/>
+
+
+<StatCard
+
+icon={<FiUsers/>}
+
+title="Active Users"
+
+value="186"
+
+/>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* Search Filter */}
+
+
+<div className="
+flex
+gap-3
+flex-col
+md:flex-row
+">
+
+
+<div className="
+relative
+flex-1
+">
+
+
+<FiSearch
+
+className="
+absolute
+left-4
+top-4
+text-gray-400
+"
+
+/>
+
+
+<input
+
+value={search}
+
+onChange={(e)=>{
+
+setSearch(e.target.value);
+setPage(1);
+
+}}
+
+placeholder="
+Search users...
+"
+
+className="
+w-full
+pl-11
+pr-4
+py-3
+rounded-xl
+border
+bg-white
+"
+/>
+
+
+</div>
+
+
+
+
+
+<select
+
+value={role}
+
+onChange={(e)=>setRole(e.target.value)}
+
+className="
+px-5
+py-3
+rounded-xl
+border
+bg-white
+"
+
 >
-  Delete
+
+<option value="all">
+All Roles
+</option>
+
+
+<option value="admin">
+Admin
+</option>
+
+
+<option value="user">
+User
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* User List */}
+
+
+<div className="
+bg-white
+rounded-2xl
+shadow-sm
+overflow-hidden
+">
+
+
+{
+
+currentUsers.map((user)=>(
+
+
+<div
+
+key={user.id}
+
+className="
+flex
+items-center
+justify-between
+p-4
+border-b
+"
+
+>
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<img
+
+src={
+user.photoURL ||
+"https://ui-avatars.com/api/?name=User"
+}
+
+className="
+w-12
+h-12
+rounded-full
+object-cover
+"
+
+/>
+
+
+
+<div>
+
+<h3 className="
+font-semibold
+text-slate-800
+">
+
+{user.name || "User"}
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+{user.email}
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<span
+
+className={`
+hidden
+sm:block
+px-3
+py-1
+rounded-lg
+text-sm
+
+${
+user.role==="admin"
+?
+"bg-orange-100 text-orange-600"
+:
+"bg-blue-100 text-blue-600"
+
+}
+
+`}
+
+>
+
+{user.role || "user"}
+
+</span>
+
+
+
+
+
+<button
+
+onClick={()=>toggleAdmin(user)}
+
+className="
+p-3
+rounded-xl
+bg-orange-100
+text-orange-600
+"
+
+>
+
+<FiCrown/>
+
 </button>
 
-                  </td>
 
-                </tr>
-              ))
-            )}
 
-          </tbody>
 
-        </table>
 
-      </div>
-    </div>
-  );
+<button
+
+onClick={()=>setSelectedUser(user)}
+
+className="
+p-3
+rounded-xl
+bg-red-100
+text-red-600
+"
+
+>
+
+<FiTrash2/>
+
+</button>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+))
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* Pagination */}
+
+
+<div className="
+flex
+justify-center
+gap-2
+">
+
+
+<button
+
+onClick={()=>
+setPage(
+Math.max(1,page-1)
+)
+}
+
+className="
+p-3
+bg-white
+rounded-xl
+"
+
+>
+
+<FiChevronLeft/>
+
+</button>
+
+
+
+{
+
+Array.from(
+{
+length: totalPages
+}
+).map(
+(_,i)=>(
+
+
+<button
+
+key={i}
+
+onClick={()=>setPage(i+1)}
+
+className={`
+px-4
+rounded-xl
+
+${
+page===i+1
+?
+"bg-amber-500 text-white"
+:
+"bg-white"
+}
+
+`}
+
+>
+
+{i+1}
+
+</button>
+
+
+)
+
+)
+
+}
+
+
+
+
+
+<button
+
+onClick={()=>
+setPage(
+Math.min(
+totalPages,
+page+1
+)
+)
+}
+
+className="
+p-3
+bg-white
+rounded-xl
+"
+
+>
+
+<FiChevronRight/>
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* Mobile Delete Sheet */}
+
+
+{
+
+selectedUser && (
+
+
+<div className="
+fixed
+inset-0
+bg-black/40
+flex
+items-end
+z-50
+">
+
+
+<div className="
+bg-white
+w-full
+rounded-t-3xl
+p-6
+space-y-4
+">
+
+
+<h2 className="
+text-xl
+font-bold
+">
+
+{selectedUser.name}
+
+</h2>
+
+
+
+<button
+
+onClick={()=>{
+
+toggleAdmin(selectedUser);
+
+setSelectedUser(null);
+
+}}
+
+className="
+w-full
+p-4
+rounded-xl
+bg-gray-100
+text-left
+"
+
+>
+
+Make / Remove Admin
+
+</button>
+
+
+
+<button
+
+onClick={()=>{
+
+removeUser(selectedUser);
+
+setSelectedUser(null);
+
+}}
+
+className="
+w-full
+p-4
+rounded-xl
+bg-red-50
+text-red-600
+text-left
+"
+
+>
+
+Delete User
+
+</button>
+
+
+<button
+
+onClick={()=>setSelectedUser(null)}
+
+className="
+w-full
+p-4
+rounded-xl
+bg-gray-100
+"
+
+>
+
+Cancel
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+)
+
+
+}
+
+
+
+
+
+</div>
+
+
+);
+
+}
+
+
+
+
+
+function StatCard({
+icon,
+title,
+value
+}){
+
+
+return (
+
+<div className="
+bg-white
+rounded-2xl
+p-5
+shadow-sm
+">
+
+
+<div className="
+text-amber-500
+text-xl
+mb-3
+">
+
+{icon}
+
+</div>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+{title}
+
+</p>
+
+
+<h2 className="
+text-3xl
+font-bold
+text-slate-800
+">
+
+{value}
+
+</h2>
+
+
+</div>
+
+);
+
+
 }
