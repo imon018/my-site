@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import {
-  getAllOrders,
-  updateOrderStatus,
-  deleteOrder,
-} from "../../services/orderService";
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+
 
 import {
   FiArrowLeft,
@@ -13,23 +12,48 @@ import {
   FiPackage,
   FiUser,
   FiMapPin,
+  FiPhone,
+  FiMail,
 } from "react-icons/fi";
 
-import { useNavigate } from "react-router-dom";
+
+import {
+  getAllOrders,
+  updateOrderStatus,
+  deleteOrder,
+} from "../../services/orderService";
+
+
+import {
+  successToast,
+  errorToast,
+} from "../../components/ui/Toast";
+
+
 
 
 
 export default function OrderDetails(){
 
 
-const {id}=useParams();
+
+const { id } = useParams();
+
 
 const navigate = useNavigate();
 
 
-const [order,setOrder]=useState(null);
 
-const [loading,setLoading]=useState(true);
+
+const [order,setOrder] =
+useState(null);
+
+
+const [loading,setLoading] =
+useState(true);
+
+
+
 
 
 
@@ -37,11 +61,16 @@ useEffect(()=>{
 
 loadOrder();
 
-},[]);
+},[id]);
+
+
+
+
 
 
 
 async function loadOrder(){
+
 
 try{
 
@@ -50,16 +79,20 @@ const data =
 await getAllOrders();
 
 
+
 const found =
 data.find(
 (item)=>item.id===id
 );
 
 
+
 setOrder(found);
 
 
-}catch(error){
+
+}
+catch(error){
 
 console.log(error);
 
@@ -76,6 +109,11 @@ setLoading(false);
 
 
 
+
+
+
+
+
 async function changeStatus(status){
 
 
@@ -88,22 +126,42 @@ status
 );
 
 
-setOrder({
 
-...order,
+setOrder(prev=>({
+
+...prev,
+
 status
 
-});
+}));
 
 
-}catch(error){
+
+successToast(
+"Order status updated."
+);
+
+
+
+}
+catch(error){
 
 console.log(error);
 
+errorToast(
+"Failed to update status."
+);
+
+
 }
 
 
 }
+
+
+
+
+
 
 
 
@@ -117,17 +175,47 @@ window.confirm(
 );
 
 
+
 if(!confirmDelete)
 return;
+
+
+
+
+try{
 
 
 await deleteOrder(id);
 
 
+
+successToast(
+"Order deleted successfully."
+);
+
+
+
 navigate("/admin/orders");
 
 
+
 }
+catch(error){
+
+console.log(error);
+
+
+errorToast(
+"Failed to delete order."
+);
+
+
+}
+
+
+}
+
+
 
 
 
@@ -135,39 +223,91 @@ navigate("/admin/orders");
 
 if(loading){
 
+
 return(
 
 <div className="
-p-10
-text-center
+min-h-[60vh]
+flex
+items-center
+justify-center
+font-bold
+text-xl
 ">
+
 
 Loading Order...
 
+
 </div>
 
-)
+);
+
 
 }
+
+
+
 
 
 
 if(!order){
 
+
 return(
 
 <div className="
-p-10
-text-center
+min-h-[60vh]
+flex
+flex-col
+gap-5
+items-center
+justify-center
+">
+
+
+<h2 className="
+text-2xl
+font-bold
 ">
 
 Order Not Found
 
+</h2>
+
+
+
+<button
+
+onClick={()=>navigate(-1)}
+
+className="
+bg-amber-500
+text-white
+px-5
+py-3
+rounded-xl
+"
+
+>
+
+Go Back
+
+</button>
+
+
 </div>
 
-)
+
+);
+
 
 }
+
+
+
+
+
 
 
 
@@ -180,13 +320,20 @@ space-y-6
 
 
 
+
+
+
+
 {/* HEADER */}
+
 
 
 <div className="
 flex
-items-center
+flex-col
+md:flex-row
 justify-between
+gap-4
 ">
 
 
@@ -195,14 +342,15 @@ justify-between
 onClick={()=>navigate(-1)}
 
 className="
+bg-white
+px-5
+py-3
+rounded-2xl
+shadow-sm
 flex
 items-center
 gap-2
-bg-white
-px-4
-py-3
-rounded-xl
-shadow-sm
+font-semibold
 "
 
 >
@@ -215,6 +363,8 @@ Back
 
 
 
+
+
 <button
 
 onClick={removeOrder}
@@ -224,9 +374,10 @@ bg-red-500
 text-white
 px-5
 py-3
-rounded-xl
+rounded-2xl
 flex
 items-center
+justify-center
 gap-2
 "
 
@@ -234,7 +385,7 @@ gap-2
 
 <FiTrash2/>
 
-Delete
+Delete Order
 
 </button>
 
@@ -246,7 +397,12 @@ Delete
 
 
 
-{/* CUSTOMER */}
+
+
+
+
+{/* ORDER TOP CARD */}
+
 
 
 <div className="
@@ -259,92 +415,54 @@ shadow-sm
 
 <div className="
 flex
-items-center
-gap-3
-mb-5
+flex-col
+md:flex-row
+justify-between
+gap-5
 ">
 
 
-<FiUser
-className="text-amber-500"
-size={24}
-/>
+<div>
 
 
-<h2 className="
-text-xl
-font-bold
-">
-
-Customer Information
-
-</h2>
-
-
-</div>
-
-
-
-
-<div className="
-grid
-md:grid-cols-2
-gap-4
+<p className="
+text-gray-500
 text-sm
 ">
 
+Order ID
 
-<p>
-<b>Name:</b> {order.customerName}
 </p>
 
 
-<p>
-<b>Email:</b> {order.email}
-</p>
-
-
-<p>
-<b>Phone:</b> {order.phone}
-</p>
-
-
-<p>
-<b>Address:</b> {order.address}
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* STATUS */}
-
-
-<div className="
-bg-white
-rounded-3xl
-p-6
-shadow-sm
+<h1 className="
+text-2xl
+font-black
 ">
 
+#{order.id.slice(0,10)}
 
-<h2 className="
-font-bold
-mb-4
+</h1>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<p className="
+text-gray-500
+text-sm
+mb-2
 ">
 
 Order Status
 
-</h2>
+</p>
 
 
 
@@ -365,6 +483,7 @@ border
 rounded-xl
 px-5
 py-3
+font-semibold
 "
 
 >
@@ -374,17 +493,21 @@ py-3
 Pending
 </option>
 
+
 <option>
 Processing
 </option>
+
 
 <option>
 Shipped
 </option>
 
+
 <option>
 Delivered
 </option>
+
 
 <option>
 Cancelled
@@ -398,12 +521,152 @@ Cancelled
 
 
 
+</div>
+
+
+</div>
 
 
 
 
 
-{/* REQUESTS */}
+
+
+
+
+{/* CUSTOMER INFO */}
+
+
+
+<div className="
+bg-white
+rounded-3xl
+p-6
+shadow-sm
+">
+
+
+<div className="
+flex
+items-center
+gap-3
+mb-5
+">
+
+
+<FiUser
+className="
+text-amber-500
+"
+size={24}
+/>
+
+
+<h2 className="
+text-xl
+font-black
+">
+
+Customer Information
+
+</h2>
+
+
+</div>
+
+
+
+
+
+<div className="
+grid
+md:grid-cols-2
+gap-5
+">
+
+
+<div className="
+flex
+gap-3
+">
+
+<FiUser/>
+
+<p>
+{order.customerName}
+</p>
+
+</div>
+
+
+
+
+
+<div className="
+flex
+gap-3
+">
+
+<FiMail/>
+
+<p>
+{order.email}
+</p>
+
+</div>
+
+
+
+
+
+<div className="
+flex
+gap-3
+">
+
+<FiPhone/>
+
+<p>
+{order.phone}
+</p>
+
+</div>
+
+
+
+
+
+<div className="
+flex
+gap-3
+">
+
+<FiMapPin/>
+
+<p>
+{order.address}
+</p>
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* REQUEST ALERT */}
+
 
 
 {
@@ -422,11 +685,11 @@ p-6
 
 
 <h2 className="
-font-bold
+font-black
 mb-3
 ">
 
-Customer Requests
+Customer Request
 
 </h2>
 
@@ -437,7 +700,7 @@ order.cancelRequested &&
 
 <p className="
 text-red-600
-font-semibold
+font-bold
 ">
 
 ⚠ Cancel Request Received
@@ -448,12 +711,13 @@ font-semibold
 
 
 
+
 {
 order.returnRequested &&
 
 <p className="
 text-blue-600
-font-semibold
+font-bold
 ">
 
 🔄 Return Request Received
@@ -496,14 +760,18 @@ gap-3
 mb-5
 ">
 
+
 <FiPackage
-className="text-blue-600"
+className="
+text-blue-600
+"
+size={24}
 />
 
 
 <h2 className="
 text-xl
-font-bold
+font-black
 ">
 
 Products
@@ -517,6 +785,8 @@ Products
 
 
 
+
+
 <div className="
 space-y-4
 ">
@@ -525,12 +795,12 @@ space-y-4
 {
 
 order.items?.map(
-(item)=>(
+(item,index)=>(
 
 
 <div
 
-key={item.id}
+key={item.id || index}
 
 className="
 flex
@@ -538,17 +808,42 @@ items-center
 justify-between
 border-b
 pb-4
+gap-4
 "
 
-
 >
+
+
+<div className="
+flex
+items-center
+gap-4
+">
+
+
+<img
+
+src={
+item.image ||
+"https://via.placeholder.com/80"
+}
+
+className="
+w-16
+h-16
+rounded-xl
+object-cover
+"
+
+/>
+
 
 
 <div>
 
 
 <h3 className="
-font-semibold
+font-bold
 ">
 
 {item.name}
@@ -556,12 +851,13 @@ font-semibold
 </h3>
 
 
+
 <p className="
 text-sm
 text-gray-500
 ">
 
-Quantity:
+Qty:
 {item.quantity}
 
 </p>
@@ -570,15 +866,20 @@ Quantity:
 </div>
 
 
+</div>
+
+
+
 
 
 <p className="
-font-bold
+font-black
 ">
 
 ৳ {item.price * item.quantity}
 
 </p>
+
 
 
 </div>
@@ -604,7 +905,11 @@ font-bold
 
 
 
+
+
+
 {/* TOTAL */}
+
 
 
 <div className="
@@ -621,7 +926,7 @@ font-black
 
 <span>
 
-Total
+Total Amount
 
 </span>
 
@@ -643,7 +948,7 @@ Total
 </div>
 
 
-)
+);
 
 
 }
