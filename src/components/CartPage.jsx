@@ -95,9 +95,7 @@ export default function CartPage() {
       className="
         min-h-screen
 
-        bg-gradient-to-b
-        from-slate-50
-        to-white
+        bg-[#F8F7F3]
 
         px-4
         md:px-8
