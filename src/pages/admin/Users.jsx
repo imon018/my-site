@@ -950,22 +950,16 @@ user.role==="admin"
 "admin";
 
 
-const newRole =
-user.role==="admin"
-?
-"user"
-:
-"admin";
-
-
 const confirm =
 window.confirm(
-`Are you sure you want to make ${newRole}?`
+`Are you sure you want to make ${
+newRole === "admin"
+?
+"Admin"
+:
+"User"
+}?`
 );
-
-
-if(!confirm)
-return;
 
 
 if(!confirm)
@@ -1194,4 +1188,4 @@ disabled:opacity-40
 
 </div>
 ):
-}
+
