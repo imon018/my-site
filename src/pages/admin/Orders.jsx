@@ -16,7 +16,9 @@ import {
   FiTruck,
   FiCheckCircle,
   FiChevronDown,
-  FiCalendar
+  FiCalendar,
+  FiMoreVertical,
+	FiEye,
 } from "react-icons/fi";
 
 
@@ -2297,6 +2299,105 @@ text-slate-800
 
 </div>
 
+
+)
+
+
+}
+
+
+// =============================
+// FILTER BUTTON
+// =============================
+
+
+function FilterButton({
+title,
+icon,
+open,
+click,
+children
+}){
+
+
+return(
+
+<div className="
+relative
+">
+
+
+<button
+
+onClick={click}
+
+className="
+w-full
+h-12
+bg-white
+rounded-xl
+border
+border-gray-200
+px-4
+flex
+items-center
+justify-between
+text-sm
+font-medium
+text-slate-700
+"
+
+>
+
+
+<span className="
+truncate
+">
+
+{title}
+
+</span>
+
+
+{icon}
+
+
+</button>
+
+
+
+
+
+{
+
+open &&
+
+<div className="
+absolute
+top-14
+left-0
+right-0
+bg-white
+rounded-xl
+shadow-xl
+border
+border-gray-100
+z-50
+overflow-hidden
+">
+
+
+{children}
+
+
+</div>
+
+
+}
+
+
+
+</div>
 
 )
 
