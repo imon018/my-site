@@ -110,3 +110,8 @@ export const getRelatedProducts = async (
     )
     .slice(0, 4);
 };
+
+// Alias for admin product management
+export const deleteProduct = async (id) => {
+  await deleteDoc(doc(db, "products", id));
+};
