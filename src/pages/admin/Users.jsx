@@ -9,7 +9,6 @@ import {
   FiShield,
   FiUser,
   FiX,
-  FiCrown,
   FiLoader,
 } from "react-icons/fi";
 
@@ -384,7 +383,7 @@ justify-center
 mb-3
 ">
 
-<FiCrown size={22}/>
+<FiShield size={22}/>
 
 </div>
 
@@ -1168,7 +1167,7 @@ font-medium
 >
 
 
-<FiCrown/>
+<FiShield/>
 
 
 {
