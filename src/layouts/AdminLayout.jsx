@@ -1,694 +1,425 @@
 import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 import {
   FiGrid,
-  FiBox,
-  FiImage,
-  FiPlusCircle,
-  FiUsers,
-  FiShoppingCart,
-  FiBarChart2,
-  FiSettings,
+  FiHome,
   FiUser,
-  FiLogOut,
-  FiMenu,
+  FiUsers,
+  FiBox,
+  FiShoppingCart,
+  FiUpload,
+  FiImage,
   FiMail,
+  FiSettings,
+  FiLogOut,
+  FiChevronDown,
+  FiChevronRight,
+  FiMenu,
   FiX,
 } from "react-icons/fi";
 
 import { logout } from "../services/authService";
 
-
 export default function AdminLayout() {
 
+  const { user } = useAuth();
 
-  const [sidebarOpen,setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [collapsed,setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
+  const [uploadOpen, setUploadOpen] = useState(false);
 
+  const [bannerOpen, setBannerOpen] = useState(false);
 
   const menu = [
 
     {
-      name:"Dashboard",
-      icon:<FiGrid/>,
-      path:"/admin"
+      name: "Dashboard",
+      icon: <FiGrid />,
+      path: "/admin",
     },
-
 
     {
-      name:"Products",
-      icon:<FiBox/>,
-      path:"/admin/products"
+      name: "Home",
+      icon: <FiHome />,
+      path: "/",
     },
-
 
     {
-      name:"Hero Banners",
-      icon:<FiImage/>,
-      path:"/admin/banners"
+      name: "Admin Profile",
+      icon: <FiUser />,
+      path: "/admin/profile",
     },
-
 
     {
-      name:"Add Product",
-      icon:<FiPlusCircle/>,
-      path:"/admin/add-product"
+      name: "Users Panel",
+      icon: <FiUsers />,
+      path: "/admin/users",
     },
-
 
     {
-      name:"Orders",
-      icon:<FiShoppingCart/>,
-      path:"/admin/orders"
+      divider: true,
     },
-
 
     {
-      name:"Add Order",
-      icon:<FiPlusCircle/>,
-      path:"/admin/add-order"
+      name: "Products",
+      icon: <FiBox />,
+      path: "/admin/products",
     },
-
 
     {
-      name:"Users",
-      icon:<FiUsers/>,
-      path:"/admin/users"
+      name: "Orders",
+      icon: <FiShoppingCart />,
+      path: "/admin/orders",
     },
-
-
-    {
-      name:"Analytics",
-      icon:<FiBarChart2/>,
-      path:"/admin/analytics"
-    },
-
-
-    {
-      name:"Settings",
-      icon:<FiSettings/>,
-      path:"/admin/settings"
-    },
-
-
-    {
-      name:"Admin Profile",
-      icon:<FiUser/>,
-      path:"/admin/profile"
-    },
-
-
-    {
-      name:"Subscribers",
-      icon:<FiMail/>,
-      path:"/admin/subscribers"
-    },
-
-
-    {
-      name:"Newsletter",
-      icon:<FiMail/>,
-      path:"/admin/newsletter"
-    },
-
-
-    {
-      name:"Shop Hero",
-      icon:<FiImage/>,
-      path:"/admin/shop-hero"
-    },
-
 
   ];
 
+<div className="min-h-screen flex bg-warm">
 
+  {/* Overlay */}
+  {sidebarOpen && (
+    <div
+      onClick={() => setSidebarOpen(false)}
+      className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
+    />
+  )}
 
+  {/* Mobile Menu Button */}
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="lg:hidden fixed top-4 left-4 z-50 bg-gold-gradient text-white p-3 rounded-2xl shadow-gold"
+  >
+    <FiMenu size={24} />
+  </button>
 
-return (
+  {/* ================= SIDEBAR ================= */}
 
+  <aside
+    className={`
+      fixed lg:static top-0 left-0 h-screen
+      ${collapsed ? "lg:w-24" : "lg:w-72"}
+      w-72
+      bg-card
+      border-r
+      border-border
+      flex flex-col
+      transition-all duration-300
+      z-50
+      shadow-luxury
+      ${
+        sidebarOpen
+          ? "translate-x-0"
+          : "-translate-x-full lg:translate-x-0"
+      }
+    `}
+  >
 
-<div className="
-min-h-screen
-w-full
-flex
-bg-warm
-overflow-hidden
-">
+    {/* Mobile Close */}
+    <div className="lg:hidden flex justify-end p-5">
 
+      <button
+        onClick={() => setSidebarOpen(false)}
+      >
+        <FiX size={28} />
+      </button>
 
+    </div>
 
+    {/* Header */}
 
+    <div className="px-6 pb-6 border-b border-border">
 
-{/* MOBILE OVERLAY */}
+      <div className="flex items-center justify-between">
 
-{
-sidebarOpen &&
+        {!collapsed && (
 
-<div
+          <div>
 
-className="
-fixed
-inset-0
-bg-black/30
-backdrop-blur-sm
-z-40
-lg:hidden
-"
+            <h2 className="text-3xl font-bold text-amber-600">
 
-onClick={()=>setSidebarOpen(false)}
+              Dream Mode
 
-></div>
+            </h2>
 
-}
+            <p className="text-gray-500">
 
+              Admin Panel
 
+            </p>
 
+          </div>
 
+        )}
 
-{/* MOBILE MENU BUTTON */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="hidden lg:block"
+        >
+          <FiMenu size={22} />
+        </button>
 
+      </div>
 
-<button
+      {!collapsed && (
 
-onClick={()=>setSidebarOpen(true)}
+        <div className="mt-6 bg-white rounded-3xl border border-amber-100 p-5 text-center shadow-sm">
 
-className="
-lg:hidden
-fixed
-top-4
-left-4
-z-50
+          <img
+            src={
+              user?.photoURL ||
+              "https://ui-avatars.com/api/?background=F6C453&color=fff&name=Admin"
+            }
+            alt="Admin"
+            className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-amber-100"
+          />
 
-bg-gold-gradient
+          <h3 className="mt-4 text-xl font-bold">
 
-text-white
+            {user?.name || "Administrator"}
 
-p-3
+          </h3>
 
-rounded-xl
+          <p className="text-amber-600 text-sm">
 
-shadow-gold
+            Administrator
 
-"
+          </p>
 
->
+          <p className="text-gray-500 text-xs mt-1 break-all">
 
-<FiMenu size={24}/>
+            {user?.email}
 
-</button>
+          </p>
 
+        </div>
 
+      )}
 
+    </div>
 
+    {/* Menu */}
 
+    <nav className="flex-1 overflow-y-auto px-4 py-5 space-y-2">
 
+      {menu.map((item) => {
 
-{/* SIDEBAR */}
+        if (item.divider) {
 
+          return (
+            <div
+              key={Math.random()}
+              className="my-4 border-t border-amber-100"
+            />
+          );
 
-<aside
+        }
 
+        return (
 
-className={`
-fixed
-lg:static
+          <NavLink
+            key={item.path}
+            to={item.path}
+            onClick={() => setSidebarOpen(false)}
+            className={({ isActive }) => `
+              flex
+              items-center
+              gap-3
+              px-4
+              py-3
+              rounded-2xl
+              transition
+              ${
+                isActive
+                  ? "bg-gold-gradient text-white shadow-gold"
+                  : "hover:bg-amber-50 text-gray-700"
+              }
+            `}
+          >
 
-top:0
-left:0
+            <span className="text-xl">
 
-h-screen
+              {item.icon}
 
+            </span>
 
-${collapsed 
-? "lg:w-24"
-: "lg:w-72"
-}
+            {!collapsed && (
 
+              <span className="font-semibold">
 
-w-72
+                {item.name}
 
+              </span>
 
-bg-card
+            )}
 
-border-r
+          </NavLink>
 
-border-border
+        );
 
+      })}
 
-flex
+      {/* Uploads */}
 
-flex-col
+      <button
+        onClick={() => setUploadOpen(!uploadOpen)}
+        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-amber-50 transition"
+      >
+        <div className="flex items-center gap-3">
+          <FiUpload className="text-xl" />
+          {!collapsed && (
+            <span className="font-semibold">
+              Uploads
+            </span>
+          )}
+        </div>
 
+        {!collapsed &&
+          (uploadOpen ? (
+            <FiChevronDown />
+          ) : (
+            <FiChevronRight />
+          ))}
+      </button>
 
-z-50
+      {uploadOpen && !collapsed && (
+        <div className="ml-8 space-y-2">
 
+          <NavLink
+            to="/admin/add-product"
+            onClick={() => setSidebarOpen(false)}
+            className="block py-2 text-gray-600 hover:text-amber-600"
+          >
+            Add Product
+          </NavLink>
 
-transition-all
+          <NavLink
+            to="/admin/add-order"
+            onClick={() => setSidebarOpen(false)}
+            className="block py-2 text-gray-600 hover:text-amber-600"
+          >
+            Add Order
+          </NavLink>
 
-duration-300
+        </div>
+      )}
 
+      {/* Banners */}
 
-shadow-luxury
+      <button
+        onClick={() => setBannerOpen(!bannerOpen)}
+        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-amber-50 transition"
+      >
+        <div className="flex items-center gap-3">
+          <FiImage className="text-xl" />
 
+          {!collapsed && (
+            <span className="font-semibold">
+              Banners
+            </span>
+          )}
 
-${
-sidebarOpen
+        </div>
 
-?
+        {!collapsed &&
+          (bannerOpen ? (
+            <FiChevronDown />
+          ) : (
+            <FiChevronRight />
+          ))}
+      </button>
 
-"translate-x-0"
+      {bannerOpen && !collapsed && (
 
-:
+        <div className="ml-8 space-y-2">
 
-"-translate-x-full lg:translate-x-0"
+          <NavLink
+            to="/admin/banners"
+            onClick={() => setSidebarOpen(false)}
+            className="block py-2 text-gray-600 hover:text-amber-600"
+          >
+            Home Banner
+          </NavLink>
 
-}
+          <NavLink
+            to="/admin/shop-hero"
+            onClick={() => setSidebarOpen(false)}
+            className="block py-2 text-gray-600 hover:text-amber-600"
+          >
+            Shop Banner
+          </NavLink>
 
-`}
+        </div>
 
+      )}
 
->
+      <div className="border-t border-amber-100 my-4"></div>
 
+      <NavLink
+        to="/admin/subscribers"
+        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
+      >
+        <FiMail />
+        {!collapsed && "Subscribers"}
+      </NavLink>
 
+      <NavLink
+        to="/admin/newsletter"
+        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
+      >
+        <FiMail />
+        {!collapsed && "Newsletter"}
+      </NavLink>
 
+      <NavLink
+        to="/admin/settings"
+        className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-amber-50"
+      >
+        <FiSettings />
+        {!collapsed && "Settings"}
+      </NavLink>
 
+    </nav>
 
+    {/* Footer */}
 
+    <div className="p-5 border-t border-border">
 
-{/* MOBILE CLOSE */}
+      <button
+        onClick={logout}
+        className="w-full bg-red-500 hover:bg-red-600 text-white rounded-2xl py-3 flex items-center justify-center gap-2 transition"
+      >
+        <FiLogOut />
 
+        {!collapsed && "Logout"}
 
-<div
+      </button>
 
-className="
-lg:hidden
-flex
-justify-end
-p-4
-"
+    </div>
 
->
+  </aside>
 
-<button
+  {/* MAIN */}
 
-onClick={()=>setSidebarOpen(false)}
+  <main
+    className="
+      flex-1
+      min-h-screen
+      bg-warm
+      overflow-y-auto
+      pt-20
+      lg:pt-8
+      px-5
+      lg:px-8
+    "
+  >
 
-className="
-p-2
-rounded-xl
+    <Outlet />
 
-hover:bg-gray-100
-
-"
-
->
-
-<FiX size={26}/>
-
-</button>
-
+  </main>
 
 </div>
 
-
-
-
-
-
-
-{/* HEADER */}
-
-
-
-<div
-
-className="
-h-24
-px-6
-
-flex
-items-center
-justify-between
-
-
-border-b
-
-border-border
-
-"
-
->
-
-
-{
-
-!collapsed &&
-
-<div>
-
-<h1
-
-className="
-text-2xl
-font-bold
-
-text-amber-600
-
-"
-
->
-
-Dream Mode
-
-</h1>
-
-
-<p
-
-className="
-text-sm
-text-muted
-
-"
-
->
-
-Admin Panel
-
-</p>
-
-
-</div>
-
-}
-
-
-
-
-
-<button
-
-onClick={()=>setCollapsed(!collapsed)}
-
-className="
-hidden
-lg:block
-
-text-gray-500
-
-hover:text-amber-500
-
-"
-
->
-
-<FiMenu size={22}/>
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* MENU */}
-
-
-
-<nav
-
-className="
-flex-1
-
-overflow-y-auto
-
-p-4
-
-space-y-2
-
-"
-
->
-
-
-{
-menu.map((item)=>(
-
-
-<NavLink
-
-
-key={item.path}
-
-to={item.path}
-
-
-onClick={()=>setSidebarOpen(false)}
-
-
-
-className={({isActive})=>`
-
-flex
-
-items-center
-
-gap-3
-
-
-px-4
-
-py-3
-
-
-rounded-xl
-
-
-transition-all
-
-duration-300
-
-
-
-${
-isActive
-
-?
-
-"bg-gold-gradient text-white shadow-gold"
-
-:
-
-"text-gray-700 hover:bg-amber-50"
-
-}
-
-
-`}
-
-
->
-
-
-
-<span className="text-xl">
-
-{item.icon}
-
-</span>
-
-
-
-{
-
-!collapsed &&
-
-<span className="
-font-medium
-">
-
-{item.name}
-
-</span>
-
-}
-
-
-
-</NavLink>
-
-
-))
-
-}
-
-
-</nav>
-
-
-
-
-
-
-
-
-
-{/* LOGOUT */}
-
-
-
-<div
-
-className="
-p-4
-
-border-t
-
-border-border
-
-"
-
->
-
-
-<button
-
-
-onClick={()=>logout()}
-
-
-className="
-
-w-full
-
-flex
-
-items-center
-
-justify-center
-
-gap-2
-
-
-bg-red-500
-
-hover:bg-red-600
-
-
-text-white
-
-
-py-3
-
-
-rounded-xl
-
-
-transition
-
-
-"
-
->
-
-
-<FiLogOut/>
-
-
-{
-
-!collapsed && "Logout"
-
-}
-
-
-</button>
-
-
-</div>
-
-
-
-
-
-
-
-</aside>
-
-
-
-
-
-
-
-
-
-{/* MAIN CONTENT */}
-
-
-
-<main
-
-className="
-
-flex-1
-
-min-h-screen
-
-
-w-full
-
-
-bg-warm
-
-
-overflow-y-auto
-
-
-
-pt-20
-
-lg:pt-8
-
-
-px-4
-
-sm:px-6
-
-lg:px-8
-
-
-"
-
-
->
-
-
-<Outlet/>
-
-
-</main>
-
-
-
-
-
-
-
-</div>
-
-
-);
-
-
-}
