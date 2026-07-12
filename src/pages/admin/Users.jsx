@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import {
   FiSearch,
-  FiPlus,
-  FiFilter,
   FiChevronDown,
   FiChevronLeft,
   FiChevronRight,
@@ -11,9 +9,10 @@ import {
   FiShield,
   FiUser,
   FiX,
-  FiCheck,
   FiCrown,
+  FiLoader,
 } from "react-icons/fi";
+
 
 import {
   getUsers,
@@ -22,45 +21,91 @@ import {
 } from "../../services/adminService";
 
 
+
 export default function Users() {
 
 
-  const [users, setUsers] = useState([]);
+  const [users,setUsers] =
+    useState([]);
 
-  const [search, setSearch] = useState("");
 
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [loading,setLoading] =
+    useState(true);
 
-  const [selectedUser, setSelectedUser] = useState(null);
 
-  const [showAction, setShowAction] = useState(false);
+  const [search,setSearch] =
+    useState("");
 
-  const [page, setPage] = useState(1);
+
+  const [roleFilter,setRoleFilter] =
+    useState("all");
+
+
+  const [selectedUser,setSelectedUser] =
+    useState(null);
+
+
+  const [showAction,setShowAction] =
+    useState(false);
+
+
+  const [page,setPage] =
+    useState(1);
+
+
 
   const usersPerPage = 6;
 
 
 
-  useEffect(() => {
+
+
+  useEffect(()=>{
 
     loadUsers();
 
-  }, [search]);
+  },[search]);
 
 
 
 
-  async function loadUsers() {
+  useEffect(()=>{
 
-    try {
+    setPage(1);
 
-      const data = await getUsers(search);
+  },[
+    search,
+    roleFilter
+  ]);
+
+
+
+
+
+
+  async function loadUsers(){
+
+    try{
+
+      setLoading(true);
+
+
+      const data =
+        await getUsers(search);
+
 
       setUsers(data);
 
-    } catch(error){
+
+    }
+    catch(error){
 
       console.log(error);
+
+    }
+    finally{
+
+      setLoading(false);
 
     }
 
@@ -70,15 +115,23 @@ export default function Users() {
 
 
 
+
   async function toggleAdmin(user){
+
 
     try{
 
+
       await changeRole(
+
         user.id,
-        user.role === "admin"
-          ? "user"
-          : "admin"
+
+        user.role==="admin"
+        ?
+        "user"
+        :
+        "admin"
+
       );
 
 
@@ -88,13 +141,16 @@ export default function Users() {
       setShowAction(false);
 
 
-    }catch(error){
+    }
+    catch(error){
 
       console.log(error);
 
     }
 
+
   }
+
 
 
 
@@ -103,31 +159,28 @@ export default function Users() {
   async function removeUser(user){
 
 
-    const confirmDelete =
-      window.confirm(
-        `Delete ${user.email}?`
+    try{
+
+
+      await deleteUser(
+        user.id
       );
 
 
-    if(!confirmDelete)
-      return;
-
-
-
-    try{
-
-      await deleteUser(user.id);
-
       await loadUsers();
+
 
       setShowAction(false);
 
 
-    }catch(error){
+
+    }
+    catch(error){
 
       console.log(error);
 
     }
+
 
   }
 
@@ -135,33 +188,49 @@ export default function Users() {
 
 
 
+
+
   const filteredUsers =
-    roleFilter === "all"
-      ? users
-      : users.filter(
-          user =>
-          user.role === roleFilter
-        );
+
+    roleFilter==="all"
+
+    ?
+
+    users
+
+    :
+
+    users.filter(
+      user =>
+      user.role===roleFilter
+    );
 
 
 
 
-  const totalUsers = users.length;
+
+
+
+  const totalUsers =
+    users.length;
+
 
 
   const totalAdmins =
     users.filter(
       user =>
-      user.role === "admin"
+      user.role==="admin"
     ).length;
+
 
 
 
   const totalActive =
     users.filter(
       user =>
-      user.status !== "inactive"
+      user.status!=="inactive"
     ).length;
+
 
 
 
@@ -174,28 +243,42 @@ export default function Users() {
 
 
 
+
+
   const currentUsers =
     filteredUsers.slice(
-      (page - 1) * usersPerPage,
-      page * usersPerPage
+
+      (page-1)*usersPerPage,
+
+      page*usersPerPage
+
     );
 
   return (
 
-<div className="min-h-screen bg-[#F8F5EF] p-4 lg:p-8">
+<div className="
+min-h-screen
+bg-[#F8F5EF]
+p-4
+lg:p-8
+">
 
 
 {/* Header */}
 
 <div className="mb-6">
 
+
 <h1 className="
 text-3xl
 font-bold
 text-slate-800
 ">
+
 Users
+
 </h1>
+
 
 
 <p className="
@@ -203,11 +286,13 @@ text-sm
 text-gray-500
 mt-1
 ">
+
 Dashboard
 <span className="mx-2">
 ›
 </span>
 Users
+
 </p>
 
 
@@ -217,7 +302,7 @@ Users
 
 
 
-{/* Stats Cards */}
+{/* Stats */}
 
 <div className="
 grid
@@ -233,8 +318,6 @@ bg-white
 rounded-2xl
 p-4
 shadow-sm
-border
-border-gray-100
 ">
 
 <div className="
@@ -242,10 +325,10 @@ w-10
 h-10
 rounded-xl
 bg-orange-50
-flex
-items-center
-justify-center
 text-orange-500
+flex
+items-center
+justify-center
 mb-3
 ">
 
@@ -258,20 +341,24 @@ mb-3
 text-xs
 text-gray-500
 ">
+
 Total Users
+
 </p>
 
 
 <h2 className="
 text-2xl
 font-bold
-text-slate-800
 ">
+
 {totalUsers}
+
 </h2>
 
 
 </div>
+
 
 
 
@@ -282,117 +369,18 @@ bg-white
 rounded-2xl
 p-4
 shadow-sm
-border
-border-gray-100
 ">
+
 
 <div className="
 w-10
 h-10
 rounded-xl
-bg-blue-50
+bg-amber-50
+text-amber-500
 flex
 items-center
 justify-center
-text-blue-500
-mb-3
-">
-
-<FiShield size={22}/>
-
-</div>
-
-
-<p className="
-text-xs
-text-gray-500
-">
-Admins
-</p>
-
-
-<h2 className="
-text-2xl
-font-bold
-text-slate-800
-">
-{totalAdmins}
-</h2>
-
-
-</div>
-
-
-
-
-
-<div className="
-bg-white
-rounded-2xl
-p-4
-shadow-sm
-border
-border-gray-100
-">
-
-<div className="
-w-10
-h-10
-rounded-xl
-bg-green-50
-flex
-items-center
-justify-center
-text-green-500
-mb-3
-">
-
-<FiUser size={22}/>
-
-</div>
-
-
-<p className="
-text-xs
-text-gray-500
-">
-Active Users
-</p>
-
-
-<h2 className="
-text-2xl
-font-bold
-text-slate-800
-">
-{totalActive}
-</h2>
-
-
-</div>
-
-
-
-
-
-<div className="
-bg-white
-rounded-2xl
-p-4
-shadow-sm
-border
-border-gray-100
-">
-
-<div className="
-w-10
-h-10
-rounded-xl
-bg-purple-50
-flex
-items-center
-justify-center
-text-purple-500
 mb-3
 ">
 
@@ -405,22 +393,134 @@ mb-3
 text-xs
 text-gray-500
 ">
-New Users
+
+Admins
+
 </p>
 
 
 <h2 className="
 text-2xl
 font-bold
-text-slate-800
 ">
-32
+
+{totalAdmins}
+
 </h2>
 
 
 </div>
 
 
+
+
+
+
+<div className="
+bg-white
+rounded-2xl
+p-4
+shadow-sm
+">
+
+
+<div className="
+w-10
+h-10
+rounded-xl
+bg-green-50
+text-green-500
+flex
+items-center
+justify-center
+mb-3
+">
+
+<FiShield size={22}/>
+
+</div>
+
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+Active Users
+
+</p>
+
+
+
+<h2 className="
+text-2xl
+font-bold
+">
+
+{totalActive}
+
+</h2>
+
+
+</div>
+
+
+
+
+
+
+<div className="
+bg-white
+rounded-2xl
+p-4
+shadow-sm
+">
+
+
+<div className="
+w-10
+h-10
+rounded-xl
+bg-blue-50
+text-blue-500
+flex
+items-center
+justify-center
+mb-3
+">
+
+<FiUser size={22}/>
+
+</div>
+
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+New Users
+
+</p>
+
+
+
+<h2 className="
+text-2xl
+font-bold
+">
+
+0
+
+</h2>
+
+
+</div>
+
+
+
 </div>
 
 
@@ -429,29 +529,24 @@ text-slate-800
 
 
 
-{/* Search + Add */}
-
-
-<div className="
-flex
-gap-3
-mb-4
-">
+{/* Search */}
 
 
 <div className="
 relative
-flex-1
+mb-4
 ">
 
 
 <FiSearch
+
 className="
 absolute
 left-4
 top-3.5
 text-gray-400
 "
+
 />
 
 
@@ -459,21 +554,23 @@ text-gray-400
 
 value={search}
 
-onChange={
-(e)=>setSearch(e.target.value)
+onChange={(e)=>
+setSearch(e.target.value)
 }
 
-placeholder="Search users..."
+placeholder="
+Search users by email...
+"
 
 className="
 w-full
 bg-white
-border
-border-gray-200
 rounded-xl
 py-3
 pl-11
 pr-4
+border
+border-gray-200
 outline-none
 focus:ring-2
 focus:ring-amber-400
@@ -488,69 +585,53 @@ focus:ring-amber-400
 
 
 
-<button
-
-className="
-bg-amber-500
-text-white
-px-4
-rounded-xl
-flex
-items-center
-gap-2
-shadow
-"
-
->
-
-<FiPlus/>
-
-<span className="hidden sm:block">
-Add User
-</span>
-
-</button>
 
 
-</div>
-
-
-
-
-
-
-
-
-{/* Filter */}
+{/* Role Filter */}
 
 
 <button
 
 onClick={()=>{
 
+
 setRoleFilter(
+
 roleFilter==="all"
-? "admin"
-: roleFilter==="admin"
-? "user"
-: "all"
-)
+
+?
+
+"admin"
+
+:
+
+roleFilter==="admin"
+
+?
+
+"user"
+
+:
+
+"all"
+
+);
+
 
 }}
 
 className="
 w-full
 bg-white
+rounded-xl
 border
 border-gray-200
-rounded-xl
 px-4
 py-3
 flex
 items-center
 justify-between
 mb-5
-text-slate-700
 "
 
 >
@@ -561,14 +642,15 @@ text-slate-700
 {
 roleFilter==="all"
 ?
-"All Roles"
+"All Users"
 :
 roleFilter==="admin"
 ?
 "Admins"
 :
-"Users"
+"Normal Users"
 }
+
 
 </span>
 
@@ -583,16 +665,72 @@ roleFilter==="admin"
 
 
 
+{/* Loading */}
 
 
-{/* Users List */}
-
+{
+loading &&
 
 <div className="
 bg-white
 rounded-2xl
-shadow-sm
+p-10
+flex
+justify-center
+">
+
+<FiLoader
+className="animate-spin"
+size={30}
+/>
+
+
+</div>
+
+}
+
+
+
+
+
+
+{/* Empty */}
+
+
+{
+!loading &&
+currentUsers.length===0 &&
+
+<div className="
+bg-white
+rounded-2xl
+p-10
+text-center
+text-gray-500
+">
+
+No Users Found
+
+</div>
+
+}
+
+
+
+
+
+
+{/* User List */}
+
+
+{
+!loading &&
+
+<div className="
+bg-white
+rounded-2xl
 overflow-hidden
+shadow-sm
 ">
 
 
@@ -613,6 +751,7 @@ border-b
 last:border-none
 "
 
+
 >
 
 
@@ -628,12 +767,15 @@ min-w-0
 
 src={
 user.photoURL ||
-`https://ui-avatars.com/api/?name=${user.email}`
+`https://ui-avatars.com/api/?name=${encodeURIComponent(
+user.email || "User"
+)}`
 }
 
+
 className="
-w-11
-h-11
+w-12
+h-12
 rounded-full
 object-cover
 "
@@ -658,6 +800,7 @@ user.name ||
 </h3>
 
 
+
 <p className="
 text-xs
 text-gray-500
@@ -678,7 +821,6 @@ truncate
 
 
 
-
 <div className="
 flex
 items-center
@@ -692,13 +834,20 @@ px-3
 py-1
 rounded-lg
 font-medium
+
 ${
 user.role==="admin"
+
 ?
+
 "bg-amber-50 text-amber-600"
+
 :
+
 "bg-blue-50 text-blue-600"
+
 }
+
 `}>
 
 {
@@ -719,6 +868,7 @@ user.role==="admin"
 onClick={()=>{
 
 setSelectedUser(user);
+
 setShowAction(true);
 
 }}
@@ -736,9 +886,10 @@ justify-center
 
 >
 
-<FiTrash2/>
+<FiTrash2 size={16}/>
 
 </button>
+
 
 
 </div>
@@ -753,10 +904,16 @@ justify-center
 }
 
 
-
 </div>
 
-  {/* Pagination */}
+}
+
+  id="users-last"
+{/* Pagination */}
+
+
+{
+totalPages > 1 &&
 
 <div className="
 flex
@@ -771,7 +928,9 @@ mt-6
 
 disabled={page===1}
 
-onClick={()=>setPage(page-1)}
+onClick={()=>
+setPage(page-1)
+}
 
 className="
 w-10
@@ -796,19 +955,21 @@ disabled:opacity-40
 
 
 {
-
 Array.from(
 {
 length: totalPages
 }
-).map((_,index)=>(
+)
+.map((_,index)=>(
 
 
 <button
 
 key={index}
 
-onClick={()=>setPage(index+1)}
+onClick={()=>
+setPage(index+1)
+}
 
 className={`
 w-10
@@ -818,10 +979,15 @@ font-medium
 
 ${
 page===index+1
+
 ?
+
 "bg-amber-500 text-white"
+
 :
+
 "bg-white border"
+
 }
 
 `}
@@ -845,7 +1011,9 @@ page===index+1
 
 disabled={page===totalPages}
 
-onClick={()=>setPage(page+1)}
+onClick={()=>
+setPage(page+1)
+}
 
 className="
 w-10
@@ -866,23 +1034,29 @@ disabled:opacity-40
 </button>
 
 
+
 </div>
 
+}
 
 
 
 
 
 
-{/* Mobile Action Bottom Sheet */}
+
+{/* Action Bottom Sheet */}
+
 
 
 {
 
-showAction && selectedUser && (
+showAction &&
+selectedUser &&
 
+<div
 
-<div className="
+className="
 fixed
 inset-0
 bg-black/40
@@ -892,14 +1066,20 @@ items-end
 "
 
 
-onClick={()=>setShowAction(false)}
+onClick={()=>
+setShowAction(false)
+}
+
 
 >
 
 
 <div
 
-onClick={(e)=>e.stopPropagation()}
+onClick={(e)=>
+e.stopPropagation()
+}
+
 
 className="
 w-full
@@ -915,16 +1095,17 @@ space-y-3
 
 <div className="
 flex
-justify-between
 items-center
+justify-between
 mb-4
 ">
 
 
 <h2 className="
-text-xl
 font-bold
+text-lg
 text-slate-800
+truncate
 ">
 
 {selectedUser.email}
@@ -933,9 +1114,12 @@ text-slate-800
 
 
 
+
 <button
 
-onClick={()=>setShowAction(false)}
+onClick={()=>
+setShowAction(false)
+}
 
 className="
 w-9
@@ -960,9 +1144,13 @@ justify-center
 
 
 
+
+
 <button
 
-onClick={()=>toggleAdmin(selectedUser)}
+onClick={()=>
+toggleAdmin(selectedUser)
+}
 
 className="
 w-full
@@ -979,10 +1167,11 @@ font-medium
 
 >
 
+
 <FiCrown/>
 
-{
 
+{
 selectedUser.role==="admin"
 
 ?
@@ -1003,9 +1192,13 @@ selectedUser.role==="admin"
 
 
 
+
+
 <button
 
-onClick={()=>removeUser(selectedUser)}
+onClick={()=>
+removeUser(selectedUser)
+}
 
 className="
 w-full
@@ -1022,9 +1215,11 @@ font-medium
 
 >
 
+
 <FiTrash2/>
 
 Delete User
+
 
 </button>
 
@@ -1033,9 +1228,13 @@ Delete User
 
 
 
+
+
 <button
 
-onClick={()=>setShowAction(false)}
+onClick={()=>
+setShowAction(false)
+}
 
 className="
 w-full
@@ -1053,16 +1252,17 @@ Cancel
 
 
 
-</div>
 
 
 </div>
 
 
-)
+</div>
 
 
 }
+
+
 
 
 
