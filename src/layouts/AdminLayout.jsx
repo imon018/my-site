@@ -182,7 +182,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 p-8">
+      <main className="flex-1 px-3 py-16 lg:p-8 overflow-x-hidden">
         <Outlet />
       </main>
     </div>
