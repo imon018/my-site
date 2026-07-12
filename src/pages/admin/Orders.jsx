@@ -18,7 +18,8 @@ import {
   FiChevronDown,
   FiCalendar,
   FiMoreVertical,
-	FiEye,
+  FiEye,
+  FiTrash2,
 } from "react-icons/fi";
 
 
@@ -58,6 +59,7 @@ useState(true);
 const [search,setSearch] =
 useState("");
 
+	const [menuOpen,setMenuOpen] = useState(null);
 
 
 const [status,setStatus] =
