@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 
 import {
+  FiSearch,
+  FiChevronDown,
+  FiEye,
+  FiTrash2,
+  FiPackage,
+  FiClock,
+  FiTruck,
+  FiCheckCircle,
+} from "react-icons/fi";
+
+import {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
@@ -11,506 +22,1458 @@ import {
   errorToast,
 } from "../../components/ui/Toast";
 
-import { Link } from "react-router-dom";
 
 
-export default function Orders() {
+export default function Orders(){
 
 
-  const [orders, setOrders] =
-    useState([]);
+const [orders,setOrders] =
+useState([]);
 
 
-  const [loading, setLoading] =
-    useState(true);
+const [loading,setLoading] =
+useState(true);
 
 
+const [search,setSearch] =
+useState("");
 
 
-  useEffect(() => {
+const [statusFilter,setStatusFilter] =
+useState("all");
 
-    loadOrders();
 
-  }, []);
+const [filterOpen,setFilterOpen] =
+useState(false);
 
 
 
 
-  const loadOrders = async () => {
+useEffect(()=>{
 
-    try {
+loadOrders();
 
-      const data =
-        await getAllOrders();
+},[]);
 
-      setOrders(data);
 
-    } catch(error) {
 
-      console.log(error);
 
-    } finally {
 
-      setLoading(false);
+const loadOrders = async()=>{
 
-    }
+try{
 
-  };
+const data =
+await getAllOrders();
 
 
+setOrders(data);
 
 
+}catch(error){
 
+console.log(error);
 
-  const handleStatusChange = async (
-    id,
-    status
-  ) => {
+}
+finally{
 
+setLoading(false);
 
-    try {
-
-
-      await updateOrderStatus(
-        id,
-        status
-      );
-
-
-
-      setOrders((prev)=>
-
-        prev.map(order=>
-
-          order.id === id
-
-          ?
-
-          {
-            ...order,
-            status
-          }
-
-          :
-
-          order
-
-        )
-
-      );
-
-
-    } catch(error){
-
-      console.log(error);
-
-    }
-
-
-  };
-
-
-const handleDeleteOrder = async (id) => {
-
-  const confirmDelete = window.confirm(
-    "Delete this order permanently?"
-  );
-
-  if (!confirmDelete) return;
-
-  try {
-
-    await deleteOrder(id);
-
-    setOrders((prev) =>
-      prev.filter((order) => order.id !== id)
-    );
-
-    successToast("Order deleted successfully.");
-
-  } catch (error) {
-
-    console.log(error);
-
-    errorToast("Failed to delete order.");
-
-  }
+}
 
 };
 
 
 
-  if(loading){
 
-    return (
 
-      <p className="text-center">
 
-        Loading orders...
 
-      </p>
+const handleStatusChange =
+async(id,status)=>{
 
-    );
 
-  }
+try{
 
 
+await updateOrderStatus(
+id,
+status
+);
 
 
+setOrders(prev=>
 
+prev.map(order=>
 
+order.id===id
 
+?
 
-  return (
+{
+...order,
+status
+}
 
+:
 
-    <div>
+order
 
+)
 
-      <h1 className="text-3xl font-bold mb-8">
+);
 
-        Orders Management
 
-      </h1>
 
+}catch(error){
 
+console.log(error);
 
+}
 
 
+};
 
 
-      {
-        orders.length === 0
 
-        ?
 
-        (
 
-          <p>
 
-            No orders found
 
-          </p>
+const handleDeleteOrder =
+async(id)=>{
 
-        )
 
-        :
+const confirmDelete =
+window.confirm(
+"Delete this order permanently?"
+);
 
-        (
 
-          <div className="space-y-6">
+if(!confirmDelete)
+return;
 
 
-          {
-            orders.map(order=>(
 
+try{
 
-              <div
 
-                key={order.id}
+await deleteOrder(id);
 
-                className="bg-white rounded-3xl shadow p-6"
 
-              >
 
+setOrders(prev=>
 
+prev.filter(
+order=>order.id!==id
+)
 
+);
 
-                <div className="flex justify-between items-start border-b pb-4">
 
 
-                  <div>
+successToast(
+"Order deleted successfully."
+);
 
 
-                    <h2 className="font-bold text-lg">
 
-                      Customer Information
+}catch(error){
 
-                    </h2>
 
+console.log(error);
 
-                    <p>
 
-                      Name:
-                      {" "}
-                      {order.customerName}
+errorToast(
+"Failed to delete order."
+);
 
-                    </p>
 
+}
 
-                    <p>
 
-                      Email:
-                      {" "}
-                      {order.email}
+};
 
-                    </p>
 
 
-                    <p>
 
-                      Phone:
-                      {" "}
-                      {order.phone}
 
-                    </p>
 
 
-                    <p>
 
-                      Address:
-                      {" "}
-                      {order.address}
+const filteredOrders =
 
-                    </p>
+orders.filter(order=>{
 
 
-                  </div>
+const matchSearch =
 
+order.customerName
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+)
 
+||
+order.email
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+);
 
 
-                  <select
 
-                    value={
-                      order.status ||
-                      "Pending"
-                    }
+const matchStatus =
 
-                    onChange={(e)=>
+statusFilter==="all"
 
-                      handleStatusChange(
+?
 
-                        order.id,
+true
 
-                        e.target.value
+:
 
-                      )
+order.status===statusFilter;
 
-                    }
 
-                    className="border rounded-xl px-4 py-2"
 
-                  >
+return (
+matchSearch &&
+matchStatus
+);
 
-                    <option>
-                      Pending
-                    </option>
 
-                    <option>
-                      Processing
-                    </option>
+});
 
-                    <option>
-                      Shipped
-                    </option>
 
-                    <option>
-                      Delivered
-                    </option>
 
-                    <option>
-                      Cancelled
-                    </option>
 
 
-                  </select>
 
-                    <div className="mt-4 flex flex-col gap-3">
 
+const totalOrders =
+orders.length;
 
-  {
-    order.cancelRequested && (
 
-      <p className="bg-red-100 text-red-700 px-4 py-2 rounded-xl">
+const pendingOrders =
+orders.filter(
+o=>o.status==="Pending"
+).length;
 
-        ⚠️ Cancel Request Received
 
-      </p>
 
-    )
-  }
+const processingOrders =
+orders.filter(
+o=>o.status==="Processing"
+).length;
 
 
 
-  {
-    order.returnRequested && (
+const deliveredOrders =
+orders.filter(
+o=>o.status==="Delivered"
+).length;
 
-      <p className="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl">
 
-        🔄 Return Request Received
 
-      </p>
 
-    )
-  }
 
 
 
-  <button
 
-    onClick={() =>
-      handleDeleteOrder(
-        order.id
-      )
-    }
+if(loading){
 
-    className="bg-red-600 text-white px-5 py-2 rounded-xl"
+return(
 
-  >
+<div className="
+min-h-[60vh]
+flex
+items-center
+justify-center
+text-xl
+font-bold
+">
 
-    Delete Order
+Loading Orders...
 
-  </button>
+</div>
+
+);
+
+}
+
+
+
+
+
+
+
+
+return(
+
+<div className="
+space-y-6
+">
+
+
+
+{/* HEADER */}
+
+
+<div>
+
+<h1 className="
+text-3xl
+font-black
+text-slate-800
+">
+
+Order Management
+
+</h1>
+
+
+<p className="
+text-gray-500
+mt-1
+">
+
+Manage customer orders
+
+</p>
 
 
 </div>
 
 
 
-                </div>
 
 
 
 
+{/* STATS */}
 
 
+<div className="
+grid
+grid-cols-2
+lg:grid-cols-4
+gap-3
+">
 
 
-                <div className="mt-5">
 
+<div className="
+bg-white
+rounded-3xl
+p-4
+shadow-sm
+">
 
-                  <h3 className="font-bold mb-3">
 
-                    Products
+<div className="
+w-10
+h-10
+rounded-xl
+bg-blue-50
+text-blue-600
+flex
+items-center
+justify-center
+">
 
-                  </h3>
+<FiPackage size={22}/>
 
+</div>
 
 
+<p className="
+text-xs
+text-gray-500
+mt-3
+">
 
-                  {
-                    order.items?.map(item=>(
+Total Orders
 
+</p>
 
-                      <div
 
-                        key={item.id}
+<h2 className="
+text-2xl
+font-black
+">
 
-                        className="flex justify-between border-b py-3"
+{totalOrders}
 
-                      >
+</h2>
 
 
-                        <span>
+</div>
 
-                          {item.name}
-                          {" "}
-                          ×
-                          {" "}
-                          {item.quantity}
 
-                        </span>
 
 
 
-                        <span>
+<div className="
+bg-white
+rounded-3xl
+p-4
+">
 
-                          ৳
-                          {
-                            item.price *
-                            item.quantity
 
-                          }
+<div className="
+w-10
+h-10
+rounded-xl
+bg-yellow-50
+text-yellow-600
+flex
+items-center
+justify-center
+">
 
-                        </span>
+<FiClock size={22}/>
 
+</div>
 
-                      </div>
 
+<p className="
+text-xs
+text-gray-500
+mt-3
+">
 
-                    ))
+Pending
 
-                  }
+</p>
 
 
-                </div>
+<h2 className="
+text-2xl
+font-black
+">
 
+{pendingOrders}
 
+</h2>
 
 
+</div>
 
 
 
 
 
-                <div className="mt-5 flex justify-between font-bold text-lg">
+<div className="
+bg-white
+rounded-3xl
+p-4
+">
 
 
-                  <span>
+<div className="
+w-10
+h-10
+rounded-xl
+bg-orange-50
+text-orange-600
+flex
+items-center
+justify-center
+">
 
-                    Total
+<FiTruck size={22}/>
 
-                  </span>
+</div>
 
 
-                  <span>
+<p className="
+text-xs
+text-gray-500
+mt-3
+">
 
-                    ৳ {order.total}
+Processing
 
-                  </span>
+</p>
 
 
-                </div>
+<h2 className="
+text-2xl
+font-black
+">
 
+{processingOrders}
 
+</h2>
 
 
+</div>
 
 
 
-                <div className="mt-3 text-gray-500 text-sm">
 
 
-                  Order Date:
 
-                  {" "}
+<div className="
+bg-white
+rounded-3xl
+p-4
+">
 
-                  {
-                    new Date(
-                      order.createdAt
-                    ).toLocaleString()
-                  }
 
+<div className="
+w-10
+h-10
+rounded-xl
+bg-green-50
+text-green-600
+flex
+items-center
+justify-center
+">
 
-                </div>
+<FiCheckCircle size={22}/>
 
+</div>
 
 
+<p className="
+text-xs
+text-gray-500
+mt-3
+">
 
+Delivered
 
-              </div>
+</p>
 
 
-            ))
+<h2 className="
+text-2xl
+font-black
+">
 
-          }
+{deliveredOrders}
 
+</h2>
 
-          </div>
 
+</div>
 
-        )
 
-      }
 
+</div>
 
 
 
 
-    </div>
 
 
-  );
+{/* SEARCH */}
+
+
+
+<div className="
+relative
+">
+
+
+<FiSearch
+
+className="
+absolute
+left-4
+top-4
+text-gray-400
+"
+
+/>
+
+
+<input
+
+value={search}
+
+onChange={(e)=>
+setSearch(e.target.value)
+}
+
+placeholder="
+Search order/customer...
+"
+
+className="
+w-full
+bg-white
+rounded-2xl
+py-4
+pl-12
+pr-4
+outline-none
+border
+border-gray-200
+"
+
+/>
+
+
+</div>
+
+
+
+
+
+{/* FILTER */}
+
+
+<div className="
+relative
+">
+
+
+<button
+
+onClick={()=>
+setFilterOpen(!filterOpen)
+}
+
+className="
+w-full
+bg-white
+rounded-2xl
+px-5
+py-4
+flex
+justify-between
+items-center
+border
+border-gray-200
+"
+
+>
+
+<span>
+
+{
+statusFilter==="all"
+?
+"All Orders"
+:
+statusFilter
+}
+
+</span>
+
+
+<FiChevronDown/>
+
+
+</button>
+
+
+{
+filterOpen &&
+
+<div className="
+absolute
+top-14
+left-0
+right-0
+bg-white
+rounded-2xl
+shadow-xl
+z-20
+overflow-hidden
+border
+">
+
+
+{
+[
+"all",
+"Pending",
+"Processing",
+"Shipped",
+"Delivered",
+"Cancelled"
+
+].map(status=>(
+
+
+<button
+
+key={status}
+
+onClick={()=>{
+
+setStatusFilter(status);
+setFilterOpen(false);
+
+}}
+
+className="
+w-full
+text-left
+px-5
+py-3
+hover:bg-amber-50
+"
+
+>
+
+{
+status==="all"
+?
+"All Orders"
+:
+status
+}
+
+</button>
+
+
+))
+
+}
+
+
+</div>
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+{/* CONTINUE PART 2 */}
+
+
+  // =========================
+// MOBILE + DESKTOP ORDERS
+// =========================
+
+
+{
+filteredOrders.length === 0 ?
+
+(
+
+<div className="
+bg-white
+rounded-3xl
+p-10
+text-center
+text-gray-500
+">
+
+No Orders Found
+
+</div>
+
+)
+
+:
+
+(
+
+
+<>
+
+
+{/* ======================
+        MOBILE VIEW
+====================== */}
+
+
+<div className="
+lg:hidden
+space-y-4
+">
+
+
+{
+filteredOrders.map(order=>(
+
+
+<div
+
+key={order.id}
+
+className="
+bg-white
+rounded-3xl
+p-5
+shadow-sm
+border
+border-gray-100
+"
+
+
+>
+
+
+
+<div className="
+flex
+justify-between
+items-start
+mb-4
+">
+
+
+<div>
+
+
+<h3 className="
+font-black
+text-slate-800
+">
+
+#{order.id.slice(0,8)}
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+{order.customerName}
+
+</p>
+
+
+</div>
+
+
+
+<span
+
+className={`
+text-xs
+px-3
+py-1
+rounded-full
+font-bold
+
+${
+order.status==="Delivered"
+
+?
+
+"bg-green-100 text-green-700"
+
+:
+
+order.status==="Cancelled"
+
+?
+
+"bg-red-100 text-red-700"
+
+:
+
+order.status==="Processing"
+
+?
+
+"bg-orange-100 text-orange-700"
+
+:
+
+"bg-yellow-100 text-yellow-700"
+
+}
+
+`}
+
+>
+
+{order.status || "Pending"}
+
+</span>
+
+
+</div>
+
+
+
+
+
+
+<div className="
+space-y-2
+text-sm
+">
+
+
+<div className="
+flex
+justify-between
+">
+
+<span className="text-gray-500">
+Email
+</span>
+
+<span className="font-medium truncate max-w-[180px]">
+{order.email}
+</span>
+
+</div>
+
+
+
+
+
+<div className="
+flex
+justify-between
+">
+
+<span className="text-gray-500">
+Items
+</span>
+
+<span className="font-bold">
+{order.items?.length || 0}
+</span>
+
+</div>
+
+
+
+
+
+<div className="
+flex
+justify-between
+">
+
+<span className="text-gray-500">
+Total
+</span>
+
+<span className="
+font-black
+text-blue-700
+">
+
+৳ {order.total}
+
+</span>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div className="
+mt-5
+flex
+gap-2
+">
+
+
+<select
+
+value={
+order.status || "Pending"
+}
+
+onChange={(e)=>
+
+handleStatusChange(
+order.id,
+e.target.value
+)
+
+}
+
+className="
+flex-1
+border
+rounded-xl
+px-3
+py-2
+text-sm
+"
+
+>
+
+<option>
+Pending
+</option>
+
+<option>
+Processing
+</option>
+
+<option>
+Shipped
+</option>
+
+<option>
+Delivered
+</option>
+
+<option>
+Cancelled
+</option>
+
+
+</select>
+
+
+
+
+
+<button
+
+onClick={()=>
+handleDeleteOrder(order.id)
+}
+
+className="
+w-11
+h-11
+rounded-xl
+bg-red-500
+text-white
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiTrash2/>
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+))
+
+}
+
+
+</div>
+
+
+
+
+
+
+
+{/* ======================
+        DESKTOP TABLE
+====================== */}
+
+
+
+<div className="
+hidden
+lg:block
+bg-white
+rounded-3xl
+shadow-sm
+overflow-hidden
+">
+
+
+<table className="
+w-full
+">
+
+
+<thead className="
+bg-gray-50
+border-b
+">
+
+
+<tr>
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Order
+
+</th>
+
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Customer
+
+</th>
+
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Items
+
+</th>
+
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Amount
+
+</th>
+
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Status
+
+</th>
+
+
+
+<th className="
+text-left
+px-6
+py-4
+text-sm
+text-gray-500
+">
+
+Action
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+<tbody>
+
+
+{
+filteredOrders.map(order=>(
+
+
+<tr
+
+key={order.id}
+
+className="
+border-b
+hover:bg-gray-50
+"
+
+>
+
+
+<td className="
+px-6
+py-5
+font-bold
+">
+
+#{order.id.slice(0,8)}
+
+</td>
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+<div>
+
+<p className="
+font-semibold
+">
+
+{order.customerName}
+
+</p>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+{order.email}
+
+</p>
+
+
+</div>
+
+</td>
+
+
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+{order.items?.length || 0}
+
+</td>
+
+
+
+
+
+
+<td className="
+px-6
+py-5
+font-black
+text-blue-700
+">
+
+৳ {order.total}
+
+</td>
+
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+
+<select
+
+value={
+order.status || "Pending"
+}
+
+onChange={(e)=>
+
+handleStatusChange(
+order.id,
+e.target.value
+)
+
+}
+
+className="
+border
+rounded-xl
+px-3
+py-2
+"
+
+>
+
+
+<option>
+Pending
+</option>
+
+
+<option>
+Processing
+</option>
+
+
+<option>
+Shipped
+</option>
+
+
+<option>
+Delivered
+</option>
+
+
+<option>
+Cancelled
+</option>
+
+
+</select>
+
+
+</td>
+
+
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+
+<div className="
+flex
+gap-2
+">
+
+
+<button
+
+className="
+w-10
+h-10
+rounded-xl
+bg-blue-50
+text-blue-600
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiEye/>
+
+</button>
+
+
+
+
+
+<button
+
+onClick={()=>
+handleDeleteOrder(order.id)
+}
+
+className="
+w-10
+h-10
+rounded-xl
+bg-red-500
+text-white
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiTrash2/>
+
+</button>
+
+
+
+</div>
+
+
+</td>
+
+
+
+</tr>
+
+
+))
+
+}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+</>
+
+
+)
+
+}
+
+
+
+
+</div>
+
+);
 
 }
