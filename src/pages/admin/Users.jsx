@@ -890,6 +890,9 @@ px-3
 py-1
 rounded-lg
 font-medium
+flex
+items-center
+gap-1
 
 ${
 user.role==="admin"
@@ -903,6 +906,7 @@ user.role==="admin"
 
 >
 
+<span>
 {
 user.role==="admin"
 ?
@@ -910,6 +914,9 @@ user.role==="admin"
 :
 "User"
 }
+</span>
+
+<FiChevronDown size={14}/>
 
 </button>
 
