@@ -15,9 +15,8 @@ import {
   FiClock,
   FiTruck,
   FiCheckCircle,
-  FiEye,
-  FiTrash2,
-  FiMoreVertical
+  FiChevronDown,
+  FiCalendar
 } from "react-icons/fi";
 
 
@@ -44,18 +43,38 @@ const navigate = useNavigate();
 
 
 
-const [orders,setOrders] = useState([]);
+const [orders,setOrders] =
+useState([]);
 
-const [loading,setLoading] = useState(true);
 
-const [search,setSearch] = useState("");
 
-const [menuOpen,setMenuOpen] = useState(null);
+const [loading,setLoading] =
+useState(true);
 
-const [statusFilter,setStatusFilter] =
+
+
+const [search,setSearch] =
+useState("");
+
+
+
+const [status,setStatus] =
 useState("All Status");
 
 
+
+const [payment,setPayment] =
+useState("Payment");
+
+
+
+const [date,setDate] =
+useState("");
+
+
+
+const [openFilter,setOpenFilter] =
+useState("");
 
 
 
@@ -73,14 +92,18 @@ loadOrders();
 
 
 
-
 const loadOrders = async()=>{
+
 
 try{
 
-const data = await getAllOrders();
 
-setOrders(data || []);
+const data =
+await getAllOrders();
+
+
+setOrders(data);
+
 
 
 }catch(error){
@@ -95,6 +118,7 @@ setLoading(false);
 
 }
 
+
 };
 
 
@@ -104,11 +128,8 @@ setLoading(false);
 
 
 
-
-const changeStatus = async(
-id,
-status
-)=>{
+const changeStatus =
+async(id,newStatus)=>{
 
 
 try{
@@ -116,7 +137,7 @@ try{
 
 await updateOrderStatus(
 id,
-status
+newStatus
 );
 
 
@@ -128,18 +149,19 @@ prev.map(order=>
 order.id===id
 
 ?
+
 {
 ...order,
-status
+status:newStatus
 }
 
 :
+
 order
 
 )
 
 );
-
 
 
 }catch(error){
@@ -158,17 +180,17 @@ console.log(error);
 
 
 
+const removeOrder =
+async(id)=>{
 
-const removeOrder = async(id)=>{
 
-
-const confirmDelete =
+const ok =
 window.confirm(
 "Delete this order?"
 );
 
 
-if(!confirmDelete)
+if(!ok)
 return;
 
 
@@ -198,12 +220,9 @@ successToast(
 
 }catch(error){
 
-console.log(error);
-
 errorToast(
 "Delete failed"
 );
-
 
 }
 
@@ -218,11 +237,9 @@ errorToast(
 
 
 
-const filteredOrders = orders.filter(order=>{
+const filteredOrders =
 
-
-const text =
-search.toLowerCase();
+orders.filter(order=>{
 
 
 
@@ -230,25 +247,27 @@ const searchMatch =
 
 order.customerName
 ?.toLowerCase()
-.includes(text)
-
-||
-
-order.email
-?.toLowerCase()
-.includes(text)
+.includes(
+search.toLowerCase()
+)
 
 ||
 
 order.id
 ?.toLowerCase()
-.includes(text);
+.includes(
+search.toLowerCase()
+);
+
+
+
+
 
 
 
 const statusMatch =
 
-statusFilter==="All Status"
+status==="All Status"
 
 ?
 
@@ -256,13 +275,62 @@ true
 
 :
 
-order.status===statusFilter;
+order.status===status;
+
+
+
+
+
+
+
+const paymentMatch =
+
+payment==="Payment"
+
+?
+
+true
+
+:
+
+order.paymentMethod===payment;
+
+
+
+
+
+
+
+const dateMatch =
+
+!date
+
+?
+
+true
+
+:
+
+new Date(
+order.createdAt
+)
+.toISOString()
+.slice(0,10)
+
+===date;
+
+
+
 
 
 
 return (
+
 searchMatch &&
-statusMatch
+statusMatch &&
+paymentMatch &&
+dateMatch
+
 );
 
 
@@ -276,8 +344,9 @@ statusMatch
 
 
 
-const total =
+const totalOrders =
 orders.length;
+
 
 
 const pending =
@@ -307,7 +376,6 @@ o=>o.status==="Delivered"
 
 
 
-
 if(loading){
 
 return(
@@ -318,7 +386,6 @@ flex
 items-center
 justify-center
 font-bold
-text-xl
 ">
 
 Loading Orders...
@@ -339,8 +406,13 @@ Loading Orders...
 
 return(
 
+
 <div className="
-space-y-8
+space-y-6
+bg-[#faf9f6]
+min-h-screen
+p-4
+lg:p-8
 ">
 
 
@@ -352,13 +424,14 @@ space-y-8
 {/* HEADER */}
 
 
+
 <div>
 
 
 <h1 className="
 text-3xl
 font-black
-text-slate-800
+text-slate-900
 ">
 
 Orders
@@ -366,14 +439,20 @@ Orders
 </h1>
 
 
+
 <p className="
 text-gray-500
 mt-1
 ">
 
-Dashboard › Orders
+Dashboard 
+<span className="mx-2">
+›
+</span>
+Orders
 
 </p>
+
 
 
 </div>
@@ -386,16 +465,21 @@ Dashboard › Orders
 
 
 
-
 {/* STATS */}
+
 
 
 <div className="
 grid
 grid-cols-2
+gap-3
 lg:grid-cols-4
-gap-4
 ">
+
+
+
+
+
 
 
 <StatCard
@@ -404,11 +488,15 @@ icon={<FiShoppingBag/>}
 
 title="Total Orders"
 
-value={total}
+value={totalOrders}
 
 color="orange"
 
 />
+
+
+
+
 
 
 
@@ -426,6 +514,10 @@ color="yellow"
 
 
 
+
+
+
+
 <StatCard
 
 icon={<FiTruck/>}
@@ -440,6 +532,10 @@ color="blue"
 
 
 
+
+
+
+
 <StatCard
 
 icon={<FiCheckCircle/>}
@@ -451,6 +547,9 @@ value={delivered}
 color="green"
 
 />
+
+
+
 
 
 
@@ -478,11 +577,14 @@ relative
 className="
 absolute
 left-5
-top-5
+top-1/2
+-translate-y-1/2
 text-gray-400
+text-xl
 "
 
 />
+
 
 
 <input
@@ -499,15 +601,18 @@ Search order ID / customer...
 
 className="
 w-full
-bg-white
+h-14
 rounded-2xl
-py-5
-pl-14
-pr-5
+bg-white
 border
 border-gray-200
-outline-none
 shadow-sm
+pl-14
+pr-5
+text-sm
+outline-none
+focus:ring-2
+focus:ring-blue-100
 "
 
 />
@@ -523,8 +628,8 @@ shadow-sm
 
 
 
+{/* FILTERS */}
 
-{/* FILTER */}
 
 
 <div className="
@@ -534,37 +639,61 @@ gap-3
 ">
 
 
+
+
+
+
+{/* STATUS */}
+
+
+
+<FilterButton
+
+title={status}
+
+icon={<FiChevronDown/>}
+
+open={
+openFilter==="status"
+}
+
+click={()=>setOpenFilter(
+openFilter==="status"
+?
+""
+:
+"status"
+)}
+
+>
+
 {
 
 [
 "All Status",
-"Payment",
-"Date"
+"Pending",
+"Processing",
+"Delivered",
+"Cancelled"
 
 ].map(item=>(
 
 
-<button
+<div
 
 key={item}
 
 onClick={()=>{
 
-if(item==="All Status")
-setStatusFilter(item);
+setStatus(item);
+setOpenFilter("");
 
 }}
 
 className="
-bg-white
-rounded-2xl
 px-4
-py-4
-border
-border-gray-200
-flex
-justify-between
-items-center
+py-3
+hover:bg-gray-50
 text-sm
 "
 
@@ -572,17 +701,246 @@ text-sm
 
 {item}
 
-<span>
-⌄
-</span>
-
-
-</button>
+</div>
 
 
 ))
 
+
 }
+
+
+</FilterButton>
+
+
+
+
+
+
+
+
+
+{/* PAYMENT */}
+
+
+
+<FilterButton
+
+title={payment}
+
+icon={<FiChevronDown/>}
+
+open={
+openFilter==="payment"
+}
+
+click={()=>setOpenFilter(
+openFilter==="payment"
+?
+""
+:
+"payment"
+)}
+
+>
+
+
+
+{
+
+[
+"Payment",
+"bKash",
+"Nagad",
+"Bank",
+"Cash on Delivery"
+
+].map(item=>(
+
+
+<div
+
+key={item}
+
+onClick={()=>{
+
+setPayment(item);
+setOpenFilter("");
+
+}}
+
+className="
+px-4
+py-3
+hover:bg-gray-50
+text-sm
+"
+
+>
+
+{item}
+
+</div>
+
+
+))
+
+
+}
+
+
+
+</FilterButton>
+
+
+
+
+
+
+
+
+
+{/* DATE */}
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+bg-white
+h-12
+rounded-xl
+border
+flex
+items-center
+px-4
+gap-2
+text-sm
+"
+>
+
+
+<FiCalendar/>
+
+
+<input
+
+type="date"
+
+value={date}
+
+onChange={(e)=>
+setDate(e.target.value)
+}
+
+className="
+outline-none
+w-full
+"
+
+>
+
+
+</input>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+{/* PART 2 HERE */}
+
+  {/* ==========================
+        MOBILE ORDER CARD
+========================== */}
+
+
+
+<div className="
+lg:hidden
+space-y-4
+">
+
+
+{
+
+filteredOrders.map(order=>(
+
+
+<div
+
+key={order.id}
+
+className="
+bg-white
+rounded-2xl
+p-4
+border
+border-gray-100
+shadow-sm
+"
+
+>
+
+
+{/* TOP ROW */}
+
+
+
+<div className="
+flex
+justify-between
+items-start
+">
+
+
+<div>
+
+
+<h3 className="
+font-black
+text-[15px]
+text-slate-900
+">
+
+#
+{order.id?.slice(0,8)}
+
+</h3>
+
+
+</div>
+
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+{
+new Date(
+order.createdAt
+)
+.toLocaleDateString()
+}
+
+</p>
 
 
 
@@ -593,49 +951,19 @@ text-sm
 
 
 
-{/* PART 2 START HERE */}
-
-  {/* =========================
-        MOBILE ORDERS
-========================= */}
 
 
-<div className="
-lg:hidden
-space-y-5
-">
+{/* CUSTOMER + PRICE */}
 
-
-{
-filteredOrders.map(order=>(
-
-
-<div
-
-key={order.id}
-
-className="
-bg-white
-rounded-3xl
-p-5
-shadow-sm
-border
-border-gray-100
-relative
-"
-
-
->
-
-
-{/* CUSTOMER HEADER */}
 
 
 <div className="
+mt-4
 flex
 justify-between
-items-start
+items-center
 ">
+
 
 
 <div className="
@@ -653,12 +981,11 @@ order.customerPhoto ||
 `https://ui-avatars.com/api/?name=${encodeURIComponent(
 order.customerName || "User"
 )}`
-
 }
 
 className="
-w-12
-h-12
+w-10
+h-10
 rounded-full
 object-cover
 "
@@ -670,8 +997,9 @@ object-cover
 <div>
 
 
-<h3 className="
+<h4 className="
 font-bold
+text-sm
 text-slate-800
 ">
 
@@ -679,14 +1007,13 @@ text-slate-800
 order.customerName || "Customer"
 }
 
-</h3>
+</h4>
+
 
 
 <p className="
 text-xs
 text-gray-500
-truncate
-max-w-[150px]
 ">
 
 {
@@ -698,320 +1025,6 @@ order.email
 
 </div>
 
-
-</div>
-
-
-
-
-
-
-
-
-{/* THREE DOT MENU */}
-
-
-<div className="
-relative
-">
-
-
-<button
-
-onClick={()=>setMenuOpen(
-
-menuOpen===order.id
-
-?
-
-null
-
-:
-
-order.id
-
-)}
-
-className="
-w-9
-h-9
-rounded-xl
-bg-gray-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiMoreVertical/>
-
-</button>
-
-
-
-
-
-
-
-{
-menuOpen===order.id &&
-
-
-<div
-
-className="
-absolute
-right-0
-top-11
-w-44
-bg-white
-rounded-2xl
-shadow-xl
-border
-z-50
-overflow-hidden
-"
-
-
->
-
-
-<button
-
-onClick={()=>navigate(
-`/admin/orders/${order.id}`
-)}
-
-className="
-w-full
-px-4
-py-3
-flex
-items-center
-gap-2
-text-sm
-hover:bg-blue-50
-"
-
->
-
-<FiEye/>
-
-View Details
-
-</button>
-
-
-
-
-
-
-<button
-
-onClick={()=>removeOrder(order.id)}
-
-className="
-w-full
-px-4
-py-3
-flex
-items-center
-gap-2
-text-sm
-text-red-600
-hover:bg-red-50
-"
-
->
-
-<FiTrash2/>
-
-Delete
-
-</button>
-
-
-
-</div>
-
-
-}
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-{/* ORDER ID + STATUS */}
-
-
-<div className="
-mt-5
-flex
-justify-between
-items-center
-">
-
-
-<div>
-
-
-<p className="
-font-black
-text-slate-800
-">
-
-#
-
-{
-order.id?.slice(0,8)
-}
-
-</p>
-
-
-<p className="
-text-xs
-text-gray-500
-">
-
-{
-
-order.createdAt
-
-?
-
-new Date(
-order.createdAt
-).toLocaleDateString()
-
-:
-
-""
-
-}
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<span
-
-className={`
-
-text-xs
-font-bold
-px-3
-py-1
-rounded-full
-
-
-${
-order.status==="Delivered"
-
-?
-
-"bg-green-100 text-green-700"
-
-:
-
-order.status==="Cancelled"
-
-?
-
-"bg-red-100 text-red-700"
-
-:
-
-order.status==="Processing"
-
-?
-
-"bg-orange-100 text-orange-700"
-
-:
-
-"bg-yellow-100 text-yellow-700"
-
-}
-
-
-`}
-
->
-
-{
-order.status || "Pending"
-}
-
-</span>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* PRICE INFO */}
-
-
-
-<div className="
-mt-5
-flex
-justify-between
-">
-
-
-<div>
-
-
-<p className="
-text-sm
-text-gray-500
-">
-
-Items
-
-</p>
-
-
-<p className="
-font-bold
-">
-
-{
-order.items?.length || 0
-}
-
-Products
-
-</p>
 
 
 </div>
@@ -1028,19 +1041,9 @@ text-right
 
 
 <p className="
-text-sm
-text-gray-500
-">
-
-Total
-
-</p>
-
-
-<p className="
-text-xl
 font-black
-text-blue-700
+text-base
+text-slate-900
 ">
 
 ৳ {order.total}
@@ -1048,6 +1051,20 @@ text-blue-700
 </p>
 
 
+
+<p className="
+text-xs
+text-gray-500
+">
+
+{
+order.items?.length || 0
+}
+ Items
+
+</p>
+
+
 </div>
 
 
@@ -1062,14 +1079,25 @@ text-blue-700
 
 
 
-{/* STATUS CHANGE */}
+{/* BOTTOM ACTION */}
+
 
 
 <div className="
-mt-5
+mt-4
 flex
-gap-3
+items-center
+justify-between
 ">
+
+
+
+
+
+
+
+{/* STATUS */}
+
 
 
 <select
@@ -1079,22 +1107,52 @@ order.status || "Pending"
 }
 
 onChange={(e)=>
-
 changeStatus(
 order.id,
 e.target.value
 )
+}
+
+
+className={`
+text-xs
+font-bold
+px-3
+py-2
+rounded-full
+border-none
+outline-none
+
+${
+order.status==="Delivered"
+
+?
+
+"bg-green-100 text-green-700"
+
+:
+
+order.status==="Processing"
+
+?
+
+"bg-blue-100 text-blue-700"
+
+:
+
+order.status==="Cancelled"
+
+?
+
+"bg-red-100 text-red-700"
+
+:
+
+"bg-yellow-100 text-yellow-700"
 
 }
 
-className="
-flex-1
-border
-rounded-xl
-px-3
-py-3
-text-sm
-"
+`}
 
 >
 
@@ -1103,21 +1161,13 @@ text-sm
 Pending
 </option>
 
-
 <option>
 Processing
 </option>
 
-
-<option>
-Shipped
-</option>
-
-
 <option>
 Delivered
 </option>
-
 
 <option>
 Cancelled
@@ -1131,6 +1181,23 @@ Cancelled
 
 
 
+
+
+
+<div className="
+flex
+gap-2
+">
+
+
+
+
+
+
+{/* VIEW */}
+
+
+
 <button
 
 onClick={()=>navigate(
@@ -1138,11 +1205,48 @@ onClick={()=>navigate(
 )}
 
 className="
-w-12
-h-12
+w-9
+h-9
 rounded-xl
-bg-blue-50
+bg-gray-50
+border
+flex
+items-center
+justify-center
 text-blue-600
+"
+
+>
+
+<FiEye size={17}/>
+
+</button>
+
+
+
+
+
+
+
+
+
+{/* MENU */}
+
+
+
+<div className="
+relative
+">
+
+
+<button
+
+className="
+w-9
+h-9
+rounded-xl
+bg-gray-50
+border
 flex
 items-center
 justify-center
@@ -1150,7 +1254,7 @@ justify-center
 
 >
 
-<FiEye/>
+⋮
 
 </button>
 
@@ -1165,10 +1269,22 @@ justify-center
 </div>
 
 
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
 ))
 
-}
 
+}
 
 
 </div>
@@ -1179,13 +1295,11 @@ justify-center
 
 
 
-{/* PART 3 START HERE */}
 
 
-
-{/* =========================
-        DESKTOP TABLE
-========================= */}
+{/* ==========================
+        DESKTOP TABLE START
+========================== */}
 
 
 <div className="
@@ -1193,8 +1307,9 @@ hidden
 lg:block
 bg-white
 rounded-3xl
-shadow-sm
 overflow-hidden
+border
+border-gray-100
 ">
 
 
@@ -1215,7 +1330,7 @@ bg-gray-50
 px-6
 py-4
 text-left
-text-sm
+text-xs
 text-gray-500
 ">
 
@@ -1228,7 +1343,7 @@ Order
 px-6
 py-4
 text-left
-text-sm
+text-xs
 text-gray-500
 ">
 
@@ -1241,7 +1356,7 @@ Customer
 px-6
 py-4
 text-left
-text-sm
+text-xs
 text-gray-500
 ">
 
@@ -1254,7 +1369,7 @@ Items
 px-6
 py-4
 text-left
-text-sm
+text-xs
 text-gray-500
 ">
 
@@ -1267,7 +1382,7 @@ Amount
 px-6
 py-4
 text-left
-text-sm
+text-xs
 text-gray-500
 ">
 
@@ -1280,7 +1395,360 @@ Status
 px-6
 py-4
 text-left
+text-xs
+text-gray-500
+">
+
+Action
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+<tbody>
+
+{
+filteredOrders.map(order=>(
+
+
+<tr
+
+key={order.id}
+
+className="
+border-t
+"
+
+>
+
+
+<td className="
+px-6
+py-5
+font-bold
+">
+
+#{order.id.slice(0,8)}
+
+</td>
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<img
+
+src={
+order.customerPhoto ||
+`https://ui-avatars.com/api/?name=${order.customerName}`
+}
+
+className="
+w-10
+h-10
+rounded-full
+"
+
+/>
+
+
+<div>
+
+<p className="
+font-semibold
+">
+
+{order.customerName}
+
+</p>
+
+<p className="
+text-xs
+text-gray-500
+">
+
+{order.email}
+
+</p>
+
+</div>
+
+
+</div>
+
+</td>
+
+
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+{order.items?.length || 0}
+
+</td>
+
+
+
+
+
+<td className="
+px-6
+py-5
+font-black
+">
+
+৳ {order.total}
+
+</td>
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+
+<select
+
+value={order.status}
+
+onChange={(e)=>
+changeStatus(
+order.id,
+e.target.value
+)
+}
+
+className="
+border
+rounded-xl
+px-3
+py-2
 text-sm
+"
+
+>
+
+<option>Pending</option>
+<option>Processing</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+
+
+</select>
+
+
+</td>
+
+
+
+
+<td className="
+px-6
+py-5
+">
+
+
+<button
+
+onClick={()=>navigate(
+`/admin/orders/${order.id}`
+)}
+
+className="
+w-9
+h-9
+rounded-xl
+bg-blue-50
+text-blue-600
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiEye/>
+
+</button>
+
+
+</td>
+
+
+
+</tr>
+
+
+))
+
+}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+  {/* =========================
+      DESKTOP TABLE
+========================= */}
+
+<div className="
+hidden
+lg:block
+bg-white
+rounded-2xl
+border
+border-gray-100
+overflow-hidden
+">
+
+
+<table className="
+w-full
+">
+
+
+<thead className="
+bg-gray-50
+">
+
+
+<tr>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Order ID
+
+</th>
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Customer
+
+</th>
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Date
+
+</th>
+
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Items
+
+</th>
+
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Amount
+
+</th>
+
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
+text-gray-500
+">
+
+Status
+
+</th>
+
+
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+font-semibold
 text-gray-500
 ">
 
@@ -1314,22 +1782,24 @@ key={order.id}
 className="
 border-t
 hover:bg-gray-50
+transition
 "
+
 
 >
 
 
+
 <td className="
-px-6
-py-5
-font-black
+px-5
+py-4
+font-bold
+text-sm
 ">
 
-#
 
-{
-order.id?.slice(0,8)
-}
+#{order.id.slice(0,8)}
+
 
 </td>
 
@@ -1338,10 +1808,9 @@ order.id?.slice(0,8)
 
 
 
-
 <td className="
-px-6
-py-5
+px-5
+py-4
 ">
 
 
@@ -1355,18 +1824,13 @@ gap-3
 <img
 
 src={
-
 order.customerPhoto ||
-
-`https://ui-avatars.com/api/?name=${encodeURIComponent(
-order.customerName || "User"
-)}`
-
+`https://ui-avatars.com/api/?name=${order.customerName}`
 }
 
 className="
-w-10
-h-10
+w-9
+h-9
 rounded-full
 object-cover
 "
@@ -1377,14 +1841,12 @@ object-cover
 
 <div>
 
-
 <p className="
+text-sm
 font-semibold
 ">
 
-{
-order.customerName || "Customer"
-}
+{order.customerName}
 
 </p>
 
@@ -1394,9 +1856,7 @@ text-xs
 text-gray-500
 ">
 
-{
-order.email
-}
+{order.email}
 
 </p>
 
@@ -1414,19 +1874,41 @@ order.email
 
 
 
+<td className="
+px-5
+py-4
+text-sm
+text-gray-500
+">
+
+
+{
+new Date(order.createdAt)
+.toLocaleDateString()
+}
+
+
+</td>
+
+
+
 
 
 
 <td className="
-px-6
-py-5
-font-semibold
+px-5
+py-4
+text-sm
 ">
+
 
 {
 order.items?.length || 0
 }
 
+Items
+
+
 </td>
 
 
@@ -1434,18 +1916,18 @@ order.items?.length || 0
 
 
 
-
-
-
 <td className="
-px-6
-py-5
-font-black
-text-blue-700
+px-5
+py-4
+font-bold
+text-sm
+text-blue-600
 ">
+
 
 ৳ {order.total}
 
+
 </td>
 
 
@@ -1453,37 +1935,66 @@ text-blue-700
 
 
 
-
-
-
 <td className="
-px-6
-py-5
+px-5
+py-4
 ">
 
 
 <select
 
+
 value={
 order.status || "Pending"
 }
 
-onChange={(e)=>
 
+onChange={(e)=>
 changeStatus(
 order.id,
 e.target.value
 )
+}
+
+
+className={`
+
+text-xs
+font-semibold
+px-3
+py-2
+rounded-xl
+outline-none
+
+${
+order.status==="Delivered"
+
+?
+"bg-green-100 text-green-700"
+
+:
+
+order.status==="Processing"
+
+?
+
+"bg-orange-100 text-orange-700"
+
+:
+
+order.status==="Cancelled"
+
+?
+
+"bg-red-100 text-red-700"
+
+:
+
+"bg-yellow-100 text-yellow-700"
 
 }
 
-className="
-border
-rounded-xl
-px-3
-py-2
-text-sm
-"
+`}
 
 >
 
@@ -1513,7 +2024,9 @@ Cancelled
 </option>
 
 
+
 </select>
+
 
 
 </td>
@@ -1525,15 +2038,15 @@ Cancelled
 
 
 
-
 <td className="
-px-6
-py-5
+px-5
+py-4
 ">
 
 
 <div className="
 flex
+items-center
 gap-2
 ">
 
@@ -1545,8 +2058,8 @@ onClick={()=>navigate(
 )}
 
 className="
-w-10
-h-10
+w-9
+h-9
 rounded-xl
 bg-blue-50
 text-blue-600
@@ -1557,7 +2070,7 @@ justify-center
 
 >
 
-<FiEye/>
+<FiEye size={16}/>
 
 </button>
 
@@ -1565,18 +2078,24 @@ justify-center
 
 
 
+<div className="relative">
 
 
 <button
 
-onClick={()=>removeOrder(order.id)}
+onClick={()=>setMenuOpen(
+menuOpen===order.id
+?
+null
+:
+order.id
+)}
 
 className="
-w-10
-h-10
+w-9
+h-9
 rounded-xl
-bg-red-500
-text-white
+bg-gray-100
 flex
 items-center
 justify-center
@@ -1584,10 +2103,59 @@ justify-center
 
 >
 
-<FiTrash2/>
+<FiMoreVertical size={16}/>
+
 
 </button>
 
+
+
+
+
+{
+menuOpen===order.id &&
+
+<div className="
+absolute
+right-0
+top-10
+bg-white
+rounded-xl
+shadow-xl
+border
+w-32
+z-50
+overflow-hidden
+">
+
+
+<button
+
+onClick={()=>removeOrder(order.id)}
+
+className="
+w-full
+text-left
+px-3
+py-2
+text-sm
+text-red-600
+hover:bg-red-50
+"
+
+>
+
+Delete
+
+</button>
+
+
+</div>
+
+}
+
+
+</div>
 
 
 </div>
@@ -1622,10 +2190,10 @@ justify-center
 
 
 
-
 </div>
 
 );
+
 
 }
 
@@ -1635,11 +2203,9 @@ justify-center
 
 
 
-
-
-// ===============================
-// STAT CARD COMPONENT
-// ===============================
+// =============================
+// STAT CARD
+// =============================
 
 
 function StatCard({
@@ -1650,27 +2216,21 @@ color
 }){
 
 
-const colors={
-
+const styles={
 
 orange:
 "bg-orange-50 text-orange-500",
 
-
 yellow:
 "bg-yellow-50 text-yellow-500",
-
 
 blue:
 "bg-blue-50 text-blue-500",
 
-
 green:
 "bg-green-50 text-green-500"
 
-
 };
-
 
 
 
@@ -1678,20 +2238,25 @@ return(
 
 <div className="
 bg-white
-rounded-3xl
-p-5
-shadow-sm
+rounded-2xl
+border
+border-gray-100
+px-4
+py-3
+flex
+items-center
+gap-3
 ">
 
 
 <div className={`
-w-11
-h-11
+w-10
+h-10
 rounded-xl
 flex
 items-center
 justify-center
-${colors[color]}
+${styles[color]}
 `}>
 
 {icon}
@@ -1701,11 +2266,12 @@ ${colors[color]}
 
 
 
+<div>
+
 
 <p className="
-text-sm
+text-xs
 text-gray-500
-mt-3
 ">
 
 {title}
@@ -1714,10 +2280,8 @@ mt-3
 
 
 
-
-
 <h2 className="
-text-3xl
+text-xl
 font-black
 text-slate-800
 ">
@@ -1727,13 +2291,14 @@ text-slate-800
 </h2>
 
 
+</div>
 
 
 
 </div>
 
 
-);
+)
 
 
 }
