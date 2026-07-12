@@ -3,7 +3,6 @@ import {
   useState
 } from "react";
 
-
 import {
   useNavigate
 } from "react-router-dom";
@@ -19,7 +18,7 @@ import {
   FiCalendar,
   FiMoreVertical,
   FiEye,
-  FiTrash2,
+  FiTrash2
 } from "react-icons/fi";
 
 
@@ -59,25 +58,29 @@ useState(true);
 const [search,setSearch] =
 useState("");
 
-	const [menuOpen,setMenuOpen] = useState(null);
 
 
-const [status,setStatus] =
-useState("All Status");
-
-
-
-const [payment,setPayment] =
-useState("Payment");
+const [menuOpen,setMenuOpen] =
+useState(null);
 
 
 
-const [date,setDate] =
+const [filterOpen,setFilterOpen] =
 useState("");
 
 
 
-const [openFilter,setOpenFilter] =
+const [statusFilter,setStatusFilter] =
+useState("All Status");
+
+
+
+const [paymentFilter,setPaymentFilter] =
+useState("Payment");
+
+
+
+const [dateFilter,setDateFilter] =
 useState("");
 
 
@@ -106,7 +109,7 @@ const data =
 await getAllOrders();
 
 
-setOrders(data);
+setOrders(data || []);
 
 
 
@@ -133,7 +136,7 @@ setLoading(false);
 
 
 const changeStatus =
-async(id,newStatus)=>{
+async(id,status)=>{
 
 
 try{
@@ -141,7 +144,7 @@ try{
 
 await updateOrderStatus(
 id,
-newStatus
+status
 );
 
 
@@ -156,7 +159,7 @@ order.id===id
 
 {
 ...order,
-status:newStatus
+status
 }
 
 :
@@ -166,6 +169,7 @@ order
 )
 
 );
+
 
 
 }catch(error){
@@ -184,17 +188,19 @@ console.log(error);
 
 
 
+
 const removeOrder =
 async(id)=>{
 
 
-const ok =
+const confirmDelete =
 window.confirm(
 "Delete this order?"
 );
 
 
-if(!ok)
+
+if(!confirmDelete)
 return;
 
 
@@ -217,16 +223,18 @@ order=>order.id!==id
 
 
 successToast(
-"Order deleted"
+"Order deleted successfully"
 );
 
 
 
 }catch(error){
 
+
 errorToast(
 "Delete failed"
 );
+
 
 }
 
@@ -247,21 +255,29 @@ orders.filter(order=>{
 
 
 
+const searchText =
+search.toLowerCase();
+
+
+
+
 const searchMatch =
 
 order.customerName
 ?.toLowerCase()
-.includes(
-search.toLowerCase()
-)
+.includes(searchText)
+
+||
+
+order.email
+?.toLowerCase()
+.includes(searchText)
 
 ||
 
 order.id
 ?.toLowerCase()
-.includes(
-search.toLowerCase()
-);
+.includes(searchText);
 
 
 
@@ -271,7 +287,7 @@ search.toLowerCase()
 
 const statusMatch =
 
-status==="All Status"
+statusFilter==="All Status"
 
 ?
 
@@ -279,7 +295,7 @@ true
 
 :
 
-order.status===status;
+order.status===statusFilter;
 
 
 
@@ -289,7 +305,7 @@ order.status===status;
 
 const paymentMatch =
 
-payment==="Payment"
+paymentFilter==="Payment"
 
 ?
 
@@ -297,7 +313,8 @@ true
 
 :
 
-order.paymentMethod===payment;
+order.paymentMethod===paymentFilter;
+
 
 
 
@@ -307,7 +324,7 @@ order.paymentMethod===payment;
 
 const dateMatch =
 
-!date
+dateFilter===""
 
 ?
 
@@ -315,20 +332,20 @@ true
 
 :
 
-new Date(
-order.createdAt
-)
+new Date(order.createdAt)
 .toISOString()
 .slice(0,10)
 
-===date;
+===dateFilter;
 
 
 
 
 
 
-return (
+
+
+return(
 
 searchMatch &&
 statusMatch &&
@@ -353,26 +370,24 @@ orders.length;
 
 
 
-const pending =
+const pendingOrders =
 orders.filter(
-o=>o.status==="Pending"
+order=>order.status==="Pending"
 ).length;
 
 
 
-const processing =
+const processingOrders =
 orders.filter(
-o=>o.status==="Processing"
+order=>order.status==="Processing"
 ).length;
 
 
 
-const delivered =
+const deliveredOrders =
 orders.filter(
-o=>o.status==="Delivered"
+order=>order.status==="Delivered"
 ).length;
-
-
 
 
 
@@ -382,6 +397,7 @@ o=>o.status==="Delivered"
 
 if(loading){
 
+
 return(
 
 <div className="
@@ -390,50 +406,35 @@ flex
 items-center
 justify-center
 font-bold
+text-gray-600
 ">
 
 Loading Orders...
 
 </div>
 
-)
+);
+
 
 }
 
-
-
-
-
-
-
-
-
 return(
 
-
 <div className="
-space-y-6
+space-y-4
 bg-[#faf9f6]
 min-h-screen
-p-4
-lg:p-8
+p-3
+lg:p-6
 ">
-
-
-
-
-
 
 
 {/* HEADER */}
 
-
-
 <div>
 
-
 <h1 className="
-text-3xl
+text-2xl
 font-black
 text-slate-900
 ">
@@ -443,20 +444,15 @@ Orders
 </h1>
 
 
-
 <p className="
+text-xs
 text-gray-500
 mt-1
 ">
 
-Dashboard 
-<span className="mx-2">
-›
-</span>
-Orders
+Dashboard › Orders
 
 </p>
-
 
 
 </div>
@@ -465,30 +461,19 @@ Orders
 
 
 
-
-
-
-
 {/* STATS */}
-
-
 
 <div className="
 grid
 grid-cols-2
-gap-3
 lg:grid-cols-4
+gap-2
 ">
-
-
-
-
-
 
 
 <StatCard
 
-icon={<FiShoppingBag/>}
+icon={<FiShoppingBag size={18}/>}
 
 title="Total Orders"
 
@@ -500,17 +485,13 @@ color="orange"
 
 
 
-
-
-
-
 <StatCard
 
-icon={<FiClock/>}
+icon={<FiClock size={18}/>}
 
 title="Pending"
 
-value={pending}
+value={pendingOrders}
 
 color="yellow"
 
@@ -518,17 +499,13 @@ color="yellow"
 
 
 
-
-
-
-
 <StatCard
 
-icon={<FiTruck/>}
+icon={<FiTruck size={18}/>}
 
 title="Processing"
 
-value={processing}
+value={processingOrders}
 
 color="blue"
 
@@ -536,24 +513,17 @@ color="blue"
 
 
 
-
-
-
-
 <StatCard
 
-icon={<FiCheckCircle/>}
+icon={<FiCheckCircle size={18}/>}
 
 title="Delivered"
 
-value={delivered}
+value={deliveredOrders}
 
 color="green"
 
 />
-
-
-
 
 
 
@@ -570,7 +540,6 @@ color="green"
 {/* SEARCH */}
 
 
-
 <div className="
 relative
 ">
@@ -580,15 +549,13 @@ relative
 
 className="
 absolute
-left-5
+left-4
 top-1/2
 -translate-y-1/2
 text-gray-400
-text-xl
 "
 
 />
-
 
 
 <input
@@ -599,22 +566,20 @@ onChange={(e)=>
 setSearch(e.target.value)
 }
 
-placeholder="
-Search order ID / customer...
-"
+placeholder="Search order ID or customer..."
 
 className="
 w-full
-h-14
-rounded-2xl
+h-12
 bg-white
 border
 border-gray-200
-shadow-sm
-pl-14
-pr-5
+rounded-xl
+pl-11
+pr-4
 text-sm
 outline-none
+shadow-sm
 focus:ring-2
 focus:ring-blue-100
 "
@@ -631,38 +596,26 @@ focus:ring-blue-100
 
 
 
-
-{/* FILTERS */}
-
-
+{/* FILTER */}
 
 <div className="
 grid
 grid-cols-3
-gap-3
+gap-2
 ">
 
 
 
+<DropdownFilter
 
-
-
-{/* STATUS */}
-
-
-
-<FilterButton
-
-title={status}
-
-icon={<FiChevronDown/>}
+title={statusFilter}
 
 open={
-openFilter==="status"
+filterOpen==="status"
 }
 
-click={()=>setOpenFilter(
-openFilter==="status"
+onClick={()=>setFilterOpen(
+filterOpen==="status"
 ?
 ""
 :
@@ -682,40 +635,37 @@ openFilter==="status"
 
 ].map(item=>(
 
-
-<div
+<button
 
 key={item}
 
 onClick={()=>{
 
-setStatus(item);
-setOpenFilter("");
+setStatusFilter(item);
+setFilterOpen("");
 
 }}
 
 className="
-px-4
-py-3
+w-full
+text-left
+px-3
+py-2
+text-xs
 hover:bg-gray-50
-text-sm
 "
 
 >
 
 {item}
 
-</div>
-
+</button>
 
 ))
 
-
 }
 
-
-</FilterButton>
-
+</DropdownFilter>
 
 
 
@@ -723,23 +673,16 @@ text-sm
 
 
 
+<DropdownFilter
 
-{/* PAYMENT */}
-
-
-
-<FilterButton
-
-title={payment}
-
-icon={<FiChevronDown/>}
+title={paymentFilter}
 
 open={
-openFilter==="payment"
+filterOpen==="payment"
 }
 
-click={()=>setOpenFilter(
-openFilter==="payment"
+onClick={()=>setFilterOpen(
+filterOpen==="payment"
 ?
 ""
 :
@@ -747,8 +690,6 @@ openFilter==="payment"
 )}
 
 >
-
-
 
 {
 
@@ -761,103 +702,82 @@ openFilter==="payment"
 
 ].map(item=>(
 
-
-<div
+<button
 
 key={item}
 
 onClick={()=>{
 
-setPayment(item);
-setOpenFilter("");
+setPaymentFilter(item);
+setFilterOpen("");
 
 }}
 
 className="
-px-4
-py-3
+w-full
+text-left
+px-3
+py-2
+text-xs
 hover:bg-gray-50
-text-sm
 "
 
 >
 
 {item}
 
-</div>
-
+</button>
 
 ))
-
 
 }
 
 
-
-</FilterButton>
-
+</DropdownFilter>
 
 
 
 
 
-
-
-
-{/* DATE */}
 
 
 
 <div className="
-relative
+h-11
+bg-white
+border
+border-gray-200
+rounded-xl
+flex
+items-center
+px-3
+gap-2
 ">
 
 
-<div className="
-bg-white
-h-12
-rounded-xl
-border
-flex
-items-center
-px-4
-gap-2
-text-sm
-"
->
-
-
-<FiCalendar/>
+<FiCalendar size={15}/>
 
 
 <input
 
 type="date"
 
-value={date}
+value={dateFilter}
 
 onChange={(e)=>
-setDate(e.target.value)
+setDateFilter(e.target.value)
 }
 
 className="
-outline-none
 w-full
+outline-none
+text-xs
 "
 
->
-
-
-</input>
+/>
 
 
 </div>
-
-
-</div>
-
-
-
 
 
 
@@ -867,17 +787,14 @@ w-full
 
 
 
-{/* PART 2 HERE */}
-
-  {/* ==========================
-        MOBILE ORDER CARD
-========================== */}
 
 
+
+{/* MOBILE CARD */}
 
 <div className="
 lg:hidden
-space-y-4
+space-y-3
 ">
 
 
@@ -892,18 +809,14 @@ key={order.id}
 
 className="
 bg-white
-rounded-2xl
-p-4
 border
 border-gray-100
+rounded-xl
+p-3
 shadow-sm
 "
 
 >
-
-
-{/* TOP ROW */}
-
 
 
 <div className="
@@ -911,63 +824,6 @@ flex
 justify-between
 items-start
 ">
-
-
-<div>
-
-
-<h3 className="
-font-black
-text-[15px]
-text-slate-900
-">
-
-#
-{order.id?.slice(0,8)}
-
-</h3>
-
-
-</div>
-
-
-
-<p className="
-text-xs
-text-gray-500
-">
-
-{
-new Date(
-order.createdAt
-)
-.toLocaleDateString()
-}
-
-</p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* CUSTOMER + PRICE */}
-
-
-
-<div className="
-mt-4
-flex
-justify-between
-items-center
-">
-
 
 
 <div className="
@@ -982,14 +838,12 @@ gap-3
 src={
 order.customerPhoto ||
 
-`https://ui-avatars.com/api/?name=${encodeURIComponent(
-order.customerName || "User"
-)}`
+`https://ui-avatars.com/api/?name=${order.customerName}`
 }
 
 className="
-w-10
-h-10
+w-9
+h-9
 rounded-full
 object-cover
 "
@@ -997,32 +851,25 @@ object-cover
 />
 
 
-
 <div>
 
 
-<h4 className="
-font-bold
+<h3 className="
 text-sm
-text-slate-800
+font-bold
 ">
 
-{
-order.customerName || "Customer"
-}
+{order.customerName || "Customer"}
 
-</h4>
-
+</h3>
 
 
 <p className="
-text-xs
+text-[11px]
 text-gray-500
 ">
 
-{
-order.email
-}
+{order.email}
 
 </p>
 
@@ -1030,11 +877,172 @@ order.email
 </div>
 
 
+</div>
+
+
+
+
+
+
+
+<div className="
+relative
+">
+
+
+<button
+
+onClick={()=>setMenuOpen(
+menuOpen===order.id
+?
+null
+:
+order.id
+)}
+
+className="
+w-8
+h-8
+rounded-lg
+bg-gray-50
+border
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiMoreVertical size={15}/>
+
+</button>
+
+
+
+
+
+{
+menuOpen===order.id &&
+
+
+<div className="
+absolute
+right-0
+top-9
+w-32
+bg-white
+border
+rounded-xl
+shadow-lg
+z-50
+overflow-hidden
+">
+
+
+<button
+
+onClick={()=>navigate(
+`/admin/orders/${order.id}`
+)}
+
+className="
+w-full
+px-3
+py-2
+text-xs
+flex
+items-center
+gap-2
+hover:bg-gray-50
+"
+
+>
+
+<FiEye/>
+
+View
+
+</button>
+
+
+
+<button
+
+onClick={()=>removeOrder(order.id)}
+
+className="
+w-full
+px-3
+py-2
+text-xs
+text-red-600
+flex
+items-center
+gap-2
+hover:bg-red-50
+"
+
+>
+
+<FiTrash2/>
+
+Delete
+
+</button>
+
+
+</div>
+
+
+}
+
+
+
+</div>
+
 
 </div>
 
 
 
+
+
+
+
+<div className="
+flex
+justify-between
+mt-3
+">
+
+
+<div>
+
+
+<p className="
+text-xs
+font-bold
+">
+
+#{order.id?.slice(0,8)}
+
+</p>
+
+
+<p className="
+text-[11px]
+text-gray-400
+">
+
+{
+new Date(order.createdAt)
+.toLocaleDateString()
+}
+
+</p>
+
+
+</div>
 
 
 
@@ -1046,8 +1054,7 @@ text-right
 
 <p className="
 font-black
-text-base
-text-slate-900
+text-sm
 ">
 
 ৳ {order.total}
@@ -1055,16 +1062,12 @@ text-slate-900
 </p>
 
 
-
 <p className="
-text-xs
+text-[11px]
 text-gray-500
 ">
 
-{
-order.items?.length || 0
-}
- Items
+{order.items?.length || 0} Items
 
 </p>
 
@@ -1072,7 +1075,6 @@ order.items?.length || 0
 </div>
 
 
-
 </div>
 
 
@@ -1081,27 +1083,12 @@ order.items?.length || 0
 
 
 
-
-
-{/* BOTTOM ACTION */}
-
-
-
 <div className="
-mt-4
+mt-3
 flex
-items-center
 justify-between
+items-center
 ">
-
-
-
-
-
-
-
-{/* STATUS */}
-
 
 
 <select
@@ -1117,14 +1104,410 @@ e.target.value
 )
 }
 
+className={`
+
+text-xs
+font-bold
+px-3
+py-1.5
+rounded-lg
+outline-none
+
+${
+order.status==="Delivered"
+
+?
+"bg-green-100 text-green-700"
+
+:
+
+order.status==="Processing"
+
+?
+
+"bg-blue-100 text-blue-700"
+
+:
+
+order.status==="Cancelled"
+
+?
+
+"bg-red-100 text-red-700"
+
+:
+
+"bg-yellow-100 text-yellow-700"
+
+}
+
+`}
+
+>
+
+<option>Pending</option>
+<option>Processing</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+
+</select>
+
+
+
+
+<button
+
+onClick={()=>navigate(
+`/admin/orders/${order.id}`
+)}
+
+className="
+w-8
+h-8
+rounded-lg
+bg-blue-50
+text-blue-600
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiEye size={15}/>
+
+</button>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+))
+
+
+}
+
+
+</div>
+
+
+	{/* DESKTOP TABLE */}
+
+<div className="
+hidden
+lg:block
+bg-white
+rounded-xl
+border
+border-gray-100
+overflow-hidden
+">
+
+
+<table className="
+w-full
+">
+
+
+<thead className="
+bg-gray-50
+">
+
+
+<tr>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Order ID
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Customer
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Date
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Items
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Amount
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Status
+
+</th>
+
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+text-gray-500
+">
+
+Action
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+<tbody>
+
+
+{
+
+filteredOrders.map(order=>(
+
+
+<tr
+
+key={order.id}
+
+className="
+border-t
+hover:bg-gray-50
+"
+
+>
+
+
+<td className="
+px-5
+py-4
+text-sm
+font-bold
+">
+
+#{order.id?.slice(0,8)}
+
+</td>
+
+
+
+
+
+
+<td className="
+px-5
+py-4
+">
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<img
+
+src={
+order.customerPhoto ||
+
+`https://ui-avatars.com/api/?name=${order.customerName}`
+}
+
+className="
+w-8
+h-8
+rounded-full
+object-cover
+"
+
+/>
+
+
+<div>
+
+
+<p className="
+text-sm
+font-semibold
+">
+
+{order.customerName}
+
+</p>
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+{order.email}
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</td>
+
+
+
+
+
+
+
+<td className="
+px-5
+py-4
+text-xs
+text-gray-500
+">
+
+{
+new Date(order.createdAt)
+.toLocaleDateString()
+}
+
+</td>
+
+
+
+
+
+
+
+<td className="
+px-5
+py-4
+text-sm
+">
+
+{
+order.items?.length || 0
+}
+
+</td>
+
+
+
+
+
+
+<td className="
+px-5
+py-4
+font-bold
+text-blue-600
+">
+
+৳ {order.total}
+
+</td>
+
+
+
+
+
+
+
+<td className="
+px-5
+py-4
+">
+
+
+<select
+
+value={
+order.status || "Pending"
+}
+
+onChange={(e)=>
+changeStatus(
+order.id,
+e.target.value
+)
+}
 
 className={`
+
 text-xs
 font-bold
 px-3
 py-2
-rounded-full
-border-none
+rounded-lg
 outline-none
 
 ${
@@ -1181,416 +1564,38 @@ Cancelled
 </select>
 
 
+</td>
 
 
 
 
 
+
+
+
+<td className="
+px-5
+py-4
+">
 
 
 <div className="
 flex
 gap-2
-">
-
-
-
-
-
-
-{/* VIEW */}
-
-
-
-<button
-
-onClick={()=>navigate(
-`/admin/orders/${order.id}`
-)}
-
-className="
-w-9
-h-9
-rounded-xl
-bg-gray-50
-border
-flex
-items-center
-justify-center
-text-blue-600
-"
-
->
-
-<FiEye size={17}/>
-
-</button>
-
-
-
-
-
-
-
-
-
-{/* MENU */}
-
-
-
-<div className="
 relative
 ">
 
 
 <button
 
-className="
-w-9
-h-9
-rounded-xl
-bg-gray-50
-border
-flex
-items-center
-justify-center
-"
-
->
-
-⋮
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* ==========================
-        DESKTOP TABLE START
-========================== */}
-
-
-<div className="
-hidden
-lg:block
-bg-white
-rounded-3xl
-overflow-hidden
-border
-border-gray-100
-">
-
-
-<table className="
-w-full
-">
-
-
-<thead className="
-bg-gray-50
-">
-
-
-<tr>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Order
-
-</th>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Customer
-
-</th>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Items
-
-</th>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Amount
-
-</th>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Status
-
-</th>
-
-
-<th className="
-px-6
-py-4
-text-left
-text-xs
-text-gray-500
-">
-
-Action
-
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-
-<tbody>
-
-{
-filteredOrders.map(order=>(
-
-
-<tr
-
-key={order.id}
-
-className="
-border-t
-"
-
->
-
-
-<td className="
-px-6
-py-5
-font-bold
-">
-
-#{order.id.slice(0,8)}
-
-</td>
-
-
-
-
-
-<td className="
-px-6
-py-5
-">
-
-<div className="
-flex
-items-center
-gap-3
-">
-
-
-<img
-
-src={
-order.customerPhoto ||
-`https://ui-avatars.com/api/?name=${order.customerName}`
-}
-
-className="
-w-10
-h-10
-rounded-full
-"
-
-/>
-
-
-<div>
-
-<p className="
-font-semibold
-">
-
-{order.customerName}
-
-</p>
-
-<p className="
-text-xs
-text-gray-500
-">
-
-{order.email}
-
-</p>
-
-</div>
-
-
-</div>
-
-</td>
-
-
-
-
-
-
-<td className="
-px-6
-py-5
-">
-
-{order.items?.length || 0}
-
-</td>
-
-
-
-
-
-<td className="
-px-6
-py-5
-font-black
-">
-
-৳ {order.total}
-
-</td>
-
-
-
-
-<td className="
-px-6
-py-5
-">
-
-
-<select
-
-value={order.status}
-
-onChange={(e)=>
-changeStatus(
-order.id,
-e.target.value
-)
-}
-
-className="
-border
-rounded-xl
-px-3
-py-2
-text-sm
-"
-
->
-
-<option>Pending</option>
-<option>Processing</option>
-<option>Delivered</option>
-<option>Cancelled</option>
-
-
-</select>
-
-
-</td>
-
-
-
-
-<td className="
-px-6
-py-5
-">
-
-
-<button
-
 onClick={()=>navigate(
 `/admin/orders/${order.id}`
 )}
 
 className="
-w-9
-h-9
-rounded-xl
+w-8
+h-8
+rounded-lg
 bg-blue-50
 text-blue-600
 flex
@@ -1600,489 +1605,14 @@ justify-center
 
 >
 
-<FiEye/>
+<FiEye size={15}/>
 
 </button>
 
 
-</td>
 
 
 
-</tr>
-
-
-))
-
-}
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-  {/* =========================
-      DESKTOP TABLE
-========================= */}
-
-<div className="
-hidden
-lg:block
-bg-white
-rounded-2xl
-border
-border-gray-100
-overflow-hidden
-">
-
-
-<table className="
-w-full
-">
-
-
-<thead className="
-bg-gray-50
-">
-
-
-<tr>
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Order ID
-
-</th>
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Customer
-
-</th>
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Date
-
-</th>
-
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Items
-
-</th>
-
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Amount
-
-</th>
-
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Status
-
-</th>
-
-
-
-
-<th className="
-px-5
-py-3
-text-left
-text-xs
-font-semibold
-text-gray-500
-">
-
-Action
-
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-
-<tbody>
-
-
-{
-
-filteredOrders.map(order=>(
-
-
-<tr
-
-key={order.id}
-
-className="
-border-t
-hover:bg-gray-50
-transition
-"
-
-
->
-
-
-
-<td className="
-px-5
-py-4
-font-bold
-text-sm
-">
-
-
-#{order.id.slice(0,8)}
-
-
-</td>
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-">
-
-
-<div className="
-flex
-items-center
-gap-3
-">
-
-
-<img
-
-src={
-order.customerPhoto ||
-`https://ui-avatars.com/api/?name=${order.customerName}`
-}
-
-className="
-w-9
-h-9
-rounded-full
-object-cover
-"
-
-/>
-
-
-
-<div>
-
-<p className="
-text-sm
-font-semibold
-">
-
-{order.customerName}
-
-</p>
-
-
-<p className="
-text-xs
-text-gray-500
-">
-
-{order.email}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-</td>
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-text-sm
-text-gray-500
-">
-
-
-{
-new Date(order.createdAt)
-.toLocaleDateString()
-}
-
-
-</td>
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-text-sm
-">
-
-
-{
-order.items?.length || 0
-}
-
-Items
-
-
-</td>
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-font-bold
-text-sm
-text-blue-600
-">
-
-
-৳ {order.total}
-
-
-</td>
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-">
-
-
-<select
-
-
-value={
-order.status || "Pending"
-}
-
-
-onChange={(e)=>
-changeStatus(
-order.id,
-e.target.value
-)
-}
-
-
-className={`
-
-text-xs
-font-semibold
-px-3
-py-2
-rounded-xl
-outline-none
-
-${
-order.status==="Delivered"
-
-?
-"bg-green-100 text-green-700"
-
-:
-
-order.status==="Processing"
-
-?
-
-"bg-orange-100 text-orange-700"
-
-:
-
-order.status==="Cancelled"
-
-?
-
-"bg-red-100 text-red-700"
-
-:
-
-"bg-yellow-100 text-yellow-700"
-
-}
-
-`}
-
->
-
-
-<option>
-Pending
-</option>
-
-
-<option>
-Processing
-</option>
-
-
-<option>
-Shipped
-</option>
-
-
-<option>
-Delivered
-</option>
-
-
-<option>
-Cancelled
-</option>
-
-
-
-</select>
-
-
-
-</td>
-
-
-
-
-
-
-
-
-<td className="
-px-5
-py-4
-">
-
-
-<div className="
-flex
-items-center
-gap-2
-">
-
-
-<button
-
-onClick={()=>navigate(
-`/admin/orders/${order.id}`
-)}
-
-className="
-w-9
-h-9
-rounded-xl
-bg-blue-50
-text-blue-600
-flex
-items-center
-justify-center
-"
-
->
-
-<FiEye size={16}/>
-
-</button>
-
-
-
-
-
-<div className="relative">
 
 
 <button
@@ -2096,10 +1626,11 @@ order.id
 )}
 
 className="
-w-9
-h-9
-rounded-xl
-bg-gray-100
+w-8
+h-8
+rounded-lg
+bg-gray-50
+border
 flex
 items-center
 justify-center
@@ -2107,8 +1638,7 @@ justify-center
 
 >
 
-<FiMoreVertical size={16}/>
-
+<FiMoreVertical size={15}/>
 
 </button>
 
@@ -2117,19 +1647,20 @@ justify-center
 
 
 {
+
 menuOpen===order.id &&
+
 
 <div className="
 absolute
 right-0
 top-10
+w-28
 bg-white
-rounded-xl
-shadow-xl
 border
-w-32
+rounded-lg
+shadow-lg
 z-50
-overflow-hidden
 ">
 
 
@@ -2139,11 +1670,11 @@ onClick={()=>removeOrder(order.id)}
 
 className="
 w-full
-text-left
 px-3
 py-2
-text-sm
+text-xs
 text-red-600
+text-left
 hover:bg-red-50
 "
 
@@ -2156,10 +1687,9 @@ Delete
 
 </div>
 
+
 }
 
-
-</div>
 
 
 </div>
@@ -2180,7 +1710,6 @@ Delete
 }
 
 
-
 </tbody>
 
 
@@ -2188,7 +1717,6 @@ Delete
 
 
 </div>
-
 
 
 
@@ -2207,9 +1735,10 @@ Delete
 
 
 
-// =============================
+
+// ======================
 // STAT CARD
-// =============================
+// ======================
 
 
 function StatCard({
@@ -2220,7 +1749,7 @@ color
 }){
 
 
-const styles={
+const colors={
 
 orange:
 "bg-orange-50 text-orange-500",
@@ -2242,10 +1771,10 @@ return(
 
 <div className="
 bg-white
-rounded-2xl
 border
 border-gray-100
-px-4
+rounded-xl
+px-3
 py-3
 flex
 items-center
@@ -2254,13 +1783,13 @@ gap-3
 
 
 <div className={`
-w-10
-h-10
-rounded-xl
+w-9
+h-9
+rounded-lg
 flex
 items-center
 justify-center
-${styles[color]}
+${colors[color]}
 `}>
 
 {icon}
@@ -2269,12 +1798,10 @@ ${styles[color]}
 
 
 
-
 <div>
 
-
 <p className="
-text-xs
+text-[11px]
 text-gray-500
 ">
 
@@ -2283,11 +1810,10 @@ text-gray-500
 </p>
 
 
-
 <h2 className="
-text-xl
+text-lg
 font-black
-text-slate-800
+text-slate-900
 ">
 
 {value}
@@ -2298,26 +1824,28 @@ text-slate-800
 </div>
 
 
-
 </div>
 
 
 )
 
-
 }
 
 
-// =============================
-// FILTER BUTTON
-// =============================
 
 
-function FilterButton({
+
+
+
+// ======================
+// DROPDOWN FILTER
+// ======================
+
+
+function DropdownFilter({
 title,
-icon,
 open,
-click,
+onClick,
 children
 }){
 
@@ -2331,37 +1859,29 @@ relative
 
 <button
 
-onClick={click}
+onClick={onClick}
 
 className="
 w-full
-h-12
+h-11
 bg-white
-rounded-xl
 border
 border-gray-200
-px-4
+rounded-xl
+px-3
 flex
 items-center
 justify-between
-text-sm
-font-medium
+text-xs
+font-semibold
 text-slate-700
 "
 
 >
 
-
-<span className="
-truncate
-">
-
 {title}
 
-</span>
-
-
-{icon}
+<FiChevronDown size={14}/>
 
 
 </button>
@@ -2374,23 +1894,21 @@ truncate
 
 open &&
 
+
 <div className="
 absolute
-top-14
+top-12
 left-0
 right-0
 bg-white
-rounded-xl
-shadow-xl
 border
-border-gray-100
+rounded-xl
+shadow-lg
 z-50
 overflow-hidden
 ">
 
-
 {children}
-
 
 </div>
 
@@ -2401,7 +1919,7 @@ overflow-hidden
 
 </div>
 
-)
 
+)
 
 }
