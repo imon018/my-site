@@ -8,7 +8,6 @@ import {
   FiTrash2,
   FiShield,
   FiUser,
-  FiX,
   FiLoader,
 } from "react-icons/fi";
 
@@ -39,15 +38,9 @@ export default function Users() {
   const [roleFilter,setRoleFilter] =
     useState("all");
 
+  const [roleMenu,setRoleMenu] = useState(null);
+
   const [filterOpen, setFilterOpen] = useState(false);
-
-
-  const [selectedUser,setSelectedUser] =
-    useState(null);
-
-
-  const [showAction,setShowAction] =
-    useState(false);
 
 
   const [page,setPage] =
@@ -116,47 +109,6 @@ export default function Users() {
 
 
 
-
-  async function toggleAdmin(user){
-
-
-    try{
-
-
-      await changeRole(
-
-        user.id,
-
-        user.role==="admin"
-        ?
-        "user"
-        :
-        "admin"
-
-      );
-
-
-      await loadUsers();
-
-
-      setShowAction(false);
-
-
-    }
-    catch(error){
-
-      console.log(error);
-
-    }
-
-
-  }
-
-
-
-
-
-
   async function removeUser(user){
 
 const confirmDelete = window.confirm(
@@ -173,11 +125,9 @@ try{
 
   await deleteUser(user.id);
 
-  await loadUsers();
+await loadUsers();
 
-  setShowAction(false);
-
-  setSelectedUser(null);
+setRoleMenu(null);
 
 
 }catch(error){
@@ -920,11 +870,20 @@ gap-2
 ">
 
 
+<div className="relative">
+
 <button
+
 onClick={()=>{
-  setSelectedUser(user);
-  setShowAction(true);
+
+setRoleMenu(
+roleMenu === user.id
+? null
+: user.id
+);
+
 }}
+
 className={`
 text-xs
 px-3
@@ -941,6 +900,7 @@ user.role==="admin"
 }
 
 `}
+
 >
 
 {
@@ -952,6 +912,112 @@ user.role==="admin"
 }
 
 </button>
+
+
+
+{
+roleMenu === user.id && (
+
+<div
+
+className="
+absolute
+right-0
+top-10
+w-36
+bg-white
+border
+border-gray-200
+rounded-xl
+shadow-lg
+z-50
+overflow-hidden
+"
+
+>
+
+
+<button
+
+onClick={()=>{
+
+
+const newRole =
+user.role==="admin"
+?
+"user"
+:
+"admin";
+
+
+const newRole =
+user.role==="admin"
+?
+"user"
+:
+"admin";
+
+
+const confirm =
+window.confirm(
+`Are you sure you want to make ${newRole}?`
+);
+
+
+if(!confirm)
+return;
+
+
+if(!confirm)
+return;
+
+
+
+changeRole(
+user.id,
+newRole
+)
+.then(()=>{
+
+loadUsers();
+
+setRoleMenu(null);
+
+});
+
+
+}}
+
+className="
+w-full
+px-4
+py-3
+text-left
+text-sm
+hover:bg-amber-50
+"
+
+>
+
+{
+user.role==="admin"
+?
+"Make User"
+:
+"Make Admin"
+}
+
+</button>
+
+
+</div>
+
+)
+
+}
+
+
+</div>
 
 
 
@@ -1126,263 +1192,6 @@ disabled:opacity-40
 
 }
 
-
-
-
-
-
-
-{/* Action Bottom Sheet */}
-
-
-
-{
-
-showAction &&
-selectedUser &&
-
-<div
-
-className="
-fixed
-inset-0
-bg-black/40
-z-50
-flex
-items-end
-"
-
-
-onClick={()=>
-setShowAction(false)
-}
-
-
->
-
-
-<div
-
-onClick={(e)=>
-e.stopPropagation()
-}
-
-
-className="
-w-full
-bg-white
-rounded-t-3xl
-p-6
-space-y-3
-"
-
-
->
-
-
-<div className="
-flex
-items-center
-justify-between
-mb-4
-">
-
-
-<h2 className="
-font-bold
-text-lg
-text-slate-800
-truncate
-">
-
-{selectedUser.email}
-
-</h2>
-
-
-
-
-<button
-
-onClick={()=>
-setShowAction(false)
-}
-
-className="
-w-9
-h-9
-rounded-full
-bg-gray-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiX/>
-
-</button>
-
-
 </div>
-
-
-
-
-
-
-
-<div className="relative">
-
-
-<select
-
-value={selectedUser.role}
-
-onChange={(e)=>{
-
-const newRole = e.target.value;
-
-
-if(
-window.confirm(
-`Are you sure you want to make ${newRole}?`
-)
-
-){
-
-changeRole(
-selectedUser.id,
-newRole
-)
-.then(()=>{
-
-loadUsers();
-
-setShowAction(false);
-
-});
-
-}
-
-}}
-
-className="
-w-full
-py-4
-px-4
-rounded-xl
-bg-amber-50
-text-amber-600
-font-semibold
-"
-
->
-
-
-<option value="admin">
-Make Admin
-</option>
-
-
-<option value="user">
-Make User
-</option>
-
-
-</select>
-
-
-
-<FiChevronDown
-
-className="
-absolute
-right-4
-top-5
-text-amber-600
-pointer-events-none
-"
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-
-<button
-
-onClick={()=>removeUser(selectedUser)}
-
-className="
-w-9
-h-9
-rounded-xl
-bg-red-500
-text-white
-flex
-items-center
-justify-center
-"
-
->
-
-<FiTrash2/>
-
-</button>
-
-
-
-
-
-
-
-
-<button
-
-onClick={()=>
-setShowAction(false)
-}
-
-className="
-w-full
-py-4
-rounded-xl
-bg-gray-100
-text-gray-700
-"
-
->
-
-Cancel
-
-</button>
-
-
-
-
-
-</div>
-
-
-</div>
-
-
-}
-
-
-
-
-
-</div>
-
-  );
-
+):
 }
