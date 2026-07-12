@@ -3,6 +3,7 @@ import {
   useState
 } from "react";
 
+
 import {
   useNavigate
 } from "react-router-dom";
@@ -34,6 +35,8 @@ import {
 
 
 
+
+
 export default function Orders(){
 
 
@@ -41,27 +44,20 @@ const navigate = useNavigate();
 
 
 
-const [orders,setOrders] =
-useState([]);
+const [orders,setOrders] = useState([]);
 
+const [loading,setLoading] = useState(true);
 
-const [loading,setLoading] =
-useState(true);
+const [search,setSearch] = useState("");
 
-
-
-const [search,setSearch] =
-useState("");
-
-
-
-const [menuOpen,setMenuOpen] =
-useState(null);
-
-
+const [menuOpen,setMenuOpen] = useState(null);
 
 const [statusFilter,setStatusFilter] =
 useState("All Status");
+
+
+
+
 
 
 
@@ -75,15 +71,16 @@ loadOrders();
 
 
 
+
+
+
 const loadOrders = async()=>{
 
 try{
 
-const data =
-await getAllOrders();
+const data = await getAllOrders();
 
-
-setOrders(data);
+setOrders(data || []);
 
 
 }catch(error){
@@ -105,8 +102,13 @@ setLoading(false);
 
 
 
-const changeStatus =
-async(id,status)=>{
+
+
+
+const changeStatus = async(
+id,
+status
+)=>{
 
 
 try{
@@ -116,6 +118,7 @@ await updateOrderStatus(
 id,
 status
 );
+
 
 
 setOrders(prev=>
@@ -146,7 +149,6 @@ console.log(error);
 }
 
 
-
 };
 
 
@@ -155,17 +157,18 @@ console.log(error);
 
 
 
-const removeOrder =
-async(id)=>{
 
 
-const confirm =
+const removeOrder = async(id)=>{
+
+
+const confirmDelete =
 window.confirm(
 "Delete this order?"
 );
 
 
-if(!confirm)
+if(!confirmDelete)
 return;
 
 
@@ -180,7 +183,7 @@ await deleteOrder(id);
 setOrders(prev=>
 
 prev.filter(
-o=>o.id!==id
+order=>order.id!==id
 )
 
 );
@@ -195,6 +198,7 @@ successToast(
 
 }catch(error){
 
+console.log(error);
 
 errorToast(
 "Delete failed"
@@ -202,7 +206,6 @@ errorToast(
 
 
 }
-
 
 
 };
@@ -214,26 +217,32 @@ errorToast(
 
 
 
-const filteredOrders =
 
-orders.filter(order=>{
+const filteredOrders = orders.filter(order=>{
+
+
+const text =
+search.toLowerCase();
+
 
 
 const searchMatch =
 
 order.customerName
 ?.toLowerCase()
-.includes(
-search.toLowerCase()
-)
+.includes(text)
+
+||
+
+order.email
+?.toLowerCase()
+.includes(text)
 
 ||
 
 order.id
 ?.toLowerCase()
-.includes(
-search.toLowerCase()
-);
+.includes(text);
 
 
 
@@ -258,6 +267,8 @@ statusMatch
 
 
 });
+
+
 
 
 
@@ -294,6 +305,9 @@ o=>o.status==="Delivered"
 
 
 
+
+
+
 if(loading){
 
 return(
@@ -304,6 +318,7 @@ flex
 items-center
 justify-center
 font-bold
+text-xl
 ">
 
 Loading Orders...
@@ -319,14 +334,23 @@ Loading Orders...
 
 
 
-return (
+
+
+
+return(
 
 <div className="
 space-y-8
 ">
 
 
-{/* TITLE */}
+
+
+
+
+
+{/* HEADER */}
+
 
 <div>
 
@@ -344,14 +368,20 @@ Orders
 
 <p className="
 text-gray-500
+mt-1
 ">
 
-Dashboard  › Orders
+Dashboard › Orders
 
 </p>
 
 
 </div>
+
+
+
+
+
 
 
 
@@ -368,7 +398,6 @@ gap-4
 ">
 
 
-
 <StatCard
 
 icon={<FiShoppingBag/>}
@@ -380,7 +409,6 @@ value={total}
 color="orange"
 
 />
-
 
 
 
@@ -398,8 +426,6 @@ color="yellow"
 
 
 
-
-
 <StatCard
 
 icon={<FiTruck/>}
@@ -411,8 +437,6 @@ value={processing}
 color="blue"
 
 />
-
-
 
 
 
@@ -431,6 +455,9 @@ color="green"
 
 
 </div>
+
+
+
 
 
 
@@ -476,6 +503,7 @@ bg-white
 rounded-2xl
 py-5
 pl-14
+pr-5
 border
 border-gray-200
 outline-none
@@ -486,6 +514,9 @@ shadow-sm
 
 
 </div>
+
+
+
 
 
 
@@ -517,11 +548,18 @@ gap-3
 
 key={item}
 
+onClick={()=>{
+
+if(item==="All Status")
+setStatusFilter(item);
+
+}}
+
 className="
 bg-white
 rounded-2xl
-py-4
 px-4
+py-4
 border
 border-gray-200
 flex
@@ -550,8 +588,15 @@ text-sm
 
 </div>
 
+
+
+
+
+
+{/* PART 2 START HERE */}
+
   {/* =========================
-        MOBILE ORDER CARD
+        MOBILE ORDERS
 ========================= */}
 
 
@@ -583,7 +628,7 @@ relative
 >
 
 
-{/* TOP */}
+{/* CUSTOMER HEADER */}
 
 
 <div className="
@@ -604,9 +649,11 @@ gap-3
 
 src={
 order.customerPhoto ||
+
 `https://ui-avatars.com/api/?name=${encodeURIComponent(
 order.customerName || "User"
 )}`
+
 }
 
 className="
@@ -629,8 +676,7 @@ text-slate-800
 ">
 
 {
-order.customerName ||
-"Customer"
+order.customerName || "Customer"
 }
 
 </h3>
@@ -639,6 +685,8 @@ order.customerName ||
 <p className="
 text-xs
 text-gray-500
+truncate
+max-w-[150px]
 ">
 
 {
@@ -651,31 +699,44 @@ order.email
 </div>
 
 
-
 </div>
 
 
 
 
 
-<div className="relative">
+
+
+
+{/* THREE DOT MENU */}
+
+
+<div className="
+relative
+">
 
 
 <button
 
 onClick={()=>setMenuOpen(
+
 menuOpen===order.id
+
 ?
+
 null
+
 :
+
 order.id
+
 )}
 
 className="
 w-9
 h-9
 rounded-xl
-bg-gray-50
+bg-gray-100
 flex
 items-center
 justify-center
@@ -690,8 +751,12 @@ justify-center
 
 
 
+
+
+
 {
 menuOpen===order.id &&
+
 
 <div
 
@@ -699,14 +764,15 @@ className="
 absolute
 right-0
 top-11
-w-40
+w-44
 bg-white
-rounded-xl
+rounded-2xl
 shadow-xl
 border
-z-30
+z-50
 overflow-hidden
 "
+
 
 >
 
@@ -721,12 +787,11 @@ className="
 w-full
 px-4
 py-3
-text-left
+flex
+items-center
+gap-2
 text-sm
 hover:bg-blue-50
-flex
-gap-2
-items-center
 "
 
 >
@@ -740,23 +805,22 @@ View Details
 
 
 
+
+
 <button
 
-onClick={()=>
-removeOrder(order.id)
-}
+onClick={()=>removeOrder(order.id)}
 
 className="
 w-full
 px-4
 py-3
-text-left
+flex
+items-center
+gap-2
 text-sm
 text-red-600
 hover:bg-red-50
-flex
-gap-2
-items-center
 "
 
 >
@@ -771,6 +835,7 @@ Delete
 
 </div>
 
+
 }
 
 
@@ -787,7 +852,9 @@ Delete
 
 
 
-{/* ORDER INFO */}
+
+
+{/* ORDER ID + STATUS */}
 
 
 <div className="
@@ -807,8 +874,9 @@ text-slate-800
 ">
 
 #
+
 {
-order.id.slice(0,8)
+order.id?.slice(0,8)
 }
 
 </p>
@@ -820,9 +888,19 @@ text-gray-500
 ">
 
 {
+
+order.createdAt
+
+?
+
 new Date(
 order.createdAt
 ).toLocaleDateString()
+
+:
+
+""
+
 }
 
 </p>
@@ -835,19 +913,23 @@ order.createdAt
 
 
 
+
 <span
 
 className={`
+
+text-xs
+font-bold
 px-3
 py-1
 rounded-full
-text-xs
-font-bold
+
 
 ${
 order.status==="Delivered"
 
 ?
+
 "bg-green-100 text-green-700"
 
 :
@@ -872,6 +954,7 @@ order.status==="Processing"
 
 }
 
+
 `}
 
 >
@@ -892,14 +975,16 @@ order.status || "Pending"
 
 
 
-{/* PRICE */}
+
+
+{/* PRICE INFO */}
+
 
 
 <div className="
 mt-5
 flex
 justify-between
-items-center
 ">
 
 
@@ -935,6 +1020,8 @@ Products
 
 
 
+
+
 <div className="
 text-right
 ">
@@ -951,9 +1038,9 @@ Total
 
 
 <p className="
+text-xl
 font-black
 text-blue-700
-text-xl
 ">
 
 ৳ {order.total}
@@ -964,6 +1051,7 @@ text-xl
 </div>
 
 
+
 </div>
 
 
@@ -972,8 +1060,9 @@ text-xl
 
 
 
-{/* ACTION */}
 
+
+{/* STATUS CHANGE */}
 
 
 <div className="
@@ -990,10 +1079,12 @@ order.status || "Pending"
 }
 
 onChange={(e)=>
+
 changeStatus(
 order.id,
 e.target.value
 )
+
 }
 
 className="
@@ -1007,21 +1098,26 @@ text-sm
 
 >
 
+
 <option>
 Pending
 </option>
+
 
 <option>
 Processing
 </option>
 
+
 <option>
 Shipped
 </option>
 
+
 <option>
 Delivered
 </option>
+
 
 <option>
 Cancelled
@@ -1029,6 +1125,7 @@ Cancelled
 
 
 </select>
+
 
 
 
@@ -1073,6 +1170,7 @@ justify-center
 }
 
 
+
 </div>
 
 
@@ -1081,12 +1179,13 @@ justify-center
 
 
 
+{/* PART 3 START HERE */}
+
 
 
 {/* =========================
         DESKTOP TABLE
 ========================= */}
-
 
 
 <div className="
@@ -1199,6 +1298,7 @@ Action
 
 
 
+
 <tbody>
 
 
@@ -1222,15 +1322,18 @@ hover:bg-gray-50
 <td className="
 px-6
 py-5
-font-bold
+font-black
 ">
 
 #
+
 {
-order.id.slice(0,8)
+order.id?.slice(0,8)
 }
 
 </td>
+
+
 
 
 
@@ -1252,27 +1355,35 @@ gap-3
 <img
 
 src={
+
 order.customerPhoto ||
-`https://ui-avatars.com/api/?name=${order.customerName}`
+
+`https://ui-avatars.com/api/?name=${encodeURIComponent(
+order.customerName || "User"
+)}`
+
 }
 
 className="
 w-10
 h-10
 rounded-full
+object-cover
 "
 
 />
 
 
+
 <div>
+
 
 <p className="
 font-semibold
 ">
 
 {
-order.customerName
+order.customerName || "Customer"
 }
 
 </p>
@@ -1304,9 +1415,12 @@ order.email
 
 
 
+
+
 <td className="
 px-6
 py-5
+font-semibold
 ">
 
 {
@@ -1314,6 +1428,11 @@ order.items?.length || 0
 }
 
 </td>
+
+
+
+
+
 
 
 
@@ -1334,6 +1453,9 @@ text-blue-700
 
 
 
+
+
+
 <td className="
 px-6
 py-5
@@ -1347,10 +1469,12 @@ order.status || "Pending"
 }
 
 onChange={(e)=>
+
 changeStatus(
 order.id,
 e.target.value
 )
+
 }
 
 className="
@@ -1358,22 +1482,45 @@ border
 rounded-xl
 px-3
 py-2
+text-sm
 "
 
 >
 
 
-<option>Pending</option>
-<option>Processing</option>
-<option>Shipped</option>
-<option>Delivered</option>
-<option>Cancelled</option>
+<option>
+Pending
+</option>
+
+
+<option>
+Processing
+</option>
+
+
+<option>
+Shipped
+</option>
+
+
+<option>
+Delivered
+</option>
+
+
+<option>
+Cancelled
+</option>
 
 
 </select>
 
 
 </td>
+
+
+
+
 
 
 
@@ -1418,6 +1565,8 @@ justify-center
 
 
 
+
+
 <button
 
 onClick={()=>removeOrder(order.id)}
@@ -1449,12 +1598,15 @@ justify-center
 
 
 
+
 </tr>
 
 
 ))
 
+
 }
+
 
 
 </tbody>
@@ -1466,10 +1618,9 @@ justify-center
 </div>
 
 
-</>
-)
 
-}
+
+
 
 
 </div>
@@ -1477,6 +1628,8 @@ justify-center
 );
 
 }
+
+
 
 
 
@@ -1499,19 +1652,26 @@ color
 
 const colors={
 
+
 orange:
 "bg-orange-50 text-orange-500",
+
 
 yellow:
 "bg-yellow-50 text-yellow-500",
 
+
 blue:
 "bg-blue-50 text-blue-500",
 
+
 green:
-"bg-green-50 text-green-500",
+"bg-green-50 text-green-500"
+
 
 };
+
+
 
 
 return(
@@ -1519,14 +1679,14 @@ return(
 <div className="
 bg-white
 rounded-3xl
-p-4
+p-5
 shadow-sm
 ">
 
 
 <div className={`
-w-10
-h-10
+w-11
+h-11
 rounded-xl
 flex
 items-center
@@ -1539,8 +1699,11 @@ ${colors[color]}
 </div>
 
 
+
+
+
 <p className="
-text-xs
+text-sm
 text-gray-500
 mt-3
 ">
@@ -1550,9 +1713,13 @@ mt-3
 </p>
 
 
+
+
+
 <h2 className="
-text-2xl
+text-3xl
 font-black
+text-slate-800
 ">
 
 {value}
@@ -1560,19 +1727,13 @@ font-black
 </h2>
 
 
-</div>
+
+
 
 </div>
 
-)
-
-}
-
-</div>
 
 );
 
+
 }
-
-
-
