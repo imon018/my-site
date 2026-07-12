@@ -264,16 +264,17 @@ text-white
       {/* HERO */}
 
       <div className="
-      bg-gradient-to-r
-      from-primary
-      to-secondary
-      border-b
-      border-accent/20
-      p-6
-      md:p-8
-      rounded-3xl
-      mb-8
-      ">
+w-full
+bg-gradient-to-r
+from-primary
+to-secondary
+border
+border-accent/20
+p-4
+md:p-8
+rounded-3xl
+mb-6
+">
 
         <div className="
         flex
