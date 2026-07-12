@@ -135,10 +135,7 @@ justify-end
 <button onClick={()=>setSidebarOpen(false)}>
 <FiX size={28}/>
 </button>
-  
-          <button onClick={() => setSidebarOpen(false)}>
-            <FiX size={28} />
-          </button>
+ 
         </div>
 
         {/* Logo */}
@@ -146,7 +143,7 @@ justify-end
 className="
 shrink-0
 px-6
-py-5
+py-2
 border-b
 border-amber-100
 "
@@ -166,7 +163,7 @@ Dream Mode
 text-sm
 text-gray-500
 ">
-Luxury Admin
+Admin Panel
 </p>
 
 
@@ -228,11 +225,12 @@ max-w-[150px]
         
         <nav
 className="
-flex-1
+h-screen
 overflow-y-auto
 px-4
 py-5
 space-y-2
+pb-10
 "
 >
 
@@ -400,41 +398,94 @@ space-y-2
         </nav>
 
       {/* Bottom Menu */}
-        
-      <div
-className="
-shrink-0
-border-t
-border-amber-100
-p-4
-space-y-2
-bg-white
-"
+ <NavLink
+  to="/admin/newsletter"
+  className={({ isActive }) =>
+    `flex items-center gap-3 px-4 py-3 rounded-xl ${
+      isActive
+        ? "bg-amber-500 text-white"
+        : "hover:bg-amber-50 text-slate-700"
+    }`
+  }
 >
-        <NavLink
-          to="/admin/settings"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-xl transition ${
-              isActive
-                ? "bg-amber-500 text-white"
-                : "text-slate-700 hover:bg-amber-50"
-            }`
-          }
-        >
-          <FiSettings size={20} />
-          {!collapsed && <span>Settings</span>}
-        </NavLink>
+  <FiMail size={20} />
+  {!collapsed && <span>Newsletter</span>}
+</NavLink>
 
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center gap-3 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition"
-        >
-          <FiLogOut size={20} />
-          {!collapsed && <span>Logout</span>}
-        </button>
+        {/* Settings */}
 
-      </div>
+<NavLink
+to="/admin/settings"
+className={({isActive}) =>
+`
+flex
+items-center
+gap-3
+px-4
+py-3
+rounded-xl
+transition
 
+${
+isActive
+?
+"bg-amber-500 text-white"
+:
+"text-slate-700 hover:bg-amber-50"
+}
+
+`
+}
+>
+
+<FiSettings size={20}/>
+
+{!collapsed && (
+<span>
+Settings
+</span>
+)}
+
+</NavLink>
+
+
+
+{/* Logout */}
+
+<button
+
+onClick={logout}
+
+className="
+w-full
+flex
+items-center
+gap-3
+px-4
+py-3
+rounded-xl
+
+bg-red-500
+hover:bg-red-600
+
+text-white
+
+transition
+
+"
+
+>
+
+<FiLogOut size={20}/>
+
+{!collapsed && (
+<span>
+Logout
+</span>
+)}
+
+</button>
+        
     </aside>
 
     {/* Main Content */}
