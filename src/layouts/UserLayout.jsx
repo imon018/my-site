@@ -14,8 +14,13 @@ import {
 
 import { logout } from "../services/authService";
 
+import { useSettings } from "../context/SettingsContext";
+
 export default function UserLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {
+  settings
+} = useSettings();
 
   const menu = [
     {
@@ -95,7 +100,7 @@ export default function UserLayout() {
         </div>
 
         <div className="p-6 border-b border-slate-700">
-          <h1 className="text-2xl font-bold">Dream Mode</h1>
+          <h1 className="text-2xl font-bold">{settings.storeName || "Dream Mode"}</h1>
           <p className="text-gray-400 text-sm">My Account</p>
         </div>
 
