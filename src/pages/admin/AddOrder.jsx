@@ -9,9 +9,8 @@ import {
   FiPhone,
   FiMapPin,
   FiPackage,
-  FiDollarSign,
   FiHash,
-  FiShoppingBag
+  FiShoppingBag,
 } from "react-icons/fi";
 
 
@@ -19,15 +18,14 @@ import Button from "../../components/ui/Button";
 
 
 import {
-  addOrderByAdmin
+  addOrderByAdmin,
 } from "../../services/orderService";
 
 
 import {
   successToast,
-  errorToast
+  errorToast,
 } from "../../components/ui/Toast";
-
 
 
 
@@ -40,36 +38,41 @@ customerName,
 setCustomerName
 ]=useState("");
 
+
 const [
 email,
 setEmail
 ]=useState("");
+
 
 const [
 phone,
 setPhone
 ]=useState("");
 
+
 const [
 address,
 setAddress
 ]=useState("");
+
 
 const [
 productName,
 setProductName
 ]=useState("");
 
+
 const [
 price,
 setPrice
 ]=useState("");
 
+
 const [
 quantity,
 setQuantity
 ]=useState(1);
-
 
 
 
@@ -125,13 +128,17 @@ items:[
 
 {
 
-id:crypto.randomUUID(),
+id:
+crypto.randomUUID(),
 
-name:productName,
+name:
+productName,
 
-price:Number(price),
+price:
+Number(price),
 
-quantity:Number(quantity)
+quantity:
+Number(quantity),
 
 }
 
@@ -141,13 +148,13 @@ quantity:Number(quantity)
 total,
 
 
-status:"Pending",
+status:
+"Pending",
 
 
 createdAt:
 new Date()
-.toISOString()
-
+.toISOString(),
 
 });
 
@@ -200,15 +207,27 @@ error.message ||
 const inputClass = `
 
 w-full
-h-14
-pl-16
+
+h-12
+
+pl-14
+
 pr-4
+
 rounded-xl
+
 border
+
 border-gray-200
+
 outline-none
+
+text-sm
+
 text-gray-700
+
 placeholder:text-gray-400
+
 focus:border-amber-400
 
 `;
@@ -219,53 +238,101 @@ focus:border-amber-400
 
 
 
+
 return(
 
 
-<div className="
+<div
+
+className="
+
 min-h-screen
+
 bg-[#FAF7F2]
+
 p-4
-md:p-8
-">
+
+md:p-6
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 max-w-4xl
+
 mx-auto
-">
+
+"
+
+>
+
+
+
 
 
 
 {/* HEADER */}
 
 
-<div className="
+<div
+
+className="
+
 flex
+
 items-center
+
 justify-between
-mb-6
-">
+
+mb-5
+
+"
+
+>
 
 
 <div>
 
 
-<h1 className="
-text-3xl
+<h1
+
+className="
+
+text-2xl
+
 font-black
+
 text-[#172033]
-">
+
+"
+
+>
 
 Add Order
 
 </h1>
 
 
-<p className="
+
+<p
+
+className="
+
 text-gray-500
-mt-2
-">
+
+text-sm
+
+mt-1
+
+"
+
+>
 
 Create a new customer order
 
@@ -276,24 +343,43 @@ Create a new customer order
 
 
 
-<div className="
-w-14
-h-14
-rounded-full
+
+
+<div
+
+className="
+
+w-12
+
+h-12
+
+rounded-xl
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-text-2xl
-">
+
+text-xl
+
+"
+
+>
 
 <FiShoppingBag/>
 
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -303,21 +389,32 @@ text-2xl
 
 <form
 
+
 onSubmit={handleSubmit}
 
+
 className="
+
 bg-white
-rounded-3xl
-p-6
-md:p-8
+
+rounded-2xl
+
+p-5
+
+md:p-6
+
 shadow-sm
+
 border
+
 border-gray-100
-space-y-6
+
+space-y-4
+
 "
 
->
 
+>
 
 
 
@@ -330,19 +427,38 @@ space-y-6
 <div>
 
 
-<label className="
+
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Customer Name
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -352,25 +468,51 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiUser/>
 
@@ -378,13 +520,19 @@ text-amber-500
 
 
 
+
+
 <input
+
 
 className={inputClass}
 
+
 placeholder="Enter customer name"
 
+
 value={customerName}
+
 
 onChange={
 e=>
@@ -393,13 +541,16 @@ e.target.value
 )
 }
 
+
 />
 
 
+
 </div>
 
 
 </div>
+
 
 
 
@@ -413,19 +564,38 @@ e.target.value
 <div>
 
 
-<label className="
+
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Email
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -435,25 +605,51 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiMail/>
 
@@ -461,15 +657,22 @@ text-amber-500
 
 
 
+
+
 <input
+
 
 type="email"
 
+
 className={inputClass}
+
 
 placeholder="Customer email"
 
+
 value={email}
+
 
 onChange={
 e=>
@@ -478,13 +681,16 @@ e.target.value
 )
 }
 
+
 />
 
 
+
 </div>
 
 
 </div>
+
 
 
 
@@ -498,19 +704,38 @@ e.target.value
 <div>
 
 
-<label className="
+
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Phone Number
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -520,25 +745,51 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiPhone/>
 
@@ -546,13 +797,19 @@ text-amber-500
 
 
 
+
+
 <input
+
 
 className={inputClass}
 
+
 placeholder="Phone number"
 
+
 value={phone}
+
 
 onChange={
 e=>
@@ -561,33 +818,53 @@ e.target.value
 )
 }
 
+
 />
 
 
-</div>
-
 
 </div>
 
 
-  {/* ADDRESS */}
+</div>
+
+  
+
 
 <div>
 
 
-<label className="
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Address
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -597,24 +874,48 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+<div
+
+className="
+
 absolute
-left-4
-top-5
-w-9
-h-9
+
+left-3
+
+top-3
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiMapPin/>
 
@@ -622,28 +923,50 @@ text-amber-500
 
 
 
+
+
 <textarea
+
 
 rows="3"
 
+
 className="
+
 w-full
-pl-16
-pt-4
+
+pl-14
+
+pt-3
+
 pr-4
+
 rounded-xl
+
 border
+
 border-gray-200
+
 outline-none
+
+text-sm
+
 text-gray-700
+
 placeholder:text-gray-400
+
 focus:border-amber-400
+
 resize-none
+
 "
+
 
 placeholder="Customer address"
 
+
 value={address}
+
 
 onChange={
 e=>
@@ -651,6 +974,7 @@ setAddress(
 e.target.value
 )
 }
+
 
 />
 
@@ -670,22 +994,41 @@ e.target.value
 {/* PRODUCT NAME */}
 
 
+
 <div>
 
 
-<label className="
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Product Name
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -695,25 +1038,51 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiPackage/>
 
@@ -721,13 +1090,19 @@ text-amber-500
 
 
 
+
+
 <input
+
 
 className={inputClass}
 
+
 placeholder="Product name"
 
+
 value={productName}
+
 
 onChange={
 e=>
@@ -736,7 +1111,9 @@ e.target.value
 )
 }
 
+
 />
+
 
 
 </div>
@@ -755,37 +1132,61 @@ e.target.value
 {/* PRICE + QUANTITY */}
 
 
-<div className="
+
+<div
+
+className="
+
 grid
+
 grid-cols-1
+
 md:grid-cols-2
-gap-5
-">
+
+gap-4
+
+"
+
+>
 
 
 
-
-
-
-{/* PRICE */}
 
 
 <div>
 
 
-<label className="
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Price (৳)
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -795,26 +1196,53 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
+
 font-bold
-">
+
+"
+
+>
 
 ৳
 
@@ -822,15 +1250,21 @@ font-bold
 
 
 
+
 <input
+
 
 type="number"
 
+
 className={inputClass}
+
 
 placeholder="Product price"
 
+
 value={price}
+
 
 onChange={
 e=>
@@ -839,41 +1273,57 @@ e.target.value
 )
 }
 
+
 />
 
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
 
 
 
-
-{/* QUANTITY */}
 
 
 <div>
 
 
-<label className="
+<label
+
+className="
+
 block
+
 font-bold
+
 text-[#172033]
-mb-3
-">
+
+text-sm
+
+mb-2
+
+"
+
+>
 
 Quantity
 
-<span className="
+<span
+
+className="
+
 text-amber-500
+
 ml-1
-">
+
+"
+
+>
 
 *
 
@@ -883,25 +1333,51 @@ ml-1
 
 
 
-<div className="
+
+
+<div
+
+className="
+
 relative
-">
+
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
+
 absolute
-left-4
+
+left-3
+
 top-1/2
+
 -translate-y-1/2
-w-9
-h-9
+
+w-8
+
+h-8
+
 rounded-lg
+
 bg-[#FFF7E8]
+
 flex
+
 items-center
+
 justify-center
+
 text-amber-500
-">
+
+"
+
+>
 
 <FiHash/>
 
@@ -909,15 +1385,22 @@ text-amber-500
 
 
 
+
+
 <input
+
 
 type="number"
 
+
 min="1"
+
 
 className={inputClass}
 
+
 value={quantity}
+
 
 onChange={
 e=>
@@ -926,19 +1409,22 @@ e.target.value
 )
 }
 
+
 />
 
 
-</div>
-
 
 </div>
 
 
+</div>
+
+
 
 
 
 </div>
+
 
 
 
@@ -953,24 +1439,39 @@ e.target.value
 
 <Button
 
+
 type="submit"
 
+
 className="
+
 w-full
-h-14
+
+h-12
+
 rounded-xl
+
 bg-gradient-to-r
+
 from-amber-400
+
 to-amber-500
+
 text-white
+
 font-black
-text-base
+
+text-sm
+
 shadow-md
+
 "
+
 
 >
 
 🛒 Add Order
+
 
 </Button>
 
@@ -980,8 +1481,8 @@ shadow-md
 
 
 
-</form>
 
+</form>
 
 
 </div>
