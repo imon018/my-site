@@ -21,10 +21,13 @@ import {
 
 import useAuth from "../hooks/useAuth";
 import { logout } from "../services/authService";
+import { useSettings } from "../context/SettingsContext";
 
 export default function AdminLayout() {
 
   const { user } = useAuth();
+
+  const { settings } = useSettings();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -168,7 +171,7 @@ text-2xl
 font-bold
 text-amber-600
 ">
-Dream Mode
+{settings.storeName}
 </h1>
 
 
