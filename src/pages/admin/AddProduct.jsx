@@ -1,17 +1,17 @@
 import {
-  useState
+useState
 } from "react";
 
 
 import {
-  FiSettings,
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiFacebook,
-  FiMessageCircle,
-  FiUploadCloud,
+FiSettings,
+FiUser,
+FiMail,
+FiPhone,
+FiMapPin,
+FiFacebook,
+FiMessageCircle,
+FiUploadCloud
 } from "react-icons/fi";
 
 
@@ -23,47 +23,22 @@ import Button from "../../components/ui/Button";
 export default function Settings(){
 
 
-
-const [
-settings,
-setSettings
-]=useState({
+const [settings,setSettings]=useState({
 
 storeName:"Dream Mode",
-
 email:"",
-
 phone:"",
-
 address:"",
-
 facebook:"",
-
-whatsapp:"",
+whatsapp:""
 
 });
 
 
 
-const [
-logo,
-setLogo
-]=useState(null);
+const [logoPreview,setLogoPreview]=useState("");
 
-
-
-const [
-logoPreview,
-setLogoPreview
-]=useState("");
-
-
-
-const [
-maintenanceMode,
-setMaintenanceMode
-]=useState(false);
-
+const [maintenanceMode,setMaintenanceMode]=useState(false);
 
 
 
@@ -71,34 +46,24 @@ setMaintenanceMode
 
 const handleChange=(e)=>{
 
-
 setSettings({
 
 ...settings,
 
-[e.target.name]:
-e.target.value,
+[e.target.name]:e.target.value
 
 });
-
 
 };
 
 
 
 
-
-
 const handleLogoChange=(e)=>{
-
 
 const file=e.target.files[0];
 
-
 if(file){
-
-setLogo(file);
-
 
 setLogoPreview(
 URL.createObjectURL(file)
@@ -106,133 +71,52 @@ URL.createObjectURL(file)
 
 }
 
-
 };
-
-
-
-
-
-const handleSave=()=>{
-
-
-alert(
-"Settings save feature will be connected later."
-);
-
-
-};
-
-
-
-
-
-
-
-
-const inputClass = `
-
-w-full
-
-h-12
-
-pl-12
-
-pr-3
-
-rounded-lg
-
-border
-
-border-gray-200
-
-outline-none
-
-text-sm
-
-text-gray-700
-
-focus:border-amber-400
-
-`;
-
-
-
-
 
 
 
 
 return(
 
-
-<div
-
-className="
+<div className="
 min-h-screen
 bg-[#FAF7F2]
 p-4
 md:p-8
-"
-
->
+">
 
 
-<div
-
-className="
+<div className="
 max-w-3xl
 mx-auto
-"
-
->
+">
 
 
-
-
-
-{/* HEADER */}
-
-
-<div
-
-className="
+<div className="
 flex
-items-center
 justify-between
+items-center
 mb-5
-"
-
->
+">
 
 
 <div>
 
-
-<h1
-
-className="
+<h1 className="
 text-2xl
 font-black
 text-[#172033]
-"
-
->
+">
 
 System Settings
 
 </h1>
 
 
-<p
-
-className="
+<p className="
 text-sm
 text-gray-500
-mt-1
-"
-
->
+">
 
 Manage store information
 
@@ -242,10 +126,7 @@ Manage store information
 </div>
 
 
-
-<div
-
-className="
+<div className="
 w-11
 h-11
 rounded-xl
@@ -254,10 +135,7 @@ flex
 items-center
 justify-center
 text-amber-500
-text-xl
-"
-
->
+">
 
 <FiSettings/>
 
@@ -270,33 +148,15 @@ text-xl
 
 
 
-
-
-
-
-<form
-
-onSubmit={(e)=>{
-
-e.preventDefault();
-
-handleSave();
-
-}}
-
-className="
+<form className="
 bg-white
 rounded-xl
 p-5
-md:p-6
-shadow-sm
+space-y-5
 border
 border-gray-100
-space-y-5
-"
-
->
-
+shadow-sm
+">
 
 
 
@@ -305,40 +165,19 @@ space-y-5
 
 {/* STORE LOGO */}
 
-
-
 <div>
 
-
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+text-[#172033]
+">
 
 Store Logo
 
 </label>
-
-
-
-
-<div
-
-className="
-border
-border-gray-200
-rounded-xl
-p-4
-"
-
->
 
 
 
@@ -347,10 +186,10 @@ p-4
 htmlFor="logo"
 
 className="
-h-36
+h-40
 rounded-xl
+border-2
 border-dashed
-border
 border-gray-300
 bg-[#FAF7F2]
 flex
@@ -364,11 +203,8 @@ overflow-hidden
 >
 
 
-
 {
-
 logoPreview ?
-
 
 <img
 
@@ -378,7 +214,6 @@ className="
 w-28
 h-28
 object-contain
-rounded-xl
 "
 
 />
@@ -386,60 +221,44 @@ rounded-xl
 
 :
 
-
 <>
-
 
 <FiUploadCloud
 
 className="
 text-amber-500
-text-3xl
-mb-2
+text-4xl
 "
 
 />
 
 
-<p
-
-className="
-text-sm
+<p className="
 font-semibold
-"
-
->
+text-sm
+mt-2
+">
 
 Upload Store Logo
 
 </p>
 
 
-<p
-
-className="
+<p className="
 text-xs
 text-gray-400
-"
-
->
+">
 
 PNG JPG WEBP
 
 </p>
 
-
 </>
-
 
 }
 
 
-
 </label>
-
-
-
 
 
 <input
@@ -457,14 +276,7 @@ onChange={handleLogoChange}
 />
 
 
-
 </div>
-
-
-
-</div>
-
-
 
 
 
@@ -474,22 +286,14 @@ onChange={handleLogoChange}
 
 {/* STORE NAME */}
 
-
-
 <div>
 
-
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+">
 
 Store Name
 
@@ -499,33 +303,19 @@ Store Name
 <div className="relative">
 
 
-<div
+<FiUser
 
 className="
 absolute
-left-3
-top-1/2
--translate-y-1/2
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiUser size={16}/>
-
-</div>
-
+/>
 
 
 <input
-
 
 name="storeName"
 
@@ -533,8 +323,14 @@ value={settings.storeName}
 
 onChange={handleChange}
 
-className={inputClass}
-
+className="
+w-full
+h-12
+pl-12
+rounded-lg
+border
+border-gray-200
+"
 
 />
 
@@ -544,64 +340,36 @@ className={inputClass}
 
 </div>
 
-
-
-
-
-
-
-
-
-{/* EMAIL */}
-
+  {/* EMAIL */}
 
 <div>
 
-
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+text-[#172033]
+">
 
 Store Email
 
 </label>
 
 
-
 <div className="relative">
 
 
-<div
+<FiMail
 
 className="
 absolute
-left-3
-top-1/2
--translate-y-1/2
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiMail size={16}/>
-
-</div>
-
+/>
 
 
 <input
@@ -612,18 +380,25 @@ value={settings.email}
 
 onChange={handleChange}
 
-className={inputClass}
+placeholder="Store email"
+
+className="
+w-full
+h-12
+pl-12
+rounded-lg
+border
+border-gray-200
+outline-none
+focus:border-amber-400
+"
 
 />
 
 
-
 </div>
 
-
 </div>
-
-
 
 
 
@@ -633,52 +408,36 @@ className={inputClass}
 
 {/* PHONE */}
 
-
 <div>
 
 
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+text-[#172033]
+">
 
 Phone Number
 
 </label>
 
 
+
 <div className="relative">
 
 
-<div
+<FiPhone
 
 className="
 absolute
-left-3
-top-1/2
--translate-y-1/2
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiPhone size={16}/>
-
-</div>
+/>
 
 
 <input
@@ -689,7 +448,18 @@ value={settings.phone}
 
 onChange={handleChange}
 
-className={inputClass}
+placeholder="Phone number"
+
+className="
+w-full
+h-12
+pl-12
+rounded-lg
+border
+border-gray-200
+outline-none
+focus:border-amber-400
+"
 
 />
 
@@ -712,47 +482,33 @@ className={inputClass}
 <div>
 
 
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+text-[#172033]
+">
 
 Store Address
 
 </label>
 
 
+
 <div className="relative">
 
 
-<div
+<FiMapPin
 
 className="
 absolute
-left-3
-top-3
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiMapPin size={16}/>
-
-</div>
+/>
 
 
 
@@ -766,16 +522,16 @@ value={settings.address}
 
 onChange={handleChange}
 
+placeholder="Store address"
+
 className="
 w-full
 pl-12
 pt-3
-pr-3
 rounded-lg
 border
 border-gray-200
 outline-none
-text-sm
 resize-none
 focus:border-amber-400
 "
@@ -783,12 +539,10 @@ focus:border-amber-400
 />
 
 
-
 </div>
 
 
 </div>
-
 
 
 
@@ -799,21 +553,15 @@ focus:border-amber-400
 
 {/* FACEBOOK */}
 
-
 <div>
 
 
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+">
 
 Facebook URL
 
@@ -823,28 +571,16 @@ Facebook URL
 <div className="relative">
 
 
-<div
+<FiFacebook
 
 className="
 absolute
-left-3
-top-1/2
--translate-y-1/2
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiFacebook size={16}/>
-
-</div>
+/>
 
 
 <input
@@ -855,7 +591,16 @@ value={settings.facebook}
 
 onChange={handleChange}
 
-className={inputClass}
+placeholder="Facebook URL"
+
+className="
+w-full
+h-12
+pl-12
+rounded-lg
+border
+border-gray-200
+"
 
 />
 
@@ -864,7 +609,6 @@ className={inputClass}
 
 
 </div>
-
 
 
 
@@ -875,21 +619,15 @@ className={inputClass}
 
 {/* WHATSAPP */}
 
-
 <div>
 
 
-<label
-
-className="
+<label className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
-"
-
->
+">
 
 WhatsApp Number
 
@@ -900,28 +638,16 @@ WhatsApp Number
 <div className="relative">
 
 
-<div
+<FiMessageCircle
 
 className="
 absolute
-left-3
-top-1/2
--translate-y-1/2
-w-8
-h-8
-rounded-lg
-bg-[#FFF7E8]
-flex
-items-center
-justify-center
+left-4
+top-4
 text-amber-500
 "
 
->
-
-<FiMessageCircle size={16}/>
-
-</div>
+/>
 
 
 <input
@@ -932,7 +658,16 @@ value={settings.whatsapp}
 
 onChange={handleChange}
 
-className={inputClass}
+placeholder="WhatsApp number"
+
+className="
+w-full
+h-12
+pl-12
+rounded-lg
+border
+border-gray-200
+"
 
 />
 
@@ -941,7 +676,6 @@ className={inputClass}
 
 
 </div>
-
 
 
 
@@ -953,51 +687,39 @@ className={inputClass}
 {/* MAINTENANCE MODE */}
 
 
-<div
-
-className="
+<div className="
 bg-[#FFF9ED]
-rounded-xl
-p-4
 border
 border-[#FDECC8]
+rounded-xl
+p-4
 flex
 items-center
 justify-between
-"
-
->
+">
 
 
 <div>
 
 
-<h3
-
-className="
+<h3 className="
 font-bold
 text-sm
 text-[#172033]
-"
-
->
+">
 
 Maintenance Mode
 
 </h3>
 
 
-<p
-
-className="
+<p className="
 text-xs
 text-gray-500
 mt-1
-"
+">
 
->
-
-Temporarily disable website
+Disable website temporarily
 
 </p>
 
@@ -1008,34 +730,32 @@ Temporarily disable website
 
 
 
-<label
-
-className="cursor-pointer"
-
->
+<label className="
+cursor-pointer
+">
 
 
 <input
 
 type="checkbox"
 
-className="sr-only"
+className="hidden"
 
 checked={maintenanceMode}
 
 onChange={(e)=>
+
 setMaintenanceMode(
 e.target.checked
 )
+
 }
 
 />
 
 
-<div
 
-className={`
-
+<div className={`
 w-12
 h-6
 rounded-full
@@ -1049,21 +769,17 @@ maintenanceMode
 "bg-gray-300"
 }
 
-`}
-
->
+`}>
 
 
-<div
 
-className={`
-
+<div className={`
 w-5
 h-5
 bg-white
 rounded-full
-mt-[2px]
 shadow
+mt-[2px]
 transition
 
 ${
@@ -1074,10 +790,7 @@ maintenanceMode
 "translate-x-1"
 }
 
-`}
-
->
-
+`}>
 </div>
 
 
@@ -1096,6 +809,9 @@ maintenanceMode
 
 
 
+{/* SAVE BUTTON */}
+
+
 <Button
 
 type="submit"
@@ -1103,14 +819,12 @@ type="submit"
 className="
 w-full
 h-12
-rounded-lg
+rounded-xl
 bg-gradient-to-r
 from-amber-400
 to-amber-500
 text-white
 font-black
-text-sm
-shadow
 "
 
 >
@@ -1118,9 +832,6 @@ shadow
 Save Settings
 
 </Button>
-
-
-
 
 
 
@@ -1135,6 +846,5 @@ Save Settings
 
 
 );
-
 
 }
