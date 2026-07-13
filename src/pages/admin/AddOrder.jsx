@@ -30,59 +30,31 @@ import {
 
 
 
+
 export default function AddOrder(){
 
 
-const [
-customerName,
-setCustomerName
-]=useState("");
+const [customerName,setCustomerName]=useState("");
 
+const [email,setEmail]=useState("");
 
-const [
-email,
-setEmail
-]=useState("");
+const [phone,setPhone]=useState("");
 
+const [address,setAddress]=useState("");
 
-const [
-phone,
-setPhone
-]=useState("");
+const [productName,setProductName]=useState("");
 
+const [price,setPrice]=useState("");
 
-const [
-address,
-setAddress
-]=useState("");
-
-
-const [
-productName,
-setProductName
-]=useState("");
-
-
-const [
-price,
-setPrice
-]=useState("");
-
-
-const [
-quantity,
-setQuantity
-]=useState(1);
+const [quantity,setQuantity]=useState(1);
 
 
 
 
 
-const handleSubmit = async(e)=>{
-
+const handleSubmit=async(e)=>{
 
 e.preventDefault();
-
 
 
 if(
@@ -138,7 +110,7 @@ price:
 Number(price),
 
 quantity:
-Number(quantity),
+Number(quantity)
 
 }
 
@@ -154,7 +126,7 @@ status:
 
 createdAt:
 new Date()
-.toISOString(),
+.toISOString()
 
 });
 
@@ -186,12 +158,10 @@ setQuantity(1);
 
 catch(error){
 
-
 errorToast(
 error.message ||
 "Failed to add order."
 );
-
 
 }
 
@@ -204,17 +174,17 @@ error.message ||
 
 
 
-const inputClass = `
+const inputClass=`
 
 w-full
 
 h-12
 
-pl-14
+pl-12
 
-pr-4
+pr-3
 
-rounded-xl
+rounded-lg
 
 border
 
@@ -238,9 +208,7 @@ focus:border-amber-400
 
 
 
-
 return(
-
 
 <div
 
@@ -259,7 +227,6 @@ md:p-6
 >
 
 
-
 <div
 
 className="
@@ -274,10 +241,6 @@ mx-auto
 
 
 
-
-
-
-{/* HEADER */}
 
 
 <div
@@ -343,17 +306,15 @@ Create a new customer order
 
 
 
-
-
 <div
 
 className="
 
-w-12
+w-10
 
-h-12
+h-10
 
-rounded-xl
+rounded-lg
 
 bg-[#FFF7E8]
 
@@ -364,8 +325,6 @@ items-center
 justify-center
 
 text-amber-500
-
-text-xl
 
 "
 
@@ -385,19 +344,15 @@ text-xl
 
 
 
-
-
 <form
 
-
 onSubmit={handleSubmit}
-
 
 className="
 
 bg-white
 
-rounded-2xl
+rounded-lg
 
 p-5
 
@@ -413,19 +368,12 @@ space-y-4
 
 "
 
-
 >
-
-
-
-
 
 
 {/* CUSTOMER NAME */}
 
-
 <div>
-
 
 
 <label
@@ -436,9 +384,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -448,17 +396,7 @@ mb-2
 
 Customer Name
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -468,18 +406,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -494,11 +421,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -514,43 +441,33 @@ text-amber-500
 
 >
 
-<FiUser/>
+<FiUser size={15}/>
 
 </div>
-
-
 
 
 
 <input
 
-
 className={inputClass}
-
 
 placeholder="Enter customer name"
 
-
 value={customerName}
 
-
 onChange={
-e=>
-setCustomerName(
+e=>setCustomerName(
 e.target.value
 )
 }
 
-
 />
 
 
-
 </div>
 
 
 </div>
-
 
 
 
@@ -564,7 +481,6 @@ e.target.value
 <div>
 
 
-
 <label
 
 className="
@@ -573,9 +489,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -585,17 +501,7 @@ mb-2
 
 Email
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -605,18 +511,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -631,11 +526,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -651,47 +546,35 @@ text-amber-500
 
 >
 
-<FiMail/>
+<FiMail size={15}/>
 
 </div>
-
-
 
 
 
 <input
 
-
 type="email"
-
 
 className={inputClass}
 
-
 placeholder="Customer email"
-
 
 value={email}
 
-
 onChange={
-e=>
-setEmail(
+e=>setEmail(
 e.target.value
 )
 }
 
-
 />
 
 
-
 </div>
 
 
 </div>
-
-
 
 
 
@@ -704,7 +587,6 @@ e.target.value
 <div>
 
 
-
 <label
 
 className="
@@ -713,9 +595,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -725,17 +607,7 @@ mb-2
 
 Phone Number
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -745,18 +617,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -771,11 +632,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -791,44 +652,35 @@ text-amber-500
 
 >
 
-<FiPhone/>
+<FiPhone size={15}/>
 
 </div>
-
-
 
 
 
 <input
 
-
 className={inputClass}
-
 
 placeholder="Phone number"
 
-
 value={phone}
 
-
 onChange={
-e=>
-setPhone(
+e=>setPhone(
 e.target.value
 )
 }
 
-
 />
 
 
-
 </div>
 
 
 </div>
 
-  
+  // ADDRESS
 
 
 <div>
@@ -842,9 +694,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -854,17 +706,7 @@ mb-2
 
 Address
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -874,17 +716,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
+<div className="relative">
 
 
 <div
@@ -897,11 +729,11 @@ left-3
 
 top-3
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -917,10 +749,9 @@ text-amber-500
 
 >
 
-<FiMapPin/>
+<FiMapPin size={15}/>
 
 </div>
-
 
 
 
@@ -935,13 +766,13 @@ className="
 
 w-full
 
-pl-14
+pl-12
 
 pt-3
 
-pr-4
+pr-3
 
-rounded-xl
+rounded-lg
 
 border
 
@@ -969,8 +800,7 @@ value={address}
 
 
 onChange={
-e=>
-setAddress(
+e=>setAddress(
 e.target.value
 )
 }
@@ -990,9 +820,7 @@ e.target.value
 
 
 
-
 {/* PRODUCT NAME */}
-
 
 
 <div>
@@ -1006,9 +834,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -1018,17 +846,7 @@ mb-2
 
 Product Name
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -1038,18 +856,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -1064,11 +871,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -1084,33 +891,26 @@ text-amber-500
 
 >
 
-<FiPackage/>
+<FiPackage size={15}/>
 
 </div>
 
 
 
 
-
 <input
-
 
 className={inputClass}
 
-
 placeholder="Product name"
-
 
 value={productName}
 
-
 onChange={
-e=>
-setProductName(
+e=>setProductName(
 e.target.value
 )
 }
-
 
 />
 
@@ -1120,8 +920,6 @@ e.target.value
 
 
 </div>
-
-
 
 
 
@@ -1151,8 +949,6 @@ gap-4
 
 
 
-
-
 <div>
 
 
@@ -1164,9 +960,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -1176,17 +972,7 @@ mb-2
 
 Price (৳)
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -1196,18 +982,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -1222,11 +997,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -1250,39 +1025,29 @@ font-bold
 
 
 
-
 <input
-
 
 type="number"
 
-
 className={inputClass}
-
 
 placeholder="Product price"
 
-
 value={price}
 
-
 onChange={
-e=>
-setPrice(
+e=>setPrice(
 e.target.value
 )
 }
 
-
 />
 
 
-
 </div>
 
 
 </div>
-
 
 
 
@@ -1301,9 +1066,9 @@ block
 
 font-bold
 
-text-[#172033]
-
 text-sm
+
+text-[#172033]
 
 mb-2
 
@@ -1313,17 +1078,7 @@ mb-2
 
 Quantity
 
-<span
-
-className="
-
-text-amber-500
-
-ml-1
-
-"
-
->
+<span className="text-amber-500 ml-1">
 
 *
 
@@ -1333,18 +1088,7 @@ ml-1
 
 
 
-
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
+<div className="relative">
 
 
 <div
@@ -1359,11 +1103,11 @@ top-1/2
 
 -translate-y-1/2
 
-w-8
+w-7
 
-h-8
+h-7
 
-rounded-lg
+rounded-md
 
 bg-[#FFF7E8]
 
@@ -1379,36 +1123,27 @@ text-amber-500
 
 >
 
-<FiHash/>
+<FiHash size={15}/>
 
 </div>
 
 
 
-
-
 <input
-
 
 type="number"
 
-
 min="1"
-
 
 className={inputClass}
 
-
 value={quantity}
 
-
 onChange={
-e=>
-setQuantity(
+e=>setQuantity(
 e.target.value
 )
 }
-
 
 />
 
@@ -1421,11 +1156,7 @@ e.target.value
 
 
 
-
-
 </div>
-
-
 
 
 
@@ -1439,9 +1170,7 @@ e.target.value
 
 <Button
 
-
 type="submit"
-
 
 className="
 
@@ -1449,7 +1178,7 @@ w-full
 
 h-12
 
-rounded-xl
+rounded-lg
 
 bg-gradient-to-r
 
@@ -1467,11 +1196,9 @@ shadow-md
 
 "
 
-
 >
 
 🛒 Add Order
-
 
 </Button>
 
@@ -1481,8 +1208,8 @@ shadow-md
 
 
 
-
 </form>
+
 
 
 </div>
