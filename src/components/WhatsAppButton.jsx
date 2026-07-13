@@ -9,8 +9,8 @@ import {
 } from "react-icons/fa";
 
 import {
-  siteConfig,
-} from "../config/siteConfig";
+  useSettings
+} from "../context/SettingsContext";
 
 
 export default function WhatsAppButton() {
@@ -18,6 +18,9 @@ export default function WhatsAppButton() {
 
   const buttonRef = useRef(null);
 
+  const {
+  settings
+} = useSettings();
 
   const [position,setPosition] = useState({
 
@@ -198,7 +201,7 @@ export default function WhatsAppButton() {
 
       ref={buttonRef}
 
-      href={siteConfig.whatsapp}
+      href={settings.whatsapp || "#"}}
 
       target="_blank"
 
