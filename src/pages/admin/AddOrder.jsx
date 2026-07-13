@@ -11,7 +11,7 @@ import {
   FiPackage,
   FiDollarSign,
   FiHash,
-  FiShoppingBag,
+  FiShoppingBag
 } from "react-icons/fi";
 
 
@@ -19,13 +19,13 @@ import Button from "../../components/ui/Button";
 
 
 import {
-  addOrderByAdmin,
+  addOrderByAdmin
 } from "../../services/orderService";
 
 
 import {
   successToast,
-  errorToast,
+  errorToast
 } from "../../components/ui/Toast";
 
 
@@ -35,29 +35,51 @@ import {
 export default function AddOrder(){
 
 
-const [customerName,setCustomerName]=useState("");
+const [
+customerName,
+setCustomerName
+]=useState("");
 
-const [email,setEmail]=useState("");
+const [
+email,
+setEmail
+]=useState("");
 
-const [phone,setPhone]=useState("");
+const [
+phone,
+setPhone
+]=useState("");
 
-const [address,setAddress]=useState("");
+const [
+address,
+setAddress
+]=useState("");
 
-const [productName,setProductName]=useState("");
+const [
+productName,
+setProductName
+]=useState("");
 
-const [price,setPrice]=useState("");
+const [
+price,
+setPrice
+]=useState("");
 
-const [quantity,setQuantity]=useState(1);
+const [
+quantity,
+setQuantity
+]=useState(1);
 
 
 
 
 
 
+const handleSubmit = async(e)=>{
 
-const handleSubmit=async(e)=>{
 
 e.preventDefault();
+
 
 
 if(
@@ -118,10 +140,14 @@ quantity:Number(quantity)
 
 total,
 
+
 status:"Pending",
 
-createdAt:new Date()
+
+createdAt:
+new Date()
 .toISOString()
+
 
 });
 
@@ -134,11 +160,17 @@ successToast(
 
 
 setCustomerName("");
+
 setEmail("");
+
 setPhone("");
+
 setAddress("");
+
 setProductName("");
+
 setPrice("");
+
 setQuantity(1);
 
 
@@ -147,10 +179,12 @@ setQuantity(1);
 
 catch(error){
 
+
 errorToast(
 error.message ||
 "Failed to add order."
 );
+
 
 }
 
@@ -163,13 +197,13 @@ error.message ||
 
 
 
-const inputClass=`
+const inputClass = `
 
 w-full
-h-16
+h-14
 pl-16
 pr-4
-rounded-2xl
+rounded-xl
 border
 border-gray-200
 outline-none
@@ -189,27 +223,17 @@ return(
 
 
 <div className="
-
 min-h-screen
-
 bg-[#FAF7F2]
-
 p-4
-
 md:p-8
-
 ">
 
 
 <div className="
-
 max-w-4xl
-
 mx-auto
-
 ">
-
-
 
 
 
@@ -217,15 +241,10 @@ mx-auto
 
 
 <div className="
-
 flex
-
 items-center
-
 justify-between
-
 mb-6
-
 ">
 
 
@@ -233,13 +252,9 @@ mb-6
 
 
 <h1 className="
-
 text-3xl
-
 font-black
-
 text-[#172033]
-
 ">
 
 Add Order
@@ -247,13 +262,9 @@ Add Order
 </h1>
 
 
-
 <p className="
-
 text-gray-500
-
 mt-2
-
 ">
 
 Create a new customer order
@@ -265,33 +276,21 @@ Create a new customer order
 
 
 
-
 <div className="
-
 w-14
-
 h-14
-
 rounded-full
-
 bg-[#FFF7E8]
-
 flex
-
 items-center
-
 justify-center
-
 text-amber-500
-
 text-2xl
-
 ">
 
 <FiShoppingBag/>
 
 </div>
-
 
 
 </div>
@@ -307,23 +306,14 @@ text-2xl
 onSubmit={handleSubmit}
 
 className="
-
 bg-white
-
 rounded-3xl
-
 p-6
-
 md:p-8
-
 shadow-sm
-
 border
-
 border-gray-100
-
 space-y-6
-
 "
 
 >
@@ -341,25 +331,17 @@ space-y-6
 
 
 <label className="
-
 block
-
 font-bold
-
 text-[#172033]
-
 mb-3
-
 ">
 
 Customer Name
 
 <span className="
-
 text-amber-500
-
 ml-1
-
 ">
 
 *
@@ -370,35 +352,24 @@ ml-1
 
 
 
-<div className="relative">
+<div className="
+relative
+">
 
 
 <div className="
-
 absolute
-
 left-4
-
 top-1/2
-
 -translate-y-1/2
-
-w-10
-
-h-10
-
-rounded-xl
-
+w-9
+h-9
+rounded-lg
 bg-[#FFF7E8]
-
 flex
-
 items-center
-
 justify-center
-
 text-amber-500
-
 ">
 
 <FiUser/>
@@ -416,7 +387,8 @@ placeholder="Enter customer name"
 value={customerName}
 
 onChange={
-e=>setCustomerName(
+e=>
+setCustomerName(
 e.target.value
 )
 }
@@ -442,25 +414,17 @@ e.target.value
 
 
 <label className="
-
 block
-
 font-bold
-
 text-[#172033]
-
 mb-3
-
 ">
 
 Email
 
 <span className="
-
 text-amber-500
-
 ml-1
-
 ">
 
 *
@@ -471,35 +435,24 @@ ml-1
 
 
 
-<div className="relative">
+<div className="
+relative
+">
 
 
 <div className="
-
 absolute
-
 left-4
-
 top-1/2
-
 -translate-y-1/2
-
-w-10
-
-h-10
-
-rounded-xl
-
+w-9
+h-9
+rounded-lg
 bg-[#FFF7E8]
-
 flex
-
 items-center
-
 justify-center
-
 text-amber-500
-
 ">
 
 <FiMail/>
@@ -519,7 +472,8 @@ placeholder="Customer email"
 value={email}
 
 onChange={
-e=>setEmail(
+e=>
+setEmail(
 e.target.value
 )
 }
@@ -537,6 +491,7 @@ e.target.value
 
 
 
+
 {/* PHONE */}
 
 
@@ -544,25 +499,17 @@ e.target.value
 
 
 <label className="
-
 block
-
 font-bold
-
 text-[#172033]
-
 mb-3
-
 ">
 
 Phone Number
 
 <span className="
-
 text-amber-500
-
 ml-1
-
 ">
 
 *
@@ -573,35 +520,24 @@ ml-1
 
 
 
-<div className="relative">
+<div className="
+relative
+">
 
 
 <div className="
-
 absolute
-
 left-4
-
 top-1/2
-
 -translate-y-1/2
-
-w-10
-
-h-10
-
-rounded-xl
-
+w-9
+h-9
+rounded-lg
 bg-[#FFF7E8]
-
 flex
-
 items-center
-
 justify-center
-
 text-amber-500
-
 ">
 
 <FiPhone/>
@@ -619,7 +555,8 @@ placeholder="Phone number"
 value={phone}
 
 onChange={
-e=>setPhone(
+e=>
+setPhone(
 e.target.value
 )
 }
@@ -631,3 +568,429 @@ e.target.value
 
 
 </div>
+
+
+  {/* ADDRESS */}
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Address
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-5
+w-9
+h-9
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+<FiMapPin/>
+
+</div>
+
+
+
+<textarea
+
+rows="3"
+
+className="
+w-full
+pl-16
+pt-4
+pr-4
+rounded-xl
+border
+border-gray-200
+outline-none
+text-gray-700
+placeholder:text-gray-400
+focus:border-amber-400
+resize-none
+"
+
+placeholder="Customer address"
+
+value={address}
+
+onChange={
+e=>
+setAddress(
+e.target.value
+)
+}
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* PRODUCT NAME */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Product Name
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-9
+h-9
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+<FiPackage/>
+
+</div>
+
+
+
+<input
+
+className={inputClass}
+
+placeholder="Product name"
+
+value={productName}
+
+onChange={
+e=>
+setProductName(
+e.target.value
+)
+}
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* PRICE + QUANTITY */}
+
+
+<div className="
+grid
+grid-cols-1
+md:grid-cols-2
+gap-5
+">
+
+
+
+
+
+
+{/* PRICE */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Price (৳)
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-9
+h-9
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+font-bold
+">
+
+৳
+
+</div>
+
+
+
+<input
+
+type="number"
+
+className={inputClass}
+
+placeholder="Product price"
+
+value={price}
+
+onChange={
+e=>
+setPrice(
+e.target.value
+)
+}
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* QUANTITY */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Quantity
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-9
+h-9
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+<FiHash/>
+
+</div>
+
+
+
+<input
+
+type="number"
+
+min="1"
+
+className={inputClass}
+
+value={quantity}
+
+onChange={
+e=>
+setQuantity(
+e.target.value
+)
+}
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* BUTTON */}
+
+
+
+<Button
+
+type="submit"
+
+className="
+w-full
+h-14
+rounded-xl
+bg-gradient-to-r
+from-amber-400
+to-amber-500
+text-white
+font-black
+text-base
+shadow-md
+"
+
+>
+
+🛒 Add Order
+
+</Button>
+
+
+
+
+
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
+
+);
+
+
+}
