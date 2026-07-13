@@ -1,6 +1,7 @@
 import {
   collection,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
   deleteDoc,
@@ -137,5 +138,44 @@ export async function deleteUser(
   await deleteDoc(
     userRef
   );
+
+}
+
+
+// =========================
+// GET SINGLE USER
+// =========================
+
+export async function getUserById(userId){
+
+  const userRef =
+    doc(
+      db,
+      "users",
+      userId
+    );
+
+
+  const snapshot =
+    await getDoc(userRef);
+
+
+
+  if(!snapshot.exists()){
+
+    return null;
+
+  }
+
+
+
+  return {
+
+    id:snapshot.id,
+
+    ...snapshot.data(),
+
+  };
+
 
 }
