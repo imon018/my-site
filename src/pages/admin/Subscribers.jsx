@@ -450,21 +450,28 @@ key={item.id}
 
 className="
 
-grid
-
-grid-cols-1
-
-md:grid-cols-3
-
-gap-3
-
 p-4
 
 border-b
 
 border-gray-100
 
-text-sm
+"
+
+>
+
+
+{/* EMAIL + DELETE */}
+
+<div
+
+className="
+
+flex
+
+items-center
+
+justify-between
 
 "
 
@@ -474,19 +481,35 @@ text-sm
 <div
 
 className="
+
 flex
+
 items-center
+
 gap-2
-font-medium
+
+font-semibold
+
+text-[#172033]
+
 "
 
 >
 
 <FiMail
-className="text-amber-500"
+
+className="
+text-amber-500
+"
+
 />
 
+<span>
+
 {item.email}
+
+</span>
+
 
 </div>
 
@@ -494,7 +517,67 @@ className="text-amber-500"
 
 
 
-<div>
+<button
+
+
+onClick={()=>
+remove(item.id)
+}
+
+
+className="
+
+w-9
+
+h-9
+
+rounded-lg
+
+bg-red-500
+
+text-white
+
+flex
+
+items-center
+
+justify-center
+
+"
+
+
+>
+
+<FiTrash2 size={16}/>
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+{/* DATE */}
+
+<div
+
+className="
+
+mt-3
+
+text-sm
+
+text-gray-500
+
+"
+
+>
 
 
 {
@@ -515,67 +598,6 @@ item.createdAt
 
 
 </div>
-
-
-
-
-
-
-
-<div
-
-className="
-flex
-md:justify-center
-"
-
->
-
-
-<button
-
-
-onClick={()=>
-remove(item.id)
-}
-
-
-
-className="
-
-flex
-items-center
-gap-2
-
-bg-red-500
-
-text-white
-
-px-4
-
-py-2
-
-rounded-lg
-
-text-sm
-
-"
-
-
->
-
-
-<FiTrash2/>
-
-Delete
-
-
-</button>
-
-
-</div>
-
-
 
 
 
