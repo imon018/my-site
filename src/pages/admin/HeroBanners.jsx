@@ -12,6 +12,7 @@ import {
   FiDollarSign,
   FiTag,
   FiTrash2,
+  FiUploadCloud,
 } from "react-icons/fi";
 
 
@@ -1342,6 +1343,72 @@ Banner Image
 </label>
 
 
+<label
+htmlFor="hero-banner-image"
+className="
+h-32
+rounded-lg
+border
+border-dashed
+border-gray-300
+bg-[#FAF7F2]
+flex
+flex-col
+items-center
+justify-center
+cursor-pointer
+hover:bg-gray-50
+transition
+"
+>
+
+
+<div
+className="
+text-amber-500
+text-2xl
+mb-1
+"
+>
+
+<FiUploadCloud size={28}/>
+
+</div>
+
+
+
+<p
+className="
+text-sm
+font-semibold
+text-[#172033]
+"
+>
+
+Upload Banner Image
+
+</p>
+
+
+
+<p
+className="
+text-xs
+text-gray-400
+mt-1
+"
+>
+
+PNG JPG WEBP
+
+</p>
+
+
+</label>
+
+
+
+
 <input
 
 id="hero-banner-image"
@@ -1350,31 +1417,52 @@ type="file"
 
 accept="image/*"
 
-className="
-
-w-full
-
-h-12
-
-border
-
-border-gray-200
-
-rounded-lg
-
-p-2
-
-text-sm
-
-"
+className="hidden"
 
 onChange={
-e=>setImage(
+e=>
+setImage(
 e.target.files[0]
 )
 }
 
 />
+
+
+
+{
+image &&
+
+<div
+className="
+mt-3
+w-20
+h-20
+rounded-lg
+overflow-hidden
+border
+border-gray-200
+"
+>
+
+<img
+
+src={
+URL.createObjectURL(image)
+}
+
+className="
+w-full
+h-full
+object-cover
+"
+
+/>
+
+
+</div>
+
+}
 
 
 </div>
