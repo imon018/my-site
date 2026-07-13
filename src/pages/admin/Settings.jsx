@@ -58,6 +58,8 @@ logoUrl:"",
 logoPublicId:"",
 
 maintenanceMode:false,
+  
+  maintenanceEndTime:"",
 
 });
 
@@ -1405,7 +1407,36 @@ settings.maintenanceMode
 
 
 
+{/* MAINTENANCE END TIME */}
 
+<div>
+
+<label className="block font-bold text-sm mb-2">
+  Maintenance End Time
+</label>
+
+
+<input
+
+  type="datetime-local"
+
+  name="maintenanceEndTime"
+
+  value={
+    settings.maintenanceEndTime || ""
+  }
+
+  onChange={handleChange}
+
+  className={inputClass}
+
+/>
+
+<p className="text-xs text-gray-400 mt-2">
+  Users will see countdown until this time.
+</p>
+
+</div>
 
 
 
