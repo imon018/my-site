@@ -16,6 +16,11 @@ import {
 } from "../context/SettingsContext";
 
 
+import {
+  disableMaintenance,
+} from "../services/settingsService";
+
+
 
 
 
@@ -30,17 +35,17 @@ export default function MaintenancePage(){
 
 
   const [timeLeft,setTimeLeft] =
-    useState({
+  useState({
 
-      days:0,
+    days:0,
 
-      hours:0,
+    hours:0,
 
-      minutes:0,
+    minutes:0,
 
-      seconds:0,
+    seconds:0,
 
-    });
+  });
 
 
 
@@ -51,18 +56,22 @@ export default function MaintenancePage(){
   useEffect(()=>{
 
 
-    const calculateTime = ()=>{
+    if(
+      !settings.maintenanceEndTime
+    ){
+
+      return;
+
+    }
 
 
-      if(!settings.maintenanceEndTime){
-
-        return;
-
-      }
 
 
 
-      const endTime =
+    const timer = setInterval(()=>{
+
+
+      const end =
         new Date(
           settings.maintenanceEndTime
         )
@@ -70,15 +79,14 @@ export default function MaintenancePage(){
 
 
 
-
       const now =
-        new Date()
-        .getTime();
+        Date.now();
 
 
 
       const distance =
-        endTime - now;
+        end - now;
+
 
 
 
@@ -86,17 +94,12 @@ export default function MaintenancePage(){
       if(distance <= 0){
 
 
-        setTimeLeft({
+        clearInterval(timer);
 
-          days:0,
 
-          hours:0,
 
-          minutes:0,
+        disableMaintenance();
 
-          seconds:0,
-
-        });
 
 
         return;
@@ -111,67 +114,56 @@ export default function MaintenancePage(){
 
       setTimeLeft({
 
+
         days:
-          Math.floor(
-            distance /
-            (1000 * 60 * 60 * 24)
-          ),
+        Math.floor(
+          distance /
+          (1000*60*60*24)
+        ),
+
 
 
         hours:
-          Math.floor(
-            (
-              distance %
-              (1000 * 60 * 60 * 24)
-            )
-            /
-            (1000 * 60 * 60)
-          ),
+        Math.floor(
+          (
+            distance %
+            (1000*60*60*24)
+          )
+          /
+          (1000*60*60)
+        ),
 
 
 
         minutes:
-          Math.floor(
-            (
-              distance %
-              (1000 * 60 * 60)
-            )
-            /
-            (1000 * 60)
-          ),
-
+        Math.floor(
+          (
+            distance %
+            (1000*60*60)
+          )
+          /
+          (1000*60)
+        ),
 
 
 
         seconds:
-          Math.floor(
-            (
-              distance %
-              (1000 * 60)
-            )
-            /
-            1000
-          ),
+        Math.floor(
+          (
+            distance %
+            (1000*60)
+          )
+          /
+          1000
+        ),
 
 
       });
 
 
 
-    };
+    },1000);
 
-
-
-
-    calculateTime();
-
-
-
-    const timer =
-      setInterval(
-        calculateTime,
-        1000
-      );
 
 
 
@@ -192,451 +184,277 @@ export default function MaintenancePage(){
 
 
 
-  return (
 
 
-    <div
-      className="
-        min-h-screen
-        bg-[#FAF7F2]
-        flex
-        flex-col
-        justify-between
-        px-6
-        py-8
-      "
-    >
+return (
 
+<div
+className="
+min-h-screen
+bg-[#FAF7F2]
+flex
+items-center
+justify-center
+px-6
+"
+>
 
 
+<div
+className="
+max-w-6xl
+w-full
+grid
+lg:grid-cols-2
+gap-10
+items-center
+"
+>
 
 
-      <div
-        className="
-          max-w-7xl
-          mx-auto
-          w-full
-        "
-      >
 
+<div>
 
 
+{
+settings.logoUrl &&
 
-        {/* HEADER LOGO */}
+<img
 
+src={settings.logoUrl}
 
-        {
-          settings.logoUrl && (
+alt="logo"
 
-            <img
+className="
+w-40
+mb-8
+"
 
-              src={
-                settings.logoUrl
-              }
+/>
 
-              alt="Logo"
+}
 
-              className="
-                w-52
-                h-auto
-                object-contain
-                mb-8
-              "
 
-            />
 
-          )
+<h1
+className="
+text-5xl
+font-black
+text-[#172033]
+"
+>
 
-        }
+Website Under Maintenance
 
+</h1>
 
 
 
+<p
+className="
+mt-5
+text-gray-600
+leading-8
+"
+>
 
+{settings.storeName || "Dream Mode"}
+is upgrading the website experience.
 
-        <div
-          className="
-            grid
-            lg:grid-cols-2
-            gap-10
-            items-center
-          "
-        >
+<br/>
 
+We will be back soon.
 
+</p>
 
 
 
-          {/* LEFT */}
 
 
-          <div>
+<div
+className="
+mt-8
+grid
+grid-cols-4
+gap-3
+"
+>
 
 
+{
+[
+["Days",timeLeft.days],
+["Hours",timeLeft.hours],
+["Min",timeLeft.minutes],
+["Sec",timeLeft.seconds]
 
-            <p
-              className="
-                text-amber-500
-                text-xl
-                italic
-                font-semibold
-              "
-            >
+].map(item=>(
 
-              We're Currently In
 
-            </p>
+<div
+key={item[0]}
+className="
+bg-white
+rounded-xl
+shadow
+p-4
+text-center
+"
+>
 
+<h2
+className="
+text-2xl
+font-black
+text-amber-500
+"
+>
 
+{
+String(item[1])
+.padStart(2,"0")
+}
 
+</h2>
 
 
-            <h1
-              className="
-                mt-3
-                text-5xl
-                md:text-6xl
-                font-black
-                text-[#172033]
-                leading-tight
-              "
-            >
+<p
+className="
+text-xs
+text-gray-500
+"
+>
 
-              Maintenance
-              <br/>
-              Mode
+{item[0]}
 
-            </h1>
+</p>
 
 
+</div>
 
 
+))
 
+}
 
-            <div
-              className="
-                w-20
-                h-1
-                bg-amber-500
-                mt-6
-              "
-            />
 
+</div>
 
 
 
 
 
 
-            <p
-              className="
-                mt-8
-                text-gray-600
-                leading-8
-                max-w-lg
-              "
-            >
+<div
+className="
+mt-8
+space-y-3
+"
+>
 
-              We're making some exciting updates
-              to improve your experience.
 
-              <br/>
+{
+settings.email &&
 
-              Our site will be back soon!
+<p className="flex gap-3">
 
-              <br/>
+<FiMail/>
 
-              Thank you for your patience and support.
+{settings.email}
 
-            </p>
+</p>
 
+}
 
 
 
+{
+settings.phone &&
 
+<p className="flex gap-3">
 
+<FiPhone/>
 
+{settings.phone}
 
-            {/* COUNTDOWN */}
+</p>
 
+}
 
-            <div
-              className="
-                mt-8
-                bg-white
-                rounded-2xl
-                shadow-md
-                p-5
-                max-w-md
-              "
-            >
 
-              <h3
-                className="
-                  font-bold
-                  text-[#172033]
-                  mb-4
-                "
-              >
 
-                We will be back in
+{
+settings.facebook &&
 
-              </h3>
+<a
 
+href={settings.facebook}
 
+target="_blank"
 
+rel="noreferrer"
 
+className="
+flex
+gap-3
+text-blue-600
+"
 
-              <div
-                className="
-                  grid
-                  grid-cols-4
-                  gap-3
-                  text-center
-                "
-              >
+>
 
+<FiFacebook/>
 
-                {
-                  [
+Facebook
 
-                    ["Days",timeLeft.days],
+</a>
 
-                    ["Hours",timeLeft.hours],
+}
 
-                    ["Minutes",timeLeft.minutes],
 
-                    ["Seconds",timeLeft.seconds],
+</div>
 
-                  ]
-                  .map(
-                    ([label,value])=>(
 
+</div>
 
-                    <div
-                      key={label}
-                      className="
-                        bg-[#FFF7E8]
-                        rounded-xl
-                        p-3
-                      "
-                    >
 
-                      <h2
-                        className="
-                          text-2xl
-                          font-black
-                          text-amber-500
-                        "
-                      >
 
-                        {
-                          String(value)
-                          .padStart(2,"0")
-                        }
 
-                      </h2>
 
 
-                      <p
-                        className="
-                          text-xs
-                          text-gray-500
-                        "
-                      >
 
-                        {label}
+<div
+className="
+flex
+justify-center
+"
+>
 
-                      </p>
 
+<img
 
-                    </div>
+src="/maintenance.png"
 
+alt="Maintenance"
 
-                    )
-                  )
+className="
+max-w-xl
+w-full
+"
 
-                }
+/>
 
 
-              </div>
+</div>
 
 
-            </div>
 
+</div>
 
 
+</div>
 
 
-
-
-            {/* CONTACT */}
-
-
-            <div
-              className="
-                mt-8
-                space-y-3
-                text-gray-600
-              "
-            >
-
-
-              {
-                settings.email && (
-
-                  <p className="flex gap-3 items-center">
-
-                    <FiMail
-                      className="text-amber-500"
-                    />
-
-                    {settings.email}
-
-                  </p>
-
-                )
-              }
-
-
-
-
-
-              {
-                settings.phone && (
-
-                  <p className="flex gap-3 items-center">
-
-                    <FiPhone
-                      className="text-amber-500"
-                    />
-
-                    {settings.phone}
-
-                  </p>
-
-                )
-              }
-
-
-
-
-              {
-                settings.facebook && (
-
-                  <a
-
-                    href={
-                      settings.facebook
-                    }
-
-                    target="_blank"
-
-                    rel="noreferrer"
-
-                    className="
-                      flex
-                      gap-3
-                      items-center
-                      text-blue-600
-                    "
-
-                  >
-
-                    <FiFacebook/>
-
-                    Facebook
-
-                  </a>
-
-                )
-              }
-
-
-
-
-            </div>
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-          {/* RIGHT IMAGE */}
-
-
-          <div
-            className="
-              flex
-              justify-center
-            "
-          >
-
-            <img
-
-              src="/maintenance.png"
-
-              alt="Maintenance"
-
-              className="
-                w-full
-                max-w-xl
-              "
-
-            />
-
-          </div>
-
-
-
-
-
-        </div>
-
-
-
-      </div>
-
-
-
-
-
-
-
-
-      {/* FOOTER */}
-
-
-      <footer
-        className="
-          text-center
-          text-gray-500
-          text-sm
-          mt-10
-        "
-      >
-
-        © 2026 {settings.storeName || "Dream Mode"}.
-        All Rights Reserved ❤️
-
-
-      </footer>
-
-
-
-    </div>
-
-
-  );
+);
 
 
 }
