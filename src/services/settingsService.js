@@ -98,3 +98,31 @@ export const getSettings = async()=>{
 
 
 };
+
+
+// DISABLE MAINTENANCE
+
+export const disableMaintenance = async()=>{
+
+  try{
+
+    await saveSettings({
+
+      maintenanceMode:false,
+
+    });
+
+
+  }
+  catch(error){
+
+    console.log(
+      "Disable maintenance error:",
+      error
+    );
+
+    throw error;
+
+  }
+
+};
