@@ -5,6 +5,13 @@ import {
 
 
 import {
+  FiMail,
+  FiTrash2,
+  FiUsers,
+} from "react-icons/fi";
+
+
+import {
   getSubscribers,
   deleteSubscriber,
 } from "../../services/newsletterService";
@@ -12,7 +19,9 @@ import {
 
 import {
   successToast,
+  errorToast,
 } from "../../components/ui/Toast";
+
 
 
 
@@ -20,15 +29,15 @@ export default function Subscribers(){
 
 
 const [
- subscribers,
- setSubscribers
+subscribers,
+setSubscribers
 ]=useState([]);
 
 
 
 const [
- search,
- setSearch
+search,
+setSearch
 ]=useState("");
 
 
@@ -36,17 +45,17 @@ const [
 
 useEffect(()=>{
 
-
 load();
-
 
 },[]);
 
 
 
 
-async function load(){
 
+const load = async()=>{
+
+try{
 
 const data =
 await getSubscribers();
@@ -57,28 +66,66 @@ setSubscribers(data);
 
 }
 
+catch(error){
 
-
-
-async function remove(id){
-
-  if(
-    !window.confirm(
-      "Delete this subscriber?"
-    )
-  ){
-    return;
-  }
-
-  await deleteSubscriber(id);
-
-  successToast(
-    "Subscriber deleted"
-  );
-
-  load();
+console.log(error);
 
 }
+
+};
+
+
+
+
+
+
+
+const remove = async(id)=>{
+
+
+const confirm =
+window.confirm(
+"Delete this subscriber?"
+);
+
+
+
+if(!confirm)
+return;
+
+
+
+try{
+
+
+await deleteSubscriber(id);
+
+
+successToast(
+"Subscriber deleted"
+);
+
+
+load();
+
+
+}
+
+catch(error){
+
+
+errorToast(
+"Delete failed"
+);
+
+
+}
+
+
+};
+
+
+
 
 
 
@@ -89,7 +136,7 @@ subscribers.filter(
 (item)=>
 
 item.email
-.toLowerCase()
+?.toLowerCase()
 .includes(
 search.toLowerCase()
 )
@@ -100,19 +147,66 @@ search.toLowerCase()
 
 
 
-return (
-
-<div className="
-p-6
-">
 
 
-<h1 className="
-text-3xl
+
+return(
+
+
+<div
+
+className="
+min-h-screen
+bg-[#FAF7F2]
+p-4
+md:p-8
+"
+
+>
+
+
+<div
+
+className="
+max-w-3xl
+mx-auto
+"
+
+>
+
+
+
+
+
+
+{/* HEADER */}
+
+
+
+<div
+
+className="
+flex
+items-center
+justify-between
+mb-5
+"
+
+>
+
+
+<div>
+
+
+<h1
+
+className="
+text-2xl
 font-black
-text-blue-900
-mb-6
-">
+text-[#172033]
+"
+
+>
 
 Subscribers
 
@@ -120,175 +214,372 @@ Subscribers
 
 
 
+<p
+
+className="
+text-sm
+text-gray-500
+mt-1
+"
+
+>
+
+Manage newsletter subscribers
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div
+
+className="
+w-11
+h-11
+rounded-xl
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+text-xl
+"
+
+>
+
+<FiUsers/>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* SEARCH */}
+
+
+
+<div
+
+className="
+bg-white
+rounded-xl
+p-5
+shadow-sm
+border
+border-gray-100
+mb-5
+"
+
+>
+
+
+<div
+
+className="
+relative
+"
+
+>
+
+
+<div
+
+className="
+absolute
+left-3
+top-1/2
+-translate-y-1/2
+w-8
+h-8
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+"
+
+>
+
+<FiMail/>
+
+</div>
+
+
 
 <input
 
-placeholder="
-Search email...
-"
+
+placeholder="Search email..."
+
 
 value={search}
 
-onChange={(e)=>
-setSearch(e.target.value)
+
+onChange={
+e=>
+setSearch(
+e.target.value
+)
 }
 
 
+
 className="
+
 w-full
+
+h-12
+
+pl-12
+
+pr-3
+
+rounded-lg
+
 border
-rounded-xl
-px-4
-py-3
-mb-6
+
+border-gray-200
+
+outline-none
+
+text-sm
+
+focus:border-amber-400
+
 "
+
 
 />
 
 
 
+</div>
 
 
 
-<div className="
+</div>
+
+
+
+
+
+
+
+
+
+{/* LIST */}
+
+
+
+<div
+
+className="
 bg-white
-rounded-3xl
-shadow
+rounded-xl
+shadow-sm
+border
+border-gray-100
 overflow-hidden
-">
+"
+
+>
 
 
-<table className="
-w-full
-">
+<div
 
-
-<thead>
-
-<tr className="
-bg-blue-900
-text-white
-">
-
-
-<th className="
+className="
+hidden
+md:grid
+grid-cols-3
+bg-[#FFF7E8]
+text-[#172033]
+font-bold
+text-sm
 p-4
-text-left
-">
+"
 
+>
+
+
+<div>
 Email
+</div>
 
-</th>
 
-
-<th className="
-p-4
-text-left
-">
-
+<div>
 Date
+</div>
 
-</th>
 
-
-<th className="
-p-4
-">
-
+<div className="text-center">
 Action
+</div>
 
-</th>
 
-
-</tr>
-
-</thead>
+</div>
 
 
 
 
-
-<tbody>
 
 
 {
+
 
 filtered.map(
 (item)=>(
 
 
-<tr
+<div
+
 key={item.id}
+
 className="
+
+grid
+
+grid-cols-1
+
+md:grid-cols-3
+
+gap-3
+
+p-4
+
 border-b
+
+border-gray-100
+
+text-sm
+
 "
+
 >
 
 
-<td className="
-p-4
-">
+<div
+
+className="
+flex
+items-center
+gap-2
+font-medium
+"
+
+>
+
+<FiMail
+className="text-amber-500"
+/>
 
 {item.email}
 
-</td>
+</div>
 
 
 
 
-<td className="
-p-4
-">
+
+<div>
+
 
 {
+
 item.createdAt
+
 ?
+
 item.createdAt
 .toDate()
 .toLocaleDateString()
+
 :
+
 ""
+
 }
 
-</td>
+
+</div>
 
 
 
 
 
-<td className="
-p-4
-text-center
-">
+
+
+<div
+
+className="
+flex
+md:justify-center
+"
+
+>
 
 
 <button
+
 
 onClick={()=>
 remove(item.id)
 }
 
 
+
 className="
+
+flex
+items-center
+gap-2
+
 bg-red-500
+
 text-white
+
 px-4
+
 py-2
-rounded-xl
+
+rounded-lg
+
+text-sm
+
 "
+
 
 >
 
+
+<FiTrash2/>
+
 Delete
+
 
 </button>
 
 
-</td>
+</div>
 
 
 
-</tr>
+
+
+</div>
 
 
 )
@@ -300,17 +591,43 @@ Delete
 
 
 
-</tbody>
+
+
+{
+
+filtered.length===0 &&
+
+<div
+
+className="
+p-8
+text-center
+text-gray-400
+text-sm
+"
+
+>
+
+No subscribers found
+
+</div>
+
+}
 
 
 
-</table>
+</div>
+
+
+
+
 
 
 </div>
 
 
 </div>
+
 
 );
 
