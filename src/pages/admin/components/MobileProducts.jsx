@@ -5,7 +5,11 @@ import {
   FiSearch
 } from "react-icons/fi";
 
-import { useNavigate } from "react-router-dom";
+
+import {
+  useNavigate
+} from "react-router-dom";
+
 
 
 
@@ -13,10 +17,11 @@ export default function MobileProducts({data}){
 
 
 const {
-  products,
-  search,
-  setSearch,
-  handleDelete
+products,
+search,
+setSearch,
+handleDelete
+
 }=data;
 
 
@@ -27,16 +32,17 @@ const navigate = useNavigate();
 
 
 
-return (
+return(
 
-<div
-className="
-w-full
+
+<div className="
 min-h-screen
 bg-[#FAF7F2]
 p-4
-"
->
+space-y-3
+">
+
+
 
 
 
@@ -44,53 +50,49 @@ p-4
 
 {/* HEADER */}
 
-<div
-className="
+
+
+<div className="
 bg-white
-rounded-[28px]
-p-5
+rounded-lg
+p-4
 border
 border-gray-100
 shadow-sm
-mb-5
-"
->
+">
 
 
-<div
-className="
+<div className="
 flex
-justify-between
 items-center
-"
->
+justify-between
+">
 
 
 <div>
 
-<h1
-className="
-text-2xl
-font-bold
-"
->
+
+<h1 className="
+text-xl
+font-black
+">
 
 Products
 
 </h1>
 
 
-<p
-className="
+
+<p className="
+text-xs
 text-gray-500
-text-sm
 mt-1
-"
->
+">
 
 Manage your store products
 
 </p>
+
 
 
 </div>
@@ -101,25 +103,31 @@ Manage your store products
 
 <button
 
-onClick={()=>navigate("/admin/add-product")}
+onClick={()=>navigate(
+"/admin/add-product"
+)}
 
 className="
+w-9
+h-9
+rounded-lg
 bg-amber-500
 text-white
-p-3
-rounded-xl
-shadow
+flex
+items-center
+justify-center
 "
 
 >
 
-<FiPlus size={22}/>
+<FiPlus size={18}/>
 
 </button>
 
 
 
 </div>
+
 
 </div>
 
@@ -134,19 +142,18 @@ shadow
 {/* SEARCH */}
 
 
-<div
-className="
+
+<div className="
 bg-white
-rounded-2xl
+rounded-lg
 border
 border-gray-100
-p-3
-mb-5
+px-3
+h-11
 flex
 items-center
-gap-3
-"
->
+gap-2
+">
 
 
 <FiSearch
@@ -156,20 +163,28 @@ text-gray-400
 />
 
 
+
 <input
 
 value={search}
 
-onChange={(e)=>setSearch(e.target.value)}
+onChange={(e)=>
+setSearch(e.target.value)
+}
 
-placeholder="Search product..."
+placeholder="
+Search product...
+"
 
 className="
 w-full
 outline-none
+text-sm
 bg-transparent
 "
+
 />
+
 
 
 </div>
@@ -186,39 +201,33 @@ bg-transparent
 
 
 
-<div
-className="
-space-y-4
-"
->
+
+<div className="
+space-y-2
+">
 
 
 
 {
 
-products.length===0 ?
+products.length===0
 
+?
 
-(
-
-<div
-
-className="
+<div className="
 bg-white
-rounded-3xl
-p-8
+rounded-lg
+p-6
 text-center
+text-sm
 text-gray-400
-"
-
->
+border
+border-gray-100
+">
 
 No Products Found
 
 </div>
-
-
-)
 
 
 :
@@ -233,28 +242,20 @@ key={product.id}
 
 className="
 bg-white
-
-rounded-[28px]
-
-p-4
-
+rounded-lg
+p-3
 border
-
 border-gray-100
-
 shadow-sm
-
 "
 
 >
 
 
-<div
-className="
+<div className="
 flex
-gap-4
-"
->
+gap-3
+">
 
 
 <img
@@ -265,29 +266,30 @@ product.image ||
 }
 
 className="
-w-24
-h-24
-rounded-2xl
+w-20
+h-20
+rounded-lg
 object-cover
+bg-gray-50
 "
 
 />
 
 
 
-<div
-className="
+
+
+<div className="
 flex-1
-"
->
+min-w-0
+">
 
 
-<h2
-className="
+<h2 className="
 font-bold
-text-lg
-"
->
+text-sm
+truncate
+">
 
 {product.name}
 
@@ -295,13 +297,12 @@ text-lg
 
 
 
-<p
-className="
+
+<p className="
+text-xs
 text-gray-500
-text-sm
 mt-1
-"
->
+">
 
 {product.category}
 
@@ -310,13 +311,12 @@ mt-1
 
 
 
-<p
-className="
+<p className="
+text-sm
+font-black
 text-amber-600
-font-bold
 mt-2
-"
->
+">
 
 ৳ {product.price}
 
@@ -327,6 +327,7 @@ mt-2
 </div>
 
 
+
 </div>
 
 
@@ -334,32 +335,32 @@ mt-2
 
 
 
-<div
-className="
+
+
+
+
+<div className="
 flex
-justify-between
 items-center
-mt-5
-"
->
+justify-between
+mt-3
+">
 
 
-<span
-className="
+<span className="
 bg-green-50
 text-green-600
-
-px-3
+px-2.5
 py-1
+rounded-lg
+text-xs
+font-semibold
+">
 
-rounded-full
-
-text-sm
-"
->
 
 Stock:
 {product.stock || 0}
+
 
 </span>
 
@@ -368,12 +369,11 @@ Stock:
 
 
 
-<div
-className="
+
+<div className="
 flex
 gap-2
-"
->
+">
 
 
 <button
@@ -383,17 +383,23 @@ onClick={()=>navigate(
 )}
 
 className="
+w-8
+h-8
+rounded-lg
 bg-blue-50
 text-blue-600
-p-3
-rounded-xl
+flex
+items-center
+justify-center
 "
 
 >
 
-<FiEdit/>
+<FiEdit size={15}/>
 
 </button>
+
+
 
 
 
@@ -404,32 +410,36 @@ rounded-xl
 onClick={()=>handleDelete(product.id)}
 
 className="
+w-8
+h-8
+rounded-lg
 bg-red-50
 text-red-500
-p-3
-rounded-xl
+flex
+items-center
+justify-center
 "
 
 >
 
-<FiTrash2/>
+<FiTrash2 size={15}/>
 
 </button>
 
 
 
-</div>
-
 
 </div>
 
 
 
+</div>
+
+
 
 
 
 </div>
-
 
 
 ))
@@ -439,15 +449,16 @@ rounded-xl
 
 
 
-</div>
-
-
-
-
-
-
 
 </div>
+
+
+
+
+
+
+</div>
+
 
 );
 
