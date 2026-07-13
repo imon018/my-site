@@ -7,14 +7,19 @@ import CartProvider from "./context/CartContext";
 import WishlistProvider from "./context/WishlistContext";
 
 import {
-  SettingsProvider
+  SettingsProvider,
+  useSettings,
 } from "./context/SettingsContext";
 
-import { Toaster } from "react-hot-toast";
+import {
+  Toaster
+} from "react-hot-toast";
 
 import useAuth from "./hooks/useAuth";
 
 import ScrollToTop from "./components/ScrollToTop";
+
+import MaintenancePage from "./components/MaintenancePage";
 
 
 
@@ -25,13 +30,26 @@ function AppContent() {
 
   const {
     loading,
+    user,
   } = useAuth();
 
 
 
 
+  const {
+    settings,
+    loading: settingsLoading,
+  } = useSettings();
 
-  if(loading){
+
+
+
+
+
+  if(
+    loading ||
+    settingsLoading
+  ){
 
 
     return (
@@ -68,9 +86,32 @@ function AppContent() {
 
       </div>
 
-
     );
 
+
+  }
+
+
+
+
+
+
+
+  const isAdmin =
+    user?.role === "admin";
+
+
+
+
+
+  if(
+    settings.maintenanceMode &&
+    !isAdmin
+  ){
+
+    return (
+      <MaintenancePage />
+    );
 
   }
 
@@ -86,6 +127,7 @@ function AppContent() {
 
 
       <AppRoutes />
+
 
 
       <Toaster
