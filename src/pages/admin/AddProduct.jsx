@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { 
+  useState 
+} from "react";
+
+
+import {
+  FiTag,
+  FiFileText,
+} from "react-icons/fi";
+
 
 import Button from "../../components/ui/Button";
+
 
 import {
   addProductToDB,
 } from "../../services/firestoreProductService";
 
+
 import {
   uploadImages,
 } from "../../services/uploadService";
+
 
 import {
   successToast,
@@ -18,7 +30,9 @@ import {
 
 
 
+
 export default function AddProduct(){
+
 
 
 const [name,setName]=useState("");
@@ -37,7 +51,10 @@ const [heroBanner,setHeroBanner]=useState(false);
 
 
 
+
+
 const handleSubmit=async(e)=>{
+
 
 e.preventDefault();
 
@@ -124,18 +141,6 @@ setImages([]);
 setHeroBanner(false);
 
 
-
-const input =
-document.getElementById(
-"product-image"
-);
-
-
-if(input)
-input.value="";
-
-
-
 }
 
 catch(error){
@@ -145,7 +150,7 @@ console.log(error);
 
 errorToast(
 error.message ||
-"Failed to add product."
+"Failed to add product"
 );
 
 
@@ -157,6 +162,11 @@ error.message ||
 
 
 
+
+
+
+
+
 return(
 
 
@@ -164,34 +174,37 @@ return(
 min-h-screen
 bg-[#FAF7F2]
 p-4
-md:p-6
+md:p-8
 ">
 
 
 <div className="
-max-w-3xl
+max-w-4xl
 mx-auto
 ">
+
+
+
 
 
 {/* HEADER */}
 
 
 <div className="
-bg-white
-border
-border-gray-100
-rounded-lg
-p-5
-shadow-sm
-mb-4
+flex
+items-center
+justify-between
+mb-6
 ">
 
 
+<div>
+
+
 <h1 className="
-text-xl
-md:text-2xl
+text-3xl
 font-black
+text-[#172033]
 ">
 
 Add Product
@@ -200,14 +213,33 @@ Add Product
 
 
 <p className="
-text-sm
 text-gray-500
-mt-1
+mt-2
 ">
 
-Create new product for your store
+Fill in the details to add a new product
 
 </p>
+
+
+</div>
+
+
+<div className="
+w-14
+h-14
+rounded-full
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+text-2xl
+">
+
+🛍️
+
+</div>
 
 
 </div>
@@ -216,7 +248,7 @@ Create new product for your store
 
 
 
-{/* FORM CARD */}
+
 
 
 <form
@@ -225,65 +257,199 @@ onSubmit={handleSubmit}
 
 className="
 bg-white
+rounded-3xl
+p-6
+md:p-8
+shadow-sm
 border
 border-gray-100
-rounded-lg
-p-5
-shadow-sm
-space-y-3
+space-y-6
 "
 
-
 >
+
+
+
+
+
+
+
+
+{/* PRODUCT NAME */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Product Name
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-10
+h-10
+rounded-xl
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+<FiTag/>
+
+</div>
+
 
 
 <input
 
 className="
 w-full
-h-11
-px-3
-rounded-lg
+h-16
+pl-16
+pr-4
+rounded-2xl
 border
 border-gray-200
 outline-none
-text-sm
+text-gray-700
+placeholder:text-gray-400
 focus:border-amber-400
 "
 
-placeholder="Product Name"
+placeholder="Enter product name"
 
 
 value={name}
 
 onChange={
-e=>setName(e.target.value)
+e=>setName(
+e.target.value
+)
 }
 
 
 />
 
 
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* DESCRIPTION */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Product Description
+
+
+</label>
+
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-5
+w-10
+h-10
+rounded-xl
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+
+<FiFileText/>
+
+
+</div>
+
+
+
 
 <textarea
 
-rows="4"
+
+rows="5"
+
 
 className="
 w-full
-p-3
-rounded-lg
+pl-16
+pt-5
+pr-4
+rounded-2xl
 border
 border-gray-200
 outline-none
-text-sm
+text-gray-700
+placeholder:text-gray-400
 focus:border-amber-400
+resize-none
 "
 
-placeholder="Product Description"
+
+placeholder="Write about your product..."
 
 
 value={description}
+
 
 onChange={
 e=>setDescription(
@@ -296,117 +462,331 @@ e.target.value
 
 
 
-<div className="
-grid
-grid-cols-2
-gap-3
-">
-
-
-<input
-
-type="number"
-
-className="
-h-11
-px-3
-rounded-lg
-border
-border-gray-200
-outline-none
-text-sm
-"
-
-placeholder="Price"
-
-
-value={price}
-
-onChange={
-e=>setPrice(e.target.value)
-}
-
-
-/>
+</div>
 
 
 
-<input
-
-type="number"
-
-className="
-h-11
-px-3
-rounded-lg
-border
-border-gray-200
-outline-none
-text-sm
-"
-
-placeholder="Stock"
+</div>
 
 
-value={stock}
-
-onChange={
-e=>setStock(e.target.value)
-}
+        </div>
 
 
-/>
 
 
-</div>  
 
 
-{/* HERO BANNER TOGGLE */}
+
+
+
+{/* PRICE + STOCK */}
+
 
 
 <div className="
-flex
-items-center
-justify-between
-border
-border-gray-100
-rounded-lg
-p-3
-bg-gray-50
+grid
+grid-cols-1
+md:grid-cols-2
+gap-5
 ">
+
+
+
+
+
+
+{/* PRICE */}
 
 
 <div>
 
-<p className="
-text-sm
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Price (৳)
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+
+</label>
+
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-10
+h-10
+rounded-xl
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
 font-bold
 ">
 
-Hero Banner Product
+৳
 
-</p>
+</div>
 
 
-<p className="
-text-xs
-text-gray-500
-mt-1
-">
 
-Show this product on homepage banner
+<input
 
-</p>
+type="number"
+
+className="
+w-full
+h-16
+pl-16
+pr-4
+rounded-2xl
+border
+border-gray-200
+outline-none
+focus:border-amber-400
+"
+
+placeholder="Enter price"
+
+
+value={price}
+
+
+onChange={
+e=>setPrice(
+e.target.value
+)
+}
+
+
+/>
+
+
+</div>
+
 
 </div>
 
 
 
 
+
+
+
+
+{/* STOCK */}
+
+
+<div>
+
+
+<label className="
+block
+font-bold
+text-[#172033]
+mb-3
+">
+
+Stock Quantity
+
+<span className="
+text-amber-500
+ml-1
+">
+
+*
+
+</span>
+
+
+</label>
+
+
+
+<div className="
+relative
+">
+
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-10
+h-10
+rounded-xl
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+">
+
+📦
+
+</div>
+
+
+
+<input
+
+
+type="number"
+
+
+className="
+w-full
+h-16
+pl-16
+pr-4
+rounded-2xl
+border
+border-gray-200
+outline-none
+focus:border-amber-400
+"
+
+
+placeholder="Enter stock"
+
+
+
+value={stock}
+
+
+
+onChange={
+e=>setStock(
+e.target.value
+)
+}
+
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* HERO BANNER */}
+
+
+
+<div className="
+bg-[#FFF9ED]
+rounded-2xl
+p-5
+flex
+items-center
+justify-between
+border
+border-[#FDECC8]
+">
+
+
+<div className="
+flex
+gap-4
+items-center
+">
+
+
+<div className="
+w-12
+h-12
+rounded-xl
+bg-white
+flex
+items-center
+justify-center
+text-amber-500
+text-xl
+">
+
+⭐
+
+</div>
+
+
+
+
+<div>
+
+
+<h3 className="
+font-bold
+text-[#172033]
+">
+
+
+Use this product as Hero Banner
+
+
+</h3>
+
+
+
+<p className="
+text-sm
+text-gray-500
+mt-1
+">
+
+Show this product on homepage banner
+
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
 <label className="
 relative
-inline-flex
-items-center
 cursor-pointer
 ">
 
@@ -415,7 +795,9 @@ cursor-pointer
 
 type="checkbox"
 
-className="sr-only"
+className="
+sr-only
+"
 
 checked={heroBanner}
 
@@ -425,61 +807,47 @@ e.target.checked
 )
 }
 
+
 />
 
 
-
 <div className={`
-w-11
-h-6
+w-14
+h-8
 rounded-full
 transition
-
-
 ${
 heroBanner
-
 ?
-
 "bg-amber-500"
-
 :
-
 "bg-gray-300"
-
 }
-
 `}>
 
 
 
 <div className={`
-w-5
-h-5
+w-6
+h-6
 bg-white
 rounded-full
-mt-0.5
+mt-1
 transition
-
+shadow
 
 ${
 heroBanner
-
 ?
-
-"translate-x-5"
-
+"translate-x-7"
 :
-
-"translate-x-0.5"
-
+"translate-x-1"
 }
 
-`}
-
->
+`}>
 
 </div>
+
 
 
 </div>
@@ -489,6 +857,7 @@ heroBanner
 
 
 </div>
+
 
 
 
@@ -501,24 +870,44 @@ heroBanner
 
 
 
-<div className="
-border
-border-dashed
-border-gray-300
-rounded-lg
-p-4
-">
+<div>
 
 
-<p className="
-text-sm
+<label className="
+block
 font-bold
-mb-2
+text-[#172033]
+mb-3
 ">
 
 Product Images
 
+
+</label>
+
+
+
+<div className="
+border
+border-gray-200
+rounded-2xl
+p-5
+">
+
+
+
+<p className="
+text-sm
+text-gray-500
+mb-4
+">
+
+Add up to 5 images
+
 </p>
+
+
+
 
 
 <label
@@ -526,28 +915,58 @@ Product Images
 htmlFor="product-image"
 
 className="
-h-28
-rounded-lg
-bg-gray-50
+h-40
+rounded-2xl
 border
-border-gray-200
+border-dashed
+border-gray-300
+bg-[#FAF7F2]
 flex
+flex-col
 items-center
 justify-center
 cursor-pointer
-text-sm
 text-gray-500
-hover:bg-gray-100
+hover:bg-gray-50
 "
 
 
 >
 
 
-Choose Images
+<div className="
+text-amber-500
+text-3xl
+mb-2
+">
+
+☁️
+
+</div>
+
+
+<p className="
+font-semibold
+">
+
+Tap to upload images
+
+</p>
+
+
+
+<p className="
+text-xs
+mt-1
+">
+
+PNG, JPG or WEBP
+
+</p>
 
 
 </label>
+
 
 
 
@@ -565,6 +984,7 @@ className="
 hidden
 "
 
+
 onChange={
 e=>
 setImages(
@@ -581,22 +1001,75 @@ e.target.files
 
 
 
+
 {
 
-images.length>0 &&
+images.length > 0 &&
 
-<p className="
-text-xs
-text-gray-500
-mt-3
+<div className="
+flex
+gap-3
+mt-4
+flex-wrap
 ">
 
-{images.length} image selected
 
-</p>
+{
+
+images.map(
+(img,index)=>(
+
+
+<div
+
+key={index}
+
+className="
+w-20
+h-20
+rounded-xl
+overflow-hidden
+border
+"
+
+
+>
+
+
+<img
+
+src={
+URL.createObjectURL(img)
+}
+
+className="
+w-full
+h-full
+object-cover
+"
+
+/>
+
+
+</div>
+
+
+)
+
+)
+
 
 }
 
+
+</div>
+
+
+}
+
+
+
+</div>
 
 
 </div>
@@ -607,7 +1080,9 @@ mt-3
 
 
 
-{/* BUTTON */}
+
+
+{/* SAVE BUTTON */}
 
 
 
@@ -617,18 +1092,25 @@ type="submit"
 
 className="
 w-full
-h-11
-rounded-lg
-bg-amber-500
+h-14
+rounded-2xl
+bg-gradient-to-r
+from-amber-400
+to-amber-500
 text-white
-font-bold
+font-black
+text-lg
+shadow-lg
 "
+
 
 >
 
-Save Product
+💾 Save Product
+
 
 </Button>
+
 
 
 
