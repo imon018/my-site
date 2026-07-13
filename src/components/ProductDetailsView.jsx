@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import Button from "./ui/Button";
 import RelatedProducts from "./RelatedProducts";
 import ProductReviews from "./product/ProductReviews";
+import {
+  useSettings
+} from "../context/SettingsContext";
 
 import useCart from "../hooks/useCart";
 import useWishlist from "../hooks/useWishlist";
@@ -25,6 +28,10 @@ export default function ProductDetailsView() {
 
   const { addToWishlist } =
     useWishlist();
+
+  const {
+  settings
+}=useSettings();
 
 
 
@@ -517,7 +524,7 @@ export default function ProductDetailsView() {
 
             <a
 
-              href={`https://wa.me/8801406978619?text=I'm interested in ${product.name}`}
+              href={`https://wa.me/${settings.whatsapp?.replace(/\D/g,"")}?text=I'm interested in ${product.name}`}
 
               target="_blank"
 
