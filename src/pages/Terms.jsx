@@ -24,8 +24,8 @@ answer:"Orders may be cancelled in certain situations such as incorrect informat
 },
 
 {
-question:"Who owns settings.storeName || "DREAM MODE"} website content?",
-answer:"All website content, logo, images and design belong to Dream Mode."
+question:`Who owns {settings.storeName || "DREAM MODE"} website content?",
+answer:"All website content, logo, images and design belong to {settings.storeName || "DREAM MODE"}.`
 }
 
 ];
@@ -38,7 +38,7 @@ return (
 
 title="Terms & Conditions"
 
-description="Please read our terms before using Dream Mode website and services."
+description=`Please read our terms before using {settings.storeName || "DREAM MODE"} website and services.`
 
 >
 
@@ -47,7 +47,7 @@ description="Please read our terms before using Dream Mode website and services.
 
 
 <p>
-By accessing and using settings.storeName || "DREAM MODE"} website, you agree
+By accessing and using {settings.storeName || "DREAM MODE"} website, you agree
 to follow our terms and conditions.
 </p>
 
@@ -90,7 +90,7 @@ Order Policy
 
 
 <p>
-settings.storeName || "DREAM MODE"} reserves the right to cancel orders due to
+  {settings.storeName || "DREAM MODE"} reserves the right to cancel orders due to
 incorrect information, payment verification issues or
 unavailable stock.
 </p>
