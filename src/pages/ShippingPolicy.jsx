@@ -1,166 +1,269 @@
 import PolicyLayout from "../components/PolicyLayout";
 import PolicyFAQ from "../components/PolicyFAQ";
+
 import {
   useSettings
 } from "../context/SettingsContext";
 
 
+
 export default function ShippingPolicy(){
 
+
   const {
-  settings
-}=useSettings();
+    settings
+  } = useSettings();
 
 
-const faq=[
 
-{
-question:"How long does delivery take?",
-answer:"Inside Dhaka usually takes 1-3 working days and outside Dhaka usually takes 3-5 working days."
-},
 
-{
-question:"Do you deliver all over Bangladesh?",
-answer:"Yes, {settings.storeName || "DREAM MODE"} delivers products across Bangladesh."
-},
 
-{
-question:"Can I change my address after ordering?",
-answer:"Address changes are possible only before shipment confirmation."
-}
+  const faq = [
 
-];
 
+    {
+      question:
+      "How long does delivery take?",
 
+      answer:
+      "Inside Dhaka usually takes 1-3 working days and outside Dhaka usually takes 3-5 working days."
+    },
 
-return (
 
-<PolicyLayout
 
-title="Shipping Policy"
+    {
+      question:
+      "Do you deliver all over Bangladesh?",
 
-description="Everything you need to know about Dream Mode delivery process."
+      answer:
+      `Yes, ${settings.storeName || "DREAM MODE"} delivers products across Bangladesh.`
+    },
 
->
 
 
-<div className="space-y-8">
+    {
+      question:
+      "Can I change my address after ordering?",
 
+      answer:
+      "Address changes are possible only before shipment confirmation."
+    }
 
-<p>
-{settings.storeName || "DREAM MODE"} provides secure and reliable delivery service
-to make sure your premium fashion products reach you safely.
-</p>
 
+  ];
 
 
 
-<h2 className="text-2xl font-bold text-blue-950">
-Delivery Area
-</h2>
 
 
-<p>
-We currently provide delivery service throughout Bangladesh.
-</p>
 
 
+  return (
 
 
+    <PolicyLayout
 
-<h2 className="text-2xl font-bold text-blue-950">
-Delivery Time
-</h2>
 
+      title="Shipping Policy"
 
-<ul className="list-disc pl-6 space-y-3">
 
-<li>
-Inside Dhaka: 1-3 working days.
-</li>
+      description={
+        `Everything you need to know about ${settings.storeName || "DREAM MODE"} delivery process.`
+      }
 
-<li>
-Outside Dhaka: 3-5 working days.
-</li>
 
-</ul>
+    >
 
 
 
+      <div className="space-y-8">
 
 
-<h2 className="text-2xl font-bold text-blue-950">
-Delivery Charge
-</h2>
 
 
-<p>
-Delivery charge depends on customer location and order
-details. Applicable delivery charges will be shown during
-checkout.
-</p>
 
+        <p>
 
+          {settings.storeName || "DREAM MODE"}
 
+          {" "}provides secure and reliable delivery service
+          to make sure your premium fashion products reach you safely.
 
+        </p>
 
-<h2 className="text-2xl font-bold text-blue-950">
-Order Confirmation
-</h2>
 
 
-<p>
-Our team may contact customers for order confirmation
-before shipment.
-</p>
 
 
 
 
+        <h2 className="text-2xl font-bold text-blue-950">
 
-<h2 className="text-2xl font-bold text-blue-950">
-Delivery Delay
-</h2>
+          Delivery Area
 
+        </h2>
 
-<p>
-Delivery may be delayed due to weather conditions,
-holidays, courier issues or unexpected circumstances.
-</p>
 
 
+        <p>
 
+          We currently provide delivery service throughout Bangladesh.
 
+        </p>
 
-<h2 className="text-2xl font-bold text-blue-950">
-Wrong Address Responsibility
-</h2>
 
 
-<p>
-Customers are responsible for providing accurate delivery
-information. Additional charges may apply for incorrect
-address details.
-</p>
 
 
 
 
 
-<h2 className="text-2xl font-bold text-blue-950">
-Frequently Asked Questions
-</h2>
+        <h2 className="text-2xl font-bold text-blue-950">
 
+          Delivery Time
 
-<PolicyFAQ items={faq}/>
+        </h2>
 
 
-</div>
 
+        <ul className="list-disc pl-6 space-y-3">
 
-</PolicyLayout>
 
+          <li>
+            Inside Dhaka: 1-3 working days.
+          </li>
 
-);
+
+          <li>
+            Outside Dhaka: 3-5 working days.
+          </li>
+
+
+        </ul>
+
+
+
+
+
+
+
+        <h2 className="text-2xl font-bold text-blue-950">
+
+          Delivery Charge
+
+        </h2>
+
+
+
+        <p>
+
+          Delivery charge depends on customer location and order
+          details. Applicable delivery charges will be shown during
+          checkout.
+
+        </p>
+
+
+
+
+
+
+
+        <h2 className="text-2xl font-bold text-blue-950">
+
+          Order Confirmation
+
+        </h2>
+
+
+
+        <p>
+
+          Our team may contact customers for order confirmation
+          before shipment.
+
+        </p>
+
+
+
+
+
+
+
+
+        <h2 className="text-2xl font-bold text-blue-950">
+
+          Delivery Delay
+
+        </h2>
+
+
+
+        <p>
+
+          Delivery may be delayed due to weather conditions,
+          holidays, courier issues or unexpected circumstances.
+
+        </p>
+
+
+
+
+
+
+
+
+        <h2 className="text-2xl font-bold text-blue-950">
+
+          Wrong Address Responsibility
+
+        </h2>
+
+
+
+        <p>
+
+          Customers are responsible for providing accurate delivery
+          information. Additional charges may apply for incorrect
+          address details.
+
+        </p>
+
+
+
+
+
+
+
+
+        <h2 className="text-2xl font-bold text-blue-950">
+
+          Frequently Asked Questions
+
+        </h2>
+
+
+
+
+
+        <PolicyFAQ
+
+          items={faq}
+
+        />
+
+
+
+
+
+      </div>
+
+
+
+    </PolicyLayout>
+
+
+  );
+
 
 }
