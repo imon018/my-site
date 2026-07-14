@@ -8,6 +8,7 @@ import {
   FiUploadCloud,
   FiDollarSign,
   FiFileText,
+  FiX,
 } from "react-icons/fi";
 
 
@@ -18,7 +19,7 @@ import Button from "../../components/ui/Button";
 
 
 import {
-  uploadSingleImage
+  uploadImages
 } from "../../services/uploadService";
 
 
@@ -34,36 +35,39 @@ import {
 
 
 
+
 export default function AddProduct(){
 
 
-const [product,setProduct] = useState({
+
+const [product,setProduct]=useState({
 
 name:"",
 
 description:"",
 
-price:"",
-
-imageUrl:"",
-
-imagePublicId:""
+price:""
 
 });
 
 
 
-const [
-imageFile,
-setImageFile
-]=useState(null);
-
 
 
 const [
-preview,
-setPreview
-]=useState("");
+images,
+setImages
+]=useState([]);
+
+
+
+
+const [
+previewImages,
+setPreviewImages
+]=useState([]);
+
+
 
 
 
@@ -77,6 +81,9 @@ setLoading
 
 
 
+
+
+
 const handleChange=(e)=>{
 
 
@@ -84,7 +91,8 @@ setProduct({
 
 ...product,
 
-[e.target.name]:e.target.value
+[e.target.name]:
+e.target.value
 
 });
 
@@ -96,24 +104,55 @@ setProduct({
 
 
 
+
+
+
+// MULTIPLE IMAGE SELECT
+
+
 const handleImageChange=(e)=>{
 
 
-const file=e.target.files[0];
+const files =
+Array.from(e.target.files);
 
 
-if(file){
+
+setImages(prev=>[
+
+...prev,
+
+...files
+
+]);
 
 
-setImageFile(file);
 
 
-setPreview(
+
+const previews =
+files.map(
+(file)=>({
+
+file,
+
+url:
 URL.createObjectURL(file)
+
+})
+
 );
 
 
-}
+
+setPreviewImages(prev=>[
+
+...prev,
+
+...previews
+
+]);
+
 
 
 };
@@ -125,10 +164,51 @@ URL.createObjectURL(file)
 
 
 
+
+// REMOVE IMAGE
+
+
+const removeImage=(index)=>{
+
+
+setImages(prev=>
+
+prev.filter(
+(_,i)=>i!==index
+)
+
+);
+
+
+
+
+setPreviewImages(prev=>
+
+prev.filter(
+(_,i)=>i!==index
+)
+
+);
+
+
+};
+
+
+
+
+
+
+
+
+
+// SAVE PRODUCT
+
+
 const handleSubmit=async(e)=>{
 
 
 e.preventDefault();
+
 
 
 try{
@@ -138,46 +218,43 @@ setLoading(true);
 
 
 
-let imageData={};
+let uploadedImages=[];
 
 
 
-if(imageFile){
+
+if(images.length>0){
 
 
-const uploaded =
-await uploadSingleImage(imageFile);
-
-
-
-imageData={
-
-imageUrl:
-uploaded.imageUrl,
-
-
-imagePublicId:
-uploaded.publicId
-
-};
+uploadedImages =
+await uploadImages(images);
 
 
 }
 
 
 
+
+
+
+
 await addProductToDB({
 
-name:product.name,
+name:
+product.name,
+
 
 description:
 product.description,
 
 
-price:Number(product.price),
+price:
+Number(product.price),
 
 
-...imageData,
+
+images:
+uploadedImages,
 
 
 createdAt:
@@ -189,9 +266,14 @@ serverTimestamp()
 
 
 
+
+
 toast.success(
 "Product added successfully!"
 );
+
+
+
 
 
 
@@ -201,22 +283,20 @@ name:"",
 
 description:"",
 
-price:"",
-
-imageUrl:"",
-
-imagePublicId:""
+price:""
 
 });
 
 
-setPreview("");
 
-setImageFile(null);
+setImages([]);
+
+setPreviewImages([]);
 
 
 
 }
+
 
 catch(error){
 
@@ -231,6 +311,8 @@ toast.error(
 
 }
 
+
+
 finally{
 
 
@@ -238,6 +320,7 @@ setLoading(false);
 
 
 }
+
 
 
 };
@@ -250,8 +333,8 @@ setLoading(false);
 
 
 
-
 return(
+
 
 
 <div
@@ -264,7 +347,6 @@ md:p-8
 "
 
 >
-
 
 
 <div
@@ -280,9 +362,8 @@ mx-auto
 
 
 
-
-
 {/* HEADER */}
+
 
 
 <div
@@ -348,7 +429,6 @@ flex
 items-center
 justify-center
 text-amber-500
-text-xl
 "
 
 >
@@ -372,7 +452,9 @@ text-xl
 
 <form
 
+
 onSubmit={handleSubmit}
+
 
 
 className="
@@ -386,6 +468,7 @@ border-gray-100
 space-y-5
 "
 
+
 >
 
 
@@ -393,7 +476,10 @@ space-y-5
 
 
 
-{/* NAME */}
+
+
+
+{/* PRODUCT NAME */}
 
 
 
@@ -453,6 +539,7 @@ text-amber-500
 
 
 
+
 <input
 
 
@@ -468,6 +555,7 @@ onChange={handleChange}
 placeholder="Product name"
 
 
+
 className="
 w-full
 h-12
@@ -481,7 +569,9 @@ text-sm
 focus:border-amber-400
 "
 
+
 />
+
 
 
 </div>
@@ -522,6 +612,7 @@ Description
 
 
 
+
 <div
 
 className="
@@ -556,10 +647,11 @@ text-amber-500
 
 
 
+
 <textarea
 
 
-rows="4"
+rows="5"
 
 
 name="description"
@@ -587,6 +679,7 @@ resize-none
 text-sm
 focus:border-amber-400
 "
+
 
 />
 
@@ -698,6 +791,7 @@ text-sm
 focus:border-amber-400
 "
 
+
 />
 
 
@@ -710,8 +804,12 @@ focus:border-amber-400
 
 
 
-  {/* IMAGE */}
 
+
+
+
+
+{/* IMAGE UPLOAD LAST */}
 
 
 
@@ -724,13 +822,13 @@ className="
 block
 font-bold
 text-sm
-text-[#172033]
 mb-2
+text-[#172033]
 "
 
 >
 
-Product Image
+Product Images
 
 </label>
 
@@ -738,12 +836,16 @@ Product Image
 
 
 
+
 <label
 
-htmlFor="image"
+
+htmlFor="images"
+
+
 
 className="
-h-36
+h-40
 rounded-xl
 border
 border-dashed
@@ -754,62 +856,37 @@ flex-col
 items-center
 justify-center
 cursor-pointer
-overflow-hidden
 "
+
 
 >
-
-
-
-{
-
-preview ?
-
-
-<img
-
-src={preview}
-
-className="
-w-28
-h-28
-object-cover
-rounded-xl
-"
-
-/>
-
-
-
-:
-
-
-<>
 
 
 <FiUploadCloud
 
 className="
 text-amber-500
-text-3xl
-mb-2
+text-4xl
 "
 
 />
 
 
+
 <p
 
 className="
-text-sm
 font-semibold
+text-sm
+mt-2
 "
 
 >
 
-Upload Product Image
+Upload Multiple Images
 
 </p>
+
 
 
 <p
@@ -826,35 +903,174 @@ PNG JPG WEBP
 </p>
 
 
-</>
-
-
-}
-
-
 
 </label>
 
 
 
 
+
 <input
 
-id="image"
+
+id="images"
+
 
 type="file"
 
+
+multiple
+
+
 accept="image/*"
+
 
 className="hidden"
 
+
 onChange={handleImageChange}
+
 
 />
 
 
 
+
+
+
+
+
+
+{/* PREVIEW */}
+
+
+
+{
+
+previewImages.length > 0 && (
+
+
+
+<div
+
+className="
+grid
+grid-cols-2
+md:grid-cols-4
+gap-4
+mt-4
+"
+
+
+>
+
+
+{
+
+previewImages.map(
+(item,index)=>(
+
+
+<div
+
+key={index}
+
+className="
+relative
+"
+
+>
+
+
+<img
+
+
+src={item.url}
+
+
+className="
+w-full
+h-28
+object-cover
+rounded-xl
+border
+"
+
+
+/>
+
+
+
+
+
+<button
+
+
+type="button"
+
+
+onClick={()=>removeImage(index)}
+
+
+
+className="
+absolute
+top-2
+right-2
+w-7
+h-7
+rounded-full
+bg-red-500
+text-white
+flex
+items-center
+justify-center
+"
+
+
+>
+
+<FiX size={16}/>
+
+</button>
+
+
+
+
 </div>
+
+
+)
+
+)
+
+
+}
+
+
+
+</div>
+
+
+
+)
+
+
+}
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
 
 
 
@@ -871,6 +1087,7 @@ type="submit"
 disabled={loading}
 
 
+
 className="
 w-full
 h-12
@@ -881,20 +1098,25 @@ to-amber-500
 text-white
 font-black
 text-sm
-shadow
 "
+
 
 >
 
 
 {
-loading
-?
-"Saving..."
-:
-"Add Product"
-}
 
+loading
+
+?
+
+"Saving..."
+
+:
+
+"Add Product"
+
+}
 
 
 </Button>
@@ -904,8 +1126,10 @@ loading
 
 
 
-
 </form>
+
+
+
 
 
 
