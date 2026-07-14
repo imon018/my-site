@@ -16,42 +16,52 @@ import {
 } from "firebase/firestore";
 
 
-import { auth } from "../firebase/auth";
-import { db } from "../firebase/firestore";
+import {
+  auth
+} from "../firebase/auth";
 
 
 import {
-  sendNotification,
-} from "./notificationService";
+  db
+} from "../firebase/firestore";
+
+
+import {
+  createAdminNotification,
+  createUserNotification,
+} from "../utils/notificationHelper";
 
 
 
 
-// =========================
+
+
+// =================================
 // LOGIN
-// =========================
+// =================================
 
-export const login = async (
+
+export const login = async(
   email,
   password
-) => {
+)=>{
 
 
   const result =
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
 
 
   const userRef =
-    doc(
-      db,
-      "users",
-      result.user.uid
-    );
+  doc(
+    db,
+    "users",
+    result.user.uid
+  );
 
 
 
@@ -60,8 +70,10 @@ export const login = async (
     userRef,
 
     {
+
       lastLogin:
-        serverTimestamp(),
+      serverTimestamp(),
+
     },
 
     {
@@ -72,7 +84,34 @@ export const login = async (
 
 
 
+
+
+  // Login Security Notification
+
+  await createUserNotification({
+
+    userId:
+    result.user.uid,
+
+
+    title:
+    "🔐 New Login Detected",
+
+
+    message:
+    "Your account was logged in successfully.",
+
+
+    type:
+    "system",
+
+  });
+
+
+
+
   return result;
+
 
 };
 
@@ -84,30 +123,32 @@ export const login = async (
 
 
 
-// =========================
+// =================================
 // REGISTER
-// =========================
+// =================================
 
-export const register = async (
+
+export const register = async(
   name,
   email,
   password
-) => {
+)=>{
 
 
   try{
 
 
     const result =
-      await createUserWithEmailAndPassword(
+    await createUserWithEmailAndPassword(
 
-        auth,
+      auth,
 
-        email,
+      email,
 
-        password
+      password
 
-      );
+    );
+
 
 
 
@@ -120,17 +161,17 @@ export const register = async (
 
 
 
+
     const userRef =
-      doc(
+    doc(
 
-        db,
+      db,
 
-        "users",
+      "users",
 
-        result.user.uid
+      result.user.uid
 
-      );
-
+    );
 
 
 
@@ -145,18 +186,23 @@ export const register = async (
         name,
 
         email:
-          result.user.email,
+        result.user.email,
+
 
         phone:"",
 
+
         address:"",
+
 
         photoURL:"",
 
+
         role:"user",
 
+
         createdAt:
-          serverTimestamp(),
+        serverTimestamp(),
 
       }
 
@@ -168,27 +214,49 @@ export const register = async (
 
 
 
-    // =========================
-    // ADMIN NOTIFICATION
-    // =========================
+    // User Welcome Notification
 
 
-    await sendNotification({
+    await createUserNotification({
+
+      userId:
+      result.user.uid,
+
 
       title:
-        "New User Registration",
+      "🎉 Welcome to Dream Mode",
 
 
       message:
-        `${name} created a new account.`,
-
-
-      userId:
-        "admin",
+      "Your account has been created successfully.",
 
 
       type:
-        "user_register",
+      "system",
+
+    });
+
+
+
+
+
+
+
+    // Admin New User Notification
+
+
+    await createAdminNotification({
+
+      title:
+      "👤 New User Registered",
+
+
+      message:
+      `${name} created a new account.`,
+
+
+      type:
+      "system",
 
     });
 
@@ -203,10 +271,12 @@ export const register = async (
 
 
   }
+
   catch(error){
 
 
     console.error(error);
+
 
     throw error;
 
@@ -224,9 +294,10 @@ export const register = async (
 
 
 
-// =========================
-// RESEND VERIFICATION
-// =========================
+// =================================
+// RESEND EMAIL VERIFICATION
+// =================================
+
 
 export const resendVerificationEmail =
 async(user)=>{
@@ -247,9 +318,10 @@ async(user)=>{
 
 
 
-// =========================
+// =================================
 // FORGOT PASSWORD
-// =========================
+// =================================
+
 
 export const forgotPassword =
 async(email)=>{
@@ -271,9 +343,10 @@ async(email)=>{
 
 
 
-// =========================
+// =================================
 // CHANGE PASSWORD
-// =========================
+// =================================
+
 
 export const changePassword =
 async(
@@ -298,9 +371,10 @@ async(
 
 
 
-// =========================
+// =================================
 // SEND VERIFICATION
-// =========================
+// =================================
+
 
 export const sendVerificationEmail =
 async(user)=>{
@@ -321,9 +395,10 @@ async(user)=>{
 
 
 
-// =========================
+// =================================
 // DELETE ACCOUNT
-// =========================
+// =================================
+
 
 export const deleteUserAccount =
 async(user)=>{
@@ -344,9 +419,17 @@ async(user)=>{
 
 
 
-// =========================
+// =================================
 // LOGOUT
-// =========================
+// =================================
 
-export const logout =
-()=>signOut(auth);
+
+export const logout = ()=>{
+
+
+  return signOut(
+    auth
+  );
+
+
+};
