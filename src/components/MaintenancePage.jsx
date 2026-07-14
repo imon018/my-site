@@ -16,11 +16,6 @@ import {
 } from "../context/SettingsContext";
 
 
-import {
-  disableMaintenance,
-} from "../services/settingsService";
-
-
 
 
 
@@ -93,19 +88,13 @@ export default function MaintenancePage(){
 
       if(distance <= 0){
 
+  clearInterval(timer);
 
-        clearInterval(timer);
+  window.location.reload();
 
+  return;
 
-
-        disableMaintenance();
-
-
-
-        return;
-
-
-      }
+}
 
 
 
