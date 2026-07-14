@@ -15,8 +15,10 @@ import {
 
 
 import {
-  sendNotification,
+  sendAdminNotification,
 } from "./notificationService";
+
+
 
 
 
@@ -30,14 +32,19 @@ collection(
 
 
 
+
+
+
+
 // =========================
-// ADD PRODUCT
+// Add Product
 // =========================
 
 export const addProductToDB =
 async(product)=>{
 
 
+  const docRef =
   await addDoc(
 
     productRef,
@@ -49,26 +56,33 @@ async(product)=>{
 
 
 
+
   // ADMIN NOTIFICATION
 
-  await sendNotification({
+  await sendAdminNotification({
 
     title:
-      "New Product Added",
+    "New Product Added 🛍️",
 
 
     message:
-      `${product.name || "New product"} has been added.`,
-
-
-    userId:
-      "admin",
+    `${product.name} has been added successfully.`,
 
 
     type:
-      "product_added",
+    "product",
+
+
+    productId:
+    docRef.id,
+
 
   });
+
+
+
+
+  return docRef.id;
 
 
 };
@@ -82,7 +96,7 @@ async(product)=>{
 
 
 // =========================
-// GET PRODUCTS
+// Get All Products
 // =========================
 
 export const getProductsFromDB =
@@ -90,11 +104,9 @@ async()=>{
 
 
   const snapshot =
-
   await getDocs(
     productRef
   );
-
 
 
 
@@ -104,7 +116,9 @@ async()=>{
 
       {
 
-        id:doc.id,
+        id:
+        doc.id,
+
 
         ...doc.data(),
 
@@ -126,7 +140,7 @@ async()=>{
 
 
 // =========================
-// LATEST PRODUCTS
+// Latest Products
 // =========================
 
 export const getLatestProducts =
@@ -134,23 +148,22 @@ async()=>{
 
 
   const snapshot =
-
   await getDocs(
     productRef
   );
 
 
 
-
   const products =
-
   snapshot.docs.map(
 
     (doc)=>(
 
       {
 
-        id:doc.id,
+        id:
+        doc.id,
+
 
         ...doc.data(),
 
@@ -162,20 +175,18 @@ async()=>{
 
 
 
-
   return products
 
-    .sort(
+  .sort(
 
-      (a,b)=>
+    (a,b)=>
 
-      b.createdAt?.seconds -
+    b.createdAt?.seconds -
+    a.createdAt?.seconds
 
-      a.createdAt?.seconds
+  )
 
-    )
-
-    .slice(0,8);
+  .slice(0,8);
 
 
 };
@@ -189,53 +200,45 @@ async()=>{
 
 
 // =========================
-// GET SINGLE PRODUCT
+// Get Single Product
 // =========================
 
 export const getProductById =
 async(id)=>{
 
 
-  const productDoc =
-
-  doc(
-
-    db,
-
-    "products",
-
-    id
-
-  );
+ const productDoc =
+ doc(
+  db,
+  "products",
+  id
+ );
 
 
-
-
-  const snapshot =
-
-  await getDoc(
-    productDoc
-  );
+ const snapshot =
+ await getDoc(
+  productDoc
+ );
 
 
 
+ if(!snapshot.exists()){
 
-  if(!snapshot.exists()){
+   return null;
 
-    return null;
-
-  }
-
+ }
 
 
 
-  return {
+ return {
 
-    id:snapshot.id,
+   id:
+   snapshot.id,
 
-    ...snapshot.data(),
 
-  };
+   ...snapshot.data(),
+
+ };
 
 
 };
@@ -249,132 +252,108 @@ async(id)=>{
 
 
 // =========================
-// UPDATE PRODUCT
+// Update Product
 // =========================
 
 export const updateProductInDB =
 async(
-  id,
-  updatedData
+ id,
+ updatedData
 )=>{
 
 
-  const productDoc =
+ const productDoc =
+ doc(
+  db,
+  "products",
+  id
+ );
 
-  doc(
 
-    db,
 
-    "products",
+ await updateDoc(
 
-    id
+  productDoc,
 
-  );
+  updatedData
 
+ );
 
 
 
 
 
-  await updateDoc(
 
-    productDoc,
+ // STOCK AUTOMATION
 
-    updatedData
 
-  );
+ if(
+  updatedData.stock !== undefined
+ ){
 
 
 
+   if(
+    Number(updatedData.stock) === 0
+   ){
 
 
+    await sendAdminNotification({
 
+      title:
+      "Out Of Stock 🚨",
 
 
-  // =========================
-  // STOCK CHECK
-  // =========================
+      message:
+      `${updatedData.name || "Product"} is out of stock.`,
 
 
-  if(
-    updatedData.stock !== undefined
-  ){
+      type:
+      "product",
 
 
+      productId:
+      id,
 
-    if(
-      updatedData.stock === 0
-    ){
 
+    });
 
 
-      await sendNotification({
+   }
 
-        title:
-          "Product Out Of Stock",
 
 
-        message:
-          `${updatedData.name || "Product"} is out of stock.`,
+   else if(
+    Number(updatedData.stock) <= 5
+   ){
 
 
-        userId:
-          "admin",
 
+    await sendAdminNotification({
 
-        type:
-          "stock_out",
+      title:
+      "Low Stock Alert ⚠️",
 
 
-      });
+      message:
+      `${updatedData.name || "Product"} stock is only ${updatedData.stock} left.`,
 
 
+      type:
+      "product",
 
-    }
 
+      productId:
+      id,
 
 
+    });
 
 
+   }
 
-    else if(
 
-      updatedData.stock <= 5
-
-    ){
-
-
-
-      await sendNotification({
-
-        title:
-          "Low Stock Alert",
-
-
-        message:
-          `${updatedData.name || "Product"} stock is only ${updatedData.stock} left.`,
-
-
-        userId:
-          "admin",
-
-
-        type:
-          "low_stock",
-
-
-      });
-
-
-
-    }
-
-
-
-  }
-
-
-
+ }
 
 
 };
@@ -388,26 +367,22 @@ async(
 
 
 // =========================
-// DELETE PRODUCT
+// Delete Product
 // =========================
 
 export const deleteProductFromDB =
 async(id)=>{
 
 
-  await deleteDoc(
+ await deleteDoc(
 
-    doc(
+  doc(
+   db,
+   "products",
+   id
+  )
 
-      db,
-
-      "products",
-
-      id
-
-    )
-
-  );
+ );
 
 
 };
@@ -421,65 +396,60 @@ async(id)=>{
 
 
 // =========================
-// HERO PRODUCT
+// Hero Banner Product
 // =========================
 
 export const getHeroBannerProduct =
 async()=>{
 
 
-  const snapshot =
-
-  await getDocs(
-    productRef
-  );
-
+ const snapshot =
+ await getDocs(
+  productRef
+ );
 
 
+ const products =
+ snapshot.docs.map(
 
-  const products =
+  (doc)=>(
 
-  snapshot.docs.map(
+   {
 
-    (doc)=>(
+    id:
+    doc.id,
 
-      {
 
-        id:doc.id,
+    ...doc.data(),
 
-        ...doc.data(),
+   }
 
-      }
+  )
 
-    )
-
-  );
+ );
 
 
 
+ const heroProduct =
+ products.find(
 
-  const heroProduct =
+  (product)=>
 
-  products.find(
+  product.heroBanner === true
 
-    product =>
-
-    product.heroBanner === true
-
-  );
+ );
 
 
 
+ return (
 
-  return (
+  heroProduct ||
 
-    heroProduct ||
+  products[0] ||
 
-    products[0] ||
+  null
 
-    null
-
-  );
+ );
 
 
 };
@@ -493,54 +463,52 @@ async()=>{
 
 
 // =========================
-// RELATED PRODUCTS
+// Related Products
 // =========================
 
 export const getRelatedProducts =
 async(currentId)=>{
 
 
-  const snapshot =
-
-  await getDocs(
-    productRef
-  );
-
+ const snapshot =
+ await getDocs(
+  productRef
+ );
 
 
 
-  const products =
+ const products =
+ snapshot.docs.map(
 
-  snapshot.docs.map(
+  (doc)=>(
 
-    (doc)=>(
+   {
 
-      {
-
-        id:doc.id,
-
-        ...doc.data(),
-
-      }
-
-    )
-
-  );
+    id:
+    doc.id,
 
 
+    ...doc.data(),
+
+   }
+
+  )
+
+ );
 
 
-  return products
 
-    .filter(
+ return products
 
-      item =>
+ .filter(
 
-      item.id !== currentId
+  item=>
 
-    )
+  item.id !== currentId
 
-    .slice(0,4);
+ )
+
+ .slice(0,4);
 
 
 };
@@ -553,24 +521,20 @@ async(currentId)=>{
 
 
 
-// Alias
+// Alias Admin Delete
 export const deleteProduct =
 async(id)=>{
 
 
-  await deleteDoc(
+ await deleteDoc(
 
-    doc(
+  doc(
+   db,
+   "products",
+   id
+  )
 
-      db,
-
-      "products",
-
-      id
-
-    )
-
-  );
+ );
 
 
 };
