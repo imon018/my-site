@@ -453,7 +453,7 @@ export default function ProductCard({
 
   >
 
-    <FiEye size={15}/>
+    <FiEye size={16}/>
 
   </button>
 
