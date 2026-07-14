@@ -15,7 +15,7 @@ export default function PrivacyPolicy(){
 const faq=[
 
 {
-question:"Does Dream Mode share customer information?",
+question:"Does {settings.storeName || "DREAM MODE"} share customer information?",
 answer:"No. Customer information is never sold or shared for unauthorized purposes."
 },
 
