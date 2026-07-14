@@ -106,7 +106,51 @@ export const sendNotification = async({
 
 
 
+// =================================
+// Send Admin Notification
+// =================================
 
+export const sendAdminNotification =
+async ({
+
+title,
+
+message,
+
+type="order",
+
+orderId="",
+
+})=>{
+
+
+ await addDoc(
+
+  notificationRef,
+
+  {
+
+    receiverId:"ADMIN",
+
+    title,
+
+    message,
+
+    type,
+
+    orderId,
+
+    isRead:false,
+
+    createdAt:
+    serverTimestamp(),
+
+  }
+
+ );
+
+
+};
 
 
 
