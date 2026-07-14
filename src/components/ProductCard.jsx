@@ -402,7 +402,8 @@ export default function ProductCard({
   items-center
   justify-center
 "
-
+>
+  
 <span
  className="
  flex
