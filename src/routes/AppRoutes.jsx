@@ -82,10 +82,7 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetails />} />
-        <Route
-    path="/notifications"
-    element={<Notifications />}
-/>
+        
 
         {/* Cart & Checkout */}
         <Route path="/cart" element={<Cart />} />
@@ -111,6 +108,10 @@ export default function AppRoutes() {
           <Route path="wishlist" element={<Wishlist />} />
           <Route path="security/password" element={<ChangePassword />} />
           <Route path="security/delete" element={<DeleteAccount />} />
+          <Route
+    path="/notifications"
+    element={<Notifications />}
+/>
         </Route>
 
         {/* POLICY PAGES */}
@@ -142,6 +143,10 @@ export default function AppRoutes() {
         <Route
 path="users/:id"
 element={<UserDetails />}
+/>
+        <Route
+    path="/notifications"
+    element={<Notifications />}
 />
         <Route path="products" element={<Products />} />
         <Route path="add-product" element={<AddProduct />} />
