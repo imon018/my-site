@@ -1,9 +1,15 @@
 import PolicyLayout from "../components/PolicyLayout";
 import PolicyFAQ from "../components/PolicyFAQ";
-
+import {
+  useSettings
+} from "../context/SettingsContext";
 
 export default function ReturnPolicy(){
 
+  const {
+  settings
+}=useSettings();
+  
 const faq = [
 
 {
@@ -39,7 +45,7 @@ description="Learn about our product return process and customer friendly return
 
 
 <p>
-At Dream Mode, customer satisfaction is our priority.
+At {settings.storeName || "DREAM MODE"}, customer satisfaction is our priority.
 We carefully check every product before delivery to
 provide you with the best shopping experience.
 </p>
