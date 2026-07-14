@@ -1,44 +1,77 @@
 import {
-useState
+  useState
 } from "react";
 
 
 import {
-FiSettings,
-FiUser,
-FiMail,
-FiPhone,
-FiMapPin,
-FiFacebook,
-FiMessageCircle,
-FiUploadCloud
+  FiBox,
+  FiUploadCloud,
+  FiDollarSign,
+  FiFileText,
 } from "react-icons/fi";
+
+
+import toast from "react-hot-toast";
 
 
 import Button from "../../components/ui/Button";
 
 
+import {
+  uploadSingleImage
+} from "../../services/uploadService";
 
 
-export default function Settings(){
+import {
+  addProductToDB
+} from "../../services/firestoreProductService";
 
 
-const [settings,setSettings]=useState({
+import {
+  serverTimestamp
+} from "firebase/firestore";
 
-storeName:"Dream Mode",
-email:"",
-phone:"",
-address:"",
-facebook:"",
-whatsapp:""
+
+
+
+export default function AddProduct(){
+
+
+const [product,setProduct] = useState({
+
+name:"",
+
+description:"",
+
+price:"",
+
+imageUrl:"",
+
+imagePublicId:""
 
 });
 
 
 
-const [logoPreview,setLogoPreview]=useState("");
+const [
+imageFile,
+setImageFile
+]=useState(null);
 
-const [maintenanceMode,setMaintenanceMode]=useState(false);
+
+
+const [
+preview,
+setPreview
+]=useState("");
+
+
+
+const [
+loading,
+setLoading
+]=useState(false);
+
 
 
 
@@ -46,79 +79,254 @@ const [maintenanceMode,setMaintenanceMode]=useState(false);
 
 const handleChange=(e)=>{
 
-setSettings({
 
-...settings,
+setProduct({
+
+...product,
 
 [e.target.name]:e.target.value
 
 });
 
+
 };
 
 
 
 
-const handleLogoChange=(e)=>{
+
+
+const handleImageChange=(e)=>{
+
 
 const file=e.target.files[0];
 
+
 if(file){
 
-setLogoPreview(
+
+setImageFile(file);
+
+
+setPreview(
 URL.createObjectURL(file)
 );
 
+
 }
 
+
 };
+
+
+
+
+
+
+
+
+const handleSubmit=async(e)=>{
+
+
+e.preventDefault();
+
+
+try{
+
+
+setLoading(true);
+
+
+
+let imageData={};
+
+
+
+if(imageFile){
+
+
+const uploaded =
+await uploadSingleImage(imageFile);
+
+
+
+imageData={
+
+imageUrl:
+uploaded.imageUrl,
+
+
+imagePublicId:
+uploaded.publicId
+
+};
+
+
+}
+
+
+
+await addProductToDB({
+
+name:product.name,
+
+description:
+product.description,
+
+
+price:Number(product.price),
+
+
+...imageData,
+
+
+createdAt:
+serverTimestamp()
+
+
+});
+
+
+
+
+toast.success(
+"Product added successfully!"
+);
+
+
+
+setProduct({
+
+name:"",
+
+description:"",
+
+price:"",
+
+imageUrl:"",
+
+imagePublicId:""
+
+});
+
+
+setPreview("");
+
+setImageFile(null);
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+toast.error(
+"Failed to add product"
+);
+
+
+}
+
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
+};
+
+
+
+
+
+
 
 
 
 
 return(
 
-<div className="
+
+<div
+
+className="
 min-h-screen
 bg-[#FAF7F2]
 p-4
 md:p-8
-">
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
 max-w-3xl
 mx-auto
-">
+"
+
+>
 
 
-<div className="
+
+
+
+
+
+{/* HEADER */}
+
+
+<div
+
+className="
 flex
-justify-between
 items-center
+justify-between
 mb-5
-">
+"
+
+>
 
 
 <div>
 
-<h1 className="
+
+<h1
+
+className="
 text-2xl
 font-black
 text-[#172033]
-">
+"
 
-System Settings
+>
+
+Add Product
 
 </h1>
 
 
-<p className="
+
+<p
+
+className="
 text-sm
 text-gray-500
-">
+mt-1
+"
 
-Manage store information
+>
+
+Create new product
 
 </p>
 
@@ -126,7 +334,12 @@ Manage store information
 </div>
 
 
-<div className="
+
+
+
+<div
+
+className="
 w-11
 h-11
 rounded-xl
@@ -135,60 +348,89 @@ flex
 items-center
 justify-center
 text-amber-500
-">
+text-xl
+"
 
-<FiSettings/>
+>
+
+<FiBox/>
 
 </div>
 
 
+
 </div>
 
 
 
 
 
-<form className="
+
+
+
+
+
+<form
+
+onSubmit={handleSubmit}
+
+
+className="
 bg-white
 rounded-xl
 p-5
-space-y-5
+md:p-6
+shadow-sm
 border
 border-gray-100
-shadow-sm
-">
+space-y-5
+"
+
+>
 
 
 
 
 
 
-{/* STORE LOGO */}
+
+
+
+{/* IMAGE */}
+
+
 
 <div>
 
-<label className="
+
+<label
+
+className="
 block
 font-bold
 text-sm
-mb-2
 text-[#172033]
-">
+mb-2
+"
 
-Store Logo
+>
+
+Product Image
 
 </label>
 
 
 
+
+
 <label
 
-htmlFor="logo"
+htmlFor="image"
 
 className="
-h-40
+h-36
 rounded-xl
-border-2
+border
 border-dashed
 border-gray-300
 bg-[#FAF7F2]
@@ -203,67 +445,87 @@ overflow-hidden
 >
 
 
+
 {
-logoPreview ?
+
+preview ?
+
 
 <img
 
-src={logoPreview}
+src={preview}
 
 className="
 w-28
 h-28
-object-contain
+object-cover
+rounded-xl
 "
 
 />
 
 
+
 :
 
+
 <>
+
 
 <FiUploadCloud
 
 className="
 text-amber-500
-text-4xl
+text-3xl
+mb-2
 "
 
 />
 
 
-<p className="
-font-semibold
-text-sm
-mt-2
-">
+<p
 
-Upload Store Logo
+className="
+text-sm
+font-semibold
+"
+
+>
+
+Upload Product Image
 
 </p>
 
 
-<p className="
+<p
+
+className="
 text-xs
 text-gray-400
-">
+"
+
+>
 
 PNG JPG WEBP
 
 </p>
 
+
 </>
 
+
 }
+
 
 
 </label>
 
 
+
+
 <input
 
-id="logo"
+id="image"
 
 type="file"
 
@@ -271,9 +533,10 @@ accept="image/*"
 
 className="hidden"
 
-onChange={handleLogoChange}
+onChange={handleImageChange}
 
 />
+
 
 
 </div>
@@ -284,180 +547,94 @@ onChange={handleLogoChange}
 
 
 
-{/* STORE NAME */}
+
+
+
+{/* NAME */}
+
+
 
 <div>
 
-<label className="
-block
-font-bold
-text-sm
-mb-2
-">
 
-Store Name
-
-</label>
-
-
-<div className="relative">
-
-
-<FiUser
+<label
 
 className="
-absolute
-left-4
-top-4
-text-amber-500
-"
-
-/>
-
-
-<input
-
-name="storeName"
-
-value={settings.storeName}
-
-onChange={handleChange}
-
-className="
-w-full
-h-12
-pl-12
-rounded-lg
-border
-border-gray-200
-"
-
-/>
-
-
-</div>
-
-
-</div>
-
-  {/* EMAIL */}
-
-<div>
-
-<label className="
 block
 font-bold
 text-sm
 mb-2
 text-[#172033]
-">
+"
 
-Store Email
+>
+
+Product Name
 
 </label>
 
 
-<div className="relative">
+
+<div
+
+className="
+relative
+"
+
+>
 
 
-<FiMail
+<div
 
 className="
 absolute
-left-4
-top-4
+left-3
+top-1/2
+-translate-y-1/2
+w-8
+h-8
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
 text-amber-500
 "
 
-/>
+>
+
+<FiBox size={16}/>
+
+</div>
+
+
 
 
 <input
 
-name="email"
 
-value={settings.email}
+name="name"
+
+
+value={product.name}
+
 
 onChange={handleChange}
 
-placeholder="Store email"
+
+placeholder="Product name"
+
 
 className="
 w-full
 h-12
 pl-12
+pr-3
 rounded-lg
 border
 border-gray-200
 outline-none
-focus:border-amber-400
-"
-
-/>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-{/* PHONE */}
-
-<div>
-
-
-<label className="
-block
-font-bold
 text-sm
-mb-2
-text-[#172033]
-">
-
-Phone Number
-
-</label>
-
-
-
-<div className="relative">
-
-
-<FiPhone
-
-className="
-absolute
-left-4
-top-4
-text-amber-500
-"
-
-/>
-
-
-<input
-
-name="phone"
-
-value={settings.phone}
-
-onChange={handleChange}
-
-placeholder="Phone number"
-
-className="
-w-full
-h-12
-pl-12
-rounded-lg
-border
-border-gray-200
-outline-none
 focus:border-amber-400
 "
 
@@ -476,253 +653,170 @@ focus:border-amber-400
 
 
 
-{/* ADDRESS */}
+
+{/* DESCRIPTION */}
+
 
 
 <div>
 
 
-<label className="
+<label
+
+className="
 block
 font-bold
 text-sm
 mb-2
 text-[#172033]
-">
+"
 
-Store Address
+>
+
+Description
 
 </label>
 
 
 
-<div className="relative">
+<div
+
+className="
+relative
+"
+
+>
 
 
-<FiMapPin
+<div
 
 className="
 absolute
-left-4
-top-4
+left-3
+top-3
+w-8
+h-8
+rounded-lg
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
 text-amber-500
 "
 
-/>
+>
+
+<FiFileText size={16}/>
+
+</div>
+
 
 
 
 <textarea
 
+
 rows="4"
 
-name="address"
 
-value={settings.address}
+name="description"
+
+
+value={product.description}
+
 
 onChange={handleChange}
 
-placeholder="Store address"
+
+placeholder="Product description"
+
 
 className="
 w-full
 pl-12
 pt-3
+pr-3
 rounded-lg
 border
 border-gray-200
 outline-none
 resize-none
+text-sm
 focus:border-amber-400
 "
 
 />
 
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
 
 
 
-{/* FACEBOOK */}
+
+
+
+{/* PRICE */}
+
+
 
 <div>
 
 
-<label className="
+<label
+
+className="
 block
 font-bold
 text-sm
 mb-2
-">
-
-Facebook URL
-
-</label>
-
-
-<div className="relative">
-
-
-<FiFacebook
-
-className="
-absolute
-left-4
-top-4
-text-amber-500
+text-[#172033]
 "
 
-/>
+>
 
-
-<input
-
-name="facebook"
-
-value={settings.facebook}
-
-onChange={handleChange}
-
-placeholder="Facebook URL"
-
-className="
-w-full
-h-12
-pl-12
-rounded-lg
-border
-border-gray-200
-"
-
-/>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* WHATSAPP */}
-
-<div>
-
-
-<label className="
-block
-font-bold
-text-sm
-mb-2
-">
-
-WhatsApp Number
+Price
 
 </label>
 
 
 
-<div className="relative">
+
+<div
+
+className="
+relative
+"
+
+>
 
 
-<FiMessageCircle
+<div
 
 className="
 absolute
-left-4
-top-4
-text-amber-500
-"
-
-/>
-
-
-<input
-
-name="whatsapp"
-
-value={settings.whatsapp}
-
-onChange={handleChange}
-
-placeholder="WhatsApp number"
-
-className="
-w-full
-h-12
-pl-12
+left-3
+top-1/2
+-translate-y-1/2
+w-8
+h-8
 rounded-lg
-border
-border-gray-200
-"
-
-/>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* MAINTENANCE MODE */}
-
-
-<div className="
-bg-[#FFF9ED]
-border
-border-[#FDECC8]
-rounded-xl
-p-4
+bg-[#FFF7E8]
 flex
 items-center
-justify-between
-">
+justify-center
+text-amber-500
+"
 
+>
 
-<div>
-
-
-<h3 className="
-font-bold
-text-sm
-text-[#172033]
-">
-
-Maintenance Mode
-
-</h3>
-
-
-<p className="
-text-xs
-text-gray-500
-mt-1
-">
-
-Disable website temporarily
-
-</p>
-
+<FiDollarSign size={16}/>
 
 </div>
 
@@ -730,77 +824,47 @@ Disable website temporarily
 
 
 
-<label className="
-cursor-pointer
-">
-
-
 <input
 
-type="checkbox"
 
-className="hidden"
+type="number"
 
-checked={maintenanceMode}
 
-onChange={(e)=>
+name="price"
 
-setMaintenanceMode(
-e.target.checked
-)
 
-}
+value={product.price}
+
+
+onChange={handleChange}
+
+
+placeholder="Product price"
+
+
+className="
+w-full
+h-12
+pl-12
+pr-3
+rounded-lg
+border
+border-gray-200
+outline-none
+text-sm
+focus:border-amber-400
+"
 
 />
 
 
 
-<div className={`
-w-12
-h-6
-rounded-full
-transition
-
-${
-maintenanceMode
-?
-"bg-amber-500"
-:
-"bg-gray-300"
-}
-
-`}>
-
-
-
-<div className={`
-w-5
-h-5
-bg-white
-rounded-full
-shadow
-mt-[2px]
-transition
-
-${
-maintenanceMode
-?
-"translate-x-6"
-:
-"translate-x-1"
-}
-
-`}>
 </div>
 
 
 </div>
 
 
-</label>
-
-
-</div>
 
 
 
@@ -808,30 +872,49 @@ maintenanceMode
 
 
 
+{/* BUTTON */}
 
-{/* SAVE BUTTON */}
 
 
 <Button
 
+
 type="submit"
+
+
+disabled={loading}
+
 
 className="
 w-full
 h-12
-rounded-xl
+rounded-lg
 bg-gradient-to-r
 from-amber-400
 to-amber-500
 text-white
 font-black
+text-sm
+shadow
 "
 
 >
 
-Save Settings
+
+{
+loading
+?
+"Saving..."
+:
+"Add Product"
+}
+
+
 
 </Button>
+
+
+
 
 
 
@@ -839,12 +922,16 @@ Save Settings
 </form>
 
 
+
 </div>
 
 
+
 </div>
+
 
 
 );
+
 
 }
