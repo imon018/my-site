@@ -259,7 +259,7 @@ leading-8
 >
 
 {settings.storeName || "Dream Mode"}
-is upgrading the website experience.
+ is upgrading the website experience.
 
 <br/>
 
