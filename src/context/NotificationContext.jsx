@@ -5,9 +5,16 @@ import {
   useState,
 } from "react";
 
-import { onSnapshot } from "firebase/firestore";
 
-import { useAuth } from "./AuthContext";
+import {
+  onSnapshot,
+} from "firebase/firestore";
+
+
+import {
+  useAuth,
+} from "./AuthContext";
+
 
 import {
   getUserNotifications,
@@ -17,81 +24,290 @@ import {
   deleteAllNotifications,
 } from "../services/notificationService";
 
+
+
+
 const NotificationContext = createContext();
 
-export const NotificationProvider = ({ children }) => {
-  const { currentUser } = useAuth();
 
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!currentUser) {
+
+
+
+
+
+export function NotificationProvider({
+  children,
+}) {
+
+
+
+  const {
+    user,
+  } = useAuth();
+
+
+
+
+
+  const [
+    notifications,
+    setNotifications,
+  ] = useState([]);
+
+
+
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    if(!user){
+
+
       setNotifications([]);
+
       setLoading(false);
+
       return;
+
+
     }
 
-    const q = getUserNotifications(currentUser.uid);
 
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
 
-        setNotifications(data);
-        setLoading(false);
-      },
-      (error) => {
-        console.error(error);
-        setLoading(false);
-      }
+
+
+
+    const q = getUserNotifications(
+      user.uid
     );
 
-    return () => unsubscribe();
-  }, [currentUser]);
+
+
+
+
+
+    const unsubscribe = onSnapshot(
+
+      q,
+
+      (snapshot)=>{
+
+
+        const data = snapshot.docs.map(
+
+          (doc)=>({
+
+            id:doc.id,
+
+            ...doc.data(),
+
+          })
+
+        );
+
+
+
+
+        setNotifications(data);
+
+
+        setLoading(false);
+
+
+
+      },
+
+      (error)=>{
+
+
+        console.log(
+          error
+        );
+
+
+        setLoading(false);
+
+
+      }
+
+
+    );
+
+
+
+
+
+
+
+    return ()=>unsubscribe();
+
+
+
+
+  },[user]);
+
+
+
+
+
+
+
+
+
 
   const unreadCount = notifications.filter(
-    (item) => !item.isRead
+
+    (item)=>
+      !item.isRead
+
   ).length;
 
-  const markAsRead = async (id) => {
+
+
+
+
+
+
+  const markAsRead = async(id)=>{
+
+
     await markNotificationAsRead(id);
+
+
   };
 
-  const markAllAsRead = async () => {
-    if (!currentUser) return;
-    await markAllNotificationsAsRead(currentUser.uid);
+
+
+
+
+
+
+  const markAllAsRead = async()=>{
+
+
+    if(!user)
+      return;
+
+
+    await markAllNotificationsAsRead(
+      user.uid
+    );
+
+
   };
 
-  const removeNotification = async (id) => {
+
+
+
+
+
+
+  const removeNotification = async(id)=>{
+
+
     await deleteNotification(id);
+
+
   };
 
-  const removeAllNotifications = async () => {
-    if (!currentUser) return;
-    await deleteAllNotifications(currentUser.uid);
+
+
+
+
+
+
+  const removeAllNotifications = async()=>{
+
+
+    if(!user)
+      return;
+
+
+    await deleteAllNotifications(
+      user.uid
+    );
+
+
   };
+
+
+
+
+
+
+
 
   return (
-    <NotificationContext.Provider
-      value={{
-        notifications,
-        unreadCount,
-        loading,
-        markAsRead,
-        markAllAsRead,
-        removeNotification,
-        removeAllNotifications,
-      }}
-    >
-      {children}
-    </NotificationContext.Provider>
-  );
-};
 
-export const useNotifications = () =>
-  useContext(NotificationContext);
+
+    <NotificationContext.Provider
+
+
+      value={{
+
+
+        notifications,
+
+        unreadCount,
+
+        loading,
+
+
+        markAsRead,
+
+        markAllAsRead,
+
+
+        removeNotification,
+
+        removeAllNotifications,
+
+
+      }}
+
+
+
+    >
+
+
+      {children}
+
+
+
+    </NotificationContext.Provider>
+
+
+  );
+
+
+
+}
+
+
+
+
+
+
+
+
+export function useNotifications(){
+
+
+  return useContext(
+    NotificationContext
+  );
+
+
+}
