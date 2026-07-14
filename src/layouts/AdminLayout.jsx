@@ -45,6 +45,11 @@ import {
 } from "../context/SettingsContext";
 
 
+import {
+  useNotifications,
+} from "../context/NotificationContext";
+
+
 
 
 
@@ -64,6 +69,10 @@ export default function AdminLayout(){
   const {
     settings,
   } = useSettings();
+
+  const {
+  unreadCount,
+} = useNotifications();
 
 
 
@@ -401,6 +410,8 @@ absolute
 top-5
 right-5
 
+relative
+
 w-11
 h-11
 
@@ -417,28 +428,63 @@ transition
 
 >
 
+
 <FiBell
+
 size={24}
+
 className="text-slate-700"
+
 />
 
+
+
+{
+unreadCount > 0 && (
 
 <span
 
 className="
 absolute
-top-2
-right-2
+-top-1
+-right-1
 
-w-3
-h-3
+min-w-[20px]
+h-5
+
+px-1
 
 rounded-full
 
 bg-red-500
+
+text-white
+
+text-xs
+
+flex
+items-center
+justify-center
+
+font-bold
 "
 
-/>
+>
+
+{
+unreadCount > 99
+?
+"99+"
+:
+unreadCount
+}
+
+
+</span>
+
+)
+
+}
 
 
 </button>
