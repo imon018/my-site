@@ -4,91 +4,54 @@ import { useParams } from "react-router-dom";
 import Button from "./ui/Button";
 import RelatedProducts from "./RelatedProducts";
 import ProductReviews from "./product/ProductReviews";
-import {
-  useSettings
-} from "../context/SettingsContext";
+
+import { useSettings } from "../context/SettingsContext";
 
 import useCart from "../hooks/useCart";
-import useWishlist from "../hooks/useWishlist";
 
-import {
-  getProductById,
-} from "../services/firestoreProductService";
-
+import { getProductById } from "../services/firestoreProductService";
 
 export default function ProductDetailsView() {
 
-
   const { id } = useParams();
 
+  const { addToCart } = useCart();
 
-  const { addToCart } =
-    useCart();
+  const { settings } = useSettings();
 
+  const [product, setProduct] = useState(null);
 
-  const { addToWishlist } =
-    useWishlist();
+  const [loading, setLoading] = useState(true);
 
-  const {
-  settings
-}=useSettings();
+  const [selectedImage, setSelectedImage] = useState("");
 
+  const [zoom, setZoom] = useState(false);
 
+  useEffect(() => {
 
-  const [product,setProduct] =
-    useState(null);
+    const loadProduct = async () => {
 
+      try {
 
-  const [loading,setLoading] =
-    useState(true);
-
-
-  const [selectedImage,setSelectedImage] =
-    useState("");
-
-
-  const [zoom,setZoom] =
-    useState(false);
-
-
-
-  useEffect(()=>{
-
-
-    const loadProduct =
-    async()=>{
-
-      try{
-
-        const data =
-          await getProductById(id);
-
+        const data = await getProductById(id);
 
         setProduct(data);
 
+        if (data?.images?.length) {
 
+          setSelectedImage(data.images[0]);
 
-        if(data?.images?.length){
+        } else {
 
-          setSelectedImage(
-            data.images[0]
-          );
-
-        }else{
-
-          setSelectedImage(
-            data.image
-          );
+          setSelectedImage(data.image);
 
         }
 
-
-      }catch(error){
+      } catch (error) {
 
         console.log(error);
 
-      }
-      finally{
+      } finally {
 
         setLoading(false);
 
@@ -96,30 +59,53 @@ export default function ProductDetailsView() {
 
     };
 
-
     loadProduct();
 
-
-  },[id]);
-
+  }, [id]);
 
 
 
-
-  if(loading){
+  if (loading) {
 
     return (
 
-      <div className="
-        min-h-[60vh]
-        flex
-        items-center
-        justify-center
-        text-xl
-        font-bold
-        text-blue-700
-      ">
-        Loading Premium Product...
+      <div
+        className="
+          min-h-screen
+          flex
+          items-center
+          justify-center
+          bg-[#FAF7F2]
+        "
+      >
+
+        <div className="text-center">
+
+          <div
+            className="
+              w-12
+              h-12
+              mx-auto
+              border-4
+              border-amber-500
+              border-t-transparent
+              rounded-full
+              animate-spin
+            "
+          />
+
+          <p
+            className="
+              mt-4
+              text-[#172033]
+              font-semibold
+            "
+          >
+            Loading Product...
+          </p>
+
+        </div>
+
       </div>
 
     );
@@ -128,567 +114,470 @@ export default function ProductDetailsView() {
 
 
 
-
-  if(!product){
+  if (!product) {
 
     return (
 
-      <div className="
-        min-h-[60vh]
-        flex
-        items-center
-        justify-center
-        text-2xl
-        font-black
-        text-red-600
-      ">
-        Product Not Found
+      <div
+        className="
+          min-h-screen
+          flex
+          items-center
+          justify-center
+          bg-[#FAF7F2]
+        "
+      >
+
+        <div
+          className="
+            bg-white
+            rounded-xl
+            border
+            border-red-100
+            px-8
+            py-10
+            text-center
+          "
+        >
+
+          <h2
+            className="
+              text-2xl
+              font-bold
+              text-red-600
+            "
+          >
+            Product Not Found
+          </h2>
+
+        </div>
+
       </div>
 
     );
 
   }
-
-
 
 
 
   const galleryImages =
     product.images?.length
       ? product.images
-      :
-      [
-        product.image
-      ];
-
+      : [product.image];
 
 
 
   return (
 
-    <div className="
-      max-w-7xl
-      mx-auto
-      px-4
-      md:px-6
-      py-12
-    ">
-
-
-
-
-      <div className="
-        grid
-        lg:grid-cols-2
-        gap-10
-      ">
-
-
-
-
-
-        {/* IMAGE SECTION */}
-
-
-        <div>
-
-
-          <div
-            onMouseEnter={()=>
-              setZoom(true)
-            }
-
-            onMouseLeave={()=>
-              setZoom(false)
-            }
-
-            className="
-              relative
-              overflow-hidden
-              rounded-[36px]
-              bg-white
-              shadow-xl
-              border
-              border-yellow-100
-            "
-          >
-
-
-            <img
-
-              src={selectedImage}
-
-              alt={product.name}
-
-              className={`
-                w-full
-                aspect-square
-                object-cover
-                transition
-                duration-500
-                ${
-                  zoom
-                  ?
-                  "scale-125"
-                  :
-                  "scale-100"
-                }
-              `}
-
-            />
-
-
-
-            <div className="
-              absolute
-              top-5
-              left-5
-              px-4
-              py-2
-              rounded-full
-              bg-blue-900
-              text-yellow-300
-              font-bold
-              text-sm
-            ">
-              Premium
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-          {
-            galleryImages.length > 1 &&
-
-            <div className="
-              flex
-              gap-4
-              mt-5
-              flex-wrap
-            ">
-
-
-              {
-                galleryImages.map(
-                  (img,index)=>(
-
-                    <img
-
-                      key={index}
-
-                      src={img}
-
-                      alt=""
-
-                      onClick={()=>
-                        setSelectedImage(img)
-                      }
-
-                      className={`
-                        w-20
-                        h-20
-                        rounded-2xl
-                        object-cover
-                        cursor-pointer
-                        border-2
-                        transition
-                        hover:scale-105
-
-                        ${
-                          selectedImage===img
-                          ?
-                          "border-yellow-500 shadow-lg"
-                          :
-                          "border-gray-200"
-                        }
-
-                      `}
-
-                    />
-
-                  )
-                )
-              }
-
-
-            </div>
-
-          }
-
-
-
-        </div>
-
-
-
-
-
-
-
-
-        {/* PRODUCT INFO */}
-
-
-
-        <div className="
-          lg:sticky
-          lg:top-24
-          h-fit
-        ">
-
-
-
-          <span className="
-            inline-flex
-            px-5
-            py-2
-            rounded-full
-            bg-blue-50
-            text-blue-700
-            font-bold
-          ">
-            💎 Premium Collection
-          </span>
-
-
-
-
-
-          <h1 className="
-            mt-5
-            text-4xl
-            md:text-5xl
-            font-black
-            leading-tight
-          ">
-
-            {product.name}
-
-          </h1>
-
-
-
-
-
-          <div className="
-            mt-6
-            flex
-            items-center
-            gap-4
-          ">
-
-
-            <span className="
-              text-4xl
-              font-black
-              text-blue-700
-            ">
-              ৳ {product.price}
-            </span>
-
-
-            <span className="
-              px-3
-              py-1
-              rounded-full
-              bg-yellow-100
-              text-yellow-700
-              font-bold
-            ">
-              ⭐ Premium
-            </span>
-
-
-          </div>
-
-
-
-
-
-
-
-          <div className="mt-5">
-
-
-          {
-            product.stock > 0
-
-            ?
-
-            <span className="
-              text-green-600
-              font-bold
-            ">
-              ✓ Available Stock ({product.stock})
-            </span>
-
-
-            :
-
-            <span className="
-              text-red-600
-              font-bold
-            ">
-              Out Of Stock
-            </span>
-
-          }
-
-
-          </div>
-
-
-
-
-
-
-
-          <p className="
-            mt-8
-            text-gray-600
-            leading-8
-          ">
-            {product.description}
-          </p>
-
-
-
-
-
-
-
-
-          <div className="
-            flex
-            flex-wrap
-            gap-4
-            mt-10
-          ">
-
-
-
-            <Button
-
-              onClick={()=>
-                addToCart(product)
-              }
-
+    <div
+      className="
+        min-h-screen
+        bg-[#FAF7F2]
+        py-6
+        md:py-10
+      "
+    >
+
+      <div
+        className="
+          max-w-7xl
+          mx-auto
+          px-4
+          md:px-6
+        "
+      >
+
+        <div
+          className="
+            grid
+            lg:grid-cols-2
+            gap-8
+            items-start
+          "
+        >
+
+          {/* IMAGE SECTION */}
+
+          <div>
+
+            <div
+              onMouseEnter={() => setZoom(true)}
+              onMouseLeave={() => setZoom(false)}
               className="
-                bg-gradient-to-r
-                from-blue-900
-                to-yellow-500
-                px-8
-              "
-
-            >
-              🛒 Add To Cart
-            </Button>
-
-
-
-
-
-
-            <button
-
-              onClick={()=>
-                addToWishlist(product)
-              }
-
-              className="
-                px-8
-                py-3
+                bg-white
                 rounded-xl
                 border
-                border-yellow-300
-                text-blue-900
-                font-bold
-                hover:bg-yellow-50
-                transition
+                border-amber-500/20
+                shadow-sm
+                overflow-hidden
+                p-4
               "
-
             >
-              ❤️ Wishlist
-            </button>
+
+              <img
+                src={selectedImage}
+                alt={product.name}
+                className={`
+                  w-full
+                  h-[360px]
+                  md:h-[520px]
+                  object-contain
+                  transition-all
+                  duration-500
+                  ${
+                    zoom
+                      ? "scale-105"
+                      : "scale-100"
+                  }
+                `}
+              />
+
+            </div>
+
+            {galleryImages.length > 1 && (
+
+              <div
+                className="
+                  flex
+                  gap-3
+                  mt-4
+                  flex-wrap
+                "
+              >
+
+                                {galleryImages.map((img, index) => (
+
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(img)}
+                    className={`
+                      w-20
+                      h-20
+                      rounded-xl
+                      overflow-hidden
+                      border
+                      transition-all
+
+                      ${
+                        selectedImage === img
+                          ? "border-amber-500"
+                          : "border-gray-200"
+                      }
+                    `}
+                  >
+
+                    <img
+                      src={img}
+                      alt=""
+                      className="
+                        w-full
+                        h-full
+                        object-cover
+                      "
+                    />
+
+                  </button>
+
+                ))}
+
+              </div>
+
+            )}
+
+          </div>
 
 
 
 
 
+          {/* PRODUCT INFO */}
 
-            <a
+          <div>
 
-              href={`https://wa.me/${settings.whatsapp?.replace(/\D/g,"")}?text=I'm interested in ${product.name}`}
-
-              target="_blank"
-
-              rel="noreferrer"
-
+            <span
               className="
-                px-8
-                py-3
+                inline-flex
+                items-center
                 rounded-xl
-                bg-green-600
-                text-white
-                font-bold
-                hover:bg-green-700
-                transition
+                bg-amber-100
+                text-amber-700
+                text-xs
+                font-semibold
+                px-3
+                py-2
               "
-
             >
-              WhatsApp Order
-            </a>
+              💎 Premium Collection
+            </span>
 
 
+
+
+
+            <h1
+              className="
+                mt-4
+                text-3xl
+                md:text-5xl
+                font-black
+                text-[#172033]
+                leading-tight
+              "
+            >
+              {product.name}
+            </h1>
+
+
+
+
+
+            <div
+              className="
+                mt-5
+                bg-white
+                rounded-xl
+                border
+                border-amber-500/20
+                p-5
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  justify-between
+                  items-center
+                "
+              >
+
+                <div>
+
+                  <p className="text-xs text-gray-500">
+                    Price
+                  </p>
+
+                  <h2
+                    className="
+                      text-3xl
+                      font-black
+                      text-amber-600
+                    "
+                  >
+                    ৳ {product.price}
+                  </h2>
+
+                </div>
+
+                <span
+                  className="
+                    bg-green-100
+                    text-green-700
+                    px-3
+                    py-2
+                    rounded-xl
+                    text-xs
+                    font-semibold
+                  "
+                >
+                  {product.stock > 0
+                    ? `✓ Stock (${product.stock})`
+                    : "Out Of Stock"}
+                </span>
+
+              </div>
+
+            </div>
+
+
+
+
+
+            <div
+              className="
+                mt-5
+                bg-white
+                rounded-xl
+                border
+                border-gray-200
+                p-5
+              "
+            >
+
+              <h3
+                className="
+                  font-bold
+                  text-[#172033]
+                  mb-3
+                "
+              >
+                Description
+              </h3>
+
+              <p
+                className="
+                  text-gray-600
+                  leading-7
+                  whitespace-pre-line
+                "
+              >
+                {product.description}
+              </p>
+
+            </div>
+
+
+
+
+
+            {/* ACTION BUTTONS */}
+
+            <div
+              className="
+                grid
+                grid-cols-2
+                gap-3
+                mt-6
+              "
+            >
+
+              <Button
+                onClick={() => addToCart(product)}
+                className="
+                  h-12
+                  rounded-xl
+                  bg-black
+                  border
+                  border-amber-500
+                  text-white
+                "
+              >
+                🛒 Add To Cart
+              </Button>
+
+              <a
+                href={`https://wa.me/${settings.whatsapp?.replace(/\D/g,"")}?text=I'm interested in ${product.name}`}
+                target="_blank"
+                rel="noreferrer"
+                className="
+                  h-12
+                  rounded-xl
+                  bg-green-600
+                  text-white
+                  font-semibold
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                WhatsApp Order
+              </a>
+
+            </div>
+
+
+
+
+
+            {/* PREMIUM FEATURES */}
+
+            <div
+              className="
+                mt-6
+                space-y-3
+              "
+            >
+
+              <div
+                className="
+                  bg-white
+                  rounded-xl
+                  border
+                  border-gray-200
+                  p-4
+                "
+              >
+                🚚 Fast & Secure Delivery
+              </div>
+
+              <div
+                className="
+                  bg-white
+                  rounded-xl
+                  border
+                  border-gray-200
+                  p-4
+                "
+              >
+                🔒 Secure Payment
+              </div>
+
+              <div
+                className="
+                  bg-white
+                  rounded-xl
+                  border
+                  border-gray-200
+                  p-4
+                "
+              >
+                💎 Premium Quality Guarantee
+              </div>
+
+            </div>
 
           </div>
-
-
-
-
-
-
-
-          <div className="
-            mt-10
-            space-y-4
-          ">
-
-
-            <div className="
-              p-5
-              rounded-3xl
-              bg-green-50
-              border
-              border-green-100
-            ">
-              🚚 Fast & Secure Delivery
-            </div>
-
-
-            <div className="
-              p-5
-              rounded-3xl
-              bg-blue-50
-              border
-              border-blue-100
-            ">
-              🔒 Secure Payment System
-            </div>
-
-
-
-            <div className="
-              p-5
-              rounded-3xl
-              bg-yellow-50
-              border
-              border-yellow-100
-            ">
-              💎 Premium Quality Guarantee
-            </div>
-
-
-          </div>
-
-
-
-
-
-
-          <div className="
-            mt-8
-            rounded-[28px]
-            border
-            overflow-hidden
-          ">
-
-
-            <div className="
-              p-5
-              bg-blue-900
-              text-white
-              font-black
-              text-lg
-            ">
-              Delivery Information
-            </div>
-
-
-            <div className="
-              p-5
-              space-y-4
-              text-gray-600
-            ">
-
-              <p>
-                🚚 Inside Dhaka: 1–2 Days
-              </p>
-
-              <p>
-                📦 Outside Dhaka: 2–5 Days
-              </p>
-
-              <p>
-                💵 Cash On Delivery Available
-              </p>
-
-              <p>
-                🔄 7 Days Easy Return Policy
-              </p>
-
-            </div>
-
-
-          </div>
-
-
-
-
-
 
         </div>
 
+              {/* REVIEWS */}
 
+      <div className="mt-10">
+
+        <ProductReviews
+          productId={product.id}
+        />
 
       </div>
 
 
 
-
-
-
-
-      {/* REVIEWS */}
-
-
-      <ProductReviews
-        productId={product.id}
-      />
-
-
-
-
-
       {/* RELATED PRODUCTS */}
 
+      <div className="mt-12">
 
-      <RelatedProducts
-        currentId={product.id}
-      />
+        <div className="mb-5">
 
+          <h2
+            className="
+              text-2xl
+              font-black
+              text-[#172033]
+            "
+          >
+            Related Products
+          </h2>
 
+          <p
+            className="
+              text-sm
+              text-gray-500
+              mt-1
+            "
+          >
+            You may also like these products.
+          </p>
 
+        </div>
+
+        <RelatedProducts
+          currentId={product.id}
+        />
+
+      </div>
 
     </div>
 
-  );
+  </div>
 
-
+);
 }
