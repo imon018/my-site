@@ -1,6 +1,6 @@
-import { 
-  useEffect, 
-  useState 
+import {
+  useEffect,
+  useState
 } from "react";
 
 
@@ -21,11 +21,13 @@ import {
 } from "react-icons/fi";
 
 
+
 import {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
 } from "../../services/orderService";
+
 
 
 import {
@@ -37,18 +39,24 @@ import {
 
 
 
+
+
 export default function OrderDetails(){
 
 
 const {id}=useParams();
 
+
 const navigate=useNavigate();
+
 
 
 
 const [order,setOrder]=useState(null);
 
+
 const [loading,setLoading]=useState(true);
+
 
 const [menuOpen,setMenuOpen]=useState(false);
 
@@ -56,9 +64,14 @@ const [menuOpen,setMenuOpen]=useState(false);
 
 
 
+
+
+
 useEffect(()=>{
 
+
 loadOrder();
+
 
 },[id]);
 
@@ -67,37 +80,53 @@ loadOrder();
 
 
 
+
+
+
 async function loadOrder(){
+
 
 try{
 
 
-const data=await getAllOrders();
+const data =
+await getAllOrders();
 
 
-const found=data.find(
+
+const found =
+data.find(
 (item)=>item.id===id
 );
 
 
+
 setOrder(found);
+
 
 
 }
 
 catch(error){
 
+
 console.log(error);
+
 
 }
 
 finally{
 
+
 setLoading(false);
 
-}
 
 }
+
+
+}
+
+
 
 
 
@@ -107,43 +136,66 @@ setLoading(false);
 
 async function changeStatus(status){
 
+
 try{
 
 
 await updateOrderStatus(
+
 id,
+
 status
+
 );
+
 
 
 
 setOrder(prev=>({
 
+
 ...prev,
+
+
 status
+
 
 }));
 
 
+
+
 successToast(
-"Status updated"
+
+`Order ${status}`
+
 );
+
 
 
 }
 
 catch(error){
 
+
 console.log(error);
 
+
+
 errorToast(
+
 "Update failed"
+
 );
 
 
-}
 
 }
+
+
+}
+
+
 
 
 
@@ -154,13 +206,18 @@ errorToast(
 async function removeOrder(){
 
 
-const ok=window.confirm(
+
+const ok =
+window.confirm(
 "Delete this order?"
 );
 
 
+
 if(!ok)
 return;
+
+
 
 
 
@@ -170,23 +227,39 @@ try{
 await deleteOrder(id);
 
 
+
 successToast(
+
 "Order deleted"
+
 );
 
 
-navigate("/admin/orders");
+
+navigate(
+"/admin/orders"
+);
+
 
 
 }
 
 catch(error){
 
+
+console.log(error);
+
+
+
 errorToast(
+
 "Delete failed"
+
 );
 
+
 }
+
 
 
 }
@@ -198,6 +271,7 @@ errorToast(
 
 
 if(loading){
+
 
 return(
 
@@ -215,6 +289,7 @@ Loading Order...
 
 );
 
+
 }
 
 
@@ -222,7 +297,9 @@ Loading Order...
 
 
 
+
 if(!order){
+
 
 return(
 
@@ -246,6 +323,7 @@ Order Not Found
 </h2>
 
 
+
 <button
 
 onClick={()=>navigate(-1)}
@@ -265,9 +343,11 @@ Back
 </button>
 
 
+
 </div>
 
 );
+
 
 }
 
@@ -275,9 +355,8 @@ Back
 
 
 
-
-
 return(
+
 
 <div className="
 bg-[#faf9f6]
@@ -286,11 +365,10 @@ p-4
 space-y-3
 ">
 
+  // =========================
+// HEADER
+// =========================
 
-
-
-
-{/* HEADER */}
 
 <div className="
 flex
@@ -321,6 +399,7 @@ justify-center
 <FiArrowLeft/>
 
 </button>
+
 
 
 
@@ -365,7 +444,10 @@ justify-center
 
 
 
+
+
 {
+
 menuOpen &&
 
 <div className="
@@ -411,19 +493,22 @@ Delete
 }
 
 
-</div>
-
-
 
 </div>
 
 
+</div>
 
 
 
 
 
-{/* ORDER CARD */}
+
+
+
+// =========================
+// ORDER CARD
+// =========================
 
 
 <div className="
@@ -457,6 +542,7 @@ text-slate-900
 </h2>
 
 
+
 <p className="
 text-xs
 text-gray-500
@@ -479,6 +565,7 @@ new Date(order.createdAt)
 
 
 
+
 <span className={`
 
 text-xs
@@ -492,6 +579,7 @@ ${
 order.status==="Delivered"
 
 ?
+
 "bg-green-100 text-green-700"
 
 :
@@ -499,14 +587,32 @@ order.status==="Delivered"
 order.status==="Processing"
 
 ?
+
 "bg-blue-100 text-blue-700"
+
+:
+
+order.status==="Shipped"
+
+?
+
+"bg-purple-100 text-purple-700"
 
 :
 
 order.status==="Cancelled"
 
 ?
+
 "bg-red-100 text-red-700"
+
+:
+
+order.status==="Returned"
+
+?
+
+"bg-orange-100 text-orange-700"
 
 :
 
@@ -522,9 +628,8 @@ order.status==="Cancelled"
 
 
 
+
 </div>
-
-
 
 
 
@@ -535,150 +640,204 @@ my-4
 border-gray-100
 "/>
 
-  </div>
-
-
-
-
-{/* =========================
-    CUSTOMER
-========================= */}
-
-<div
-  className="
-  bg-white
-  border
-  border-gray-100
-  rounded-lg
-  p-4
-  shadow-sm
-"
->
-
-  <h3
-    className="
-    font-bold
-    text-sm
-    mb-3
-  "
-  >
-    Customer
-  </h3>
-
-  <div
-    className="
-    flex
-    justify-between
-    items-center
-  "
-  >
-
-    <div
-      className="
-      flex
-      items-center
-      gap-3
-    "
-    >
-
-      <img
-        src={
-          order.customerPhoto ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-            order.customerName || "User"
-          )}`
-        }
-        className="
-        w-12
-        h-12
-        rounded-full
-        object-cover
-        "
-      />
-
-      <div>
-
-        <p
-          className="
-          font-bold
-          text-sm
-        "
-        >
-          {order.customerName}
-        </p>
-
-        <p
-          className="
-          text-xs
-          text-gray-500
-        "
-        >
-          {order.email}
-        </p>
-
-        <p
-          className="
-          text-xs
-          text-gray-500
-          mt-1
-        "
-        >
-          {order.phone}
-        </p>
-
-      </div>
-
-    </div>
-
-    <div
-      className="
-      flex
-      gap-2
-    "
-    >
-
-      <a
-        href={`tel:${order.phone}`}
-        className="
-        w-9
-        h-9
-        rounded-lg
-        border
-        border-gray-100
-        bg-gray-50
-        flex
-        items-center
-        justify-center
-        "
-      >
-        <FiPhone size={16}/>
-      </a>
-
-      <a
-        href={`mailto:${order.email}`}
-        className="
-        w-9
-        h-9
-        rounded-lg
-        border
-        border-gray-100
-        bg-gray-50
-        flex
-        items-center
-        justify-center
-        "
-      >
-        <FiMail size={16}/>
-      </a>
-
-    </div>
-
-  </div>
 
 </div>
 
 
-  {/* SHIPPING ADDRESS */}
+
+
+
+
+
+
+
+// =========================
+// CUSTOMER
+// =========================
+
+
+<div
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+p-4
+shadow-sm
+"
+>
+
+
+<h3 className="
+font-bold
+text-sm
+mb-3
+">
+
+Customer
+
+</h3>
+
+
+
+
+<div className="
+flex
+justify-between
+items-center
+">
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<img
+
+src={
+order.customerPhoto ||
+
+`https://ui-avatars.com/api/?name=${encodeURIComponent(
+order.customerName || "User"
+)}`
+}
+
+className="
+w-12
+h-12
+rounded-full
+object-cover
+"
+
+/>
+
+
+
+
+
+<div>
+
+
+<p className="
+font-bold
+text-sm
+">
+
+{order.customerName}
+
+</p>
+
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+{order.email}
+
+</p>
+
+
+
+
+<p className="
+text-xs
+text-gray-500
+mt-1
+">
+
+{order.phone}
+
+</p>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="
+flex
+gap-2
+">
+
+
+<a
+
+href={`tel:${order.phone}`}
+
+className="
+w-9
+h-9
+rounded-lg
+border
+border-gray-100
+bg-gray-50
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiPhone size={16}/>
+
+</a>
+
+
+
+
+
+<a
+
+href={`mailto:${order.email}`}
+
+className="
+w-9
+h-9
+rounded-lg
+border
+border-gray-100
+bg-gray-50
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiMail size={16}/>
+
+</a>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+  // =========================
+// SHIPPING ADDRESS
+// =========================
+
 
 <div className="
 bg-white
@@ -702,6 +861,7 @@ Shipping Address
 
 
 
+
 <div className="
 flex
 gap-3
@@ -716,6 +876,7 @@ mt-1
 text-gray-500
 "
 />
+
 
 
 
@@ -743,7 +904,9 @@ order.address ||
 
 
 
-{/* PRODUCTS */}
+// =========================
+// PRODUCTS
+// =========================
 
 
 <div className="
@@ -757,6 +920,8 @@ shadow-sm
 
 
 
+
+
 <div className="
 flex
 items-center
@@ -766,10 +931,13 @@ mb-4
 
 
 <FiPackage
+
 className="
 text-blue-600
 "
+
 />
+
 
 
 <h3 className="
@@ -782,7 +950,9 @@ Products
 </h3>
 
 
+
 </div>
+
 
 
 
@@ -817,7 +987,6 @@ border-gray-100
 pb-3
 "
 
-
 >
 
 
@@ -832,8 +1001,11 @@ gap-3
 <img
 
 src={
+
 item.image ||
+
 "https://via.placeholder.com/60"
+
 }
 
 className="
@@ -845,6 +1017,8 @@ bg-gray-50
 "
 
 />
+
+
 
 
 
@@ -863,6 +1037,8 @@ font-bold
 
 
 
+
+
 <p className="
 text-xs
 text-gray-500
@@ -870,18 +1046,29 @@ mt-1
 ">
 
 {
+
 item.size &&
+
 `Size: ${item.size}`
+
 }
 
 
+
 {
+
 item.color &&
+
 ` / Color: ${item.color}`
+
 }
 
 
 </p>
+
+
+
+
 
 
 <p className="
@@ -889,9 +1076,10 @@ text-xs
 text-gray-500
 ">
 
-Qty: {item.quantity}
+Qty: {item.quantity || 1}
 
 </p>
+
 
 
 </div>
@@ -916,7 +1104,13 @@ font-bold
 text-sm
 ">
 
-৳ {item.price * item.quantity}
+৳ {
+
+item.price *
+
+(item.quantity || 1)
+
+}
 
 </p>
 
@@ -927,10 +1121,13 @@ text-sm
 
 
 
+
+
 </div>
 
 
 )
+
 
 )
 
@@ -942,18 +1139,13 @@ text-sm
 </div>
 
 
+
 </div>
 
 
-
-
-
-
-
-
-
-{/* ORDER SUMMARY */}
-
+  // =========================
+// ORDER SUMMARY
+// =========================
 
 
 <div className="
@@ -964,7 +1156,6 @@ rounded-lg
 p-4
 shadow-sm
 ">
-
 
 
 <h3 className="
@@ -980,6 +1171,7 @@ Order Summary
 
 
 
+
 <div className="
 space-y-3
 text-sm
@@ -987,10 +1179,14 @@ text-sm
 
 
 
+
+
+
 <div className="
 flex
 justify-between
 ">
+
 
 <span className="
 text-gray-500
@@ -1001,6 +1197,7 @@ Subtotal
 </span>
 
 
+
 <span className="
 font-semibold
 ">
@@ -1008,6 +1205,7 @@ font-semibold
 ৳ {order.subtotal || order.total}
 
 </span>
+
 
 
 </div>
@@ -1033,6 +1231,7 @@ Shipping
 </span>
 
 
+
 <span className="
 font-semibold
 ">
@@ -1042,7 +1241,9 @@ font-semibold
 </span>
 
 
+
 </div>
+
 
 
 
@@ -1065,6 +1266,7 @@ Discount
 </span>
 
 
+
 <span className="
 font-semibold
 text-red-500
@@ -1075,7 +1277,9 @@ text-red-500
 </span>
 
 
+
 </div>
+
 
 
 
@@ -1085,6 +1289,7 @@ text-red-500
 <hr className="
 border-gray-100
 "/>
+
 
 
 
@@ -1106,6 +1311,7 @@ Total Amount
 </span>
 
 
+
 <span>
 
 ৳ {order.total}
@@ -1113,14 +1319,6 @@ Total Amount
 </span>
 
 
-</div>
-
-
-
-
-
-</div>
-
 
 </div>
 
@@ -1129,10 +1327,22 @@ Total Amount
 
 
 
+</div>
 
 
-{/* PAYMENT METHOD */}
+</div>
 
+
+
+
+
+
+
+
+
+// =========================
+// PAYMENT METHOD
+// =========================
 
 
 <div className="
@@ -1159,6 +1369,8 @@ Payment Method
 
 
 
+
+
 <div className="
 flex
 items-center
@@ -1166,11 +1378,15 @@ justify-between
 ">
 
 
+
+
+
 <div className="
 flex
 items-center
 gap-3
 ">
+
 
 
 <div className="
@@ -1190,6 +1406,9 @@ text-green-600
 
 
 
+
+
+
 <p className="
 text-sm
 font-semibold
@@ -1204,6 +1423,8 @@ order.paymentMethod ||
 
 
 
+
+
 </div>
 
 
@@ -1212,32 +1433,53 @@ order.paymentMethod ||
 
 
 
-<span className="
+<span className={`
 text-xs
 font-bold
 px-3
 py-1.5
 rounded-full
-bg-green-100
-text-green-700
-">
 
-Cash On Delivery
+
+${
+order.paymentStatus==="Paid"
+
+?
+
+"bg-green-100 text-green-700"
+
+:
+
+"bg-yellow-100 text-yellow-700"
+
+}
+
+`}>
+
+{
+
+order.paymentStatus ||
+
+"Pending"
+
+}
 
 </span>
 
 
 
-</div>
-
-
 
 </div>
 
-  {/* =========================
-    UPDATE STATUS
-========================= */}
 
+
+
+</div>
+
+
+  // =========================
+// UPDATE ORDER STATUS
+// =========================
 
 
 <div className="
@@ -1262,6 +1504,8 @@ Update Order Status
 
 
 
+
+
 <select
 
 value={
@@ -1275,6 +1519,7 @@ e.target.value
 }
 
 className={`
+
 w-full
 h-11
 px-3
@@ -1301,11 +1546,27 @@ order.status==="Processing"
 
 :
 
+order.status==="Shipped"
+
+?
+
+"bg-purple-100 text-purple-700"
+
+:
+
 order.status==="Cancelled"
 
 ?
 
 "bg-red-100 text-red-700"
+
+:
+
+order.status==="Returned"
+
+?
+
+"bg-orange-100 text-orange-700"
 
 :
 
@@ -1318,28 +1579,33 @@ order.status==="Cancelled"
 >
 
 
-<option>
+<option value="Pending">
 Pending
 </option>
 
 
-<option>
+<option value="Processing">
 Processing
 </option>
 
 
-<option>
+<option value="Shipped">
 Shipped
 </option>
 
 
-<option>
+<option value="Delivered">
 Delivered
 </option>
 
 
-<option>
+<option value="Cancelled">
 Cancelled
+</option>
+
+
+<option value="Returned">
+Returned
 </option>
 
 
@@ -1356,7 +1622,124 @@ Cancelled
 
 
 
-{/* DELETE BUTTON */}
+
+
+// =========================
+// CANCEL / RETURN ACTION
+// =========================
+
+
+<div className="
+bg-white
+border
+border-gray-100
+rounded-lg
+p-4
+shadow-sm
+">
+
+
+<h3 className="
+font-bold
+text-sm
+mb-3
+">
+
+Cancel / Return Action
+
+</h3>
+
+
+
+
+
+<div className="
+space-y-3
+">
+
+
+
+
+
+<button
+
+onClick={()=>changeStatus("Cancelled")}
+
+disabled={
+order.status==="Cancelled" ||
+order.status==="Delivered" ||
+order.status==="Returned"
+}
+
+className="
+w-full
+h-11
+rounded-lg
+bg-red-100
+text-red-700
+font-bold
+text-sm
+disabled:opacity-50
+"
+
+>
+
+❌ Cancel Order
+
+</button>
+
+
+
+
+
+
+
+<button
+
+onClick={()=>changeStatus("Returned")}
+
+disabled={
+order.status==="Returned" ||
+order.status==="Cancelled"
+}
+
+className="
+w-full
+h-11
+rounded-lg
+bg-orange-100
+text-orange-700
+font-bold
+text-sm
+disabled:opacity-50
+"
+
+>
+
+↩️ Approve Return
+
+</button>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+// =========================
+// DELETE BUTTON
+// =========================
 
 
 
@@ -1385,6 +1768,7 @@ gap-2
 
 Delete Order
 
+
 </button>
 
 
@@ -1394,6 +1778,7 @@ Delete Order
 
 
 </div>
+
 
 );
 
