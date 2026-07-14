@@ -30,6 +30,7 @@ import Newsletter from "../pages/admin/Newsletter";
 import ShopHeroBanner from "../pages/admin/ShopHeroBanner";
 import OrderDetails from "../pages/admin/OrderDetails";
 import UserDetails from "../pages/admin/UserDetails";
+import SendNotification from "../pages/admin/SendNotification";
 
 /* Public Pages */
 
@@ -157,6 +158,10 @@ export default function AppRoutes() {
 
         <Route path="subscribers" element={<Subscribers />} />
         <Route path="newsletter" element={<Newsletter />} />
+        <Route 
+  path="send-notification" 
+  element={<SendNotification />} 
+/>
 
         {/* Notification */}
         <Route
