@@ -28,7 +28,11 @@ import {
 
 
 
+
 export const AuthContext = createContext();
+
+
+
 
 
 
@@ -37,28 +41,38 @@ export default function AuthProvider({
 }) {
 
 
-  const [user, setUser] = useState(null);
+  const [
+    user,
+    setUser
+  ] = useState(null);
 
 
-  const [loading, setLoading] = useState(true);
+
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
 
 
 
 
-  useEffect(() => {
+
+
+
+  useEffect(()=>{
 
 
     const unsubscribe = onAuthStateChanged(
 
       auth,
 
-      async (firebaseUser) => {
+      async(firebaseUser)=>{
 
 
-        try {
+        try{
 
 
-          if (!firebaseUser) {
+          if(!firebaseUser){
 
 
             setUser(null);
@@ -68,6 +82,7 @@ export default function AuthProvider({
             return;
 
           }
+
 
 
 
@@ -87,14 +102,16 @@ export default function AuthProvider({
 
 
 
-          const userSnap = await getDoc(userRef);
+          const userSnap = await getDoc(
+            userRef
+          );
 
 
 
 
 
 
-          if (userSnap.exists()) {
+          if(userSnap.exists()){
 
 
             setUser({
@@ -106,7 +123,8 @@ export default function AuthProvider({
             });
 
 
-          } else {
+
+          }else{
 
 
             setUser(firebaseUser);
@@ -118,7 +136,8 @@ export default function AuthProvider({
 
 
 
-        } catch (error) {
+
+        }catch(error){
 
 
           console.log(error);
@@ -127,8 +146,8 @@ export default function AuthProvider({
           setUser(firebaseUser);
 
 
-
-        } finally {
+        }
+        finally{
 
 
           setLoading(false);
@@ -145,11 +164,10 @@ export default function AuthProvider({
 
 
 
-    return () => unsubscribe();
+    return ()=>unsubscribe();
 
 
-
-  }, []);
+  },[]);
 
 
 
@@ -172,7 +190,6 @@ export default function AuthProvider({
 
     >
 
-
       {children}
 
 
@@ -190,8 +207,11 @@ export default function AuthProvider({
 
 
 
-export const useAuth = () => {
+
+export function useAuth(){
+
 
   return useContext(AuthContext);
 
-};
+
+}
