@@ -16,63 +16,63 @@ const SettingsContext = createContext();
 
 
 
+export function SettingsProvider({
+  children
+}) {
 
 
-export function SettingsProvider({ children }) {
+  const [settings,setSettings] = useState({
 
+    storeName:"Dream Mode",
 
+    email:"",
 
-  const [settings, setSettings] = useState({
+    phone:"",
 
-    storeName: "Dream Mode",
+    address:"",
 
-    email: "",
+    facebook:"",
 
-    phone: "",
+    whatsapp:"",
 
-    address: "",
+    logoUrl:"",
 
-    facebook: "",
+    logoPublicId:"",
 
-    whatsapp: "",
+    maintenanceMode:false,
 
-    logoUrl: "",
-
-    logoPublicId: "",
-
-    maintenanceMode: false,
+    maintenanceEndTime:"",
 
   });
 
 
 
-
-
-  const [loading, setLoading] = useState(true);
-
-
+  const [loading,setLoading] =
+  useState(true);
 
 
 
 
 
-  useEffect(() => {
+  useEffect(()=>{
 
 
-    const loadSettings = async () => {
+    const loadSettings =
+    async()=>{
 
 
-      try {
+      try{
 
 
-        const data = await getSettings();
+        const data =
+        await getSettings();
 
 
 
-        if (data) {
+        if(data){
 
 
-          setSettings(prev => ({
+          setSettings(prev=>({
 
             ...prev,
 
@@ -80,26 +80,22 @@ export function SettingsProvider({ children }) {
 
           }));
 
-
         }
 
 
-      }
-      catch(error) {
 
+      }
+      catch(error){
 
         console.log(
           "Settings load error:",
           error
         );
 
-
       }
-      finally {
-
+      finally{
 
         setLoading(false);
-
 
       }
 
@@ -112,10 +108,50 @@ export function SettingsProvider({ children }) {
 
 
 
-  }, []);
+  },[]);
 
 
 
+
+
+  // AUTO CHECK MAINTENANCE TIME
+
+  const isMaintenanceActive = ()=>{
+
+
+    if(!settings.maintenanceMode){
+
+      return false;
+
+    }
+
+
+
+    if(!settings.maintenanceEndTime){
+
+      return true;
+
+    }
+
+
+
+    const end =
+    new Date(
+      settings.maintenanceEndTime
+    ).getTime();
+
+
+
+    const now =
+    Date.now();
+
+
+
+    return now < end;
+
+
+
+  };
 
 
 
@@ -124,9 +160,7 @@ export function SettingsProvider({ children }) {
 
   return (
 
-
     <SettingsContext.Provider
-
 
       value={{
 
@@ -134,14 +168,13 @@ export function SettingsProvider({ children }) {
 
         loading,
 
-      }}
+        isMaintenanceActive,
 
+      }}
 
     >
 
-
       {children}
-
 
     </SettingsContext.Provider>
 
@@ -156,12 +189,8 @@ export function SettingsProvider({ children }) {
 
 
 
-
-
 export function useSettings(){
 
-
   return useContext(SettingsContext);
-
 
 }
