@@ -8,6 +8,10 @@ import { Link } from "react-router-dom";
 import Button from "./ui/Button";
 
 import {
+ useSettings
+} from "../context/SettingsContext";
+
+import {
   FiShoppingBag,
   FiEye,
 } from "react-icons/fi";
@@ -30,6 +34,10 @@ export default function Hero() {
 
   const [loading, setLoading] =
     useState(true);
+
+  const {
+ settings
+}=useSettings();
 
   useEffect(() => {
 
@@ -610,8 +618,7 @@ shadow-[0_0_20px_rgba(245,158,11,.18)]
 
   <a
     href={`https://wa.me/${
-      banner?.whatsappNumber ||
-      "8801406978619"
+      banner?.whatsappNumber || settings.whatsapp
     }`}
     target="_blank"
     rel="noreferrer"
