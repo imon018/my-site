@@ -372,171 +372,93 @@ export default function ProductCard({
 
         {/* BUTTONS */}
 
-
-
-        <div
-
-          className="
-            flex
-            items-center
-            gap-2
-            mt-4
-            w-full
-          "
-
-        >
-
-
-
-
-
-          {/* ADD CART */}
-
-
-          <Button
-  onClick={handleAdd}
-
+<div
   className="
-    w-[45%]
-    h-8
-    rounded-lg
-    bg-black
-    border
-    border-amber-500
-    text-white
-    text-[10px]
-    font-semibold
-    px-2
     flex
     items-center
-    justify-center
+    gap-2
+    mt-4
+    w-full
   "
 >
 
+  {/* ADD CART */}
 
-            <span
+  <Button
+    onClick={handleAdd}
 
-              className="
-                flex
-                items-center
-                justify-center
-                gap-1
+    className="
+      flex-1
+      h-8
+      rounded-lg
+      bg-black
+      border
+      border-amber-500
+      text-white
+      text-[10px]
+      font-semibold
+      px-2
+      flex
+      items-center
+      justify-center
+    "
+  >
 
-                whitespace-nowrap
-              "
+    <span
+      className="
+        flex
+        items-center
+        justify-center
+        gap-1
+        whitespace-nowrap
+      "
+    >
 
-            >
+      <FiShoppingCart size={12}/>
 
-              <FiShoppingCart size={13}/>
+      Add To Cart
 
-              Add To Cart
+    </span>
 
+  </Button>
 
-            </span>
 
 
-          </Button>
 
 
+  {/* VIEW ICON */}
 
+  <button
 
+    onClick={() =>
+      navigate(
+        `/product/${product.id}`
+      )
+    }
 
+    className="
+      w-10
+      h-8
+      rounded-lg
+      bg-white
+      border
+      border-amber-500
+      text-amber-500
+      flex
+      items-center
+      justify-center
+      hover:bg-amber-50
+      transition
+    "
 
+  >
 
+    <FiEye size={15}/>
 
+  </button>
 
-          {/* VIEW DETAIL */}
 
-
-
-          <button
-
-
-            onClick={()=>
-
-
-              navigate(
-
-                `/product/${product.id}`
-
-              )
-
-            }
-
-
-
-            className="
-
-              flex-1
-
-              h-9
-
-              rounded-lg
-
-              bg-white
-
-              border
-
-              border-amber-500
-
-              text-amber-500
-
-              text-[11px]
-
-              font-semibold
-
-
-              flex
-
-              items-center
-
-              justify-center
-
-
-              px-3
-
-            "
-
-
-          >
-
-
-
-            <span
-
-              className="
-
-                flex
-
-                items-center
-
-                justify-center
-
-                gap-1
-
-                whitespace-nowrap
-
-              "
-
-            >
-
-              <FiEye size={13}/>
-
-
-             
-
-
-            </span>
-
-
-
-          </button>
-
-
-
-
-
-        </div>
+</div>
 
 
 
