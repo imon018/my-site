@@ -119,7 +119,7 @@ Copyright
 
 
 <p>
-All logos, designs, images and content belong to settings.storeName || "DREAM MODE"}
+All logos, designs, images and content belong to {settings.storeName || "DREAM MODE"}
 and cannot be used without permission.
 </p>
 
