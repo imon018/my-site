@@ -11,19 +11,18 @@ import {
 
 import {
   doc,
-  getDoc,
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
 
 
 import {
-  auth
+  auth,
 } from "../firebase/auth";
 
 
 import {
-  db
+  db,
 } from "../firebase/firestore";
 
 
@@ -38,63 +37,9 @@ import {
 } from "./notificationService";
 
 
-
-
-
-// =================================
-// GET STORE NAME
-// =================================
-
-const getStoreName = async()=>{
-
-  try{
-
-
-    const settingsDoc =
-    await getDoc(
-      doc(
-        db,
-        "settings",
-        "store"
-      )
-    );
-
-
-
-    if(
-      settingsDoc.exists()
-    ){
-
-      return (
-        settingsDoc.data().storeName ||
-        "Dream Mode"
-      );
-
-    }
-
-
-
-    return "Dream Mode";
-
-
-  }
-  catch(error){
-
-    console.log(
-      "Store name load error:",
-      error
-    );
-
-
-    return "Dream Mode";
-
-  }
-
-
-};
-
-
-
+import {
+  getSettings,
+} from "./settingsService";
 
 
 
@@ -104,6 +49,7 @@ const getStoreName = async()=>{
 // =================================
 // LOGIN
 // =================================
+
 
 export const login = async(
   email,
@@ -150,7 +96,11 @@ export const login = async(
 
 
 
-  // Login Security Notification
+  const settings =
+  await getSettings();
+
+
+
 
   await createUserNotification({
 
@@ -159,18 +109,17 @@ export const login = async(
 
 
     title:
-    "🔐 New Login Detected",
+    `🔐 New Login - ${settings.storeName}`,
 
 
     message:
-    "Your account was logged in successfully.",
+    `Your ${settings.storeName} account was logged in successfully.`,
 
 
     type:
     "system",
 
   });
-
 
 
 
@@ -200,139 +149,138 @@ export const register = async(
 )=>{
 
 
-  try{
+try{
 
 
-    const result =
-    await createUserWithEmailAndPassword(
+const result =
+await createUserWithEmailAndPassword(
 
-      auth,
+  auth,
 
-      email,
+  email,
 
-      password
+  password
 
-    );
+);
 
 
 
 
 
-    await sendEmailVerification(
-      result.user
-    );
+await sendEmailVerification(
+  result.user
+);
 
 
 
 
 
-    const userRef =
-    doc(
-      db,
-      "users",
-      result.user.uid
-    );
 
+const userRef =
+doc(
 
+db,
 
+"users",
 
+result.user.uid
 
-    // Save User Data
+);
 
-    await setDoc(
 
-      userRef,
 
-      {
 
-        name,
 
-        email:
-        result.user.email,
+await setDoc(
 
+userRef,
 
-        phone:"",
+{
 
-        address:"",
+name,
 
-        photoURL:"",
+email,
 
-        role:"user",
+phone:"",
 
+address:"",
 
-        createdAt:
-        serverTimestamp(),
+photoURL:"",
 
-      }
+role:"user",
 
-    );
+createdAt:
+serverTimestamp(),
 
+},
 
+{
 
+merge:true
 
+}
 
+);
 
 
-    const storeName =
-    await getStoreName();
 
 
 
 
+const settings =
+await getSettings();
 
 
 
-    // Welcome Notification
 
 
-    await sendNotification({
 
-      receiverId:
-      result.user.uid,
+// USER WELCOME NOTIFICATION
 
 
-      title:
-      `Welcome to ${storeName} 🎉`,
+await createUserNotification({
 
+userId:
+result.user.uid,
 
-      message:
-      `Thank you for joining ${storeName}. Enjoy your shopping experience.`,
 
+title:
+`🎉 Welcome to ${settings.storeName}`,
 
-      type:
-      "system",
 
-    });
+message:
+`Your ${settings.storeName} account has been created successfully.`,
 
 
+type:
+"system",
 
+});
 
 
 
 
 
-    // Extra User Notification
 
 
-    await createUserNotification({
 
-      userId:
-      result.user.uid,
+// ADMIN NEW USER NOTIFICATION
 
 
-      title:
-      `🎉 Welcome to ${storeName}`,
+await createAdminNotification({
 
+title:
+"👤 New User Registered",
 
-      message:
-      `Your ${storeName} account has been created successfully.`,
 
+message:
+`${name} created a new account in ${settings.storeName}.`,
 
-      type:
-      "system",
 
-    });
+type:
+"system",
 
+});
 
 
 
@@ -340,50 +288,25 @@ export const register = async(
 
 
 
+return result;
 
-    // Admin Notification
 
 
-    await createAdminNotification({
+}
 
-      title:
-      "👤 New User Registered",
+catch(error){
 
 
-      message:
-      `${name} created a new account.`,
+console.log(
+"Register error:",
+error
+);
 
 
-      type:
-      "system",
+throw error;
 
-    });
 
-
-
-
-
-
-
-
-    return result;
-
-
-
-  }
-
-  catch(error){
-
-
-    console.error(
-      error
-    );
-
-
-    throw error;
-
-
-  }
+}
 
 
 };
@@ -405,9 +328,9 @@ export const resendVerificationEmail =
 async(user)=>{
 
 
-  await sendEmailVerification(
-    user
-  );
+await sendEmailVerification(
+user
+);
 
 
 };
@@ -429,10 +352,13 @@ export const forgotPassword =
 async(email)=>{
 
 
-  await sendPasswordResetEmail(
-    auth,
-    email
-  );
+await sendPasswordResetEmail(
+
+auth,
+
+email
+
+);
 
 
 };
@@ -452,15 +378,18 @@ async(email)=>{
 
 export const changePassword =
 async(
-  user,
-  newPassword
+user,
+newPassword
 )=>{
 
 
-  await updatePassword(
-    user,
-    newPassword
-  );
+await updatePassword(
+
+user,
+
+newPassword
+
+);
 
 
 };
@@ -474,7 +403,7 @@ async(
 
 
 // =================================
-// SEND VERIFICATION
+// SEND VERIFICATION EMAIL
 // =================================
 
 
@@ -482,9 +411,9 @@ export const sendVerificationEmail =
 async(user)=>{
 
 
-  await sendEmailVerification(
-    user
-  );
+await sendEmailVerification(
+user
+);
 
 
 };
@@ -506,9 +435,9 @@ export const deleteUserAccount =
 async(user)=>{
 
 
-  await deleteUser(
-    user
-  );
+await deleteUser(
+user
+);
 
 
 };
@@ -529,9 +458,9 @@ async(user)=>{
 export const logout = ()=>{
 
 
-  return signOut(
-    auth
-  );
+return signOut(
+auth
+);
 
 
 };
