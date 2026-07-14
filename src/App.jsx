@@ -51,22 +51,38 @@ function AppContent(){
 
         <div className="text-center">
 
+
           <div className="text-4xl mb-4">
             ⏳
           </div>
 
 
-          <h2 className="text-2xl font-bold">
+          <h2
+            className="
+            text-2xl
+            font-bold
+            "
+          >
+
             Loading Dream Mode...
+
           </h2>
 
 
-          <p className="text-gray-500 mt-2">
+          <p
+            className="
+            text-gray-500
+            mt-2
+            "
+          >
+
             Checking authentication
+
           </p>
 
 
         </div>
+
 
       </div>
 
@@ -79,15 +95,31 @@ function AppContent(){
 
 
 
+
   return (
 
     <>
 
-      <MaintenanceGuard />
+
+      <MaintenanceGuard>
+
+
+        <AppRoutes />
+
+
+      </MaintenanceGuard>
+
+
+
+
 
       <Toaster
+
         position="top-right"
+
       />
+
+
 
     </>
 
@@ -95,6 +127,8 @@ function AppContent(){
 
 
 }
+
+
 
 
 
@@ -119,10 +153,13 @@ export default function App(){
           <WishlistProvider>
 
 
+
             <ScrollToTop />
 
 
+
             <AppContent />
+
 
 
           </WishlistProvider>
@@ -135,6 +172,7 @@ export default function App(){
 
 
     </AuthProvider>
+
 
   );
 
