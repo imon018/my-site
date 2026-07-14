@@ -1,179 +1,99 @@
 import {
+  db
+} from "../firebase";
+
+
+import {
   collection,
   addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  deleteDoc,
   getDocs,
   query,
   where,
   orderBy,
-  updateDoc,
-  deleteDoc,
-  doc,
-  serverTimestamp,
+  onSnapshot
 } from "firebase/firestore";
 
 
-import {
-  db,
-} from "../firebase/firestore";
 
 
 
+// =========================
+// CREATE NOTIFICATION
+// =========================
 
+export async function createNotification(data){
 
-const notificationRef =
-collection(
-  db,
-  "notifications"
-);
+  try{
 
+    await addDoc(
 
+      collection(
+        db,
+        "notifications"
+      ),
 
-// =================================
-// Send Notification To All Users
-// =================================
+      {
 
-export const sendNotificationToAllUsers = async ({
-  users,
-  title,
-  message,
-  type = "system",
-}) => {
+        ...data,
 
-  const promises = users.map((user) =>
-    sendNotification({
+        read:false,
 
-      receiverId: user.id,
+        createdAt:
+        serverTimestamp()
 
-      title,
+      }
 
-      message,
+    );
 
-      type,
-
-    })
-  );
-
-
-  await Promise.all(promises);
-
-};
-
-
-// =================================
-// Send Notification
-// =================================
-
-
-export const sendNotification = async({
-
-  receiverId,
-
-  title,
-
-  message,
-
-  type="system",
-
-})=>{
-
-
-  await addDoc(
-
-    notificationRef,
-
-    {
-
-      receiverId,
-
-      title,
-
-      message,
-
-      type,
-
-      isRead:false,
-
-      createdAt:
-      serverTimestamp(),
-
-    }
-
-  );
-
-
-};
-
-
-
-
-// =================================
-// Send Admin Notification
-// =================================
-
-export const sendAdminNotification =
-async ({
-
-title,
-
-message,
-
-type="order",
-
-orderId="",
-
-})=>{
-
-
- await addDoc(
-
-  notificationRef,
-
-  {
-
-    receiverId:"ADMIN",
-
-    title,
-
-    message,
-
-    type,
-
-    orderId,
-
-    isRead:false,
-
-    createdAt:
-    serverTimestamp(),
 
   }
 
- );
+  catch(error){
+
+    console.log(
+      "Notification Error:",
+      error
+    );
+
+    throw error;
+
+  }
+
+}
 
 
-};
 
 
 
 
-// =================================
-// Get User Notifications
-// =================================
 
 
-export const getUserNotifications = (
-  userId
-)=>{
+// =========================
+// GET USER NOTIFICATIONS
+// =========================
 
 
-  return query(
+export async function getUserNotifications(userId){
 
-    notificationRef,
+
+  const q=query(
+
+    collection(
+      db,
+      "notifications"
+    ),
+
 
     where(
-      "receiverId",
+      "userId",
       "==",
       userId
     ),
+
 
     orderBy(
       "createdAt",
@@ -183,7 +103,24 @@ export const getUserNotifications = (
   );
 
 
-};
+
+  const snapshot =
+  await getDocs(q);
+
+
+
+  return snapshot.docs.map(
+    doc=>({
+
+      id:doc.id,
+
+      ...doc.data()
+
+    })
+  );
+
+
+}
 
 
 
@@ -192,18 +129,21 @@ export const getUserNotifications = (
 
 
 
-
-// =================================
-// Get Admin Notifications
-// =================================
-
-
-export const getAdminNotifications = ()=>{
+// =========================
+// GET ADMIN NOTIFICATIONS
+// =========================
 
 
-  return query(
+export async function getAdminNotifications(){
 
-    notificationRef,
+
+ const q=query(
+
+    collection(
+      db,
+      "notifications"
+    ),
+
 
     where(
       "receiverId",
@@ -211,215 +151,333 @@ export const getAdminNotifications = ()=>{
       "ADMIN"
     ),
 
+
     orderBy(
       "createdAt",
       "desc"
     )
 
-  );
+ );
 
 
-};
+ const snapshot =
+ await getDocs(q);
 
 
 
+ return snapshot.docs.map(
+  doc=>({
 
+    id:doc.id,
 
+    ...doc.data()
 
+  })
+ );
 
 
+}
 
-// =================================
-// Mark Notification Read
-// =================================
 
 
-export const markNotificationAsRead =
-async(id)=>{
 
 
-  const notificationDoc =
-  doc(
-    db,
-    "notifications",
-    id
-  );
 
 
 
-  await updateDoc(
 
-    notificationDoc,
+// =========================
+// REALTIME USER LISTENER
+// =========================
 
-    {
 
-      isRead:true
+export function listenUserNotifications(
+userId,
+callback
+){
 
-    }
 
-  );
+const q=query(
 
+collection(
+db,
+"notifications"
+),
 
-};
 
+where(
+"userId",
+"==",
+userId
+),
 
 
+orderBy(
+"createdAt",
+"desc"
+)
 
+);
 
 
 
+return onSnapshot(
 
+q,
 
-// =================================
-// Mark All Read
-// =================================
+(snapshot)=>{
 
 
-export const markAllNotificationsAsRead =
-async(userId)=>{
+const data =
+snapshot.docs.map(
+doc=>({
 
+id:doc.id,
 
-  const q =
-  query(
+...doc.data()
 
-    notificationRef,
+})
+);
 
-    where(
-      "receiverId",
-      "==",
-      userId
-    )
 
-  );
+callback(data);
 
 
+}
 
-  const snapshot =
-  await getDocs(q);
 
+);
 
 
-  const updates =
-  snapshot.docs.map(
+}
 
-    (item)=>
 
-    updateDoc(
 
-      doc(
-        db,
-        "notifications",
-        item.id
-      ),
 
-      {
 
-        isRead:true
 
-      }
 
-    )
 
-  );
 
+// =========================
+// REALTIME ADMIN LISTENER
+// =========================
 
 
-  await Promise.all(
-    updates
-  );
+export function listenAdminNotifications(
+callback
+){
 
 
-};
+const q=query(
 
+collection(
+db,
+"notifications"
+),
 
 
+where(
+"receiverId",
+"==",
+"ADMIN"
+),
 
 
+orderBy(
+"createdAt",
+"desc"
+)
 
+);
 
 
 
-// =================================
-// Delete Notification
-// =================================
+return onSnapshot(
 
+q,
 
-export const deleteNotification =
-async(id)=>{
+(snapshot)=>{
 
 
-  await deleteDoc(
+const data =
+snapshot.docs.map(
+doc=>({
 
-    doc(
-      db,
-      "notifications",
-      id
-    )
+id:doc.id,
 
-  );
+...doc.data()
 
+})
+);
 
-};
 
+callback(data);
 
 
+}
 
 
+);
 
 
+}
 
 
-// =================================
-// Delete All Notifications
-// =================================
 
 
-export const deleteAllNotifications =
-async(userId)=>{
 
 
-  const q =
-  query(
 
-    notificationRef,
 
-    where(
-      "receiverId",
-      "==",
-      userId
-    )
 
-  );
+// =========================
+// MARK AS READ
+// =========================
 
 
+export async function markNotificationRead(
+id
+){
 
-  const snapshot =
-  await getDocs(q);
 
+await updateDoc(
 
+doc(
+db,
+"notifications",
+id
+),
 
-  const deletes =
-  snapshot.docs.map(
+{
 
-    (item)=>
+read:true
 
-    deleteDoc(
+}
 
-      doc(
-        db,
-        "notifications",
-        item.id
-      )
+);
 
-    )
 
-  );
+}
 
 
 
-  await Promise.all(
-    deletes
-  );
 
 
-};
+
+
+
+
+// =========================
+// MARK ALL READ
+// =========================
+
+
+export async function markAllNotificationsRead(
+notifications
+){
+
+
+const updates =
+notifications.map(
+
+(item)=>
+
+updateDoc(
+
+doc(
+db,
+"notifications",
+item.id
+),
+
+{
+
+read:true
+
+}
+
+)
+
+);
+
+
+
+await Promise.all(updates);
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// DELETE NOTIFICATION
+// =========================
+
+
+export async function deleteNotification(
+id
+){
+
+
+await deleteDoc(
+
+doc(
+db,
+"notifications",
+id
+)
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// DELETE ALL USER NOTIFICATIONS
+// =========================
+
+
+export async function deleteAllNotifications(
+notifications
+){
+
+
+const deletes =
+notifications.map(
+
+(item)=>
+
+deleteDoc(
+
+doc(
+db,
+"notifications",
+item.id
+
+)
+
+)
+
+);
+
+
+
+await Promise.all(deletes);
+
+
+}
