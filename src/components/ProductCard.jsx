@@ -396,7 +396,7 @@ export default function ProductCard({
 
       <FiEye size={12}/>
 
-      View Detail
+    
 
     </span>
 
