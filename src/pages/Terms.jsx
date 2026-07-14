@@ -13,7 +13,6 @@ export default function Terms(){
 
 
 const faq=[
-const faq=[
 
 {
 question:"Can product prices change?",
@@ -40,7 +39,7 @@ return (
 
 title="Terms & Conditions"
 
-description={`Please read our terms before using {settings.storeName || "DREAM MODE"} website and services.`}
+description={`Please read our terms before using ${settings.storeName || "DREAM MODE"} website and services.`}
 
 >
 
