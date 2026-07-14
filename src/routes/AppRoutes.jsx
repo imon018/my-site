@@ -50,6 +50,7 @@ import Contact from "../pages/Contact";
 import OrderSuccess from "../pages/OrderSuccess";
 import MyOrders from "../pages/MyOrders";
 import VerifyEmail from "../pages/VerifyEmail";
+import Notifications from "../pages/common/Notifications";
 
 
 /* Policies */
@@ -81,6 +82,10 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route
+    path="/notifications"
+    element={<Notifications />}
+/>
 
         {/* Cart & Checkout */}
         <Route path="/cart" element={<Cart />} />
