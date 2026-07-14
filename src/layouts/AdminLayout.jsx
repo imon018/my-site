@@ -26,6 +26,8 @@ import {
   FiMenu,
   FiX,
   FiAlertTriangle,
+  FiBell,
+  FiSend,
 } from "react-icons/fi";
 
 
@@ -202,6 +204,16 @@ export default function AdminLayout(){
       icon:<FiShoppingCart size={20}/>,
       path:"/admin/orders",
     },
+    {
+  name: "Notifications",
+  path: "/admin/notifications",
+  icon: FiBell,
+},
+{
+  name: "Send Notification",
+  path: "/admin/send-notification",
+  icon: FiSend,
+},
 
 
   ];
