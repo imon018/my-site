@@ -121,158 +121,145 @@ export default function ProductCard({
 
 
 
-      {/* IMAGE */}
+ {/* IMAGE */}
 
+<div
+  className="
+    relative
+    overflow-hidden
+    bg-gray-100
+  "
+>
 
-      <div
 
-        className="
-          relative
-          overflow-hidden
-          bg-white
-          flex
-          items-center
-          justify-center
-        "
+  <img
 
-      >
+    src={
+      product.image ||
+      product.images?.[0] ||
+      "https://via.placeholder.com/600"
+    }
 
 
-        <img
+    alt={product.name}
 
-          src={productImage}
 
-          alt={product.name}
+    className={`
+      w-full
 
+      object-cover
 
-          className={`
-            w-full
+      transition-all
+      duration-700
 
-            object-contain
+      group-hover:scale-110
 
-            transition
-            duration-700
 
-            group-hover:scale-105
+      ${
+        compact
+        ?
+        "h-36 md:h-44"
+        :
+        "h-64 sm:h-72 md:h-80"
+      }
 
+    `}
 
-            ${
-              compact
+  />
 
-              ?
 
-              "h-36 md:h-44"
 
-              :
+  {/* WISHLIST */}
 
-              "h-64 sm:h-72 md:h-80"
 
-            }
+  <button
 
-          `}
+    onClick={()=>
+      toggleWishlist(product)
+    }
 
-        />
+    className="
+      absolute
+      top-1
+      right-1
 
+      text-sm
 
+      bg-transparent
 
+      backdrop-blur-sm
 
+      text-white
 
-        {/* WISHLIST */}
+      drop-shadow-[0_1px_4px_rgba(0,0,0,.9)]
 
+      opacity-90
 
-        <button
+      hover:scale-110
 
-          onClick={()=>
-            toggleWishlist(product)
-          }
+      transition-all
 
+      duration-300
+    "
 
-          className="
-            absolute
-            top-2
-            right-2
+  >
 
-            text-sm
+    {
+      liked
+      ?
+      "❤️"
+      :
+      "🤍"
+    }
 
-            bg-white/70
 
-            backdrop-blur-sm
+  </button>
 
-            rounded-full
 
-            w-8
-            h-8
 
-            flex
-            items-center
-            justify-center
 
-            text-black
+  {/* NEW BADGE */}
 
-            shadow
 
-            hover:scale-110
+  <div
 
-            transition
-          "
+    className="
+      absolute
 
-        >
+      top-1.5
+      left-1.5
 
-          {
-            liked
-            ?
-            "❤️"
-            :
-            "🤍"
-          }
+      px-1.5
+      py-[1px]
 
+      rounded-full
 
-        </button>
+      border
+      border-amber-400/70
 
+      bg-black/20
 
+      backdrop-blur-md
 
+      text-amber-400
 
+      font-semibold
 
-        {/* NEW BADGE */}
+      text-[7px]
 
+      shadow-[0_0_10px_rgba(245,158,11,.25)]
+    "
 
-        <div
+  >
 
-          className="
-            absolute
+    ✨ New
 
-            top-2
-            left-2
+  </div>
 
-            px-2
-            py-1
 
-            rounded-full
 
-            border
-            border-amber-400/70
+</div>
 
-            bg-black/20
-
-            backdrop-blur-md
-
-            text-amber-500
-
-            font-bold
-
-            text-[9px]
-
-          "
-
-        >
-
-          ✨ New
-
-        </div>
-
-
-
-      </div>
 
             {/* CONTENT */}
 
@@ -549,7 +536,7 @@ export default function ProductCard({
               <FiEye size={13}/>
 
 
-              View Detail
+             
 
 
             </span>
