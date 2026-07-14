@@ -1,4 +1,22 @@
+import {
+  useSettings
+} from "../context/SettingsContext";
+
+import {
+  getSiteConfig
+} from "../config/siteConfig";
+
 export default function AboutUs() {
+
+
+  const {
+    settings
+  } = useSettings();
+
+
+  const site =
+    getSiteConfig(settings);
+  
   return (
     <section
       className="
@@ -50,7 +68,7 @@ export default function AboutUs() {
             leading-relaxed
             "
           >
-            Welcome to Dream Mode, where fashion meets confidence.
+            Welcome to {site.appName}, where fashion meets confidence.
             We believe every outfit tells a story and our mission is
             to help you dress your dream and live your style.
           </p>
@@ -82,7 +100,7 @@ export default function AboutUs() {
 
 
             <p>
-              Dream Mode is a premium fashion destination focused on
+              {site.appName} is a premium fashion destination focused on
               quality products, modern designs and customer satisfaction.
               We carefully select stylish dresses that match your lifestyle
               and make every moment special.
