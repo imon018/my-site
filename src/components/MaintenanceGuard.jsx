@@ -2,9 +2,12 @@ import {
   useSettings,
 } from "../context/SettingsContext";
 
+
 import useAuth from "../hooks/useAuth";
 
+
 import MaintenancePage from "./MaintenancePage";
+
 
 
 export default function MaintenanceGuard({
@@ -18,9 +21,11 @@ export default function MaintenanceGuard({
   } = useSettings();
 
 
+
   const {
     user
   } = useAuth();
+
 
 
 
@@ -34,34 +39,63 @@ export default function MaintenanceGuard({
 
 
 
+
   const isAdmin =
     user?.role === "admin";
 
 
 
 
-  const endTime =
-    settings?.maintenanceEndTime
-    ?
-    new Date(
-      settings.maintenanceEndTime
-    ).getTime()
-    :
-    null;
+
+
+  const maintenanceMode =
+    settings?.maintenanceMode === true
+    ||
+    settings?.maintenanceMode === "true";
 
 
 
 
-  const maintenanceExpired =
-    endTime &&
-    Date.now() >= endTime;
+
+
+
+  let maintenanceExpired = false;
+
+
+
+
+
+  if(settings?.maintenanceEndTime){
+
+
+    const endTime =
+      new Date(
+        settings.maintenanceEndTime
+      ).getTime();
+
+
+
+    if(
+      !isNaN(endTime)
+      &&
+      Date.now() >= endTime
+    ){
+
+      maintenanceExpired = true;
+
+    }
+
+
+  }
+
+
 
 
 
 
 
   if(
-    settings?.maintenanceMode
+    maintenanceMode
     &&
     !maintenanceExpired
     &&
@@ -69,10 +103,14 @@ export default function MaintenanceGuard({
   ){
 
     return (
+
       <MaintenancePage/>
+
     );
 
   }
+
+
 
 
 
