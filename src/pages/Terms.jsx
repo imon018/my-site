@@ -1,8 +1,14 @@
 import PolicyLayout from "../components/PolicyLayout";
 import PolicyFAQ from "../components/PolicyFAQ";
-
+import {
+  useSettings
+} from "../context/SettingsContext";
 
 export default function Terms(){
+
+  const {
+  settings
+}=useSettings();
 
 
 const faq=[
@@ -18,7 +24,7 @@ answer:"Orders may be cancelled in certain situations such as incorrect informat
 },
 
 {
-question:"Who owns Dream Mode website content?",
+question:"Who owns settings.storeName || "DREAM MODE"} website content?",
 answer:"All website content, logo, images and design belong to Dream Mode."
 }
 
@@ -41,7 +47,7 @@ description="Please read our terms before using Dream Mode website and services.
 
 
 <p>
-By accessing and using Dream Mode website, you agree
+By accessing and using settings.storeName || "DREAM MODE"} website, you agree
 to follow our terms and conditions.
 </p>
 
@@ -84,7 +90,7 @@ Order Policy
 
 
 <p>
-Dream Mode reserves the right to cancel orders due to
+settings.storeName || "DREAM MODE"} reserves the right to cancel orders due to
 incorrect information, payment verification issues or
 unavailable stock.
 </p>
@@ -113,7 +119,7 @@ Copyright
 
 
 <p>
-All logos, designs, images and content belong to Dream Mode
+All logos, designs, images and content belong to settings.storeName || "DREAM MODE"}
 and cannot be used without permission.
 </p>
 
