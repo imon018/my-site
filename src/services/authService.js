@@ -32,6 +32,11 @@ import {
 } from "../utils/notificationHelper";
 
 
+import {
+  sendNotification,
+} from "./notificationService";
+
+
 
 
 
@@ -177,36 +182,22 @@ export const register = async(
 
 
 
-    await setDoc(
+    await sendNotification({
 
-      userRef,
-
-      {
-
-        name,
-
-        email:
-        result.user.email,
+  receiverId:
+  result.user.uid,
 
 
-        phone:"",
+  title: `Welcome to ${settings.storeName} 🎉`,
+
+  message:
+  "Thank you for joining us. Enjoy your shopping experience.",
 
 
-        address:"",
+  type:
+  "system",
 
-
-        photoURL:"",
-
-
-        role:"user",
-
-
-        createdAt:
-        serverTimestamp(),
-
-      }
-
-    );
+});
 
 
 
