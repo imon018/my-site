@@ -12,6 +12,7 @@ import {
 import {
   doc,
   setDoc,
+  getDoc,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -32,9 +33,63 @@ import {
 } from "../utils/notificationHelper";
 
 
-import {
-  sendNotification,
-} from "./notificationService";
+
+
+
+// =================================
+// GET STORE NAME
+// =================================
+
+const getStoreName = async()=>{
+
+
+  try{
+
+
+    const settingsDoc =
+    await getDoc(
+      doc(
+        db,
+        "settings",
+        "store"
+      )
+    );
+
+
+
+    if(settingsDoc.exists()){
+
+
+      return (
+        settingsDoc.data().storeName
+        ||
+        "Dream Mode"
+      );
+
+
+    }
+
+
+
+  }
+  catch(error){
+
+    console.log(
+      "Store name load error:",
+      error
+    );
+
+  }
+
+
+
+  return "Dream Mode";
+
+
+};
+
+
+
 
 
 
@@ -44,7 +99,6 @@ import {
 // =================================
 // LOGIN
 // =================================
-
 
 export const login = async(
   email,
@@ -91,8 +145,6 @@ export const login = async(
 
 
 
-  // Login Security Notification
-
   await createUserNotification({
 
     userId:
@@ -115,6 +167,7 @@ export const login = async(
 
 
 
+
   return result;
 
 
@@ -131,7 +184,6 @@ export const login = async(
 // =================================
 // REGISTER
 // =================================
-
 
 export const register = async(
   name,
@@ -182,22 +234,40 @@ export const register = async(
 
 
 
-    await sendNotification({
+    await setDoc(
 
-  receiverId:
-  result.user.uid,
+      userRef,
+
+      {
+
+        name,
+
+        email:
+        result.user.email,
+
+        phone:"",
+
+        address:"",
+
+        photoURL:"",
+
+        role:"user",
+
+        createdAt:
+        serverTimestamp(),
+
+      }
+
+    );
 
 
-  title: `Welcome to ${settings.storeName} 🎉`,
-
-  message:
-  "Thank you for joining us. Enjoy your shopping experience.",
 
 
-  type:
-  "system",
 
-});
+
+
+    const storeName =
+    await getStoreName();
 
 
 
@@ -205,7 +275,7 @@ export const register = async(
 
 
 
-    // User Welcome Notification
+    // USER WELCOME NOTIFICATION
 
 
     await createUserNotification({
@@ -215,11 +285,11 @@ export const register = async(
 
 
       title:
-      "🎉 Welcome to Dream Mode",
+      `🎉 Welcome to ${storeName}`,
 
 
       message:
-      "Your account has been created successfully.",
+      `Thank you for joining ${storeName}. Enjoy your shopping experience.`,
 
 
       type:
@@ -233,7 +303,8 @@ export const register = async(
 
 
 
-    // Admin New User Notification
+
+    // ADMIN NEW USER NOTIFICATION
 
 
     await createAdminNotification({
@@ -266,7 +337,9 @@ export const register = async(
   catch(error){
 
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     throw error;
@@ -288,7 +361,6 @@ export const register = async(
 // =================================
 // RESEND EMAIL VERIFICATION
 // =================================
-
 
 export const resendVerificationEmail =
 async(user)=>{
@@ -313,7 +385,6 @@ async(user)=>{
 // FORGOT PASSWORD
 // =================================
 
-
 export const forgotPassword =
 async(email)=>{
 
@@ -337,7 +408,6 @@ async(email)=>{
 // =================================
 // CHANGE PASSWORD
 // =================================
-
 
 export const changePassword =
 async(
@@ -366,7 +436,6 @@ async(
 // SEND VERIFICATION
 // =================================
 
-
 export const sendVerificationEmail =
 async(user)=>{
 
@@ -390,7 +459,6 @@ async(user)=>{
 // DELETE ACCOUNT
 // =================================
 
-
 export const deleteUserAccount =
 async(user)=>{
 
@@ -413,7 +481,6 @@ async(user)=>{
 // =================================
 // LOGOUT
 // =================================
-
 
 export const logout = ()=>{
 
