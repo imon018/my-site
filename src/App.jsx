@@ -1,24 +1,39 @@
 import AppRoutes from "./routes/AppRoutes";
 
+
 import AuthProvider from "./context/AuthContext";
+
+
+import {
+  NotificationProvider,
+} from "./context/NotificationContext";
+
 
 import CartProvider from "./context/CartContext";
 
+
 import WishlistProvider from "./context/WishlistContext";
 
+
 import {
-  SettingsProvider
+  SettingsProvider,
 } from "./context/SettingsContext";
+
 
 import MaintenanceGuard from "./components/MaintenanceGuard";
 
+
 import {
-  Toaster
+  Toaster,
 } from "react-hot-toast";
+
 
 import useAuth from "./hooks/useAuth";
 
+
 import ScrollToTop from "./components/ScrollToTop";
+
+
 
 
 
@@ -27,9 +42,12 @@ import ScrollToTop from "./components/ScrollToTop";
 function AppContent(){
 
 
+
   const {
-    loading
+    loading,
   } = useAuth();
+
+
 
 
 
@@ -41,27 +59,40 @@ function AppContent(){
     return (
 
       <div
+
         className="
         min-h-screen
         flex
         items-center
         justify-center
         "
+
       >
+
 
         <div className="text-center">
 
 
-          <div className="text-4xl mb-4">
+
+          <div className="
+          text-4xl
+          mb-4
+          ">
+
             ⏳
+
           </div>
 
 
+
+
           <h2
+
             className="
             text-2xl
             font-bold
             "
+
           >
 
             Loading Dream Mode...
@@ -69,11 +100,15 @@ function AppContent(){
           </h2>
 
 
+
+
           <p
+
             className="
             text-gray-500
             mt-2
             "
+
           >
 
             Checking authentication
@@ -81,7 +116,9 @@ function AppContent(){
           </p>
 
 
+
         </div>
+
 
 
       </div>
@@ -90,6 +127,8 @@ function AppContent(){
 
 
   }
+
+
 
 
 
@@ -141,34 +180,49 @@ export default function App(){
 
   return (
 
+
     <AuthProvider>
 
 
       <SettingsProvider>
 
 
-        <CartProvider>
 
-
-          <WishlistProvider>
-
-
-
-            <ScrollToTop />
+        <NotificationProvider>
 
 
 
-            <AppContent />
+          <CartProvider>
 
 
 
-          </WishlistProvider>
+            <WishlistProvider>
 
 
-        </CartProvider>
+
+
+              <ScrollToTop />
+
+
+
+              <AppContent />
+
+
+
+            </WishlistProvider>
+
+
+
+          </CartProvider>
+
+
+
+        </NotificationProvider>
+
 
 
       </SettingsProvider>
+
 
 
     </AuthProvider>
