@@ -6,6 +6,7 @@ import {
 
 export default function Terms(){
 
+  
   const {
   settings
 }=useSettings();
