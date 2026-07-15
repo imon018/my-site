@@ -24,6 +24,8 @@ import MobileDashboard from "./components/MobileDashboard";
 
 import DesktopDashboard from "./components/DesktopDashboard";
 
+import AdminBackButton from "../../components/admin/AdminBackButton";
+
 
 
 export default function Dashboard(){
@@ -215,7 +217,9 @@ return (
 
 <>
 
+<AdminBackButton />
 
+  
 {/* MOBILE */}
 
 <div className="lg:hidden">
