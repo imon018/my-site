@@ -10,13 +10,11 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  getDocs,
   query,
   where,
   orderBy,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
-
 
 
 
@@ -70,152 +68,40 @@ export async function createNotification(data){
 
 
 
-
-
-// =========================
-// GET USER NOTIFICATIONS
-// =========================
-
-
-export async function getUserNotifications(userId){
-
-
-  const q=query(
-
-    collection(
-      db,
-      "notifications"
-    ),
-
-
-    where(
-      "userId",
-      "==",
-      userId
-    ),
-
-
-    orderBy(
-      "createdAt",
-      "desc"
-    )
-
-  );
-
-
-
-  const snapshot =
-  await getDocs(q);
-
-
-
-  return snapshot.docs.map(
-    doc=>({
-
-      id:doc.id,
-
-      ...doc.data()
-
-    })
-  );
-
-
-}
-
-
-
-
-
-
-
-
-// =========================
-// GET ADMIN NOTIFICATIONS
-// =========================
-
-
-export async function getAdminNotifications(){
-
-
- const q=query(
-
-    collection(
-      db,
-      "notifications"
-    ),
-
-
-    where(
-      "receiverId",
-      "==",
-      "ADMIN"
-    ),
-
-
-    orderBy(
-      "createdAt",
-      "desc"
-    )
-
- );
-
-
- const snapshot =
- await getDocs(q);
-
-
-
- return snapshot.docs.map(
-  doc=>({
-
-    id:doc.id,
-
-    ...doc.data()
-
-  })
- );
-
-
-}
-
-
-
-
-
-
-
-
-
 // =========================
 // REALTIME USER LISTENER
+// USER + ALL USERS
 // =========================
 
 
 export function listenUserNotifications(
-userId,
-callback
+  userId,
+  callback
 ){
 
 
-const q=query(
+const q = query(
 
-collection(
-db,
-"notifications"
-),
-
-
-where(
-"userId",
-"==",
-userId
-),
+  collection(
+    db,
+    "notifications"
+  ),
 
 
-orderBy(
-"createdAt",
-"desc"
-)
+  where(
+    "receiverId",
+    "in",
+    [
+      userId,
+      "ALL_USERS"
+    ]
+  ),
+
+
+  orderBy(
+    "createdAt",
+    "desc"
+  )
 
 );
 
@@ -223,34 +109,35 @@ orderBy(
 
 return onSnapshot(
 
-q,
+  q,
 
-(snapshot)=>{
+  (snapshot)=>{
 
 
-const data =
-snapshot.docs.map(
-doc=>({
+    const data =
+    snapshot.docs.map(
 
-id:doc.id,
+      doc=>({
 
-...doc.data()
+        id:doc.id,
 
-})
+        ...doc.data()
+
+      })
+
+    );
+
+
+    callback(data);
+
+
+  }
+
+
 );
 
 
-callback(data);
-
-
 }
-
-
-);
-
-
-}
-
 
 
 
@@ -271,23 +158,23 @@ callback
 
 const q=query(
 
-collection(
-db,
-"notifications"
-),
+  collection(
+    db,
+    "notifications"
+  ),
 
 
-where(
-"receiverId",
-"==",
-"ADMIN"
-),
+  where(
+    "receiverId",
+    "==",
+    "ADMIN"
+  ),
 
 
-orderBy(
-"createdAt",
-"desc"
-)
+  orderBy(
+    "createdAt",
+    "desc"
+  )
 
 );
 
@@ -302,6 +189,7 @@ q,
 
 const data =
 snapshot.docs.map(
+
 doc=>({
 
 id:doc.id,
@@ -309,7 +197,9 @@ id:doc.id,
 ...doc.data()
 
 })
+
 );
+
 
 
 callback(data);
@@ -320,6 +210,48 @@ callback(data);
 
 );
 
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// GET USER NOTIFICATIONS
+// =========================
+
+
+export async function getUserNotifications(
+userId
+){
+
+
+return [];
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// GET ADMIN NOTIFICATIONS
+// =========================
+
+
+export async function getAdminNotifications(){
+
+
+return [];
 
 }
 
@@ -379,6 +311,7 @@ notifications
 
 
 const updates =
+
 notifications.map(
 
 (item)=>
@@ -403,7 +336,9 @@ read:true
 
 
 
-await Promise.all(updates);
+await Promise.all(
+updates
+);
 
 
 }
@@ -441,42 +376,14 @@ id
 
 
 
-// =========================
-// SEND ADMIN NOTIFICATION
-// =========================
 
-export async function sendAdminNotification(data){
-
-  await addDoc(
-
-    collection(
-      db,
-      "notifications"
-    ),
-
-    {
-
-      ...data,
-
-      receiverId:"ADMIN",
-
-      read:false,
-
-      createdAt:
-      serverTimestamp()
-
-    }
-
-  );
-
-}
 
 
 
 
 
 // =========================
-// DELETE ALL USER NOTIFICATIONS
+// DELETE ALL
 // =========================
 
 
@@ -486,6 +393,7 @@ notifications
 
 
 const deletes =
+
 notifications.map(
 
 (item)=>
@@ -505,49 +413,120 @@ item.id
 
 
 
-await Promise.all(deletes);
+await Promise.all(
+deletes
+);
 
 
 }
 
 
+
+
+
+
+
+
+
 // =========================
-// SEND NOTIFICATION TO ALL USERS
+// SEND ADMIN NOTIFICATION
 // =========================
 
-export async function sendNotificationToAllUsers(data){
 
-  await addDoc(
+export async function sendAdminNotification(
+data
+){
 
-    collection(
-      db,
-      "notifications"
-    ),
 
-    {
+await addDoc(
 
-      ...data,
+collection(
+db,
+"notifications"
+),
 
-      receiverId:"ALL_USERS",
 
-      read:false,
+{
 
-      createdAt:
-      serverTimestamp()
+...data,
 
-    }
+receiverId:"ADMIN",
 
-  );
+read:false,
+
+createdAt:
+serverTimestamp()
 
 }
 
 
+);
+
+
+}
+
+
+
+
+
+
+
+
+
 // =========================
-// SEND SINGLE NOTIFICATION
+// SEND TO ALL USERS
 // =========================
 
-export async function sendNotification(data){
 
-  return createNotification(data);
+export async function sendNotificationToAllUsers(
+data
+){
+
+
+await addDoc(
+
+collection(
+db,
+"notifications"
+),
+
+
+{
+
+...data,
+
+receiverId:"ALL_USERS",
+
+read:false,
+
+createdAt:
+serverTimestamp()
+
+}
+
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// SEND SINGLE
+// =========================
+
+
+export async function sendNotification(
+data
+){
+
+return createNotification(data);
 
 }
