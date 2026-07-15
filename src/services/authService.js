@@ -6,6 +6,8 @@ import {
   sendPasswordResetEmail,
   updatePassword,
   deleteUser,
+  EmailAuthProvider,
+reauthenticateWithCredential,
 } from "firebase/auth";
 
 
@@ -200,33 +202,80 @@ user
 // =========================
 
 export async function requestPasswordChange(
-email
+  user,
+  currentPassword,
+  newPassword
 ){
 
-  const actionCodeSettings = {
+  if(!user){
 
+    throw new Error(
+      "User not found"
+    );
 
-    url:
-    `${window.location.origin}/reset-password`,
-
-
-    handleCodeInApp:true,
-
-
-  };
+  }
 
 
 
-  await sendPasswordResetEmail(
+  if(!currentPassword){
 
-    auth,
+    throw new Error(
+      "Current password required"
+    );
 
-    email,
+  }
 
-    actionCodeSettings
+
+
+  const credential =
+  EmailAuthProvider.credential(
+    user.email,
+    currentPassword
+  );
+
+
+
+  await reauthenticateWithCredential(
+    user,
+    credential
+  );
+
+
+
+
+  await setDoc(
+
+    doc(
+      db,
+      "passwordChangeRequests",
+      user.uid
+    ),
+
+    {
+
+      uid:user.uid,
+
+      email:user.email,
+
+      newPassword,
+
+      createdAt:
+      serverTimestamp()
+
+    }
 
   );
 
+
+
+
+  await sendEmailVerification(
+    user
+  );
+
+
+
+  return true;
 
 }
 
