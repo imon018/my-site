@@ -617,9 +617,7 @@ shadow-[0_0_20px_rgba(245,158,11,.18)]
   {/* WHATSAPP */}
 
   <a
-    href={`https://wa.me/${
-      banner?.whatsappNumber || settings.whatsapp
-    }`}
+    href={`https://wa.me/${settings.whatsapp}`}
     target="_blank"
     rel="noreferrer"
     className="w-full"
