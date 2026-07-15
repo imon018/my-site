@@ -2,6 +2,7 @@ import {
   useState,
 } from "react";
 
+
 import {
   useNavigate,
   useLocation,
@@ -26,436 +27,486 @@ import Button from "../components/ui/Button";
 
 
 
-export default function Login() {
+export default function Login(){
 
 
-  const navigate =
-    useNavigate();
+const navigate =
+useNavigate();
 
 
-  const location =
-    useLocation();
-
-
-
-
-
-  const [email,setEmail] =
-    useState("");
+const location =
+useLocation();
 
 
 
-  const [password,setPassword] =
-    useState("");
+const [
+email,
+setEmail
+]=useState("");
 
 
 
-  const [unverifiedUser,setUnverifiedUser] =
-    useState(null);
+const [
+password,
+setPassword
+]=useState("");
 
 
 
-
-
-
-
-  const handleLogin =
-  async(e)=>{
-
-
-    e.preventDefault();
-
-
-
-    try{
-
-
-      const result =
-        await login(
-          email,
-          password
-        );
-
-
-
-      await result.user.reload();
+const [
+unverifiedUser,
+setUnverifiedUser
+]=useState(null);
 
 
 
 
 
-      const isResetLogin =
-localStorage.getItem("passwordResetDone");
 
+
+const handleLogin =
+async(e)=>{
+
+
+e.preventDefault();
+
+
+
+try{
+
+
+const result =
+await login(
+email,
+password
+);
+
+
+
+const user =
+result.user;
+
+
+
+await user.reload();
+
+
+
+
+
+
+// Email verification check
 
 if(
-!result.user.emailVerified &&
-!isResetLogin
+!user.emailVerified
 ){
 
-  setUnverifiedUser(
-    result.user
-  );
+
+setUnverifiedUser(
+user
+);
 
 
-  await logout();
+
+await logout();
 
 
-  errorToast(
-    "Please verify your email first."
-  );
+
+errorToast(
+"Please verify your email first."
+);
 
 
-  return;
+
+return;
 
 }
 
 
-localStorage.removeItem(
-"passwordResetDone"
+
+
+
+
+successToast(
+"Login Successful"
 );
 
 
 
 
 
-      successToast(
-        "Login Successful"
-      );
 
 
+const redirect =
+new URLSearchParams(
+location.search
+)
+.get(
+"redirect"
+);
 
 
 
 
-      const redirect =
-        new URLSearchParams(
-          location.search
-        )
-        .get("redirect");
 
+if(redirect){
 
 
+navigate(
+`/${redirect}`
+);
 
 
-      if(redirect){
+return;
 
 
-        navigate(
-          `/${redirect}`
-        );
+}
 
 
-        return;
 
 
-      }
 
 
 
+// Role check from Firestore
 
+if(
+result.role === "admin"
+){
 
 
+navigate(
+"/admin"
+);
 
-      if(
-        result.user.role === "admin"
-      ){
 
-        navigate(
-          "/admin"
-        );
+}
+else{
 
 
-      }else{
+navigate(
+"/profile"
+);
 
 
-        navigate(
-          "/profile"
-        );
+}
 
 
-      }
 
 
 
+}
+catch(error){
 
 
 
-    }catch(err){
+console.log(
+"LOGIN ERROR:",
+error
+);
 
 
 
-      let message =
-        "Login failed. Please try again.";
 
+let message =
+"Login failed. Please try again.";
 
 
 
 
-      switch(err.code){
+switch(error.code){
 
 
-        case "auth/user-not-found":
+case "auth/user-not-found":
 
-          message =
-          "এই email দিয়ে কোনো account পাওয়া যায়নি.";
+message =
+"এই email দিয়ে কোনো account পাওয়া যায়নি.";
 
-          break;
+break;
 
 
 
+case "auth/wrong-password":
 
-        case "auth/wrong-password":
+message =
+"Password ভুল হয়েছে.";
 
-          message =
-          "Password ভুল হয়েছে.";
+break;
 
-          break;
 
 
+case "auth/invalid-credential":
 
+message =
+"Email অথবা Password ভুল হয়েছে.";
 
-        case "auth/invalid-credential":
+break;
 
-          message =
-          "Email অথবা Password ভুল হয়েছে.";
 
-          break;
 
+case "auth/invalid-email":
 
+message =
+"সঠিক email address দিন.";
 
+break;
 
-        case "auth/invalid-email":
 
-          message =
-          "সঠিক email address দিন.";
 
-          break;
+case "auth/too-many-requests":
 
+message =
+"অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন.";
 
+break;
 
 
-        case "auth/too-many-requests":
 
-          message =
-          "অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন.";
+default:
 
-          break;
+message =
+error.message ||
+"Login failed.";
 
+}
 
 
 
-        default:
+errorToast(
+message
+);
 
-          message =
-          "Login failed. Please try again.";
 
-      }
+}
 
 
 
+};
 
 
-      errorToast(
-        message
-      );
 
 
 
-    }
 
 
-  };
 
 
 
+const handleResendVerification =
+async()=>{
 
 
+try{
 
 
+if(!unverifiedUser)
+return;
 
 
-  const handleResendVerification =
-  async()=>{
 
 
-    try{
+await resendVerificationEmail(
+unverifiedUser
+);
 
 
-      if(!unverifiedUser)
-        return;
 
+successToast(
+"Verification email sent again."
+);
 
 
 
-      await resendVerificationEmail(
-        unverifiedUser
-      );
+}
+catch(error){
 
 
+errorToast(
+error.message
+);
 
-      successToast(
-        "Verification email sent again."
-      );
 
+}
 
 
-    }catch(err){
 
+};
 
-      errorToast(
-        err.message
-      );
 
 
-    }
 
 
-  };
 
 
 
 
+return (
 
+<div className="
+max-w-md
+mx-auto
+py-20
+px-6
+">
 
 
+<h1 className="
+text-3xl
+font-bold
+mb-6
+">
 
+Login
 
-  return (
+</h1>
 
 
-    <div className="max-w-md mx-auto py-20 px-6">
 
 
 
-      <h1 className="text-3xl font-bold mb-6">
+<form
 
-        Login
+onSubmit={handleLogin}
 
-      </h1>
+className="
+space-y-4
+"
 
+>
 
 
 
+<input
 
+type="email"
 
+className="
+w-full
+border
+p-3
+rounded-xl
+"
 
-      <form
+placeholder="Email"
 
-        onSubmit={handleLogin}
+value={email}
 
-        className="space-y-4"
+onChange={(e)=>
+setEmail(
+e.target.value
+)
+}
 
-      >
+/>
 
 
 
 
 
-        <input
+<input
 
-          className="w-full border p-3 rounded-xl"
+type="password"
 
-          placeholder="Email"
+className="
+w-full
+border
+p-3
+rounded-xl
+"
 
-          value={email}
+placeholder="Password"
 
-          onChange={(e)=>
-            setEmail(
-              e.target.value
-            )
-          }
+value={password}
 
-        />
+onChange={(e)=>
+setPassword(
+e.target.value
+)
+}
 
+/>
 
 
 
 
 
 
-        <input
+<Button
 
-          type="password"
+type="submit"
 
-          className="w-full border p-3 rounded-xl"
+className="
+w-full
+"
 
-          placeholder="Password"
+>
 
-          value={password}
+Login
 
-          onChange={(e)=>
-            setPassword(
-              e.target.value
-            )
-          }
+</Button>
 
-        />
 
 
 
 
 
 
+<div className="
+text-center
+space-y-3
+">
 
-        <Button
 
-          type="submit"
 
-          className="w-full"
+<Link
 
-        >
+to="/forgot-password"
 
-          Login
+className="
+block
+text-blue-600
+hover:underline
+text-sm
+"
 
-        </Button>
+>
 
+Forgot Password?
 
+</Link>
 
 
 
 
 
+<p className="
+text-sm
+text-gray-600
+">
 
-        <div className="text-center space-y-3">
+Don't have an account?
 
+{" "}
 
-  <Link
 
-    to="/forgot-password"
+<Link
 
-    className="block text-blue-600 hover:underline text-sm font-medium"
+to="/register"
 
-  >
+className="
+text-blue-600
+font-semibold
+"
 
-    Forgot Password?
+>
 
-  </Link>
+Register Now
 
+</Link>
 
 
+</p>
 
-
-  <p className="text-sm text-gray-600">
-
-    Don't have an account?
-
-    {" "}
-
-    <Link
-
-      to="/register"
-
-      className="text-blue-600 font-semibold hover:underline"
-
-    >
-
-      Register Now
-
-    </Link>
-
-
-  </p>
 
 
 </div>
@@ -466,43 +517,42 @@ localStorage.removeItem(
 
 
 
-        {
-          unverifiedUser && (
+{
+unverifiedUser &&
 
 
-            <button
+<button
 
-              type="button"
+type="button"
 
-              onClick={
-                handleResendVerification
-              }
+onClick={
+handleResendVerification
+}
 
-              className="w-full text-blue-600 font-medium mt-3"
+className="
+w-full
+text-blue-600
+font-medium
+"
 
-            >
+>
 
-              Resend Verification Email
+Resend Verification Email
 
-            </button>
-
-
-          )
-
-        }
-
+</button>
 
 
-
-
-
-      </form>
+}
 
 
 
-    </div>
+
+</form>
 
 
-  );
+</div>
+
+);
+
 
 }
