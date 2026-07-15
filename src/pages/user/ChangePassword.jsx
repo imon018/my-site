@@ -1,231 +1,295 @@
 import {
-  useState,
+  useState
 } from "react";
+
 
 import useAuth from "../../hooks/useAuth";
 
+
 import {
-  changePassword,
+  changePassword
 } from "../../services/authService";
+
 
 import Button from "../../components/ui/Button";
 
+
 import {
   successToast,
-  errorToast,
+  errorToast
 } from "../../components/ui/Toast";
+
 
 
 
 export default function ChangePassword(){
 
 
-  const { user } = useAuth();
+const {user}=useAuth();
 
 
-  const [newPassword,setNewPassword] =
-    useState("");
 
-  const [confirmPassword,setConfirmPassword] =
-    useState("");
+const [
+currentPassword,
+setCurrentPassword
+]=useState("");
 
-  const [loading,setLoading] =
-    useState(false);
 
 
+const [
+newPassword,
+setNewPassword
+]=useState("");
 
 
 
-  const handleChangePassword =
-  async()=>{
+const [
+loading,
+setLoading
+]=useState(false);
 
 
-    if(!newPassword || !confirmPassword){
 
-      errorToast(
-        "Fill all password fields."
-      );
 
-      return;
 
-    }
+const handleChangePassword =
+async()=>{
 
 
+if(
+!currentPassword ||
+!newPassword
+){
 
-    if(newPassword.length < 6){
+errorToast(
+"Fill all password fields."
+);
 
-      errorToast(
-        "Password must be at least 6 characters."
-      );
+return;
 
-      return;
+}
 
-    }
 
 
 
-    if(newPassword !== confirmPassword){
+if(newPassword.length < 6){
 
-      errorToast(
-        "Passwords do not match."
-      );
+errorToast(
+"Password must be at least 6 characters."
+);
 
-      return;
+return;
 
-    }
+}
 
 
 
+try{
 
-    try{
 
+setLoading(true);
 
-      setLoading(true);
 
 
+await changePassword(
 
-      await changePassword(
-        user,
-        newPassword
-      );
+user,
 
+currentPassword,
 
+newPassword
 
-      setNewPassword("");
+);
 
-      setConfirmPassword("");
 
 
+setCurrentPassword("");
 
-      successToast(
-        "Password changed successfully."
-      );
+setNewPassword("");
 
 
 
-    }catch(error){
+successToast(
+"Password changed. Verification email sent."
+);
 
 
-      console.log(error);
 
+}
+catch(error){
 
-      errorToast(
-        error.message
-      );
 
+console.log(error);
 
-    }finally{
 
 
-      setLoading(false);
+if(
+error.code === 
+"auth/wrong-password"
+){
 
+errorToast(
+"Current password is incorrect."
+);
 
-    }
+}
 
+else{
 
-  };
+errorToast(
+error.message
+);
 
+}
 
 
 
+}
+finally{
 
-  return (
 
-    <div>
+setLoading(false);
 
 
-      <h1 className="text-3xl font-bold mb-8">
+}
 
-        Change Password
 
-      </h1>
+};
 
 
 
 
-      <div className="bg-white rounded-3xl shadow p-8">
 
 
-        <input
+return (
 
-          type="password"
+<div>
 
-          className="
-          w-full
-          border
-          rounded-xl
-          p-3
-          mb-4
-          "
 
-          placeholder="New Password"
+<h1 className="
+text-3xl
+font-bold
+mb-8
+">
 
-          value={newPassword}
+Change Password
 
-          onChange={(e)=>
-            setNewPassword(
-              e.target.value
-            )
-          }
+</h1>
 
-        />
 
 
 
+<div className="
+bg-white
+rounded-3xl
+shadow-lg
+p-6
+md:p-8
+max-w-xl
+">
 
-        <input
 
-          type="password"
+<input
 
-          className="
-          w-full
-          border
-          rounded-xl
-          p-3
-          "
+type="password"
 
-          placeholder="Confirm Password"
+placeholder="Current Password"
 
-          value={confirmPassword}
+className="
+w-full
+border
+border-gray-200
+rounded-2xl
+px-5
+py-4
+mb-5
+outline-none
+focus:ring-2
+focus:ring-black
+"
 
-          onChange={(e)=>
-            setConfirmPassword(
-              e.target.value
-            )
-          }
+value={currentPassword}
 
-        />
+onChange={(e)=>
+setCurrentPassword(
+e.target.value
+)
+}
 
+/>
 
 
 
-        <Button
 
-          onClick={handleChangePassword}
+<input
 
-          disabled={loading}
+type="password"
 
-          className="w-full mt-6"
+placeholder="New Password"
 
-        >
+className="
+w-full
+border
+border-gray-200
+rounded-2xl
+px-5
+py-4
+mb-6
+outline-none
+focus:ring-2
+focus:ring-black
+"
 
-          {
-            loading
-            ?
-            "Updating..."
-            :
-            "Change Password"
-          }
+value={newPassword}
 
+onChange={(e)=>
+setNewPassword(
+e.target.value
+)
+}
 
-        </Button>
+/>
 
 
-      </div>
 
 
-    </div>
 
-  );
+<Button
+
+onClick={handleChangePassword}
+
+disabled={loading}
+
+className="
+w-full
+rounded-2xl
+py-4
+text-lg
+"
+
+>
+
+
+{
+loading
+?
+"Updating..."
+:
+"Change Password"
+}
+
+
+</Button>
+
+
+
+</div>
+
+
+
+</div>
+
+);
+
 
 }
