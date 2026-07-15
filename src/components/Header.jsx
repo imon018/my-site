@@ -12,6 +12,8 @@ import {
 
 import useAuth from "../hooks/useAuth";
 import useCart from "../hooks/useCart";
+import AdminDrawerHeader from "./admin/AdminDrawerHeader";
+import AdminDrawerMenu from "./admin/AdminDrawerMenu";
 
 import { logout } from "../services/authService";
 import {
@@ -21,6 +23,8 @@ import {
 export default function Header() {
 
   const { user } = useAuth();
+
+  const isAdmin = user?.role === "admin";
 
   const { cartCount } = useCart();
 
@@ -422,398 +426,623 @@ export default function Header() {
 
       {/* MOBILE DRAWER */}
 
-      <div
-        className={`
-        fixed
-        top-0
-        left-0
-        h-screen
-        w-[320px]
-        bg-white
-        z-[70]
-        transition-all
-        duration-300
-        shadow-2xl
-        ${
-          mobileOpen
-            ? "translate-x-0"
-            : "-translate-x-full"
-        }
-      `}
-      >
 
-        <div
-          className="
-          bg-[#071F57]
-          text-white
-          p-6
-        "
-        >
+<div
 
-          <div
-            className="
-            flex
-            items-center
-            justify-between
-          "
-          >
+className={`
+fixed
+top-0
+left-0
+h-screen
+w-[320px]
+z-[70]
+shadow-2xl
+transition-all
+duration-300
+flex
+flex-col
 
-            <div
-              className="
-              flex
-              items-center
-              gap-3
-            "
-            >
+${
+mobileOpen
+?
+"translate-x-0"
+:
+"-translate-x-full"
+}
 
-              <img
- src={
-   settings.logoUrl ||
-   "/logo.png"
- }
- alt={
-   settings.storeName ||
-   "Dream Mode"
- }
- className="
- w-10
- h-10
- object-contain
- "
+${
+isAdmin
+?
+"bg-[#FAF7F2]"
+:
+"bg-white"
+}
+
+`}
+
+>
+
+
+
+
+
+{/* DRAWER CONTENT */}
+
+
+<div
+
+className="
+flex-1
+overflow-y-auto
+"
+
+>
+
+
+
+{
+
+isAdmin
+
+?
+
+<>
+
+
+{/* ADMIN HEADER */}
+
+
+<AdminDrawerHeader
+
+
+closeDrawer={()=>setMobileOpen(false)}
+
+
+onNotificationClick={()=>{
+
+
+navigate(
+"/admin/notifications"
+);
+
+
+}}
+
+
 />
 
-              <div>
 
-                <h2
-                  className="
-                  text-xl
-                  font-bold
-                "
-                >
-                  {
- settings.storeName ||
- "DREAM MODE"
-}
-                </h2>
 
-                <p
-                  className="
-                  text-xs
-                  text-white/70
-                "
-                >
-                  Premium Fashion
-                </p>
 
-              </div>
 
-            </div>
 
-            <button
-              onClick={() =>
-                setMobileOpen(false)
-              }
-            >
+{/* ADMIN MENU */}
 
-              <FiX size={28} />
 
-            </button>
+<AdminDrawerMenu
 
-          </div>
 
-        </div>
+closeDrawer={()=>setMobileOpen(false)}
 
-        <div className="py-4">
 
-                    <Link
-            to="/"
-            onClick={() =>
-              setMobileOpen(false)
-            }
-            className="
-            flex
-            items-center
-            justify-between
-            px-6
-            py-4
-            hover:bg-slate-50
-            transition
-          "
-          >
-            <span>Home</span>
-          </Link>
+onLogout={handleLogout}
 
-          <Link
-            to="/shop"
-            onClick={() =>
-              setMobileOpen(false)
-            }
-            className="
-            flex
-            items-center
-            justify-between
-            px-6
-            py-4
-            hover:bg-slate-50
-            transition
-          "
-          >
-            <span>Shop</span>
-          </Link>
 
-          <Link
-            to="/cart"
-            onClick={() =>
-              setMobileOpen(false)
-            }
-            className="
-            flex
-            items-center
-            justify-between
-            px-6
-            py-4
-            hover:bg-slate-50
-            transition
-          "
-          >
-
-            <span>Cart</span>
-
-            <span
-              className="
-              bg-[#071F57]
-              text-white
-              text-xs
-              min-w-[22px]
-              h-[22px]
-              rounded-full
-              flex
-              items-center
-              justify-center
-            "
-            >
-              {cartCount}
-            </span>
-
-          </Link>
-
-          <div className="border-t my-4" />
-
-          {!user ? (
-
-            <>
-
-              <Link
-                to="/login"
-                onClick={() =>
-                  setMobileOpen(false)
-                }
-                className="
-                block
-                px-6
-                py-4
-                hover:bg-slate-50
-              "
-              >
-                Login
-              </Link>
-
-              <div className="px-6 mt-4">
-
-                <Link
-                  to="/register"
-                  onClick={() =>
-                    setMobileOpen(false)
-                  }
-                  className="
-                  w-full
-                  flex
-                  justify-center
-                  rounded-xl
-                  bg-[#071F57]
-                  text-white
-                  py-3
-                  font-semibold
-                "
-                >
-                  Join Now
-                </Link>
-
-              </div>
-
-            </>
-
-          ) : (
-
-            <>
-
-                            <Link
-                to="/profile"
-                onClick={() =>
-                  setMobileOpen(false)
-                }
-                className="
-                block
-                px-6
-                py-4
-                hover:bg-slate-50
-                transition
-              "
-              >
-                My Profile
-              </Link>
-
-              {user.role === "admin" && (
-
-                <Link
-                  to="/admin"
-                  onClick={() =>
-                    setMobileOpen(false)
-                  }
-                  className="
-                  block
-                  px-6
-                  py-4
-                  hover:bg-slate-50
-                  transition
-                "
-                >
-                  Dashboard
-                </Link>
-
-              )}
-
-              <button
-                onClick={handleLogout}
-                className="
-                w-full
-                text-left
-                px-6
-                py-4
-                text-red-600
-                hover:bg-red-50
-                transition
-              "
-              >
-                Logout
-              </button>
-
-            </>
-
-          )}
-
-        </div>
-
-        {/* DRAWER FOOTER */}
-
-        <div
-          className="
-          absolute
-          bottom-0
-          left-0
-          w-full
-          border-t
-          border-slate-200
-          p-6
-        "
-        >
-
-          <div
-            className="
-            rounded-2xl
-            bg-[#071F57]
-            text-white
-            p-5
-            text-center
-          "
-          >
-
-            <img
- src={
-   settings.logoUrl ||
-   "/logo.png"
- }
- alt={
-   settings.storeName ||
-   "Dream Mode"
- }
- className="
- w-14
- h-14
- mx-auto
- mb-3
- object-contain
- "
 />
 
-            <h3
-              className="
-              text-xl
-              font-bold
-            "
-            >
-              {
- settings.storeName ||
- "Dream Mode"
+
+
+</>
+
+
+:
+
+
+<>
+
+
+{/* USER DRAWER HEADER */}
+
+
+
+<div
+
+className="
+bg-[#071F57]
+text-white
+p-6
+"
+
+>
+
+
+<div
+
+className="
+flex
+items-center
+justify-between
+"
+
+>
+
+
+<div
+
+className="
+flex
+items-center
+gap-3
+"
+
+>
+
+
+<img
+
+src={
+settings.logoUrl ||
+"/logo.png"
 }
-            </h3>
 
-            <p
-              className="
-              text-xs
-              text-white/70
-              mt-2
-            "
-            >
-              Dress Your Dream,
-              Live Your Style
-            </p>
+className="
+w-10
+h-10
+object-contain
+"
 
-            <Link
-              to="/shop"
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className="
-              mt-5
-              flex
-              items-center
-              justify-center
-              py-3
-              rounded-xl
-              bg-white
-              text-[#071F57]
-              font-semibold
-            "
-            >
-              Shop Now
-            </Link>
+/>
 
-          </div>
 
-        </div>
 
-      </div>
 
-      {mobileOpen && (
+<div>
 
-        <div
-          onClick={() =>
-            setMobileOpen(false)
-          }
-          className="
-          fixed
-          inset-0
-          bg-black/40
-          backdrop-blur-sm
-          z-[60]
-        "
-        />
 
-      )}
+<h2
 
-    </>
+className="
+text-xl
+font-bold
+"
 
-  );
+>
+
+{
+settings.storeName ||
+"DREAM MODE"
+}
+
+</h2>
+
+
+
+<p
+
+className="
+text-xs
+text-white/70
+"
+
+>
+
+Premium Fashion
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<button
+
+onClick={()=>setMobileOpen(false)}
+
+>
+
+<FiX size={28}/>
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* USER MENU */}
+
+
+
+<div
+
+className="
+py-4
+"
+
+>
+
+
+<Link
+
+to="/"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+block
+px-6
+py-4
+hover:bg-slate-50
+"
+
+>
+
+Home
+
+</Link>
+
+
+
+
+<Link
+
+to="/shop"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+block
+px-6
+py-4
+hover:bg-slate-50
+"
+
+>
+
+Shop
+
+</Link>
+
+
+
+
+
+<Link
+
+to="/cart"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+flex
+justify-between
+px-6
+py-4
+hover:bg-slate-50
+"
+
+>
+
+Cart
+
+<span>
+
+{cartCount}
+
+</span>
+
+
+</Link>
+
+
+
+
+
+{
+
+!user
+
+?
+
+<>
+
+
+<Link
+
+to="/login"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+block
+px-6
+py-4
+"
+
+>
+
+Login
+
+</Link>
+
+
+
+<Link
+
+to="/register"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+mx-6
+mt-3
+flex
+justify-center
+rounded-xl
+bg-[#071F57]
+text-white
+py-3
+"
+
+>
+
+Join Now
+
+</Link>
+
+
+</>
+
+
+:
+
+
+<>
+
+
+<Link
+
+to="/profile"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+block
+px-6
+py-4
+"
+
+>
+
+My Profile
+
+</Link>
+
+
+
+<button
+
+onClick={handleLogout}
+
+className="
+w-full
+text-left
+px-6
+py-4
+text-red-600
+"
+
+>
+
+Logout
+
+</button>
+
+
+</>
+
 
 }
+
+
+
+</div>
+
+
+</>
+
+
+)
+
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* SAME FOOTER FOR BOTH USER + ADMIN */}
+
+
+
+<div
+
+className="
+border-t
+border-slate-200
+p-6
+bg-white
+"
+
+>
+
+
+<div
+
+className="
+rounded-2xl
+bg-[#071F57]
+text-white
+p-5
+text-center
+"
+
+>
+
+
+<img
+
+src={
+settings.logoUrl ||
+"/logo.png"
+}
+
+className="
+w-14
+h-14
+mx-auto
+mb-3
+object-contain
+"
+
+/>
+
+
+
+
+
+<h3
+
+className="
+text-xl
+font-bold
+"
+
+>
+
+{
+settings.storeName ||
+"Dream Mode"
+}
+
+</h3>
+
+
+
+
+
+<p
+
+className="
+text-xs
+text-white/70
+mt-2
+"
+
+>
+
+Dress Your Dream,
+Live Your Style
+
+</p>
+
+
+
+
+
+<Link
+
+to="/shop"
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+mt-5
+flex
+items-center
+justify-center
+py-3
+rounded-xl
+bg-white
+text-[#071F57]
+font-semibold
+"
+
+>
+
+Shop Now
+
+</Link>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+{/* OVERLAY */}
+
+
+
+{
+
+mobileOpen &&
+
+
+<div
+
+onClick={()=>setMobileOpen(false)}
+
+className="
+fixed
+inset-0
+bg-black/40
+backdrop-blur-sm
+z-[60]
+"
+
+></div>
+
+
+}
+
+           
+
