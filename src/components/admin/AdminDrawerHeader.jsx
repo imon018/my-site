@@ -29,6 +29,7 @@ export default function AdminDrawerHeader({
 }) {
 
 
+
 const {
   user
 }=useAuth();
@@ -105,7 +106,6 @@ const formatDate = (time)=>{
 
 return (
 
-
 <div
 
 className="
@@ -121,10 +121,7 @@ py-5
 
 
 
-
-
 {/* TOP HEADER */}
-
 
 
 <div
@@ -141,8 +138,7 @@ justify-between
 
 
 
-{/* LOGO AREA */}
-
+{/* LOGO */}
 
 
 <div
@@ -182,23 +178,34 @@ object-contain
 
 
 <h2
+
 className="
-text-[26px]
+text-[18px]
+md:text-[20px]
 font-bold
 whitespace-nowrap
 overflow-hidden
 text-ellipsis
-max-w-[170px]
+max-w-[120px]
 leading-none
 "
+
 style={{
+
 fontFamily:"'Playfair Display', serif"
+
 }}
+
 >
+
 {
- settings.storeName ||
- "DM"
+
+settings.storeName ||
+
+"DM"
+
 }
+
 </h2>
 
 
@@ -234,87 +241,7 @@ Admin Panel
 
 
 
-
-{/* ICONS */}
-
-
-
-<div
-
-className="
-flex
-items-center
-gap-3
-"
-
->
-
-
-
-<button
-
-onClick={onNotificationClick}
-
-className="
-relative
-w-10
-h-10
-rounded-xl
-flex
-items-center
-justify-center
-hover:bg-white/10
-"
-
->
-
-
-<FiBell size={24}/>
-
-
-
-{
-unreadCount > 0 &&
-
-
-<span
-
-className="
-absolute
--top-1
--right-1
-bg-red-500
-text-white
-text-[10px]
-font-bold
-w-5
-h-5
-rounded-full
-flex
-items-center
-justify-center
-"
-
->
-
-{
-unreadCount > 99
-?
-"99+"
-:
-unreadCount
-}
-
-</span>
-
-
-}
-
-
-</button>
-
-
-
+{/* CLOSE BUTTON */}
 
 
 
@@ -324,15 +251,15 @@ onClick={closeDrawer}
 
 >
 
-<FiX size={30}/>
+<FiX
+
+size={30}
+
+/>
 
 </button>
 
 
-
-
-
-</div>
 
 
 
@@ -356,7 +283,7 @@ className="
 mt-6
 flex
 items-center
-gap-4
+justify-between
 "
 
 >
@@ -365,7 +292,22 @@ gap-4
 
 
 
-{/* PHOTO */}
+
+{/* PROFILE */}
+
+
+
+<div
+
+className="
+flex
+items-center
+gap-4
+"
+
+>
+
+
 
 
 
@@ -398,27 +340,32 @@ border-white/30
 
 
 
-{/* DETAILS */}
-
-
-
 <div>
 
 
 
 <h3
+
 className="
 text-xl
 font-bold
 whitespace-nowrap
 "
+
 >
+
 {
- user?.name ||
- user?.displayName ||
- "DM"
+
+user?.name ||
+
+user?.displayName ||
+
+"DM"
+
 }
+
 </h3>
+
 
 
 
@@ -460,9 +407,11 @@ Last Login:
 <br/>
 
 {
+
 formatDate(
 user?.lastLogin
 )
+
 }
 
 
@@ -471,6 +420,98 @@ user?.lastLogin
 
 
 </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* NOTIFICATION BUTTON */}
+
+
+
+<button
+
+onClick={onNotificationClick}
+
+className="
+relative
+w-10
+h-10
+rounded-xl
+flex
+items-center
+justify-center
+hover:bg-white/10
+"
+
+>
+
+<FiBell
+
+size={26}
+
+/>
+
+
+
+
+{
+
+unreadCount > 0 &&
+
+
+<span
+
+className="
+absolute
+-top-1
+-right-1
+bg-red-500
+text-white
+text-[10px]
+font-bold
+w-5
+h-5
+rounded-full
+flex
+items-center
+justify-center
+"
+
+>
+
+{
+
+unreadCount > 99
+
+?
+
+"99+"
+
+:
+
+unreadCount
+
+}
+
+
+</span>
+
+
+}
+
+
+
+</button>
+
 
 
 
