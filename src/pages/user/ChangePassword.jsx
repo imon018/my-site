@@ -10,9 +10,6 @@ import {
 } from "react-icons/fi";
 
 
-import useAuth from "../../hooks/useAuth";
-
-
 import {
   changePassword
 } from "../../services/authService";
