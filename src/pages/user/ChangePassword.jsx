@@ -4,11 +4,6 @@ import {
 
 
 import {
-  useNavigate
-} from "react-router-dom";
-
-
-import {
   FiEye,
   FiEyeOff,
   FiLock
@@ -16,7 +11,7 @@ import {
 
 
 import {
-  changePassword
+  requestPasswordChange
 } from "../../services/authService";
 
 
@@ -40,10 +35,8 @@ import {
 export default function ChangePassword(){
 
 
-const navigate = useNavigate();
-
-
-const user = auth.currentUser;
+const user =
+auth.currentUser;
 
 
 
@@ -75,6 +68,7 @@ setLoading
 
 
 
+
 const [
 showCurrent,
 setShowCurrent
@@ -99,19 +93,21 @@ setShowConfirm
 
 
 
-
 const getStrength = ()=>{
 
 
 if(!newPassword){
 
 return {
+
 text:"",
 width:"0%",
 color:"bg-gray-200"
+
 };
 
 }
+
 
 
 
@@ -128,6 +124,8 @@ color:"bg-red-500"
 };
 
 }
+
+
 
 
 
@@ -150,6 +148,7 @@ color:"bg-yellow-500"
 
 
 
+
 return {
 
 text:"Strong",
@@ -166,7 +165,9 @@ color:"bg-green-500"
 
 
 
-const strength = getStrength();
+
+const strength =
+getStrength();
 
 
 
@@ -224,6 +225,7 @@ return;
 
 
 
+
 try{
 
 
@@ -231,7 +233,9 @@ setLoading(true);
 
 
 
-await changePassword(
+
+
+await requestPasswordChange(
 
 user,
 
@@ -240,6 +244,8 @@ currentPassword,
 newPassword
 
 );
+
+
 
 
 
@@ -253,21 +259,11 @@ setConfirmPassword("");
 
 
 
+
 successToast(
-"Please verify your email for password change."
+"Please check your email for changing password."
 );
 
-
-
-
-navigate(
-"/verify-email",
-{
-state:{
-email:user.email
-}
-}
-);
 
 
 
@@ -284,16 +280,21 @@ error.code==="auth/invalid-credential" ||
 error.code==="auth/wrong-password"
 ){
 
+
 errorToast(
 "Current password is incorrect."
 );
 
+
 }
+
 else{
+
 
 errorToast(
 error.message
 );
+
 
 }
 
@@ -302,9 +303,12 @@ error.message
 }
 finally{
 
+
 setLoading(false);
 
+
 }
+
 
 
 };
@@ -330,6 +334,9 @@ space-y-3
 
 
 
+
+
+{/* HEADER */}
 
 <div className="
 bg-white
@@ -358,10 +365,9 @@ text-gray-500
 mt-1
 ">
 
-Please update your password securely.
+A verification email will be sent before changing your password.
 
 </p>
-
 
 
 </div>
@@ -371,6 +377,10 @@ Please update your password securely.
 
 
 
+
+
+
+{/* FORM */}
 
 <div className="
 bg-white
@@ -391,9 +401,14 @@ space-y-3
 
 
 
+
+
 {/* CURRENT PASSWORD */}
 
-<div className="relative">
+
+<div className="
+relative
+">
 
 
 <FiLock
@@ -420,15 +435,19 @@ showCurrent
 "password"
 }
 
+
 placeholder="Current Password"
 
+
 value={currentPassword}
+
 
 onChange={(e)=>
 setCurrentPassword(
 e.target.value
 )
 }
+
 
 className="
 w-full
@@ -445,6 +464,7 @@ focus:border-amber-500
 "
 
 />
+
 
 
 
@@ -468,6 +488,7 @@ text-gray-400
 
 >
 
+
 {
 showCurrent
 ?
@@ -476,7 +497,9 @@ showCurrent
 <FiEye/>
 }
 
+
 </button>
+
 
 
 </div>
@@ -490,8 +513,6 @@ showCurrent
 
 
 {/* NEW PASSWORD */}
-
-<div>
 
 
 <div className="relative">
@@ -507,15 +528,19 @@ showNew
 "password"
 }
 
+
 placeholder="New Password"
 
+
 value={newPassword}
+
 
 onChange={(e)=>
 setNewPassword(
 e.target.value
 )
 }
+
 
 className="
 w-full
@@ -532,6 +557,7 @@ focus:border-amber-500
 "
 
 />
+
 
 
 
@@ -555,6 +581,7 @@ text-gray-400
 
 >
 
+
 {
 showNew
 ?
@@ -563,8 +590,8 @@ showNew
 <FiEye/>
 }
 
-</button>
 
+</button>
 
 
 </div>
@@ -573,9 +600,13 @@ showNew
 
 
 
-<div className="
-mt-2
-">
+
+
+
+{/* STRENGTH */}
+
+
+<div>
 
 
 <div className="
@@ -601,22 +632,22 @@ ${strength.color}
 </div>
 
 
+
+{
+strength.text &&
+
 <p className="
 text-xs
 text-gray-500
 mt-1
 ">
 
-{
-strength.text &&
-`Password strength: ${strength.text}`
-}
-
+Password strength:
+{strength.text}
 
 </p>
 
-
-</div>
+}
 
 
 </div>
@@ -632,7 +663,10 @@ strength.text &&
 {/* CONFIRM PASSWORD */}
 
 
-<div className="relative">
+
+<div className="
+relative
+">
 
 
 <input
@@ -645,15 +679,20 @@ showConfirm
 "password"
 }
 
+
 placeholder="Confirm Password"
 
+
 value={confirmPassword}
+
 
 onChange={(e)=>
 setConfirmPassword(
 e.target.value
 )
 }
+
+
 
 className="
 w-full
@@ -670,6 +709,7 @@ focus:border-amber-500
 "
 
 />
+
 
 
 
@@ -693,6 +733,7 @@ text-gray-400
 
 >
 
+
 {
 showConfirm
 ?
@@ -701,11 +742,11 @@ showConfirm
 <FiEye/>
 }
 
+
 </button>
 
 
 </div>
-
 
 
 
@@ -721,6 +762,7 @@ text-gray-500
 ✓ Password must be at least 6 characters.
 
 </p>
+
 
 
 
@@ -744,10 +786,11 @@ font-semibold
 
 >
 
+
 {
 loading
 ?
-"Updating..."
+"Sending..."
 :
 "Change Password"
 }
@@ -759,10 +802,12 @@ loading
 
 
 
+
 </div>
 
 
 </div>
+
 
 
 
