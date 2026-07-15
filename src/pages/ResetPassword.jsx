@@ -24,8 +24,8 @@ import Button from "../components/ui/Button";
 
 
 import {
- successToast,
- errorToast
+  successToast,
+  errorToast
 } from "../components/ui/Toast";
 
 
@@ -35,9 +35,11 @@ import {
 export default function ResetPassword(){
 
 
+
 const [
 params
 ]=useSearchParams();
+
 
 
 const navigate =
@@ -45,10 +47,13 @@ useNavigate();
 
 
 
+
 const code =
 params.get(
 "oobCode"
 );
+
+
 
 
 
@@ -66,23 +71,80 @@ setConfirm
 
 
 
+
+
+const [
+loading,
+setLoading
+]=useState(false);
+
+
+
+
+
+
+
 const handleReset =
 async()=>{
 
 
-if(password !== confirm){
+if(!password || !confirm){
+
 
 errorToast(
-"Passwords do not match"
+"Please fill all fields."
 );
 
+
 return;
+
 
 }
 
 
 
+
+
+if(password.length < 6){
+
+
+errorToast(
+"Password must be at least 6 characters."
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+if(password !== confirm){
+
+
+errorToast(
+"Passwords do not match."
+);
+
+
+return;
+
+
+}
+
+
+
+
 try{
+
+
+setLoading(true);
+
+
+
 
 
 await verifyPasswordResetCode(
@@ -95,32 +157,70 @@ code
 
 
 
+
+
+
+
 await confirmPasswordReset(
-  auth,
-  code,
-  password
+
+auth,
+
+code,
+
+password
+
 );
+
+
+
+
 
 
 localStorage.setItem(
-  "passwordResetDone",
-  "true"
+
+"passwordResetDone",
+
+"true"
+
 );
+
+
+
+
+
 
 
 successToast(
-  "Password updated."
+
+"Password updated successfully."
+
 );
+
+
+
+
+
+
+setTimeout(()=>{
 
 
 navigate(
-  "/login"
+"/login"
 );
+
+
+},1500);
+
+
 
 
 
 }
 catch(error){
+
+
+console.log(error);
+
 
 
 errorToast(
@@ -129,9 +229,20 @@ error.message
 
 
 }
+finally{
+
+
+setLoading(false);
+
+
+}
+
 
 
 };
+
+
+
 
 
 
@@ -161,11 +272,12 @@ Reset Password
 
 
 
+
+
+
 <input
 
 type="password"
-
-placeholder="New Password"
 
 className="
 w-full
@@ -174,6 +286,10 @@ p-3
 rounded-xl
 mb-4
 "
+
+placeholder="New Password"
+
+value={password}
 
 onChange={(e)=>
 setPassword(
@@ -186,11 +302,12 @@ e.target.value
 
 
 
+
+
+
 <input
 
 type="password"
-
-placeholder="Confirm Password"
 
 className="
 w-full
@@ -199,6 +316,10 @@ p-3
 rounded-xl
 mb-4
 "
+
+placeholder="Confirm Password"
+
+value={confirm}
 
 onChange={(e)=>
 setConfirm(
@@ -211,9 +332,14 @@ e.target.value
 
 
 
+
+
+
 <Button
 
 onClick={handleReset}
+
+disabled={loading}
 
 className="
 w-full
@@ -221,9 +347,25 @@ w-full
 
 >
 
-Save Password
+{
+
+loading
+
+?
+
+"Saving..."
+
+:
+
+"Save Password"
+
+}
+
 
 </Button>
+
+
+
 
 
 </div>
