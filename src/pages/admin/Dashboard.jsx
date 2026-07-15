@@ -24,10 +24,6 @@ import MobileDashboard from "./components/MobileDashboard";
 
 import DesktopDashboard from "./components/DesktopDashboard";
 
-import AdminBackButton from "../../components/admin/AdminBackButton";
-
-
-
 export default function Dashboard(){
 
 
@@ -216,8 +212,6 @@ stats
 return (
 
 <>
-
-<AdminBackButton />
 
   
 {/* MOBILE */}
