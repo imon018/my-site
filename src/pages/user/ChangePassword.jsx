@@ -27,13 +27,16 @@ import {
 } from "../../components/ui/Toast";
 
 
+import {
+  auth
+} from "../../firebase/auth";
 
 
 
 export default function ChangePassword(){
 
 
-const {user}=useAuth();
+const user = auth.currentUser;
 
 
 
