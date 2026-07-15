@@ -182,20 +182,20 @@ object-contain
 
 
 <h2
-
 className="
-text-xl
+text-2xl
 font-bold
+whitespace-nowrap
 leading-none
 "
-
+style={{
+  fontFamily:"'Playfair Display', serif"
+}}
 >
-
 {
-settings.storeName ||
-"Dream Mode"
+ settings.storeName ||
+ "Dream Mode"
 }
-
 </h2>
 
 
@@ -404,19 +404,17 @@ border-white/30
 
 
 <h3
-
 className="
-text-lg
+text-xl
 font-bold
+whitespace-nowrap
 "
-
 >
-
 {
-user?.name ||
-"Admin Name"
+ user?.name ||
+ user?.displayName ||
+ "DM"
 }
-
 </h3>
 
 
