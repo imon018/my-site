@@ -1,6 +1,14 @@
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 
+import {
+ FiEdit
+} from "react-icons/fi";
+
+import {
+ useNavigate
+} from "react-router-dom";
+
 import { uploadImages } from "../../services/uploadService";
 
 import {
@@ -12,6 +20,8 @@ import { db } from "../../firebase/firestore";
 
 export default function AdminProfile() {
   const { user } = useAuth();
+
+  const navigate = useNavigate();
 
   const [uploading, setUploading] =
     useState(false);
@@ -65,9 +75,76 @@ export default function AdminProfile() {
     <div className="max-w-5xl mx-auto">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-        <div className="bg-slate-900 text-white p-8">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="bg-slate-900 text-white p-8 relative">
 
+  <button
+
+    onClick={()=>navigate("/profile/edit")}
+
+    className="
+    absolute
+    top-6
+    right-6
+    bg-white
+    text-slate-900
+    w-10
+    h-10
+    rounded-full
+    flex
+    items-center
+    justify-center
+    shadow-lg
+    "
+
+  >
+
+    <FiEdit size={20}/>
+
+  </button>
+
+
+  <div className="flex flex-col md:flex-row items-center gap-6">
+    
+
+    <div className="border rounded-xl p-5">
+
+  <p className="text-gray-500 mb-2">
+    Phone Number
+  </p>
+
+  <h2 className="font-semibold">
+    {user?.phone || "Not Added"}
+  </h2>
+
+</div>
+
+
+
+<div className="border rounded-xl p-5">
+
+  <p className="text-gray-500 mb-2">
+    Address
+  </p>
+
+  <h2 className="font-semibold">
+
+    {user?.address || ""}
+
+    <br/>
+
+    {user?.postOffice || ""}
+
+    <br/>
+
+    {user?.thana || ""}
+
+    <br/>
+
+    {user?.district || ""}
+
+  </h2>
+
+</div>
             <div className="relative">
 
               {user?.photoURL ? (
@@ -105,8 +182,8 @@ export default function AdminProfile() {
 
             <div>
               <h1 className="text-3xl font-bold">
-                Admin Profile
-              </h1>
+  {user?.name || "Admin Profile"}
+</h1>
 
               <p className="text-gray-300 mt-2">
                 {user?.email}
