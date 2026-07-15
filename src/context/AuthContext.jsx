@@ -183,7 +183,7 @@ export default function AuthProvider({
       value={{
 
         user,
-
+        setUser,
         loading,
 
       }}
