@@ -59,6 +59,7 @@ import OrderSuccess from "../pages/OrderSuccess";
 import MyOrders from "../pages/MyOrders";
 import VerifyEmail from "../pages/VerifyEmail";
 import Notifications from "../pages/common/Notifications";
+import PasswordChangeVerify from "../pages/PasswordChangeVerify";
 
 
 /* =========================
@@ -134,6 +135,11 @@ export default function AppRoutes() {
           path="/verify-email"
           element={<VerifyEmail />}
         />
+
+         <Route
+  path="/password-change-verify"
+  element={<PasswordChangeVerify />}
+/>
 
 
 
