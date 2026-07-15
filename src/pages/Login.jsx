@@ -84,27 +84,36 @@ export default function Login() {
 
 
 
-      if(!result.user.emailVerified){
+      const isResetLogin =
+localStorage.getItem("passwordResetDone");
 
 
-        setUnverifiedUser(
-          result.user
-        );
+if(
+!result.user.emailVerified &&
+!isResetLogin
+){
+
+  setUnverifiedUser(
+    result.user
+  );
 
 
-        await logout();
+  await logout();
 
 
-
-        errorToast(
-          "Please verify your email first."
-        );
-
-
-        return;
+  errorToast(
+    "Please verify your email first."
+  );
 
 
-      }
+  return;
+
+}
+
+
+localStorage.removeItem(
+"passwordResetDone"
+);
 
 
 
