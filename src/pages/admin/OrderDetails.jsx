@@ -1037,7 +1037,7 @@ Shipping
 font-semibold
 ">
 
-৳ {order.shipping || 0}
+৳ {order.deliveryCharge || 0}
 
 </span>
 
@@ -1197,7 +1197,7 @@ font-semibold
 
 {
 order.paymentMethod ||
-"Cash on Delivery"
+""
 }
 
 </p>
@@ -1222,7 +1222,7 @@ bg-green-100
 text-green-700
 ">
 
-Cash On Delivery 
+Cash On Delivery 💰
 
 </span>
 
