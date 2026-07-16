@@ -865,18 +865,92 @@ await getDocs(orderRef);
 
 
 
-return snapshot.docs
+const orders =
+await Promise.all(
 
-.map(item=>({
+snapshot.docs.map(
+
+async(item)=>{
+
+
+const order = {
 
 id:item.id,
 
 ...item.data(),
 
-}))
+};
 
 
-.filter(order=>
+
+let customerPhoto = "";
+
+
+
+if(order.userId){
+
+
+try{
+
+
+const userSnap =
+await getDoc(
+
+doc(
+db,
+"users",
+order.userId
+)
+
+);
+
+
+
+if(userSnap.exists()){
+
+
+customerPhoto =
+userSnap.data().photoURL || "";
+
+
+}
+
+
+
+}
+
+catch(error){
+
+console.log(
+"Photo load error:",
+error
+);
+
+}
+
+
+}
+
+
+
+return {
+
+...order,
+
+customerPhoto,
+
+};
+
+
+}
+
+)
+
+);
+
+
+
+return orders.filter(order=>
 
 order.returnRequested === true
 
