@@ -467,7 +467,6 @@ gap-2
 >
 
 
-<Stat
 <StatCard
 
 icon={<FiShoppingBag size={18}/>}
