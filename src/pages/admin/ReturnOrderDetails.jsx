@@ -45,6 +45,8 @@ const [order,setOrder]=useState(null);
 
 const [loading,setLoading]=useState(true);
 
+const [previewImage,setPreviewImage] = useState(null);
+
 
 
 useEffect(()=>{
