@@ -1,37 +1,37 @@
 import {
-useEffect,
-useState
+  useEffect,
+  useState
 } from "react";
 
 
 import {
-useNavigate
+  useNavigate
 } from "react-router-dom";
 
 
 import {
-FiSearch,
-FiEye,
-FiCalendar,
-FiShoppingBag,
-FiSend,
-FiCheckCircle,
-FiMoreVertical,
-FiTrash2,
-FiDollarSign
+  FiSearch,
+  FiEye,
+  FiCalendar,
+  FiShoppingBag,
+  FiSend,
+  FiCheckCircle,
+  FiMoreVertical,
+  FiTrash2,
+  FiDollarSign
 } from "react-icons/fi";
 
 
 import {
-getReturnOrders,
-updateReturnStatus,
-deleteOrder
+  getReturnOrders,
+  updateReturnStatus,
+  deleteOrder
 } from "../../services/orderService";
 
 
 import {
-successToast,
-errorToast
+  successToast,
+  errorToast
 } from "../../components/ui/Toast";
 
 
@@ -41,39 +41,27 @@ errorToast
 export default function ReturnOrders(){
 
 
-const navigate =
-useNavigate();
+const navigate = useNavigate();
 
 
 
-const [orders,setOrders] =
-useState([]);
+const [orders,setOrders] = useState([]);
 
 
-
-const [loading,setLoading] =
-useState(true);
+const [loading,setLoading] = useState(true);
 
 
-
-const [search,setSearch] =
-useState("");
+const [search,setSearch] = useState("");
 
 
-
-const [menuOpen,setMenuOpen] =
-useState(null);
+const [menuOpen,setMenuOpen] = useState(null);
 
 
-
-const [deleteId,setDeleteId] =
-useState(null);
-
+const [deleteId,setDeleteId] = useState(null);
 
 
 const [statusFilter,setStatusFilter] =
 useState("All Status");
-
 
 
 const [dateFilter,setDateFilter] =
@@ -83,7 +71,7 @@ useState("");
 
 
 
-const statuses=[
+const statuses = [
 
 "All Status",
 "Submitted",
@@ -101,6 +89,9 @@ const statuses=[
 
 
 
+
+
+
 useEffect(()=>{
 
 loadReturns();
@@ -112,8 +103,10 @@ loadReturns();
 
 
 
-const loadReturns =
-async()=>{
+
+
+
+async function loadReturns(){
 
 
 try{
@@ -123,16 +116,16 @@ const data =
 await getReturnOrders();
 
 
-setOrders(
-data || []
-);
+setOrders(data || []);
 
 
 }
 
 catch(error){
 
+
 console.log(error);
+
 
 errorToast(
 "Failed to load return orders"
@@ -143,19 +136,24 @@ errorToast(
 
 finally{
 
+
 setLoading(false);
+
 
 }
 
-};
+
+}
 
 
 
 
 
 
-const changeStatus =
-async(id,status)=>{
+
+
+
+async function changeStatus(id,status){
 
 
 try{
@@ -179,6 +177,7 @@ if(order.id===id){
 return {
 
 ...order,
+
 
 returnRequest:{
 
@@ -225,15 +224,17 @@ errorToast(
 }
 
 
-};
+}
 
 
 
 
 
 
-const handleDelete =
-async()=>{
+
+
+
+async function handleDelete(){
 
 
 try{
@@ -264,7 +265,6 @@ successToast(
 setDeleteId(null);
 
 
-
 }
 
 catch(error){
@@ -281,7 +281,14 @@ errorToast(
 }
 
 
-};
+}
+
+
+
+
+
+
+
 
 
 const filteredOrders =
@@ -315,7 +322,9 @@ order.id
 
 
 const status =
-order.returnRequest?.status || "Submitted";
+
+order.returnRequest?.status ||
+"Submitted";
 
 
 
@@ -333,7 +342,6 @@ status===statusFilter;
 
 
 
-
 const dateMatch =
 
 dateFilter===""
@@ -344,23 +352,28 @@ true
 
 :
 
-new Date(order.returnRequest.createdAt)
+new Date(
+order.returnRequest.createdAt
+)
 .toISOString()
 .slice(0,10)
-
 ===dateFilter;
 
 
 
-
 return(
+
 searchMatch &&
 statusMatch &&
 dateMatch
+
 );
 
 
 });
+
+
+
 
 
 
@@ -372,13 +385,17 @@ if(loading){
 
 return(
 
-<div className="
+<div
+
+className="
 min-h-screen
 flex
 items-center
 justify-center
 font-bold
-">
+"
+
+>
 
 Loading Return Orders...
 
@@ -386,44 +403,59 @@ Loading Return Orders...
 
 );
 
+
 }
-
-
-
-
 
 
 return(
 
 
-<div className="
+<div
+
+className="
 space-y-4
 bg-[#faf9f6]
 min-h-screen
 p-3
 lg:p-6
-">
+"
+
+>
 
 
 
 
+
+{/* HEADER */}
 
 <div>
 
-<h1 className="
+
+<h1
+
+className="
 text-2xl
 font-black
-">
+text-slate-900
+"
+
+>
 
 Return Orders
 
 </h1>
 
 
-<p className="
+
+<p
+
+className="
 text-xs
 text-gray-500
-">
+mt-1
+"
+
+>
 
 Dashboard › Return Orders
 
@@ -440,58 +472,93 @@ Dashboard › Return Orders
 
 
 
-<div className="
+{/* STATS */}
+
+<div
+
+className="
 grid
 grid-cols-2
 lg:grid-cols-4
 gap-2
-">
+"
+
+>
 
 
 <StatCard
+
 icon={<FiShoppingBag size={18}/>}
+
 title="Total Return"
+
 value={orders.length}
+
 color="orange"
+
 />
 
 
 
+
+
 <StatCard
+
 icon={<FiSend size={18}/>}
+
 title="Submitted"
+
 value={
 orders.filter(
-o=>o.returnRequest?.status==="Submitted"
+item =>
+item.returnRequest?.status==="Submitted"
 ).length
 }
+
 color="yellow"
+
 />
 
 
 
+
+
 <StatCard
+
 icon={<FiCheckCircle size={18}/>}
+
 title="Accepted"
+
 value={
 orders.filter(
-o=>o.returnRequest?.status==="Accepted"
+item =>
+item.returnRequest?.status==="Accepted"
 ).length
 }
+
 color="blue"
+
 />
 
 
 
+
+
 <StatCard
+
 icon={<FiDollarSign size={18}/>}
+
 title="Refunded"
+
 value={
 orders.filter(
-o=>o.returnRequest?.status==="Refunded"
+item =>
+item.returnRequest?.status==="Refunded"
 ).length
 }
+
 color="green"
+
 />
 
 
@@ -504,12 +571,20 @@ color="green"
 
 
 
-<div className="
+
+{/* SEARCH */}
+
+<div
+
+className="
 relative
-">
+"
+
+>
 
 
 <FiSearch
+
 className="
 absolute
 left-4
@@ -517,7 +592,10 @@ top-1/2
 -translate-y-1/2
 text-gray-400
 "
+
 />
+
+
 
 
 <input
@@ -535,8 +613,10 @@ w-full
 h-12
 bg-white
 border
+border-gray-200
 rounded-xl
 pl-11
+pr-4
 outline-none
 text-sm
 "
@@ -552,11 +632,20 @@ text-sm
 
 
 
-<div className="
+
+
+{/* FILTER */}
+
+<div
+
+className="
 grid
 grid-cols-2
 gap-2
-">
+"
+
+>
+
 
 
 <select
@@ -584,11 +673,22 @@ font-semibold
 
 statuses.map(status=>(
 
-<option key={status}>
+
+<option
+
+key={status}
+
+value={status}
+
+>
+
 {status}
+
 </option>
 
+
 ))
+
 
 }
 
@@ -598,7 +698,14 @@ statuses.map(status=>(
 
 
 
-<div className="
+
+
+
+
+
+<div
+
+className="
 h-11
 bg-white
 border
@@ -607,10 +714,14 @@ flex
 items-center
 px-3
 gap-2
-">
+"
+
+>
 
 
 <FiCalendar size={14}/>
+
+
 
 
 <input
@@ -645,13 +756,16 @@ w-full
 
 
 
-{/* MOBILE */}
+{/* MOBILE RETURN LIST */}
 
+<div
 
-<div className="
+className="
 lg:hidden
 space-y-3
-">
+"
+
+>
 
 
 {
@@ -666,38 +780,59 @@ key={order.id}
 className="
 bg-white
 border
-rounded-lg
+border-gray-100
+rounded-xl
 p-3
 shadow-sm
-">
+"
+
+>
 
 
-<div className="
+
+<div
+
+className="
 flex
 justify-between
-">
+items-center
+"
+
+>
 
 
-<p className="
+<p
+
+className="
 font-bold
 text-sm
-">
+"
+
+>
 
 #{order.id.slice(0,8)}
 
 </p>
 
 
-<p className="
+
+
+<p
+
+className="
 text-xs
 text-gray-500
-">
+"
+
+>
 
 {
+
 new Date(
 order.returnRequest.createdAt
 )
 .toLocaleDateString()
+
 }
 
 </p>
@@ -709,19 +844,32 @@ order.returnRequest.createdAt
 
 
 
-<div className="
+
+
+
+
+<div
+
+className="
 mt-3
 flex
 items-center
 gap-3
-">
+"
+
+>
 
 
 <img
 
 src={
+
 order.customerPhoto ||
-`https://ui-avatars.com/api/?name=${encodeURIComponent(order.customerName||"User")}`
+
+`https://ui-avatars.com/api/?name=${encodeURIComponent(
+order.customerName || "User"
+)}`
+
 }
 
 className="
@@ -734,43 +882,64 @@ object-cover
 />
 
 
+
+
+
 <div>
 
-<p className="
+
+<p
+
+className="
 font-semibold
 text-sm
-">
+"
+
+>
 
 {order.customerName}
 
 </p>
 
-<p className="
+
+
+<p
+
+className="
 text-xs
 text-gray-500
-">
+"
+
+>
 
 {order.email}
 
 </p>
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
 
 
-<div className="
+
+
+
+
+<div
+
+className="
 mt-3
 flex
 justify-between
 items-center
-">
+"
+
+>
 
 
 <select
@@ -780,19 +949,23 @@ order.returnRequest?.status || "Submitted"
 }
 
 onChange={
-e=>changeStatus(
+e=>
+changeStatus(
 order.id,
 e.target.value
 )
 }
 
-className="
+className={`
 text-xs
 font-bold
 px-3
 py-2
 rounded-full
-"
+${statusColor(
+order.returnRequest?.status
+)}
+`}
 
 >
 
@@ -801,11 +974,20 @@ rounded-full
 
 statuses.slice(1).map(status=>(
 
-<option key={status}>
+
+<option
+
+key={status}
+
+>
+
 {status}
+
 </option>
 
+
 ))
+
 
 }
 
@@ -818,30 +1000,37 @@ statuses.slice(1).map(status=>(
 
 
 
-<div className="
+
+
+<div
+
+className="
 flex
+items-center
 gap-2
-">
+"
+
+>
 
 
 <button
 
-onClick={()=>
-navigate(
+onClick={()=>navigate(
 `/admin/return-orders/${order.id}`
-)
-}
+)}
 
 className="
 w-8
 h-8
-rounded-md
+rounded-lg
 bg-blue-50
 text-blue-600
 flex
 items-center
 justify-center
-">
+"
+
+>
 
 <FiEye size={15}/>
 
@@ -850,34 +1039,40 @@ justify-center
 
 
 
-<div className="
+
+
+<div
+
+className="
 relative
-">
+"
+
+>
 
 
 <button
 
-onClick={()=>
-setMenuOpen(
+onClick={()=>setMenuOpen(
 menuOpen===order.id
 ?
 null
 :
 order.id
-)
-}
+)}
 
 className="
 w-8
 h-8
-rounded-md
+rounded-lg
 bg-gray-100
 flex
 items-center
 justify-center
-">
+"
 
-<FiMoreVertical size={16}/>
+>
+
+<FiMoreVertical size={15}/>
 
 </button>
 
@@ -889,7 +1084,9 @@ justify-center
 menuOpen===order.id &&
 
 
-<div className="
+<div
+
+className="
 absolute
 right-0
 top-10
@@ -899,14 +1096,19 @@ rounded-lg
 shadow-lg
 w-32
 z-50
-">
+"
+
+>
 
 
 <button
 
 onClick={()=>{
+
 setDeleteId(order.id);
+
 setMenuOpen(null);
+
 }}
 
 className="
@@ -918,7 +1120,9 @@ text-red-600
 flex
 items-center
 gap-2
-">
+"
+
+>
 
 <FiTrash2 size={14}/>
 
@@ -933,7 +1137,6 @@ Delete
 }
 
 
-
 </div>
 
 
@@ -952,58 +1155,117 @@ Delete
 </div>
 
 
-                   {/* DESKTOP */}
+                   {/* DESKTOP TABLE */}
 
-<div className="
+<div
+
+className="
 hidden
 lg:block
 bg-white
 rounded-xl
 border
 overflow-hidden
-">
+"
+
+>
 
 
-<table className="
+<table
+
+className="
 w-full
-">
+"
+
+>
 
 
-<thead className="
+<thead
+
+className="
 bg-gray-50
-">
+"
+
+>
 
 
 <tr>
 
 
-<th className="px-5 py-3 text-left text-xs">
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 ID
+
 </th>
 
 
-<th className="px-5 py-3 text-left text-xs">
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 Customer
+
 </th>
 
 
-<th className="px-5 py-3 text-left text-xs">
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 Date
+
 </th>
 
 
-<th className="px-5 py-3 text-left text-xs">
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 Return Type
+
 </th>
 
 
-<th className="px-5 py-3 text-left text-xs">
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 Status
+
 </th>
 
 
-<th className="px-5 py-3 text-left text-xs">
+
+<th className="
+px-5
+py-3
+text-left
+text-xs
+">
+
 Action
+
 </th>
 
 
@@ -1011,6 +1273,8 @@ Action
 
 
 </thead>
+
+
 
 
 
@@ -1030,15 +1294,21 @@ key={order.id}
 
 className="
 border-t
-">
+"
+
+>
 
 
-<td className="
+<td
+
+className="
 px-5
 py-4
 font-bold
 text-sm
-">
+"
+
+>
 
 #{order.id.slice(0,8)}
 
@@ -1048,11 +1318,17 @@ text-sm
 
 
 
-<td className="
+
+
+<td
+
+className="
 px-5
 py-4
 text-sm
-">
+"
+
+>
 
 {order.customerName}
 
@@ -1062,17 +1338,25 @@ text-sm
 
 
 
-<td className="
+
+
+<td
+
+className="
 px-5
 py-4
 text-xs
-">
+"
+
+>
 
 {
+
 new Date(
 order.returnRequest.createdAt
 )
 .toLocaleDateString()
+
 }
 
 </td>
@@ -1081,14 +1365,22 @@ order.returnRequest.createdAt
 
 
 
-<td className="
+
+
+<td
+
+className="
 px-5
 py-4
 text-sm
-">
+"
+
+>
 
 {
+
 order.returnRequest.returnType
+
 }
 
 </td>
@@ -1097,44 +1389,73 @@ order.returnRequest.returnType
 
 
 
-<td className="
+
+
+<td
+
+className="
 px-5
 py-4
-">
+"
+
+>
 
 
 <select
 
+
 value={
-order.returnRequest.status
+order.returnRequest?.status || "Submitted"
 }
 
+
 onChange={
+
 e=>
+
 changeStatus(
 order.id,
 e.target.value
 )
+
 }
 
-className="
+
+className={`
+
 text-xs
 font-bold
 px-3
 py-2
 rounded-lg
-">
+
+${statusColor(
+order.returnRequest?.status
+)}
+
+`}
+
+>
 
 
 {
 
 statuses.slice(1).map(status=>(
 
-<option key={status}>
+
+<option
+
+key={status}
+
+>
+
 {status}
+
 </option>
 
+
 ))
+
 
 }
 
@@ -1148,37 +1469,49 @@ statuses.slice(1).map(status=>(
 
 
 
-<td className="
+
+
+
+
+<td
+
+className="
 px-5
 py-4
-">
+"
+
+>
 
 
-<div className="
+<div
+
+className="
 flex
-gap-2
 items-center
-">
+gap-2
+"
+
+>
 
 
 <button
 
-onClick={()=>
-navigate(
+onClick={()=>navigate(
 `/admin/return-orders/${order.id}`
-)
-}
+)}
 
 className="
 w-8
 h-8
+rounded-lg
 bg-blue-50
 text-blue-600
-rounded-lg
 flex
 items-center
 justify-center
-">
+"
+
+>
 
 <FiEye size={15}/>
 
@@ -1190,32 +1523,39 @@ justify-center
 
 
 
-<div className="
+
+<div
+
+className="
 relative
-">
+"
+
+>
 
 
 <button
 
-onClick={()=>
-setMenuOpen(
+onClick={()=>setMenuOpen(
 menuOpen===order.id
 ?
 null
 :
 order.id
 )
+
 }
 
 className="
 w-8
 h-8
-bg-gray-100
 rounded-lg
+bg-gray-100
 flex
 items-center
 justify-center
-">
+"
+
+>
 
 <FiMoreVertical size={15}/>
 
@@ -1232,7 +1572,9 @@ justify-center
 menuOpen===order.id &&
 
 
-<div className="
+<div
+
+className="
 absolute
 right-0
 top-10
@@ -1242,7 +1584,9 @@ rounded-lg
 shadow-lg
 w-32
 z-50
-">
+"
+
+>
 
 
 <button
@@ -1256,20 +1600,21 @@ setMenuOpen(null);
 }}
 
 className="
+w-full
 px-3
 py-2
-text-red-600
 text-sm
+text-red-600
 flex
-gap-2
 items-center
-">
+gap-2
+"
 
+>
 
 <FiTrash2 size={14}/>
 
 Delete
-
 
 </button>
 
@@ -1313,13 +1658,6 @@ Delete
 
 
 
-</div>
-
-
-
-
-
-
 
 
 
@@ -1332,7 +1670,9 @@ Delete
 deleteId &&
 
 
-<div className="
+<div
+
+className="
 fixed
 inset-0
 bg-black/40
@@ -1340,22 +1680,32 @@ flex
 items-center
 justify-center
 z-[100]
-">
+"
+
+>
 
 
-<div className="
+<div
+
+className="
 bg-white
 rounded-xl
 p-5
 w-80
 text-center
-">
+"
+
+>
 
 
-<h3 className="
+<h3
+
+className="
 font-black
 text-lg
-">
+"
+
+>
 
 Are you sure?
 
@@ -1363,12 +1713,15 @@ Are you sure?
 
 
 
+<p
 
-<p className="
+className="
 text-sm
 text-gray-500
 mt-2
-">
+"
+
+>
 
 Delete this return order permanently?
 
@@ -1378,18 +1731,22 @@ Delete this return order permanently?
 
 
 
-<div className="
+
+
+<div
+
+className="
 flex
 gap-3
 mt-5
-">
+"
+
+>
 
 
 <button
 
-onClick={()=>
-setDeleteId(null)
-}
+onClick={()=>setDeleteId(null)}
 
 className="
 flex-1
@@ -1397,11 +1754,15 @@ h-10
 rounded-lg
 bg-gray-100
 font-bold
-">
+"
+
+>
 
 No
 
 </button>
+
+
 
 
 
@@ -1418,7 +1779,9 @@ rounded-lg
 bg-red-500
 text-white
 font-bold
-">
+"
+
+>
 
 Yes
 
@@ -1437,11 +1800,12 @@ Yes
 }
 
 
+  </div>
+
 
 );
 
 }
-
 
 
 
@@ -1516,12 +1880,19 @@ return "bg-yellow-100 text-yellow-700";
 
 
 
+
 function StatCard({
+
 icon,
+
 title,
+
 value,
+
 color
+
 }){
+
 
 
 const colors={
@@ -1548,10 +1919,13 @@ green:
 
 
 
+
 return(
 
 
-<div className="
+<div
+
+className="
 bg-white
 border
 border-gray-100
@@ -1561,18 +1935,27 @@ py-3
 flex
 items-center
 gap-3
-">
+"
+
+>
 
 
-<div className={`
+<div
+
+className={`
+
 w-9
 h-9
 rounded-lg
 flex
 items-center
 justify-center
+
 ${colors[color]}
-`}>
+
+`}
+
+>
 
 {icon}
 
@@ -1582,13 +1965,19 @@ ${colors[color]}
 
 
 
+
+
 <div>
 
 
-<p className="
+<p
+
+className="
 text-[11px]
 text-gray-500
-">
+"
+
+>
 
 {title}
 
@@ -1596,15 +1985,20 @@ text-gray-500
 
 
 
-<h2 className="
+
+<h2
+
+className="
 text-lg
 font-black
-">
+text-slate-900
+"
+
+>
 
 {value}
 
 </h2>
-
 
 
 </div>
