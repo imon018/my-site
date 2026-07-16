@@ -11,17 +11,12 @@ useNavigate
 
 import {
 FiSearch,
-FiRefreshCcw,
 FiEye,
-FiMoreVertical,
 FiCalendar,
 FiShoppingBag,
 FiSend,
 FiCheckCircle,
-FiDollarSign,
-FiTruck,
-FiPackage,
-FiXCircle
+FiDollarSign
 } from "react-icons/fi";
 
 
@@ -471,7 +466,7 @@ gap-2
 
 icon={<FiShoppingBag size={18}/>}
 
-title="Total"
+title="Total Return"
 
 value={orders.length}
 
@@ -1378,48 +1373,6 @@ text-slate-900
 
 
 </div>
-
-
-</div>
-
-)
-
-}
-
-
-return(
-
-<div
-
-className="
-bg-white
-border
-border-gray-100
-rounded-xl
-p-3
-"
-
->
-
-
-<p className="
-text-xs
-text-gray-500
-">
-
-{title}
-
-</p>
-
-
-<h2 className="
-font-black
-text-xl
-">
-
-{value}
-
-</h2>
 
 
 </div>
