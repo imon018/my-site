@@ -293,34 +293,12 @@ space-y-3
 {/* HEADER */}
 
 <div className="
-flex
-items-center
-justify-between
-mb-2
-">
-
-
-<button
-
-onClick={()=>navigate(-1)}
-
-className="
-w-9
-h-9
-rounded-lg
-bg-white
-border
-border-gray-100
+relative
 flex
 items-center
 justify-center
-"
-
->
-
-<FiArrowLeft/>
-
-</button>
+mb-2
+">
 
 
 
@@ -339,8 +317,10 @@ Order Details
 
 
 
-<div className="
-relative
+<div
+className="
+absolute
+right-0
 ">
 
 
@@ -906,21 +886,37 @@ Qty: {item.quantity}
 
 
 
-<div className="
-text-right
-">
+<div
+className="
+flex
+flex-col
+items-end
+gap-2
+"
+>
 
+  <button
+    onClick={() =>
+      navigate(`/product/${item.id}`)
+    }
+    className="
+    text-xs
+    font-bold
+    text-amber-600
+    hover:text-amber-700
+    "
+  >
+    View &gt;
+  </button>
 
-<p className="
-font-bold
-text-sm
-">
-
-৳ {item.price * item.quantity}
-
-</p>
-
-
+  <p
+    className="
+    font-bold
+    text-sm
+    "
+  >
+    ৳ {item.price * item.quantity}
+  </p>
 
 </div>
 
