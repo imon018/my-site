@@ -717,7 +717,10 @@ type:
 
 
 export const requestReturnOrder =
-async(id)=>{
+async(
+  id,
+  returnData
+)=>{
 
 
 const orderDoc =
@@ -729,6 +732,7 @@ id
 
 
 
+
 const snapshot =
 await getDoc(
 orderDoc
@@ -736,18 +740,24 @@ orderDoc
 
 
 
+
 if(!snapshot.exists()){
+
 
 throw new Error(
 "Order not found"
 );
 
+
 }
+
+
 
 
 
 const order =
 snapshot.data();
+
 
 
 
@@ -759,12 +769,34 @@ orderDoc,
 
 {
 
-returnRequested:
-true,
+
+returnRequested:true,
+
+
+returnRequest:{
+
+
+...returnData,
+
+
+status:"Pending",
+
+
+createdAt:
+new Date()
+.toISOString()
+
+
+
+}
+
+
 
 }
 
 );
+
+
 
 
 
@@ -778,14 +810,52 @@ title:
 "🔄 Return Request",
 
 
+
 message:
+
 `${order.customerName || "Customer"} requested return for order #${id.slice(0,8)}.`,
+
 
 
 type:
 "order",
 
+
 });
+
+
+
+
+
+
+if(order.userId){
+
+
+await createUserNotification({
+
+userId:
+order.userId,
+
+
+title:
+"🔄 Return Request Submitted",
+
+
+message:
+"Your return request has been submitted successfully.",
+
+
+type:
+"order",
+
+
+});
+
+
+}
+
+
+
 
 
 };
