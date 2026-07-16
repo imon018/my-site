@@ -596,119 +596,94 @@ export default function MyOrders() {
 
 
 
-                {/* PRODUCT */}
+                {/* PRODUCTS */}
 
-                <div
-                  className="
-                  flex
-                  justify-between
-                  items-center
-                  "
-                >
+<div className="space-y-4">
 
-                  <div
-                    className="
-                    flex
-                    items-center
-                    gap-3
-                    "
-                  >
+{order.items?.map((item,index)=>(
 
-                    <img
+<div
 
-                      src={
-                        item?.image ||
+key={item.id || index}
 
-                        "https://via.placeholder.com/70"
-                      }
+className="
+flex
+justify-between
+items-center
+border-b
+border-gray-100
+pb-4
+"
 
-                      className="
-                      w-16
-                      h-16
-                      rounded-lg
-                      object-cover
-                      bg-gray-50
-                      "
+>
 
-                    />
+<div
 
+className="
+flex
+items-center
+gap-3
+"
 
+>
 
-                    <div>
+<img
 
-                      <h3
-                        className="
-                        text-sm
-                        font-bold
-                        "
-                      >
-                        {
+src={
+item.image ||
+"https://via.placeholder.com/70"
+}
 
-                          item?.name ||
+className="
+w-16
+h-16
+rounded-lg
+object-cover
+bg-gray-50
+"
+/>
 
-                          "Product"
+<div>
 
-                        }
-                      </h3>
+<h3
+className="
+text-sm
+font-bold
+"
+>
+{item.name}
+</h3>
 
-                      <p
-                        className="
-                        text-xs
-                        text-gray-500
-                        mt-1
-                        "
-                      >
-                        Qty :
+<p
+className="
+text-xs
+text-gray-500
+mt-1
+"
+>
+Qty : {item.quantity || 1}
+</p>
 
-                        {" "}
+</div>
 
-                        {
-
-                          item?.quantity ||
-
-                          1
-
-                        }
-                      </p>
-
-                    </div>
-
-                  </div>
+</div>
 
 
-
-                  <p
-                    className="
-                    text-lg
-                    font-black
-                    "
-                  >
-
-                    ৳
-
-                    {
-
-                      (item?.price || 0)
-
-                      *
-
-                      (item?.quantity || 1)
-
-                    }
-
-                  </p>
-
-                </div>
+<p
+className="
+text-lg
+font-black
+"
+>
+৳ {(item.price || 0) * (item.quantity || 1)}
+</p>
 
 
+</div>
 
-                <hr
-                  className="
-                  my-4
-                  border-gray-100
-                  "
-                />
+))}
 
+</div>
                                 {/* VIEW DETAILS */}
 
                 <button
