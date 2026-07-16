@@ -702,10 +702,7 @@ justify-between
 text-sm
 font-bold
 text-amber-600
-mt-6
-pt-4
-border-t
-border-gray-100
+pt-2
 "
 
 >
