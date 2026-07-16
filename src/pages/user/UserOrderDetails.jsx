@@ -8,6 +8,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+
 import {
   FiPackage,
   FiMapPin,
@@ -18,209 +19,249 @@ import {
   FiCheck,
 } from "react-icons/fi";
 
+
 import {
   getUserOrders,
   requestCancelOrder,
   requestReturnOrder,
 } from "../../services/orderService";
 
+
 import useAuth from "../../hooks/useAuth";
+
 
 import {
   successToast,
   errorToast,
 } from "../../components/ui/Toast";
 
-export default function UserOrderDetails() {
 
-  const { id } = useParams();
 
-  const navigate = useNavigate();
 
-  const { user } = useAuth();
+export default function UserOrderDetails(){
 
-  const [order, setOrder] = useState(null);
 
-  const [loading, setLoading] = useState(true);
+const {id}=useParams();
 
-  const [showCancelModal,setShowCancelModal] = useState(false);
+const navigate=useNavigate();
 
-  useEffect(() => {
-    loadOrder();
-  }, [user]);
 
-  async function loadOrder() {
+const {user}=useAuth();
 
-    try {
 
-      if (!user) return;
 
-      const orders = await getUserOrders(user.email);
+const [order,setOrder]=useState(null);
 
-      const found = orders.find(
-        item => item.id === id
-      );
 
-      setOrder(found);
+const [loading,setLoading]=useState(true);
 
-    }
 
-    catch (error) {
+const [showCancelModal,setShowCancelModal]=useState(false);
 
-      console.log(error);
 
-    }
 
-    finally {
 
-      setLoading(false);
 
-    }
+useEffect(()=>{
 
-  }
+loadOrder();
 
-  const steps = [
+},[user]);
 
-    {
-      name: "Order Placed",
-      icon: <FiPackage />,
-    },
 
-    {
-      name: "Processing",
-      icon: <FiPackage />,
-    },
 
-    {
-      name: "Shipped",
-      icon: <FiTruck />,
-    },
 
-    {
-      name: "Delivered",
-      icon: <FiCheck />,
-    },
 
-  ];
 
-  function currentStep() {
+async function loadOrder(){
 
-    if (!order) return 0;
 
-    switch (order.status) {
+try{
 
-      case "Processing":
-        return 1;
 
-      case "Shipped":
-        return 2;
+if(!user) return;
 
-      case "Delivered":
-        return 3;
 
-      default:
-        return 0;
+const orders =
+await getUserOrders(
+user.email
+);
 
-    }
 
-  }
 
-  async function cancelOrder() {
+const found =
+orders.find(
+item=>item.id===id
+);
 
-    try {
 
-      await requestCancelOrder(order.id);
 
-      successToast("Cancel request sent");
+setOrder(found);
 
-      loadOrder();
 
-    }
-
-    catch(error){
-
-  console.log(error);
-
-  errorToast(
-    error.message || "Request failed"
-  );
 
 }
 
-  }
+catch(error){
 
-  async function returnOrder() {
+console.log(error);
 
-    try {
+}
 
-      await requestReturnOrder(order.id);
 
-      successToast("Return request sent");
+finally{
 
-      loadOrder();
+setLoading(false);
 
-    }
+}
 
-    catch {
 
-      errorToast("Request failed");
+}
 
-    }
 
-  }
 
-  if (loading)
-    return (
 
-      <div className="
-      min-h-screen
-      flex
-      items-center
-      justify-center
-      font-bold
-      ">
 
-        Loading Order...
 
-      </div>
+async function cancelOrder(){
 
-    );
 
-  if (!order)
-    return (
+try{
 
-      <div className="
-      min-h-screen
-      flex
-      flex-col
-      gap-4
-      items-center
-      justify-center
-      ">
 
-        <h2 className="
-        font-bold
-        text-xl
-        ">
-          Order Not Found
-        </h2>
+await requestCancelOrder(
+order.id
+);
 
-      </div>
 
-    );
 
-  return (
+successToast(
+"Order cancelled successfully"
+);
 
-    <div
-  className="
-  min-h-screen
-  bg-[#FCFAF5]
-  px-4
-  py-5
-  "
+
+
+loadOrder();
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+
+errorToast(
+error.message ||
+"Cancel failed"
+);
+
+
+}
+
+
+}
+
+if(loading)
+
+return (
+
+<div
+className="
+min-h-screen
+flex
+items-center
+justify-center
+font-bold
+"
 >
 
-      return (
+Loading Order...
+
+</div>
+
+);
+
+
+
+
+
+
+if(!order)
+
+return (
+
+<div
+className="
+min-h-screen
+flex
+items-center
+justify-center
+font-bold
+text-xl
+"
+>
+
+Order Not Found
+
+</div>
+
+);
+
+
+
+
+
+
+
+async function returnOrder(){
+
+
+try{
+
+
+await requestReturnOrder(
+order.id
+);
+
+
+
+successToast(
+"Return request sent"
+);
+
+
+
+loadOrder();
+
+
+
+}
+
+catch(error){
+
+
+errorToast(
+"Request failed"
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+return (
 
 <div
 className="
@@ -232,10 +273,17 @@ py-5
 >
 
 
+
+
+
+
 {/* CANCEL CONFIRM MODAL */}
 
+
 {
+
 showCancelModal && (
+
 
 <div
 className="
@@ -249,6 +297,7 @@ z-50
 px-5
 "
 >
+
 
 <div
 className="
@@ -269,8 +318,11 @@ text-lg
 mb-3
 "
 >
+
 Are you sure to Cancel this order?
+
 </h3>
+
 
 
 <p
@@ -280,8 +332,12 @@ text-gray-500
 mb-6
 "
 >
+
 This action cannot be undone.
+
 </p>
+
+
 
 
 <div
@@ -294,9 +350,9 @@ gap-3
 
 
 <button
-onClick={()=>{
-setShowCancelModal(false)
-}}
+
+onClick={()=>setShowCancelModal(false)}
+
 className="
 h-11
 rounded-lg
@@ -304,19 +360,29 @@ border
 font-bold
 "
 >
+
 No
+
 </button>
 
 
 
+
+
 <button
+
 onClick={async()=>{
+
 
 setShowCancelModal(false);
 
+
 await cancelOrder();
 
+
 }}
+
+
 className="
 h-11
 rounded-lg
@@ -325,22 +391,31 @@ text-white
 font-bold
 "
 >
+
 Yes
+
 </button>
 
 
+
 </div>
+
 
 
 </div>
 
+
 </div>
+
 
 )
+
 }
 
 
-{/* HEADER */}
+
+
+
 
 <div
 className="
@@ -350,239 +425,31 @@ space-y-4
 "
 >
 
+  {/* HEADER */}
 
-    <div className="text-center">
-
-      <h1
-        className="
-        font-bold
-        text-lg
-        "
-      >
-        Order Details
-      </h1>
-
-    </div>
-
-    {/* ORDER SUMMARY */}
-
-    <div
-      className="
-      bg-white
-      border
-      border-gray-100
-      rounded-lg
-      p-5
-      shadow-sm
-      "
-    >
-
-      <div
-        className="
-        flex
-        justify-between
-        items-start
-        "
-      >
-
-        <div>
-
-          <div
-            className="
-            flex
-            items-center
-            gap-3
-            "
-          >
-
-            <FiPackage
-              size={38}
-              className="text-amber-500"
-            />
-
-            <h2
-              className="
-              font-black
-              text-xl
-              "
-            >
-              #{order.id.slice(0, 8)}
-            </h2>
-
-          </div>
-
-          <p
-            className="
-            text-xs
-            text-gray-500
-            mt-3
-            "
-          >
-            {new Date(order.createdAt).toLocaleString()}
-          </p>
-
-        </div>
-
-        <span
-className={`
-px-3
-py-1
-rounded-lg
-text-xs
-font-bold
-
-${
-order.status === "Delivered"
-?
-"bg-green-100 text-green-700"
-
-:
-
-order.status === "Shipped"
-?
-"bg-blue-100 text-blue-700"
-
-:
-
-order.status === "Processing"
-?
-"bg-yellow-100 text-yellow-700"
-
-:
-
-order.status === "Pending"
-?
-"bg-orange-100 text-orange-700"
-
-:
-
-order.status === "Cancelled"
-?
-"bg-red-100 text-red-700"
-
-:
-
-"bg-gray-100 text-gray-700"
-
-}
-
-`}
+<div
+className="
+text-center
+"
 >
-{order.status}
-</span>
 
-      </div>
+<h1
+className="
+font-bold
+text-lg
+"
+>
+Order Details
+</h1>
 
-    </div>
+</div>
 
-    {/* ORDER TRACKING */}
 
-    <div
-      className="
-      bg-white
-      border
-      border-gray-100
-      rounded-lg
-      p-5
-      shadow-sm
-      "
-    >
 
-      <h3
-        className="
-        font-bold
-        mb-8
-        "
-      >
-        Order Tracking
-      </h3>
 
-      <div
-        className="
-        relative
-        flex
-        justify-between
-        items-start
-        "
-      >
 
-        <div
-          className="
-          absolute
-          top-5
-          left-8
-          right-8
-          h-[2px]
-          bg-gray-200
-          "
-        >
+{/* ORDER SUMMARY */}
 
-          <div
-            className="
-            h-full
-            bg-amber-500
-            "
-            style={{
-              width: `${(currentStep() / 3) * 100}%`,
-            }}
-          />
-
-        </div>
-
-        {steps.map((step, index) => (
-
-          <div
-            key={step.name}
-            className="
-            relative
-            z-10
-            flex
-            flex-col
-            items-center
-            w-20
-            "
-          >
-
-            <div
-              className={`
-              w-10
-              h-10
-              rounded-full
-              flex
-              items-center
-              justify-center
-              text-sm
-              font-bold
-              ${
-                index <= currentStep()
-                  ? "bg-amber-500 text-white"
-                  : "bg-gray-200 text-gray-500"
-              }
-              `}
-            >
-              {step.icon}
-            </div>
-
-            <p
-              className="
-              text-[11px]
-              text-center
-              font-semibold
-              mt-3
-              "
-            >
-              {step.name}
-            </p>
-
-          </div>
-
-        ))}
-
-      </div>
-
-    </div>
-
-    {/* ORDER ITEMS */}
 
 <div
 className="
@@ -595,14 +462,355 @@ shadow-sm
 "
 >
 
+
+<div
+className="
+flex
+justify-between
+items-start
+"
+>
+
+
+
+<div>
+
+
+<div
+className="
+flex
+items-center
+gap-3
+"
+>
+
+
+<FiPackage
+size={38}
+className="
+text-amber-500
+"
+/>
+
+
+
+<h2
+className="
+font-black
+text-xl
+"
+>
+
+#{order.id.slice(0,8)}
+
+</h2>
+
+
+</div>
+
+
+
+
+<p
+className="
+text-xs
+text-gray-500
+mt-3
+"
+>
+
+{new Date(order.createdAt).toLocaleString()}
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+{/* STATUS COLOR */}
+
+
+<span
+
+className={`
+px-3
+py-1
+rounded-lg
+text-xs
+font-bold
+
+${
+order.status === "Delivered"
+
+?
+
+"bg-green-100 text-green-700"
+
+
+:
+
+order.status === "Shipped"
+
+?
+
+"bg-blue-100 text-blue-700"
+
+
+
+:
+
+order.status === "Processing"
+
+?
+
+"bg-yellow-100 text-yellow-700"
+
+
+
+:
+
+order.status === "Pending"
+
+?
+
+"bg-orange-100 text-orange-700"
+
+
+
+:
+
+order.status === "Cancelled"
+
+?
+
+"bg-red-100 text-red-700"
+
+
+
+:
+
+"bg-gray-100 text-gray-700"
+
+}
+
+`}
+
+>
+
+{order.status}
+
+</span>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+{/* ORDER TRACKING */}
+
+
+<div
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+p-5
+shadow-sm
+"
+>
+
+
+<h3
+className="
+font-bold
+mb-8
+"
+>
+
+Order Tracking
+
+</h3>
+
+
+
+
+
+<div
+className="
+relative
+flex
+justify-between
+items-start
+"
+>
+
+
+<div
+className="
+absolute
+top-5
+left-8
+right-8
+h-[2px]
+bg-gray-200
+"
+>
+
+
+<div
+
+className="
+h-full
+bg-amber-500
+"
+
+style={{
+
+width:
+`${(currentStep()/3)*100}%`
+
+}}
+
+/>
+
+
+</div>
+
+
+
+
+
+{
+
+steps.map(
+
+(step,index)=>(
+
+
+<div
+
+key={step.name}
+
+className="
+relative
+z-10
+flex
+flex-col
+items-center
+w-20
+"
+
+>
+
+
+<div
+
+className={`
+w-10
+h-10
+rounded-full
+flex
+items-center
+justify-center
+text-sm
+font-bold
+
+${
+index <= currentStep()
+
+?
+
+"bg-amber-500 text-white"
+
+:
+
+"bg-gray-200 text-gray-500"
+
+}
+
+`}
+
+>
+
+{step.icon}
+
+</div>
+
+
+
+<p
+className="
+text-[11px]
+text-center
+font-semibold
+mt-3
+"
+>
+
+{step.name}
+
+</p>
+
+
+
+</div>
+
+
+)
+
+)
+
+}
+
+
+
+</div>
+
+
+</div>
+
+  {/* ORDER ITEMS */}
+
+
+<div
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+p-5
+shadow-sm
+"
+>
+
+
 <h3
 className="
 font-bold
 mb-4
 "
 >
+
 Order Items
+
 </h3>
+
+
 
 <div
 className="
@@ -610,17 +818,17 @@ space-y-4
 "
 >
 
+
 {
 
 order.items?.map(
 
 (item,index)=>(
 
+
 <div
 
-key={
-item.id || index
-}
+key={item.id || index}
 
 className="
 flex
@@ -633,6 +841,7 @@ pb-4
 
 >
 
+
 <div
 
 className="
@@ -642,6 +851,7 @@ gap-3
 "
 
 >
+
 
 <img
 
@@ -657,94 +867,103 @@ rounded-lg
 object-cover
 bg-gray-50
 "
+
 />
+
+
 
 <div>
 
 <h4
-
 className="
 font-bold
 text-sm
 "
-
 >
 
 {item.name}
 
 </h4>
 
-<p
 
+<p
 className="
 text-xs
 text-gray-500
 mt-1
 "
-
 >
 
 Qty : {item.quantity || 1}
 
 </p>
 
-</div>
 
 </div>
+
+
+</div>
+
+
+
+
 
 <p
-
 className="
 font-black
 text-sm
 "
-
 >
 
 ৳ {(item.price || 0) * (item.quantity || 1)}
 
 </p>
 
+
+
 </div>
 
+
 )
 
 )
+
 
 }
 
+
+
 </div>
+
+
+
+
 
 {/* PRICE DETAILS */}
 
-<div
 
+<div
 className="
 mt-6
 space-y-3
 text-sm
 "
-
 >
 
-<div
 
+<div
 className="
 flex
 justify-between
 "
-
 >
 
-<span
-className="
-text-gray-500
-"
->
+<span className="text-gray-500">
 
 Subtotal
 
 </span>
+
 
 <span className="font-semibold">
 
@@ -752,26 +971,26 @@ Subtotal
 
 </span>
 
+
 </div>
 
-<div
 
+
+
+
+<div
 className="
 flex
 justify-between
 "
-
 >
 
-<span
-className="
-text-gray-500
-"
->
+<span className="text-gray-500">
 
 Shipping Charge
 
 </span>
+
 
 <span className="font-semibold">
 
@@ -779,26 +998,26 @@ Shipping Charge
 
 </span>
 
+
 </div>
 
-<div
 
+
+
+
+<div
 className="
 flex
 justify-between
 "
-
 >
 
-<span
-className="
-text-gray-500
-"
->
+<span className="text-gray-500">
 
 Discount
 
 </span>
+
 
 <span
 className="
@@ -811,7 +1030,11 @@ text-red-500
 
 </span>
 
+
 </div>
+
+
+
 
 <hr
 className="
@@ -819,22 +1042,27 @@ border-gray-100
 "
 />
 
-<div
 
+
+
+
+<div
 className="
 flex
 justify-between
 font-black
 text-lg
 "
-
 >
+
 
 <span>
 
 Total Amount
 
 </span>
+
+
 
 <span
 className="
@@ -846,13 +1074,24 @@ text-amber-600
 
 </span>
 
-</div>
 
 </div>
 
+
+
 </div>
 
-    {/* SHIPPING ADDRESS */}
+
+</div>
+
+
+
+
+
+
+{/* SHIPPING ADDRESS */}
+
+
 
 <div
 className="
@@ -865,6 +1104,7 @@ shadow-sm
 "
 >
 
+
 <div
 className="
 flex
@@ -874,13 +1114,24 @@ mb-4
 "
 >
 
-<FiMapPin className="text-amber-500" />
+
+<FiMapPin
+className="text-amber-500"
+/>
+
 
 <h3 className="font-bold">
+
 Shipping Address
+
 </h3>
 
+
 </div>
+
+
+
+
 
 <div
 className="
@@ -889,25 +1140,48 @@ text-sm
 "
 >
 
+
 <p className="font-bold">
+
 {order.customerName || user?.name}
+
 </p>
 
+
+
 <p>
+
 {order.address || user?.address || "No Address"}
+
 </p>
 
+
+
 <p>
+
 {order.postOffice || user?.postOffice}
+
 </p>
 
+
+
 <p>
+
 {order.thana || user?.thana}
+
 </p>
 
+
+
 <p>
+
 {order.district || user?.district}
+
 </p>
+
+
+
+
 
 <div
 className="
@@ -918,19 +1192,28 @@ pt-2
 "
 >
 
-<FiPhone size={15} />
+
+<FiPhone size={15}/>
+
 
 <span>
+
 {order.phone || user?.phone}
+
 </span>
 
-</div>
 
 </div>
 
+
+
 </div>
 
-{/* PAYMENT METHOD */}
+
+</div>
+
+  {/* PAYMENT METHOD */}
+
 
 <div
 className="
@@ -943,6 +1226,7 @@ shadow-sm
 "
 >
 
+
 <div
 className="
 flex
@@ -952,13 +1236,25 @@ mb-4
 "
 >
 
-<FiCreditCard className="text-green-600" />
+
+<FiCreditCard
+className="text-green-600"
+/>
+
+
 
 <h3 className="font-bold">
+
 Payment Method
+
 </h3>
 
+
 </div>
+
+
+
+
 
 <div
 className="
@@ -968,17 +1264,42 @@ justify-between
 "
 >
 
+
 <div>
 
-<p className="font-semibold text-sm">
+
+<p
+className="
+font-semibold
+text-sm
+"
+>
+
 {order.paymentMethod || "Cash On Delivery"}
+
 </p>
 
-<p className="text-xs text-gray-500 mt-1">
+
+
+<p
+className="
+text-xs
+text-gray-500
+mt-1
+"
+>
+
 Payment Status
+
 </p>
+
+
 
 </div>
+
+
+
+
 
 <span
 className="
@@ -991,14 +1312,27 @@ text-xs
 font-bold
 "
 >
+
 {order.paymentStatus || "Pending"}
+
 </span>
 
-</div>
+
 
 </div>
 
-    {/* ACTIONS */}
+
+</div>
+
+
+
+
+
+
+
+{/* ACTIONS */}
+
+
 
 <div
 className="
@@ -1011,35 +1345,65 @@ shadow-sm
 "
 >
 
+
 <h3
 className="
 font-bold
 mb-4
 "
 >
+
 Actions
+
 </h3>
+
+
+
+
 
 <div
 className={
-(order.status === "Pending" ||
+
+(
+order.status === "Pending" ||
 order.status === "Processing" ||
-order.status === "Delivered")
+order.status === "Delivered"
+
+)
+
 ?
+
 "grid grid-cols-2 gap-3"
+
 :
+
 ""
+
 }
+
 >
 
-{(
+
+
+
+
+{
+
+(
 order.status === "Pending" ||
 order.status === "Processing"
-) && (
+
+)
+
+&&
+
+
+(
+
 
 <button
 
-onClick={() => setShowCancelModal(true)}
+onClick={()=>setShowCancelModal(true)}
 
 className="
 h-12
@@ -1051,15 +1415,36 @@ font-bold
 "
 
 >
+
 Cancel Order
+
 </button>
 
-)}
 
-{order.status === "Delivered" && (
+)
+
+
+
+}
+
+
+
+
+
+{
+
+order.status === "Delivered"
+
+&&
+
+
+(
+
 
 <button
+
 onClick={returnOrder}
+
 className="
 h-12
 rounded-lg
@@ -1068,31 +1453,61 @@ border-red-500
 text-red-600
 font-bold
 "
+
 >
+
 Return Order
+
 </button>
 
-)}
+
+)
+
+
+
+}
+
+
+
+
+
+
 
 <button
 
-onClick={() => {
 
-  if(order.items?.length === 1){
+onClick={()=>{
 
-    navigate(
-      `/product/${order.items[0].productId || order.items[0].id}`
-    );
 
-  }
+if(order.items?.length === 1){
 
-  else{
 
-    navigate("/shop");
+navigate(
 
-  }
+`/product/${
+
+order.items[0].productId ||
+order.items[0].id
+
+}`
+
+);
+
+
+}
+
+else{
+
+
+navigate("/shop");
+
+
+}
+
 
 }}
+
+
 
 className="
 h-12
@@ -1109,19 +1524,32 @@ gap-2
 
 >
 
+
 <FiShoppingBag />
+
 
 Buy Again
 
+
 </button>
 
+
+
+
 </div>
+
+
+</div>
+
+
+
+
+
 
 </div>
 
 </div>
 
-</div>
 
 );
 
