@@ -240,13 +240,21 @@ export default function MyOrders() {
   return (
 
     <div
-      className="
-      min-h-screen
-      bg-[#faf9f6]
-      p-4
-      space-y-4
-      "
-    >
+  className="
+  min-h-screen
+  bg-[#FCFAF5]
+  px-4
+  md:px-8
+  py-6
+  "
+>
+      <div
+  className="
+  max-w-5xl
+  mx-auto
+  space-y-4
+  "
+>
 
       {/* =========================
           HEADER
