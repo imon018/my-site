@@ -23,6 +23,8 @@ import {
 
 
 
+
+
 const orderRef =
 collection(
   db,
@@ -32,9 +34,14 @@ collection(
 
 
 
+
+
+
+
 // =================================
-// CREATE ORDER
+// CREATE ORDER (CUSTOMER)
 // =================================
+
 
 export const createOrder =
 async(order)=>{
@@ -47,24 +54,33 @@ async(order)=>{
   );
 
 
+
   if(order.userId){
+
 
     await createUserNotification({
 
-      userId: order.userId,
+      userId:
+      order.userId,
+
 
       title:
       "🛒 Order Placed",
 
+
       message:
       "Your order has been placed successfully.",
+
 
       type:
       "order",
 
     });
 
+
   }
+
+
 
 
 
@@ -73,13 +89,17 @@ async(order)=>{
     title:
     "📦 New Order Received",
 
+
     message:
     `${order.customerName || "Customer"} placed a new order.`,
+
 
     type:
     "order",
 
   });
+
+
 
 
 
@@ -92,48 +112,57 @@ async(order)=>{
 
 
 
+
+
+
+
 // =================================
 // GET USER ORDERS
 // =================================
+
 
 export const getUserOrders =
 async(email)=>{
 
 
-const q =
-query(
+  const q =
+  query(
 
-orderRef,
+    orderRef,
 
-where(
-"email",
-"==",
-email
-)
+    where(
+      "email",
+      "==",
+      email
+    )
 
-);
-
-
-
-const snapshot =
-await getDocs(q);
+  );
 
 
 
-return snapshot.docs.map(
+  const snapshot =
+  await getDocs(q);
 
-item=>({
 
-id:item.id,
 
-...item.data(),
+  return snapshot.docs.map(
 
-})
+    item=>({
 
-);
+      id:item.id,
+
+      ...item.data(),
+
+    })
+
+  );
 
 
 };
+
+
+
+
 
 
 
@@ -143,27 +172,32 @@ id:item.id,
 // GET ALL ORDERS ADMIN
 // =================================
 
+
 export const getAllOrders =
 async()=>{
 
 
 const snapshot =
-await getDocs(orderRef);
+await getDocs(
+  orderRef
+);
 
 
 
-return snapshot.docs.map(
+const orders =
+await Promise.all(
 
-item=>({
+snapshot.docs.map(
+
+async(item)=>{
+
+
+const order =
+{
 
 id:item.id,
 
 ...item.data(),
-
-})
-
-);
-
 
 };
 
@@ -171,12 +205,100 @@ id:item.id,
 
 
 
+let customerPhoto =
+"";
+
+
+
+
+
+if(order.userId){
+
+
+try{
+
+
+const userRef =
+doc(
+db,
+"users",
+order.userId
+);
+
+
+
+const userSnap =
+await getDoc(
+userRef
+);
+
+
+
+if(userSnap.exists()){
+
+
+customerPhoto =
+userSnap.data().photoURL || "";
+
+
+}
+
+
+
+}
+
+catch(error){
+
+
+console.log(
+"Failed to load customer photo:",
+error
+);
+
+
+}
+
+
+}
+
+
+
+
+
+return {
+
+
+...order,
+
+customerPhoto,
+
+
+};
+
+
+}
+
+)
+
+);
+
+
+
+return orders;
+
+
+};
+
 // =================================
-// UPDATE ORDER STATUS ADMIN
+// UPDATE ORDER STATUS (ADMIN)
 // =================================
 
+
 export const updateOrderStatus =
-async(id,status)=>{
+async(
+id,
+status
+)=>{
 
 
 const orderDoc =
@@ -188,12 +310,14 @@ id
 
 
 
-const snapshot =
-await getDoc(orderDoc);
+const orderSnapshot =
+await getDoc(
+orderDoc
+);
 
 
 
-if(!snapshot.exists()){
+if(!orderSnapshot.exists()){
 
 throw new Error(
 "Order not found"
@@ -204,7 +328,9 @@ throw new Error(
 
 
 const order =
-snapshot.data();
+orderSnapshot.data();
+
+
 
 
 
@@ -223,16 +349,19 @@ status,
 
 
 
-let title =
-"📦 Order Updated";
 
+let title =
+"";
 
 let message =
-`Your order status changed to ${status}.`;
+"";
 
 
 
-if(status==="Confirmed"){
+switch(status){
+
+
+case "Confirmed":
 
 title =
 "✅ Order Confirmed";
@@ -240,11 +369,11 @@ title =
 message =
 "Your order has been confirmed.";
 
-}
+break;
 
 
 
-if(status==="Shipped"){
+case "Shipped":
 
 title =
 "🚚 Order Shipped";
@@ -252,23 +381,23 @@ title =
 message =
 "Your order is on the way.";
 
-}
+break;
 
 
 
-if(status==="Delivered"){
+case "Delivered":
 
 title =
 "🎉 Order Delivered";
 
 message =
-"Your order has been delivered.";
+"Your order has been delivered successfully.";
 
-}
+break;
 
 
 
-if(status==="Cancelled"){
+case "Cancelled":
 
 title =
 "❌ Order Cancelled";
@@ -276,21 +405,36 @@ title =
 message =
 "Your order has been cancelled.";
 
+break;
+
+
+
+default:
+
+title =
+"📦 Order Updated";
+
+message =
+`Your order status changed to ${status}.`;
+
 }
 
 
 
-
 if(order.userId){
+
 
 await createUserNotification({
 
 userId:
 order.userId,
 
+
 title,
 
+
 message,
+
 
 type:
 "order",
@@ -308,9 +452,74 @@ type:
 
 
 
+
+
+
+
+// =================================
+// ADMIN ADD ORDER
+// =================================
+
+
+export const addOrderByAdmin =
+async(order)=>{
+
+
+const docRef =
+await addDoc(
+
+orderRef,
+
+order
+
+);
+
+
+
+if(order.userId){
+
+
+await createUserNotification({
+
+userId:
+order.userId,
+
+
+title:
+"🛒 Order Created",
+
+
+message:
+"An order has been created for you.",
+
+
+type:
+"order",
+
+});
+
+
+}
+
+
+
+return docRef.id;
+
+
+};
+
+
+
+
+
+
+
+
+
 // =================================
 // DELETE ORDER
 // =================================
+
 
 export const deleteOrder =
 async(id)=>{
@@ -329,13 +538,10 @@ id
 
 };
 
-
-
-
-
 // =================================
-// USER DIRECT CANCEL ORDER
+// USER CANCEL ORDER DIRECT
 // =================================
+
 
 export const requestCancelOrder =
 async(id)=>{
@@ -351,7 +557,9 @@ id
 
 
 const snapshot =
-await getDoc(orderDoc);
+await getDoc(
+orderDoc
+);
 
 
 
@@ -371,6 +579,7 @@ snapshot.data();
 
 
 
+
 await updateDoc(
 
 orderDoc,
@@ -380,11 +589,8 @@ orderDoc,
 status:
 "Cancelled",
 
-cancelledBy:
-"user",
-
-cancelledAt:
-new Date(),
+cancelRequested:
+false,
 
 }
 
@@ -394,7 +600,14 @@ new Date(),
 
 
 
+
+
+
+// USER NOTIFICATION
+
+
 if(order.userId){
+
 
 await createUserNotification({
 
@@ -422,10 +635,16 @@ type:
 
 
 
+
+
+
+// ADMIN NOTIFICATION
+
+
 await createAdminNotification({
 
 title:
-"❌ Order Cancelled By Customer",
+"❌ Order Cancelled",
 
 
 message:
@@ -445,9 +664,14 @@ type:
 
 
 
+
+
+
+
 // =================================
-// RETURN REQUEST
+// USER RETURN REQUEST
 // =================================
+
 
 export const requestReturnOrder =
 async(id)=>{
@@ -463,7 +687,9 @@ id
 
 
 const snapshot =
-await getDoc(orderDoc);
+await getDoc(
+orderDoc
+);
 
 
 
@@ -482,19 +708,28 @@ snapshot.data();
 
 
 
+
+
 await updateDoc(
 
 orderDoc,
 
 {
 
-returnRequested:true,
+returnRequested:
+true,
 
 }
 
 );
 
 
+
+
+
+
+
+// ADMIN NOTIFICATION
 
 
 await createAdminNotification({
