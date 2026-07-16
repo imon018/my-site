@@ -454,22 +454,30 @@ i!==index
 // =========================
 
 
+
 function handleImage(e){
 
-
 const files =
-Array.from(
-e.target.files
-);
+Array.from(e.target.files);
 
 
-
-setImages(files);
+setImages(prev=>[
+...prev,
+...files
+]);
 
 
 }
 
+function removeImage(index){
 
+setImages(prev=>
+prev.filter(
+(_,i)=>i!==index
+)
+);
+
+}
 
 
 
@@ -1864,28 +1872,103 @@ hidden
 
 
 
-
 {
 
 images.length > 0 &&
 
-<p
+
+<div
 
 className="
-text-xs
-text-gray-500
-mt-3
+grid
+grid-cols-3
+gap-3
+mt-4
 "
 
 >
 
-{images.length} image selected
 
-</p>
+{
+
+images.map((image,index)=>(
+
+
+<div
+
+key={index}
+
+className="
+relative
+"
+
+>
+
+
+<img
+
+src={
+URL.createObjectURL(image)
+}
+
+alt="preview"
+
+className="
+w-full
+h-24
+rounded-lg
+object-cover
+border
+"
+
+/>
+
+
+
+
+<button
+
+type="button"
+
+onClick={()=>removeImage(index)}
+
+className="
+absolute
+-top-2
+-right-2
+w-6
+h-6
+rounded-full
+bg-red-500
+text-white
+font-bold
+flex
+items-center
+justify-center
+shadow
+"
+
+>
+
+×
+
+</button>
+
+
+
+</div>
+
+
+))
+
 
 }
 
 
+</div>
+
+
+}
 
 </div>
 
