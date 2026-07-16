@@ -135,11 +135,15 @@ export default function UserOrderDetails() {
 
     }
 
-    catch {
+    catch(error){
 
-      errorToast("Request failed");
+  console.log(error);
 
-    }
+  errorToast(
+    error.message || "Request failed"
+  );
+
+}
 
   }
 
@@ -911,7 +915,25 @@ Return Order
 )}
 
 <button
-onClick={() => navigate("/shop")}
+
+onClick={() => {
+
+  if(order.items?.length === 1){
+
+    navigate(
+      `/product/${order.items[0].productId || order.items[0].id}`
+    );
+
+  }
+
+  else{
+
+    navigate("/shop");
+
+  }
+
+}}
+
 className="
 h-12
 w-full
@@ -924,6 +946,7 @@ items-center
 justify-center
 gap-2
 "
+
 >
 
 <FiShoppingBag />
