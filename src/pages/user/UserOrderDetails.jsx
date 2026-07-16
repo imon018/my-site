@@ -120,7 +120,73 @@ setLoading(false);
 
 
 
+function currentStep() {
 
+  if (!order) return 0;
+
+
+  switch(order.status) {
+
+
+    case "Processing":
+
+      return 1;
+
+
+
+    case "Shipped":
+
+      return 2;
+
+
+
+    case "Delivered":
+
+      return 3;
+
+
+
+    case "Cancelled":
+
+      return -1;
+
+
+
+    default:
+
+      return 0;
+
+
+  }
+
+}
+
+  const steps = [
+
+  {
+    name:"Order Placed",
+    icon:<FiPackage />,
+  },
+
+
+  {
+    name:"Processing",
+    icon:<FiPackage />,
+  },
+
+
+  {
+    name:"Shipped",
+    icon:<FiTruck />,
+  },
+
+
+  {
+    name:"Delivered",
+    icon:<FiCheck />,
+  },
+
+];
 
 
 async function cancelOrder(){
@@ -731,7 +797,7 @@ text-sm
 font-bold
 
 ${
-index <= currentStep()
+index <= currentStep() && order.status !== "Cancelled"
 
 ?
 
