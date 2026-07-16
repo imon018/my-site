@@ -31,7 +31,9 @@ import {
 } from "../../components/ui/Toast";
 
 
-
+import {
+  uploadImages
+} from "../../services/uploadService";
 
 
 export default function ReturnOrder(){
@@ -2686,6 +2688,15 @@ return;
 }
 
 
+let uploadedImages = [];
+
+
+if(images.length > 0){
+
+uploadedImages =
+await uploadImages(images);
+
+}
 
 
 
@@ -2719,7 +2730,7 @@ reason,
 description,
 
 
-images,
+images: uploadedImages,
 
 
 returnType,
