@@ -1496,20 +1496,22 @@ Cancel Order
 
 
 
-
 {
-
 order.status === "Delivered"
 
 &&
 
-
 (
-
 
 <button
 
-onClick={returnOrder}
+onClick={()=>{
+
+navigate(
+`/return-order/${order.id}`
+);
+
+}}
 
 className="
 h-12
@@ -1526,16 +1528,9 @@ Return Order
 
 </button>
 
-
 )
 
-
-
 }
-
-
-
-
 
 
 
