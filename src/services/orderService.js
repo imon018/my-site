@@ -210,7 +210,41 @@ let customerPhoto =
 
 
 
+// =================================
+// UPDATE PAYMENT STATUS (ADMIN)
+// =================================
 
+export const updatePaymentStatus =
+async(
+id,
+paymentStatus
+)=>{
+
+
+const orderDoc =
+doc(
+db,
+"orders",
+id
+);
+
+
+
+await updateDoc(
+
+orderDoc,
+
+{
+
+paymentStatus,
+
+}
+
+);
+
+
+
+};
 
 if(order.userId){
 
