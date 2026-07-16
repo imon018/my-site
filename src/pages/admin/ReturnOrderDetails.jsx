@@ -11,7 +11,6 @@ import {
 
 
 import {
- FiArrowLeft,
  FiPackage,
  FiImage
 } from "react-icons/fi";
@@ -223,38 +222,14 @@ space-y-4
 ">
 
 
-<button
-
-onClick={()=>navigate(-1)}
-
+<h1
 className="
-flex
-items-center
-gap-2
-font-bold
-text-sm
-"
-
->
-
-<FiArrowLeft/>
-
-Back
-
-</button>
-
-
-
-
-
-
-<h1 className="
 text-2xl
 font-black
-">
-
+text-center
+"
+>
 Return Order Details
-
 </h1>
 
 
@@ -540,7 +515,26 @@ request.images.map(
 
 key={index}
 
-src={img}
+src={
+typeof img === "string"
+?
+img
+:
+img?.imageUrl || img?.url || ""
+}
+
+onClick={()=>{
+
+const image =
+typeof img === "string"
+?
+img
+:
+img?.imageUrl || img?.url;
+
+setPreviewImage(image);
+
+}}
 
 className="
 w-full
@@ -548,6 +542,7 @@ h-32
 rounded-lg
 object-cover
 border
+cursor-pointer
 "
 
 />
@@ -729,7 +724,46 @@ Refunded
 
 
 
+{
+previewImage && (
 
+<div
+
+className="
+fixed
+inset-0
+bg-black/80
+z-[999]
+flex
+items-center
+justify-center
+p-4
+"
+
+onClick={()=>setPreviewImage(null)}
+
+>
+
+
+<img
+
+src={previewImage}
+
+className="
+max-w-full
+max-h-full
+object-contain
+rounded-lg
+"
+
+/>
+
+
+</div>
+
+)
+
+}
 
 
 </div>
