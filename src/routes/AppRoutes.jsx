@@ -10,8 +10,6 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute";
    USER PAGES
 ========================= */
 
-import AccountInformation from "../pages/user/AccountInformation";
-import RecentActivities from "../pages/user/RecentActivities";
 import ChangePassword from "../pages/user/ChangePassword";
 import DeleteAccount from "../pages/user/DeleteAccount";
 import ProfileEditPage from "../pages/ProfileEditPage";
@@ -160,16 +158,6 @@ export default function AppRoutes() {
         >
 
           <Route index element={<Profile />} />
-
-          <Route
-            path="account"
-            element={<AccountInformation />}
-          />
-
-          <Route
-            path="activity"
-            element={<RecentActivities />}
-          />
 
           <Route
             path="orders"
