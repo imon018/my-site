@@ -848,8 +848,82 @@ type:
 
 }
 
+};
 
 
+
+// =================================
+// GET RETURN ORDERS ADMIN
+// =================================
+
+export const getReturnOrders =
+async()=>{
+
+
+const snapshot =
+await getDocs(orderRef);
+
+
+
+return snapshot.docs
+
+.map(item=>({
+
+id:item.id,
+
+...item.data(),
+
+}))
+
+
+.filter(order=>
+
+order.returnRequested === true
+
+);
 
 
 };
+
+
+
+
+
+// =================================
+// UPDATE RETURN STATUS ADMIN
+// =================================
+
+export const updateReturnStatus =
+async(
+id,
+status
+)=>{
+
+
+const orderDoc =
+doc(
+db,
+"orders",
+id
+);
+
+
+
+await updateDoc(
+
+orderDoc,
+
+{
+
+"returnRequest.status":
+status
+
+}
+
+);
+
+
+};
+
+
+
