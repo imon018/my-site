@@ -994,9 +994,8 @@ Delete
 </div>
 
 
-)
+))
 
-)
 }
 
 {/* DESKTOP TABLE */}
