@@ -17,6 +17,8 @@ import {
   FiPhone,
   FiCreditCard,
   FiShoppingBag,
+  FiTruck,
+  FiCheck,
 } from "react-icons/fi";
 
 
@@ -42,45 +44,45 @@ import {
 export default function UserOrderDetails(){
 
 
-  const {
-    id
-  } = useParams();
+const {
+ id
+}=useParams();
 
 
-  const navigate =
-  useNavigate();
 
+const navigate =
+useNavigate();
 
-  const {
-    user
-  } = useAuth();
 
 
+const {
+ user
+}=useAuth();
 
 
-  const [
-    order,
-    setOrder
-  ] = useState(null);
 
 
+const [
+ order,
+ setOrder
+]=useState(null);
 
-  const [
-    loading,
-    setLoading
-  ] = useState(true);
 
 
+const [
+ loading,
+ setLoading
+]=useState(true);
 
 
 
-  useEffect(()=>{
 
 
-    loadOrder();
+useEffect(()=>{
 
+loadOrder();
 
-  },[user]);
+},[user]);
 
 
 
@@ -88,52 +90,51 @@ export default function UserOrderDetails(){
 
 
 
-  async function loadOrder(){
+async function loadOrder(){
 
 
-    try{
+try{
 
 
-      if(!user)
-      return;
+if(!user)
+return;
 
 
 
-      const orders =
-      await getUserOrders(
-        user.email
-      );
+const orders =
+await getUserOrders(
+user.email
+);
 
 
 
-      const found =
-      orders.find(
-        item =>
-        item.id === id
-      );
+const found =
+orders.find(
+item=>item.id===id
+);
 
 
 
-      setOrder(found);
+setOrder(found);
 
 
 
-    }
-    catch(error){
+}
 
-      console.log(error);
+catch(error){
 
-    }
-    finally{
+console.log(error);
 
-      setLoading(false);
+}
 
-    }
+finally{
 
+setLoading(false);
 
-  }
+}
 
 
+}
 
 
 
@@ -141,55 +142,67 @@ export default function UserOrderDetails(){
 
 
 
-  const trackingSteps = [
 
-    "Order Placed",
 
-    "Processing",
+const steps=[
 
-    "Shipped",
+{
+name:"Order Placed",
+icon:<FiPackage/>
+},
 
-    "Delivered",
+{
+name:"Processing",
+icon:<FiPackage/>
+},
 
-  ];
+{
+name:"Shipped",
+icon:<FiTruck/>
+},
 
+{
+name:"Delivered",
+icon:<FiCheck/>
+},
 
+];
 
 
 
 
 
 
-  const statusIndex = ()=>{
+function currentStep(){
 
 
-    if(!order)
-    return 0;
+if(!order)
+return 0;
 
 
-    switch(order.status){
+switch(order.status){
 
 
-      case "Processing":
-        return 1;
+case "Processing":
+return 1;
 
 
-      case "Shipped":
-        return 2;
+case "Shipped":
+return 2;
 
 
-      case "Delivered":
-        return 3;
+case "Delivered":
+return 3;
 
 
-      default:
-        return 0;
+default:
+return 0;
 
-    }
 
+}
 
-  };
 
+}
 
 
 
@@ -197,194 +210,186 @@ export default function UserOrderDetails(){
 
 
 
-  async function cancelOrder(){
+async function cancelOrder(){
 
 
-    try{
+try{
 
 
-      await requestCancelOrder(
-        order.id
-      );
+await requestCancelOrder(
+order.id
+);
 
 
-      successToast(
-        "Cancel request sent"
-      );
+successToast(
+"Cancel request sent"
+);
 
 
-      loadOrder();
+loadOrder();
 
 
-    }
-    catch(error){
+}
 
-      errorToast(
-        "Request failed"
-      );
+catch{
 
-    }
+errorToast(
+"Request failed"
+);
 
+}
 
-  }
 
+}
 
 
 
 
 
 
-  async function returnOrder(){
 
 
-    try{
+async function returnOrder(){
 
 
-      await requestReturnOrder(
-        order.id
-      );
+try{
 
 
-      successToast(
-        "Return request sent"
-      );
+await requestReturnOrder(
+order.id
+);
 
 
-      loadOrder();
+successToast(
+"Return request sent"
+);
 
 
-    }
-    catch(error){
+loadOrder();
 
-      errorToast(
-        "Request failed"
-      );
 
-    }
+}
 
+catch{
 
-  }
+errorToast(
+"Request failed"
+);
 
+}
 
 
+}
 
 
 
 
 
 
-  if(loading){
 
+if(loading)
+return(
 
-    return (
+<div className="
+min-h-screen
+flex
+items-center
+justify-center
+font-bold
+">
 
-      <div
-        className="
-        min-h-screen
-        flex
-        items-center
-        justify-center
-        font-bold
-        "
-      >
+Loading Order...
 
-        Loading Order...
+</div>
 
-      </div>
+);
 
-    );
 
 
-  }
 
 
 
 
+if(!order)
+return(
 
+<div className="
+min-h-screen
+flex
+flex-col
+gap-4
+items-center
+justify-center
+">
 
 
-  if(!order){
+<h2 className="
+font-bold
+text-xl
+">
 
+Order Not Found
 
-    return (
+</h2>
 
-      <div
-        className="
-        min-h-screen
-        flex
-        flex-col
-        gap-4
-        items-center
-        justify-center
-        "
-      >
 
-        <h2
-          className="
-          font-bold
-          text-xl
-          "
-        >
-          Order Not Found
-        </h2>
+<button
 
+onClick={()=>
+navigate(-1)
+}
 
-        <button
+className="
+bg-black
+text-white
+px-5
+py-2
+rounded-lg
+"
 
-          onClick={()=>
-            navigate(-1)
-          }
+>
 
-          className="
-          bg-black
-          text-white
-          px-5
-          py-2
-          rounded-xl
-          "
-        >
+Back
 
-          Back
+</button>
 
-        </button>
 
+</div>
 
-      </div>
+);
 
-    );
 
 
-  }
 
 
 
 
 
 
-
-
-return (
-
+return(
 
 <div
+
 className="
 min-h-screen
 bg-[#FCFAF5]
 
 px-4
-pb-28
 py-5
+pb-32
 "
+
 >
 
 
-
 <div
+
 className="
 max-w-xl
 mx-auto
 space-y-4
 "
+
 >
 
 
@@ -394,13 +399,16 @@ space-y-4
 {/* HEADER */}
 
 
+
 <div
+
 className="
 relative
 flex
 items-center
 justify-center
 "
+
 >
 
 
@@ -417,12 +425,12 @@ left-0
 w-10
 h-10
 
-rounded-xl
-
 bg-white
 
 border
 border-gray-100
+
+rounded-lg
 
 flex
 items-center
@@ -438,12 +446,13 @@ justify-center
 
 
 
-
 <h1
+
 className="
 font-bold
 text-lg
 "
+
 >
 
 Order Details
@@ -461,31 +470,37 @@ Order Details
 
 
 
-
 {/* ORDER SUMMARY */}
 
 
+
 <div
+
 className="
 bg-white
-rounded-2xl
 
 border
 border-gray-100
+
+rounded-lg
 
 p-5
 
 shadow-sm
 "
+
 >
 
 
+
 <div
+
 className="
 flex
 justify-between
 items-start
 "
+
 >
 
 
@@ -493,25 +508,35 @@ items-start
 
 
 <div
+
 className="
 flex
 items-center
-gap-2
+gap-3
 "
+
 >
 
+
 <FiPackage
+
+size={38}
+
 className="
 text-amber-500
 "
+
 />
 
 
+
 <h2
+
 className="
 font-black
 text-xl
 "
+
 >
 
 #
@@ -525,19 +550,18 @@ text-xl
 
 
 <p
+
 className="
 text-xs
 text-gray-500
-mt-2
+mt-3
 "
+
 >
 
-{
-new Date(
+{new Date(
 order.createdAt
-)
-.toLocaleString()
-}
+).toLocaleString()}
 
 </p>
 
@@ -550,11 +574,12 @@ order.createdAt
 
 
 <span
+
 className="
 px-3
 py-1
 
-rounded-full
+rounded-lg
 
 text-xs
 
@@ -564,70 +589,12 @@ bg-blue-100
 
 text-blue-700
 "
+
 >
 
 {order.status}
 
 </span>
-
-
-</div>
-
-
-
-
-
-<div
-className="
-mt-5
-
-flex
-
-justify-between
-
-items-center
-
-bg-[#FCFAF5]
-
-rounded-xl
-
-p-4
-"
->
-
-
-<div>
-
-<p
-className="
-text-xs
-text-gray-500
-"
->
-Total Amount
-</p>
-
-
-<h2
-className="
-text-2xl
-font-black
-"
->
-
-৳ {order.total}
-
-</h2>
-
-</div>
-
-
-<FiShoppingBag
-size={30}
-className="
-text-amber-500
-"
-/>
 
 
 </div>
@@ -646,23 +613,32 @@ text-amber-500
 {/* ORDER TRACKING */}
 
 
+
 <div
+
 className="
 bg-white
-rounded-2xl
+
 border
 border-gray-100
+
+rounded-lg
+
 p-5
+
 shadow-sm
 "
+
 >
 
 
 <h3
+
 className="
 font-bold
-mb-6
+mb-8
 "
+
 >
 
 Order Tracking
@@ -671,38 +647,89 @@ Order Tracking
 
 
 
+
+
 <div
+
 className="
+relative
 flex
 justify-between
-relative
+items-start
 "
+
 >
+
+
+<div
+
+className="
+absolute
+top-5
+left-8
+right-8
+h-[2px]
+bg-gray-200
+"
+
+>
+
+
+<div
+
+className="
+h-full
+bg-amber-500
+"
+
+style={{
+
+width:`${
+
+(currentStep()/3)*100
+
+}%`
+
+}}
+
+/>
+
+
+</div>
+
+
+
 
 
 {
 
-trackingSteps.map(
+steps.map(
 (step,index)=>(
 
 
 <div
-key={step}
+
+key={step.name}
 
 className="
+relative
+z-10
+
 flex
 flex-col
 items-center
-flex-1
+
+w-20
 "
+
 >
 
 
 <div
-className={`
 
-w-8
-h-8
+className={`
+w-10
+h-10
 
 rounded-full
 
@@ -710,15 +737,17 @@ flex
 items-center
 justify-center
 
-text-xs
+text-sm
 
 font-bold
 
 
 ${
-index <= statusIndex()
+
+index<=currentStep()
 
 ?
+
 "bg-amber-500 text-white"
 
 :
@@ -728,23 +757,30 @@ index <= statusIndex()
 }
 
 `}
+
 >
 
-✓
+{step.icon}
 
 </div>
 
 
+
 <p
+
 className="
-text-[10px]
-mt-2
+text-[11px]
+
 text-center
+
 font-semibold
+
+mt-3
 "
+
 >
 
-{step}
+{step.name}
 
 </p>
 
@@ -759,7 +795,9 @@ font-semibold
 }
 
 
+
 </div>
+
 
 
 </div>
@@ -768,25 +806,30 @@ font-semibold
 
 
 <div
+
 className="
 bg-white
-rounded-2xl
 
 border
 border-gray-100
+
+rounded-lg
 
 p-5
 
 shadow-sm
 "
+
 >
 
 
 <h3
+
 className="
 font-bold
 mb-4
 "
+
 >
 
 Order Items
@@ -798,41 +841,49 @@ Order Items
 
 
 <div
+
 className="
 space-y-4
 "
+
 >
 
 
 {
+
 order.items?.map(
+
 (item,index)=>(
 
 
 <div
+
 key={
 item.id || index
 }
 
 className="
 flex
-items-center
 justify-between
+items-center
 
 border-b
 border-gray-100
 
 pb-4
 "
+
 >
 
 
 <div
+
 className="
 flex
 items-center
 gap-3
 "
+
 >
 
 
@@ -847,7 +898,7 @@ className="
 w-16
 h-16
 
-rounded-xl
+rounded-lg
 
 object-cover
 
@@ -861,10 +912,12 @@ bg-gray-50
 <div>
 
 <h4
+
 className="
 font-bold
 text-sm
 "
+
 >
 
 {item.name}
@@ -873,14 +926,16 @@ text-sm
 
 
 <p
+
 className="
 text-xs
 text-gray-500
 mt-1
 "
+
 >
 
-Qty: {item.quantity || 1}
+Qty : {item.quantity || 1}
 
 </p>
 
@@ -893,11 +948,13 @@ Qty: {item.quantity || 1}
 
 
 
-
 <p
+
 className="
 font-black
+text-sm
 "
+
 >
 
 ৳ {
@@ -932,42 +989,44 @@ font-black
 
 
 
-
 {/* PRICE DETAILS */}
 
 
-
 <div
+
 className="
 mt-6
 space-y-3
 text-sm
 "
+
 >
 
 
 <div
+
 className="
 flex
 justify-between
 "
+
 >
 
 <span
+
 className="
 text-gray-500
 "
+
 >
 Subtotal
 </span>
 
 
-<span
-className="
-font-semibold
-"
->
+<span className="font-semibold">
+
 ৳ {order.subtotal || 0}
+
 </span>
 
 
@@ -977,28 +1036,33 @@ font-semibold
 
 
 
+
 <div
+
 className="
 flex
 justify-between
 "
+
 >
 
 <span
+
 className="
 text-gray-500
 "
+
 >
+
 Shipping Charge
+
 </span>
 
 
-<span
-className="
-font-semibold
-"
->
+<span className="font-semibold">
+
 ৳ {order.deliveryCharge || 0}
+
 </span>
 
 
@@ -1008,27 +1072,36 @@ font-semibold
 
 
 
+
 <div
+
 className="
 flex
 justify-between
 "
+
 >
 
 <span
+
 className="
 text-gray-500
 "
+
 >
+
 Discount
+
 </span>
 
 
 <span
+
 className="
 font-semibold
 text-red-500
 "
+
 >
 
 -৳ {order.discount || 0}
@@ -1053,23 +1126,31 @@ border-gray-100
 
 
 <div
+
 className="
 flex
 justify-between
+
 font-black
+
 text-lg
 "
+
 >
 
 <span>
+
 Total Amount
+
 </span>
 
 
 <span
+
 className="
 text-amber-600
 "
+
 >
 
 ৳ {order.total}
@@ -1080,9 +1161,7 @@ text-amber-600
 </div>
 
 
-
 </div>
-
 
 
 </div>
@@ -1099,45 +1178,47 @@ text-amber-600
 {/* SHIPPING ADDRESS */}
 
 
+
 <div
+
 className="
 bg-white
 
-rounded-2xl
-
 border
 border-gray-100
+
+rounded-lg
 
 p-5
 
 shadow-sm
 "
+
 >
 
 
 <div
+
 className="
 flex
 items-center
 gap-2
-
 mb-4
 "
+
 >
 
 
 <FiMapPin
+
 className="
 text-amber-500
 "
+
 />
 
 
-<h3
-className="
-font-bold
-"
->
+<h3 className="font-bold">
 
 Shipping Address
 
@@ -1150,75 +1231,99 @@ Shipping Address
 
 
 
+
 <div
+
 className="
 space-y-2
 text-sm
 "
+
 >
 
 
-<p
-className="
-font-bold
-"
->
+<p className="font-bold">
 
-{order.customerName}
+{
+order.customerName ||
+user?.name
+}
 
 </p>
+
 
 
 
 <p>
 
-{order.address || "No Address"}
+{
+order.address ||
+user?.address ||
+"No Address"
+}
 
 </p>
+
 
 
 
 <p>
 
-{order.postOffice}
+{
+order.postOffice ||
+user?.postOffice
+}
 
 </p>
+
 
 
 
 <p>
 
-{order.thana}
+{
+order.thana ||
+user?.thana
+}
 
 </p>
+
 
 
 
 <p>
 
-{order.district}
+{
+order.district ||
+user?.district
+}
 
 </p>
+
 
 
 
 <div
+
 className="
 flex
 items-center
 gap-2
 pt-2
 "
+
 >
 
-<FiPhone
-size={15}
-/>
+
+<FiPhone size={15}/>
 
 
 <span>
 
-{order.phone}
+{
+order.phone ||
+user?.phone
+}
 
 </span>
 
@@ -1226,13 +1331,10 @@ size={15}
 </div>
 
 
-
 </div>
 
 
-
 </div>
-
 
 
 
@@ -1247,43 +1349,46 @@ size={15}
 
 
 <div
+
 className="
 bg-white
 
-rounded-2xl
-
 border
 border-gray-100
+
+rounded-lg
 
 p-5
 
 shadow-sm
 "
+
 >
 
 
 <div
+
 className="
 flex
 items-center
 gap-2
+
 mb-4
 "
+
 >
 
 
 <FiCreditCard
+
 className="
 text-green-600
 "
+
 />
 
 
-<h3
-className="
-font-bold
-"
->
+<h3 className="font-bold">
 
 Payment Method
 
@@ -1296,24 +1401,22 @@ Payment Method
 
 
 
+
 <div
+
 className="
 flex
-justify-between
 items-center
+justify-between
 "
+
 >
 
 
 <div>
 
 
-<p
-className="
-font-semibold
-text-sm
-"
->
+<p className="font-semibold text-sm">
 
 {
 order.paymentMethod ||
@@ -1323,13 +1426,7 @@ order.paymentMethod ||
 </p>
 
 
-<p
-className="
-text-xs
-text-gray-500
-mt-1
-"
->
+<p className="text-xs text-gray-500 mt-1">
 
 Payment Status
 
@@ -1341,13 +1438,13 @@ Payment Status
 
 
 
-
 <span
+
 className="
 px-3
 py-1.5
 
-rounded-full
+rounded-lg
 
 bg-green-100
 
@@ -1357,6 +1454,7 @@ text-xs
 
 font-bold
 "
+
 >
 
 {
@@ -1367,8 +1465,8 @@ order.paymentStatus ||
 </span>
 
 
-</div>
 
+</div>
 
 
 </div>
@@ -1386,6 +1484,7 @@ order.paymentStatus ||
 
 
 <div
+
 className="
 fixed
 
@@ -1404,10 +1503,12 @@ p-4
 
 z-50
 "
+
 >
 
 
 <div
+
 className="
 max-w-xl
 
@@ -1419,6 +1520,7 @@ grid-cols-2
 
 gap-3
 "
+
 >
 
 
@@ -1441,7 +1543,7 @@ onClick={cancelOrder}
 className="
 h-12
 
-rounded-xl
+rounded-lg
 
 border
 
@@ -1460,8 +1562,9 @@ Cancel
 
 </button>
 
-
 }
+
+
 
 
 
@@ -1480,7 +1583,7 @@ onClick={returnOrder}
 className="
 h-12
 
-rounded-xl
+rounded-lg
 
 border
 
@@ -1499,8 +1602,8 @@ Return
 
 </button>
 
-
 }
+
 
 
 
@@ -1514,7 +1617,7 @@ onClick={()=>navigate("/shop")}
 className="
 h-12
 
-rounded-xl
+rounded-lg
 
 bg-black
 
@@ -1531,6 +1634,8 @@ text-sm
 
 >
 
+<FiShoppingBag className="inline mr-2"/>
+
 Buy Again
 
 </button>
@@ -1539,18 +1644,20 @@ Buy Again
 
 
 
-</div>
 
 
 </div>
 
 
+</div>
+
 
 
 
 
 
 </div>
+
 
 </div>
 
