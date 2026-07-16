@@ -11,7 +11,6 @@ import {
 import useAuth from "../hooks/useAuth";
 
 import {
-  FiPackage,
   FiChevronRight,
   FiFilter,
 } from "react-icons/fi";
@@ -36,11 +35,218 @@ export default function MyOrders() {
   const [loading, setLoading] =
     useState(true);
 
-  const [selectedStatus, setSelectedStatus] =
+  const [filter, setFilter] =
     useState("All");
 
-  const [showFilter, setShowFilter] =
+  const [filterOpen, setFilterOpen] =
     useState(false);
+
+
+
+  useEffect(() => {
+
+    async function loadOrders() {
+
+      if (!user) {
+
+        setLoading(false);
+
+        return;
+
+      }
+
+      try {
+
+        const data =
+          await getUserOrders(
+            user.email
+          );
+
+        const sorted =
+          data.sort(
+
+            (a, b) =>
+
+              new Date(
+                b.createdAt
+              )
+
+              -
+
+              new Date(
+                a.createdAt
+              )
+
+          );
+
+        setOrders(sorted);
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        errorToast(
+          "Failed to load orders."
+        );
+
+      }
+
+      finally {
+
+        setLoading(false);
+
+      }
+
+    }
+
+    loadOrders();
+
+  }, [user]);
+
+
+
+  const filteredOrders =
+    useMemo(() => {
+
+      if (
+        filter === "All"
+      ) {
+
+        return orders;
+
+      }
+
+      return orders.filter(
+
+        (order) =>
+
+          order.status === filter
+
+      );
+
+    }, [
+      orders,
+      filter,
+    ]);
+
+
+
+  const totalSpent =
+    filteredOrders.reduce(
+
+      (sum, order) =>
+
+        sum +
+
+        Number(
+          order.total || 0
+        ),
+
+      0
+
+    );
+
+
+
+  const statusStyle =
+    (status) => {
+
+      if (
+        status === "Delivered"
+      ) {
+
+        return "bg-green-100 text-green-700";
+
+      }
+
+      if (
+        status === "Shipped"
+      ) {
+
+        return "bg-purple-100 text-purple-700";
+
+      }
+
+      if (
+        status === "Processing"
+      ) {
+
+        return "bg-blue-100 text-blue-700";
+
+      }
+
+      if (
+        status === "Cancelled"
+      ) {
+
+        return "bg-red-100 text-red-700";
+
+      }
+
+      return "bg-yellow-100 text-yellow-700";
+
+    };
+
+
+
+  if (!user) {
+
+    return (
+
+      <div
+        className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        "
+      >
+
+        Please login first.
+
+      </div>
+
+    );
+
+  }
+
+
+
+  if (loading) {
+
+    return (
+
+      <div
+        className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        "
+      >
+
+        Loading Orders...
+
+      </div>
+
+    );
+
+  }
+
+
+
+  return (
+
+    <div
+      className="
+      min-h-screen
+      bg-[#faf9f6]
+      p-4
+      space-y-4
+      "
+    >
 
       {/* =========================
           HEADER
