@@ -2688,6 +2688,9 @@ return;
 }
 
 
+
+try{
+
 let uploadedImages = [];
 
 
@@ -2697,12 +2700,6 @@ uploadedImages =
 await uploadImages(images);
 
 }
-
-
-
-try{
-
-
 
 const data={
 
