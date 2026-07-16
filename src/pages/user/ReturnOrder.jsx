@@ -69,6 +69,10 @@ const [loading,setLoading] =
 useState(true);
 
 
+  const [submitting,setSubmitting] =
+useState(false);
+
+
 
 
 
@@ -494,17 +498,13 @@ prev.filter(
 
 function handleSameAddress(e){
 
-
 const checked =
 e.target.checked;
-
 
 
 setSameAsDelivery(
 checked
 );
-
-
 
 
 
@@ -539,7 +539,6 @@ user?.address ||
 
 postOffice:
 
-order.postOffice ||
 user?.postOffice ||
 "",
 
@@ -547,7 +546,6 @@ user?.postOffice ||
 
 thana:
 
-order.thana ||
 user?.thana ||
 "",
 
@@ -555,7 +553,6 @@ user?.thana ||
 
 district:
 
-order.district ||
 user?.district ||
 "",
 
@@ -2633,14 +2630,9 @@ return;
 
 
 if(
-!sameAsDelivery
-&&
-(
 !pickupAddress.name ||
 !pickupAddress.phone ||
 !pickupAddress.address
-)
-
 ){
 
 errorToast(
@@ -2690,6 +2682,8 @@ return;
 
 
 try{
+
+  setSubmitting(true);
 
 let uploadedImages = [];
 
@@ -2742,8 +2736,6 @@ refundNumber,
 
 pickupAddress:
 
-
-
 sameAsDelivery
 
 ?
@@ -2751,22 +2743,22 @@ sameAsDelivery
 {
 
 name:
-order.customerName,
+order.customerName || user?.name || "",
 
 phone:
-order.phone,
+order.phone || user?.phone || "",
 
 address:
-order.address,
+order.address || user?.address || "",
 
 postOffice:
-order.postOffice,
+user?.postOffice || "",
 
 thana:
-order.thana,
+user?.thana || "",
 
 district:
-order.district,
+user?.district || "",
 
 }
 
@@ -2813,6 +2805,12 @@ errorToast(
 
 }
 
+  finally{
+
+setSubmitting(false);
+
+}
+
 
 
 }}
@@ -2829,7 +2827,19 @@ font-bold
 
 >
 
-Submit Return Request
+{
+
+submitting
+
+?
+
+"Submitting..."
+
+:
+
+"Submit Return Request"
+
+}
 
 
 </button>
