@@ -361,35 +361,31 @@ lg:p-6
 
 {/* HEADER */}
 
-<div>
+<div
+className="
+text-center
+"
+>
 
 <h1
-
 className="
 text-2xl
 font-black
 text-slate-900
 "
-
 >
-
 Return Orders
-
 </h1>
 
 
 <p
-
 className="
 text-xs
 text-gray-500
 mt-1
 "
-
 >
-
 Dashboard › Return Orders
-
 </p>
 
 
