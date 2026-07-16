@@ -1125,107 +1125,73 @@ Total Amount
 
 {/* PAYMENT METHOD */}
 
-
-
-<div className="
+<div
+className="
 bg-white
 border
 border-gray-100
 rounded-lg
-p-4
+p-5
 shadow-sm
-">
+"
+>
 
+<div
+className="
+flex
+items-center
+gap-2
+mb-4
+"
+>
 
+<FiCreditCard className="text-green-600" />
 
-<h3 className="
-font-bold
-text-sm
-mb-3
-">
-
+<h3 className="font-bold">
 Payment Method
-
 </h3>
 
+</div>
 
-
-
-<div className="
+<div
+className="
 flex
 items-center
 justify-between
-">
+"
+>
 
+<div>
 
-<div className="
-flex
-items-center
-gap-3
-">
-
-
-<div className="
-w-9
-h-9
-rounded-lg
-bg-green-50
-flex
-items-center
-justify-center
-text-green-600
-">
-
-💳
-
-</div>
-
-
-
-<p className="
-text-sm
-font-semibold
-">
-
-{
-order.paymentMethod ||
-""
-}
-
+<p className="font-semibold text-sm">
+{order.paymentMethod || "Cash On Delivery"}
 </p>
 
-
+<p className="text-xs text-gray-500 mt-1">
+Payment Status
+</p>
 
 </div>
 
-
-
-
-
-
-
-<span className="
-text-xs
-font-bold
+<span
+className="
 px-3
 py-1.5
-rounded-full
+rounded-lg
 bg-green-100
 text-green-700
-">
-
-Cash On Delivery 💰
-
+text-xs
+font-bold
+"
+>
+{order.paymentStatus || "Pending"}
 </span>
 
-
+</div>
 
 </div>
 
-
-
-</div>
-
+  
   {/* =========================
     UPDATE STATUS
 ========================= */}
