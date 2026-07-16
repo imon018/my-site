@@ -23,8 +23,6 @@ import {
 
 
 
-
-
 const orderRef =
 collection(
   db,
@@ -34,14 +32,9 @@ collection(
 
 
 
-
-
-
-
 // =================================
-// CREATE ORDER (CUSTOMER)
+// CREATE ORDER
 // =================================
-
 
 export const createOrder =
 async(order)=>{
@@ -54,33 +47,24 @@ async(order)=>{
   );
 
 
-
   if(order.userId){
-
 
     await createUserNotification({
 
-      userId:
-      order.userId,
-
+      userId: order.userId,
 
       title:
       "🛒 Order Placed",
 
-
       message:
       "Your order has been placed successfully.",
-
 
       type:
       "order",
 
     });
 
-
   }
-
-
 
 
 
@@ -89,17 +73,13 @@ async(order)=>{
     title:
     "📦 New Order Received",
 
-
     message:
     `${order.customerName || "Customer"} placed a new order.`,
-
 
     type:
     "order",
 
   });
-
-
 
 
 
@@ -112,57 +92,48 @@ async(order)=>{
 
 
 
-
-
-
-
 // =================================
 // GET USER ORDERS
 // =================================
-
 
 export const getUserOrders =
 async(email)=>{
 
 
-  const q =
-  query(
+const q =
+query(
 
-    orderRef,
+orderRef,
 
-    where(
-      "email",
-      "==",
-      email
-    )
+where(
+"email",
+"==",
+email
+)
 
-  );
-
-
-
-  const snapshot =
-  await getDocs(q);
+);
 
 
 
-  return snapshot.docs.map(
+const snapshot =
+await getDocs(q);
 
-    item=>({
 
-      id:item.id,
 
-      ...item.data(),
+return snapshot.docs.map(
 
-    })
+item=>({
 
-  );
+id:item.id,
+
+...item.data(),
+
+})
+
+);
 
 
 };
-
-
-
-
 
 
 
@@ -172,64 +143,27 @@ async(email)=>{
 // GET ALL ORDERS ADMIN
 // =================================
 
-export const getAllOrders = async () => {
+export const getAllOrders =
+async()=>{
 
-  const snapshot = await getDocs(orderRef);
 
-  const orders = await Promise.all(
+const snapshot =
+await getDocs(orderRef);
 
-    snapshot.docs.map(async (item) => {
 
-      const order = {
-        id: item.id,
-        ...item.data(),
-      };
 
-      let customerPhoto = "";
+return snapshot.docs.map(
 
-      if (order.userId) {
+item=>({
 
-        try {
+id:item.id,
 
-          const userRef = doc(
-            db,
-            "users",
-            order.userId
-          );
+...item.data(),
 
-          const userSnap = await getDoc(userRef);
+})
 
-          if (userSnap.exists()) {
+);
 
-            customerPhoto =
-              userSnap.data().photoURL || "";
-
-          }
-
-        } catch (error) {
-
-          console.log(
-            "Failed to load customer photo:",
-            error
-          );
-
-        }
-
-      }
-
-      return {
-
-        ...order,
-
-        customerPhoto,
-
-      };
-
-    })
-
-  );
-
-  return orders;
 
 };
 
@@ -237,20 +171,12 @@ export const getAllOrders = async () => {
 
 
 
-
-
-
-
 // =================================
-// UPDATE ORDER STATUS (ADMIN)
+// UPDATE ORDER STATUS ADMIN
 // =================================
-
 
 export const updateOrderStatus =
-async(
-id,
-status
-)=>{
+async(id,status)=>{
 
 
 const orderDoc =
@@ -262,14 +188,12 @@ id
 
 
 
-const orderSnapshot =
-await getDoc(
-orderDoc
-);
+const snapshot =
+await getDoc(orderDoc);
 
 
 
-if(!orderSnapshot.exists()){
+if(!snapshot.exists()){
 
 throw new Error(
 "Order not found"
@@ -280,9 +204,7 @@ throw new Error(
 
 
 const order =
-orderSnapshot.data();
-
-
+snapshot.data();
 
 
 
@@ -301,19 +223,16 @@ status,
 
 
 
-
 let title =
-"";
+"📦 Order Updated";
+
 
 let message =
-"";
+`Your order status changed to ${status}.`;
 
 
 
-switch(status){
-
-
-case "Confirmed":
+if(status==="Confirmed"){
 
 title =
 "✅ Order Confirmed";
@@ -321,11 +240,11 @@ title =
 message =
 "Your order has been confirmed.";
 
-break;
+}
 
 
 
-case "Shipped":
+if(status==="Shipped"){
 
 title =
 "🚚 Order Shipped";
@@ -333,23 +252,23 @@ title =
 message =
 "Your order is on the way.";
 
-break;
+}
 
 
 
-case "Delivered":
+if(status==="Delivered"){
 
 title =
 "🎉 Order Delivered";
 
 message =
-"Your order has been delivered successfully.";
+"Your order has been delivered.";
 
-break;
+}
 
 
 
-case "Cancelled":
+if(status==="Cancelled"){
 
 title =
 "❌ Order Cancelled";
@@ -357,18 +276,6 @@ title =
 message =
 "Your order has been cancelled.";
 
-break;
-
-
-
-default:
-
-title =
-"📦 Order Updated";
-
-message =
-`Your order status changed to ${status}.`;
-
 }
 
 
@@ -376,19 +283,15 @@ message =
 
 if(order.userId){
 
-
 await createUserNotification({
 
 userId:
 order.userId,
-
 
 title,
 
-
 message,
 
-
 type:
 "order",
 
@@ -400,70 +303,6 @@ type:
 
 
 };
-
-
-
-
-
-
-
-
-
-// =================================
-// ADMIN ADD ORDER
-// =================================
-
-
-export const addOrderByAdmin =
-async(order)=>{
-
-
-const docRef =
-await addDoc(
-
-orderRef,
-
-order
-
-);
-
-
-
-if(order.userId){
-
-
-await createUserNotification({
-
-userId:
-order.userId,
-
-
-title:
-"🛒 Order Created",
-
-
-message:
-"An order has been created for you.",
-
-
-type:
-"order",
-
-});
-
-
-}
-
-
-
-return docRef.id;
-
-
-};
-
-
-
-
 
 
 
@@ -472,7 +311,6 @@ return docRef.id;
 // =================================
 // DELETE ORDER
 // =================================
-
 
 export const deleteOrder =
 async(id)=>{
@@ -495,14 +333,9 @@ id
 
 
 
-
-
-
-
 // =================================
-// USER CANCEL REQUEST
+// USER DIRECT CANCEL ORDER
 // =================================
-
 
 export const requestCancelOrder =
 async(id)=>{
@@ -518,9 +351,7 @@ id
 
 
 const snapshot =
-await getDoc(
-orderDoc
-);
+await getDoc(orderDoc);
 
 
 
@@ -540,14 +371,20 @@ snapshot.data();
 
 
 
-
 await updateDoc(
 
 orderDoc,
 
 {
 
-cancelRequested:true,
+status:
+"Cancelled",
+
+cancelledBy:
+"user",
+
+cancelledAt:
+new Date(),
 
 }
 
@@ -557,18 +394,42 @@ cancelRequested:true,
 
 
 
+if(order.userId){
 
-// ADMIN NOTIFICATION
+await createUserNotification({
+
+userId:
+order.userId,
+
+
+title:
+"❌ Order Cancelled",
+
+
+message:
+"Your order has been cancelled successfully.",
+
+
+type:
+"order",
+
+});
+
+
+}
+
+
+
 
 
 await createAdminNotification({
 
 title:
-"⚠️ Cancel Request",
+"❌ Order Cancelled By Customer",
 
 
 message:
-`${order.customerName || "Customer"} requested to cancel order #${id.slice(0,8)}.`,
+`${order.customerName || "Customer"} cancelled order #${id.slice(0,8)}.`,
 
 
 type:
@@ -584,14 +445,9 @@ type:
 
 
 
-
-
-
-
 // =================================
-// USER RETURN REQUEST
+// RETURN REQUEST
 // =================================
-
 
 export const requestReturnOrder =
 async(id)=>{
@@ -607,9 +463,7 @@ id
 
 
 const snapshot =
-await getDoc(
-orderDoc
-);
+await getDoc(orderDoc);
 
 
 
@@ -625,8 +479,6 @@ throw new Error(
 
 const order =
 snapshot.data();
-
-
 
 
 
@@ -645,11 +497,6 @@ returnRequested:true,
 
 
 
-
-
-// ADMIN NOTIFICATION
-
-
 await createAdminNotification({
 
 title:
@@ -664,7 +511,6 @@ type:
 "order",
 
 });
-
 
 
 };
