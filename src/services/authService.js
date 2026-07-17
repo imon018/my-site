@@ -276,6 +276,38 @@ user
 ){
 
 
+ if(!user){
+
+  throw new Error(
+   "User not found"
+  );
+
+ }
+
+
+
+
+ // IMPORTANT:
+ // reload latest firebase user status
+
+ await user.reload();
+
+
+
+
+
+ if(!user.emailVerified){
+
+  throw new Error(
+   "Please verify your email first."
+  );
+
+ }
+
+
+
+
+
  const requestRef =
  doc(
   db,
@@ -285,10 +317,12 @@ user
 
 
 
+
  const snap =
  await getDoc(
   requestRef
  );
+
 
 
 
@@ -307,10 +341,12 @@ user
 
 
 
+
  await updatePassword(
   user,
   data.newPassword
  );
+
 
 
 
