@@ -211,14 +211,6 @@ newPassword
 
  }
 
-
-  if(user.emailVerified){
-
- throw new Error(
-  "Email already verified."
- );
-
-}
   
 
  const credential =
