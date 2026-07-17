@@ -29,19 +29,15 @@ import {
 } from "../../firebase/auth";
 
 
-import {
-  useNavigate
-} from "react-router-dom";
+
 
 
 export default function ChangePassword(){
 
 
+
 const user =
 auth.currentUser;
-
-
-  const navigate = useNavigate();
 
 
 
@@ -53,16 +49,9 @@ setCurrentPassword
 
 
 const [
-newPassword,
-setNewPassword
-]=useState("");
-
-
-
-const [
-confirmPassword,
-setConfirmPassword
-]=useState("");
+showCurrent,
+setShowCurrent
+]=useState(false);
 
 
 
@@ -74,111 +63,6 @@ setLoading
 
 
 
-const [
-showCurrent,
-setShowCurrent
-]=useState(false);
-
-
-
-const [
-showNew,
-setShowNew
-]=useState(false);
-
-
-
-const [
-showConfirm,
-setShowConfirm
-]=useState(false);
-
-
-
-
-
-
-const getStrength = ()=>{
-
-
-if(!newPassword){
-
-return {
-
-text:"",
-width:"0%",
-color:"bg-gray-200"
-
-};
-
-}
-
-
-
-
-if(newPassword.length < 6){
-
-return {
-
-text:"Weak",
-
-width:"33%",
-
-color:"bg-red-500"
-
-};
-
-}
-
-
-
-
-
-if(
-newPassword.length >= 6 &&
-!/[A-Z]/.test(newPassword)
-){
-
-return {
-
-text:"Medium",
-
-width:"66%",
-
-color:"bg-yellow-500"
-
-};
-
-}
-
-
-
-
-return {
-
-text:"Strong",
-
-width:"100%",
-
-color:"bg-green-500"
-
-};
-
-
-};
-
-
-
-
-
-const strength =
-getStrength();
-
-
-
-
-
-
 
 
 
@@ -186,24 +70,10 @@ const handleChangePassword =
 async()=>{
 
 
-  if(!user){
-
- errorToast(
- "User session expired. Please login again."
- );
-
- return;
-
-}
-
-if(
-!currentPassword ||
-!newPassword ||
-!confirmPassword
-){
+if(!user){
 
 errorToast(
-"Fill all password fields."
+"User session expired. Please login again."
 );
 
 return;
@@ -213,29 +83,16 @@ return;
 
 
 
-if(newPassword.length < 6){
+
+if(!currentPassword){
 
 errorToast(
-"Password must be at least 6 characters."
+"Enter your current password."
 );
 
 return;
 
 }
-
-
-
-
-if(newPassword !== confirmPassword){
-
-errorToast(
-"Passwords do not match."
-);
-
-return;
-
-}
-
 
 
 
@@ -249,17 +106,13 @@ setLoading(true);
 
 
 
-
 await requestPasswordChange(
 
 user,
 
-currentPassword,
-
-newPassword
+currentPassword
 
 );
-
 
 
 
@@ -267,18 +120,15 @@ newPassword
 
 setCurrentPassword("");
 
-setNewPassword("");
-
-setConfirmPassword("");
-
 
 
 
 
 successToast(
-  "Please check your email for changing password."
-);
 
+"Please check your email for changing password."
+
+);
 
 
 
@@ -291,8 +141,8 @@ console.log(error);
 
 
 if(
-error.code==="auth/invalid-credential" ||
-error.code==="auth/wrong-password"
+error.code === "auth/invalid-credential" ||
+error.code === "auth/wrong-password"
 ){
 
 
@@ -302,7 +152,6 @@ errorToast(
 
 
 }
-
 else{
 
 
@@ -312,7 +161,6 @@ error.message
 
 
 }
-
 
 
 }
@@ -325,9 +173,7 @@ setLoading(false);
 }
 
 
-
 };
-
 
 
 
@@ -345,6 +191,7 @@ p-4
 text-gray-900
 space-y-3
 ">
+
 
 
 
@@ -380,7 +227,7 @@ text-gray-500
 mt-1
 ">
 
-Please Check Your Email To Verify For Changing Password.
+Please check your email to verify password change.
 
 </p>
 
@@ -407,23 +254,13 @@ shadow-sm
 ">
 
 
-<div className="
-space-y-3
-">
 
-
-
-
-
-
-
-
-{/* CURRENT PASSWORD */}
 
 
 <div className="
 relative
 ">
+
 
 
 <FiLock
@@ -440,28 +277,45 @@ text-gray-400
 
 
 
+
+
 <input
 
+
 type={
+
 showCurrent
+
 ?
+
 "text"
+
 :
+
 "password"
+
 }
+
 
 
 placeholder="Current Password"
 
 
-value={currentPassword}
+
+value={
+currentPassword
+}
+
 
 
 onChange={(e)=>
+
 setCurrentPassword(
 e.target.value
 )
+
 }
+
 
 
 className="
@@ -483,15 +337,21 @@ focus:border-amber-500
 
 
 
+
+
 <button
 
 type="button"
 
 onClick={()=>
+
+
 setShowCurrent(
 !showCurrent
 )
+
 }
+
 
 className="
 absolute
@@ -505,11 +365,17 @@ text-gray-400
 
 
 {
+
 showCurrent
+
 ?
+
 <FiEyeOff/>
+
 :
+
 <FiEye/>
+
 }
 
 
@@ -517,251 +383,10 @@ showCurrent
 
 
 
-</div>
-
-
-
-
-
-
-
-
-
-{/* NEW PASSWORD */}
-
-
-<div className="relative">
-
-
-<input
-
-type={
-showNew
-?
-"text"
-:
-"password"
-}
-
-
-placeholder="New Password"
-
-
-value={newPassword}
-
-
-onChange={(e)=>
-setNewPassword(
-e.target.value
-)
-}
-
-
-className="
-w-full
-h-12
-bg-[#FAF7F2]
-rounded-lg
-border
-border-gray-100
-px-4
-pr-10
-text-sm
-outline-none
-focus:border-amber-500
-"
-
-/>
-
-
-
-
-<button
-
-type="button"
-
-onClick={()=>
-setShowNew(
-!showNew
-)
-}
-
-className="
-absolute
-right-3
-top-1/2
--translate-y-1/2
-text-gray-400
-"
-
->
-
-
-{
-showNew
-?
-<FiEyeOff/>
-:
-<FiEye/>
-}
-
-
-</button>
-
 
 </div>
 
 
-
-
-
-
-
-
-{/* STRENGTH */}
-
-
-<div>
-
-
-<div className="
-h-2
-bg-gray-200
-rounded-full
-overflow-hidden
-">
-
-
-<div
-
-className={`
-h-full
-transition-all
-${strength.width}
-${strength.color}
-`}
-
-/>
-
-
-</div>
-
-
-
-{
-strength.text &&
-
-<p className="
-text-xs
-text-gray-500
-mt-1
-">
-
-Password strength:
-{strength.text}
-
-</p>
-
-}
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{/* CONFIRM PASSWORD */}
-
-
-
-<div className="
-relative
-">
-
-
-<input
-
-type={
-showConfirm
-?
-"text"
-:
-"password"
-}
-
-
-placeholder="Confirm Password"
-
-
-value={confirmPassword}
-
-
-onChange={(e)=>
-setConfirmPassword(
-e.target.value
-)
-}
-
-
-
-className="
-w-full
-h-12
-bg-[#FAF7F2]
-rounded-lg
-border
-border-gray-100
-px-4
-pr-10
-text-sm
-outline-none
-focus:border-amber-500
-"
-
-/>
-
-
-
-
-<button
-
-type="button"
-
-onClick={()=>
-setShowConfirm(
-!showConfirm
-)
-}
-
-className="
-absolute
-right-3
-top-1/2
--translate-y-1/2
-text-gray-400
-"
-
->
-
-
-{
-showConfirm
-?
-<FiEyeOff/>
-:
-<FiEye/>
-}
-
-
-</button>
-
-
-</div>
 
 
 
@@ -772,11 +397,15 @@ showConfirm
 <p className="
 text-xs
 text-gray-500
+mt-3
 ">
 
-✓ Password must be at least 6 characters.
+
+✓ We will send a verification email before changing your password.
+
 
 </p>
+
 
 
 
@@ -786,15 +415,19 @@ text-gray-500
 
 <Button
 
-onClick={handleChangePassword}
+onClick={
+handleChangePassword
+}
 
-disabled={loading}
+disabled={
+loading
+}
 
 className="
 w-full
 h-12
 rounded-lg
-mt-3
+mt-4
 text-sm
 font-semibold
 "
@@ -803,11 +436,17 @@ font-semibold
 
 
 {
+
 loading
+
 ?
+
 "Sending..."
+
 :
+
 "Change Password"
+
 }
 
 
@@ -818,10 +457,10 @@ loading
 
 
 
+
 </div>
 
 
-</div>
 
 
 
