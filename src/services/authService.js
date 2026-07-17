@@ -241,7 +241,11 @@ newPassword
 
 
 
-
+console.log(
+"CURRENT USER:",
+user.uid,
+user.email
+);
 
  await setDoc(
 
