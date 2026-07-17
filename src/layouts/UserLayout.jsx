@@ -21,6 +21,7 @@ import {
   FiMenu,
   FiX,
   FiBell,
+  FiRefreshCw,
 } from "react-icons/fi";
 
 
@@ -105,7 +106,14 @@ const menu=[
  icon:<FiShoppingBag/>,
 },
 
+  
+{
+ name:"My Returns",
+ path:"/profile/returns",
+ icon:<FiRefreshCw/>,
+},
 
+  
 {
  name:"Wishlist",
  path:"/profile/wishlist",
