@@ -43,7 +43,7 @@ const [
 message,
 setMessage
 ]=useState(
-"Verifying your email..."
+"Verifying password change..."
 );
 
 
@@ -53,11 +53,10 @@ setMessage
 
 useEffect(()=>{
 
-
 verifyPasswordChange();
 
-
 },[]);
+
 
 
 
@@ -73,10 +72,7 @@ async()=>{
 try{
 
 
-
 await verifyPasswordChangeLink();
-
-
 
 
 
@@ -85,7 +81,6 @@ await verifyPasswordChangeLink();
 successToast(
 "Password changed successfully."
 );
-
 
 
 
@@ -100,14 +95,11 @@ setMessage(
 
 
 
-
 setTimeout(()=>{
-
 
 navigate(
 "/login"
 );
-
 
 },3000);
 
@@ -119,7 +111,9 @@ navigate(
 catch(error){
 
 
-console.log(error);
+console.log(
+error
+);
 
 
 
@@ -147,6 +141,7 @@ setLoading(false);
 
 
 };
+
 
 
 
@@ -188,7 +183,7 @@ text-5xl
 mb-5
 ">
 
-📧
+🔐
 
 </div>
 
@@ -236,7 +231,7 @@ text-amber-600
 font-semibold
 ">
 
-Checking...
+Processing...
 
 </div>
 
