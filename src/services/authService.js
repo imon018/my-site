@@ -4,15 +4,10 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
-  updatePassword,
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
 } from "firebase/auth";
-
 
 
 import {
@@ -20,7 +15,6 @@ import {
   setDoc,
   updateDoc,
   getDoc,
-  deleteDoc,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -37,7 +31,6 @@ import {
 
 
 
-
 // =========================
 // LOGIN
 // =========================
@@ -47,63 +40,70 @@ export async function login(
   password
 ){
 
-  const result =
-  await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+const result =
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
 
 
 
-  const userRef =
-  doc(
-    db,
-    "users",
-    result.user.uid
-  );
+const userRef =
+doc(
+db,
+"users",
+result.user.uid
+);
 
 
 
-  const userSnap =
-  await getDoc(
-    userRef
-  );
+const userSnap =
+await getDoc(
+userRef
+);
 
 
 
-  let role = "user";
+let role =
+"user";
 
 
 
-  if(userSnap.exists()){
+if(userSnap.exists()){
 
-    role =
-    userSnap.data().role || "user";
-
-  }
-
-
-
-  await updateDoc(
-    userRef,
-    {
-      lastLogin:
-      serverTimestamp()
-    }
-  );
-
-
-
-  return {
-
-    user: result.user,
-
-    role
-
-  };
+role =
+userSnap.data().role || "user";
 
 }
+
+
+
+await updateDoc(
+userRef,
+{
+
+lastLogin:
+serverTimestamp()
+
+}
+
+);
+
+
+
+return {
+
+user:
+result.user,
+
+role
+
+};
+
+}
+
+
 
 
 
@@ -121,54 +121,57 @@ password,
 name
 ){
 
- const result =
- await createUserWithEmailAndPassword(
-  auth,
-  email,
-  password
- );
+const result =
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
 
 
 
- await setDoc(
+await setDoc(
 
- doc(
-  db,
-  "users",
-  result.user.uid
- ),
+doc(
+db,
+"users",
+result.user.uid
+),
 
- {
+{
 
-  name,
+name,
 
-  email,
+email,
 
-  phone:"",
+phone:"",
 
-  address:"",
+address:"",
 
-  photoURL:"",
+photoURL:"",
 
-  role:"user",
+role:"user",
 
-  createdAt:
-  serverTimestamp()
-
- }
-
- );
-
-
-
- await sendEmailVerification(
-  result.user
- );
-
-
- return result.user;
+createdAt:
+serverTimestamp()
 
 }
+
+);
+
+
+
+await sendEmailVerification(
+result.user
+);
+
+
+
+return result.user;
+
+}
+
+
 
 
 
@@ -184,18 +187,19 @@ export async function resendVerificationEmail(
 user
 ){
 
- if(!user){
+if(!user){
 
-  throw new Error(
-   "User not found"
-  );
+throw new Error(
+"User not found"
+);
 
- }
+}
 
 
- await sendEmailVerification(
-  user
- );
+
+await sendEmailVerification(
+user
+);
 
 }
 
@@ -212,265 +216,90 @@ user
 // =========================
 
 export async function requestPasswordChange(
+
 user,
-currentPassword,
-newPassword
+
+currentPassword
+
 ){
 
- if(!user){
+if(!user){
 
-  throw new Error(
-   "User not found"
-  );
-
- }
-
-
-
- const credential =
- EmailAuthProvider.credential(
-  user.email,
-  currentPassword
- );
-
-
-
- await reauthenticateWithCredential(
-  user,
-  credential
- );
-
-
-
-console.log(
-"CURRENT USER:",
-user.uid,
-user.email
+throw new Error(
+"User not found"
 );
-
- await setDoc(
-
- doc(
-  db,
-  "passwordChangeRequests",
-  user.uid
- ),
-
- {
-
-  uid:user.uid,
-
-  email:user.email,
-
-  newPassword,
-
-  createdAt:
-  serverTimestamp()
-
- }
-
- );
-
-
-
-
-
-
-
-const actionCodeSettings = {
-
- url:
- `${window.location.origin}/password-change-verify`,
-
- handleCodeInApp:true
-
-};
-
-
-
-
-
-await sendSignInLinkToEmail(
-
- auth,
-
- user.email,
-
- actionCodeSettings
-
-);
-
-
-
-
-
-window.localStorage.setItem(
- "passwordChangeEmail",
- user.email
-);
-
 
 }
 
 
 
 
+// Check current password
+
+const credential =
+EmailAuthProvider.credential(
+
+user.email,
+
+currentPassword
+
+);
+
+
+
+await reauthenticateWithCredential(
+
+user,
+
+credential
+
+);
 
 
 
 
 
-// =========================
-// APPLY PASSWORD CHANGE
-// =========================
+// Create secure token
 
-export async function applyPasswordChange(
-user
-){
-
-
- if(!user){
-
-  throw new Error(
-   "User not found"
-  );
-
- }
+const token =
+crypto.randomUUID();
 
 
 
 
- const requestRef =
- doc(
-  db,
-  "passwordChangeRequests",
-  user.uid
- );
 
+await setDoc(
 
+doc(
 
+db,
 
- const snap =
- await getDoc(
-  requestRef
- );
+"passwordChangeRequests",
 
+user.uid
 
+),
 
+{
 
- if(!snap.exists()){
+uid:user.uid,
 
-  throw new Error(
-   "Password change request not found."
-  );
+email:user.email,
 
- }
+token,
 
+verified:false,
 
-
-
- const data =
- snap.data();
-
-
-
-
- await updatePassword(
-  user,
-  data.newPassword
- );
-
-
-
-
- await deleteDoc(
-  requestRef
- );
-
-
+createdAt:
+serverTimestamp()
 
 }
 
-
-
-
-
-
-
-
-
-// =========================
-// VERIFY PASSWORD LINK
-// =========================
-
-export async function verifyPasswordChangeLink(){
-
-
-const email =
-window.localStorage.getItem(
-"passwordChangeEmail"
 );
 
 
 
-if(!email){
-
- throw new Error(
-  "Password change session expired."
- );
-
-}
-
-
-
-
-
-if(
-!isSignInWithEmailLink(
- auth,
- window.location.href
-)
-){
-
- throw new Error(
-  "Invalid password change link."
- );
-
-}
-
-
-
-
-
-
-const result =
-await signInWithEmailLink(
-
-auth,
-
-email,
-
-window.location.href
-
-);
-
-
-
-
-
-window.localStorage.removeItem(
-"passwordChangeEmail"
-);
-
-
-
-
-
-await applyPasswordChange(
- result.user
-);
-
-
+return true;
 
 }
 
@@ -490,21 +319,26 @@ export async function forgotPassword(
 email
 ){
 
- await sendPasswordResetEmail(
- auth,
- email,
- {
+await sendPasswordResetEmail(
 
-  url:
-  `${window.location.origin}/reset-password`,
+auth,
 
-  handleCodeInApp:true
+email,
 
- }
+{
 
- );
+url:
+
+`${window.location.origin}/reset-password`,
+
+handleCodeInApp:true
 
 }
+
+);
+
+}
+
 
 
 
@@ -519,11 +353,12 @@ email
 
 export async function logout(){
 
- await signOut(
-  auth
- );
+await signOut(
+auth
+);
 
 }
+
 
 
 
@@ -540,8 +375,17 @@ export async function deleteUserAccount(
 user
 ){
 
- await deleteUser(
- user
- );
+if(!user){
+
+throw new Error(
+"User not found"
+);
+
+}
+
+
+await deleteUser(
+user
+);
 
 }
