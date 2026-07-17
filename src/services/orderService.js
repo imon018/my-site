@@ -1075,3 +1075,87 @@ id:snapshot.id,
 
 
 };
+
+
+// =================================
+// UPDATE RETURN REQUEST USER
+// =================================
+
+export const updateReturnRequest =
+async(
+id,
+returnData
+)=>{
+
+
+const orderDoc =
+doc(
+db,
+"orders",
+id
+);
+
+
+
+const snapshot =
+await getDoc(
+orderDoc
+);
+
+
+
+if(!snapshot.exists()){
+
+throw new Error(
+"Order not found"
+);
+
+}
+
+
+
+const order =
+snapshot.data();
+
+
+
+if(
+order.returnRequest?.status !== "Submitted"
+){
+
+throw new Error(
+"Return request cannot be edited"
+);
+
+}
+
+
+
+
+
+await updateDoc(
+
+orderDoc,
+
+{
+
+returnRequest:
+
+{
+
+...returnData,
+
+status:"Submitted",
+
+updatedAt:
+new Date().toISOString()
+
+
+}
+
+}
+
+);
+
+
+};
