@@ -101,8 +101,6 @@ space-y-4
 
 
 
-{/* HEADER */}
-
 <div
 
 className="
@@ -133,12 +131,6 @@ My Wishlist
 
 
 
-
-
-
-
-
-{/* SUMMARY */}
 
 
 <div
@@ -343,7 +335,6 @@ Add your favourite products here.
 :
 
 
-
 <div
 
 className="
@@ -354,7 +345,6 @@ space-y-4
 
 
 {
-
 wishlist.map(
 
 (item)=>(
@@ -380,17 +370,13 @@ p-4
 >
 
 
-
-{/* REMOVE X BUTTON */}
-
-
 <button
 
 onClick={()=>
 
 
 removeFromWishlist(
-item.product.id
+item.firestoreId
 )
 
 }
@@ -418,16 +404,6 @@ justify-center
 </button>
 
 
-
-
-
-
-
-
-{/* PRODUCT */}
-
-
-
 <div
 
 className="
@@ -444,11 +420,9 @@ src={
 item.product.image
 }
 
-
 alt={
 item.product.name
 }
-
 
 className="
 w-24
@@ -459,7 +433,6 @@ bg-gray-50
 "
 
 />
-
 
 
 
@@ -515,19 +488,13 @@ text-amber-600
 </p>
 
 
+</div>
+
 
 </div>
 
 
-
-</div>
-
-
-
-
-
-
-<hr
+  <hr
 
 className="
 my-4
@@ -540,20 +507,17 @@ border-gray-100
 
 
 
-
 {/* BUTTONS */}
-
 
 
 <div
 
 className="
 flex
-gap-3
+gap-2
 "
 
 >
-
 
 
 <Button
@@ -575,6 +539,7 @@ bg-[#071F57]
 text-white
 font-bold
 text-sm
+py-2
 "
 
 >
@@ -604,12 +569,13 @@ navigate(
 className="
 flex-1
 rounded-lg
-bg-white
+bg-amber-50
 border
-border-gray-200
-text-gray-700
+border-amber-200
+text-amber-700
 font-bold
 text-sm
+py-2
 "
 
 >
@@ -624,14 +590,13 @@ text-sm
 
 
 
+
+
 </div>
 
 
 
 )
-
-)
-
 
 }
 
@@ -652,5 +617,3 @@ text-sm
 
 
 }
-
-
