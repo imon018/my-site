@@ -8,6 +8,9 @@ import {
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
 } from "firebase/auth";
 
 
@@ -33,7 +36,10 @@ import {
 
 
 
+
+// =========================
 // LOGIN
+// =========================
 
 export async function login(
   email,
@@ -104,7 +110,9 @@ export async function login(
 
 
 
+// =========================
 // REGISTER
+// =========================
 
 export async function register(
 email,
@@ -167,7 +175,9 @@ name
 
 
 
-// EMAIL VERIFY
+// =========================
+// RESEND REGISTER VERIFY
+// =========================
 
 export async function resendVerificationEmail(
 user
@@ -194,8 +204,11 @@ user
 
 
 
-// CHANGE PASSWORD REQUEST
 
+
+// =========================
+// PASSWORD CHANGE REQUEST
+// =========================
 
 export async function requestPasswordChange(
 user,
@@ -211,7 +224,9 @@ newPassword
 
  }
 
-  
+
+
+// Check current password
 
  const credential =
  EmailAuthProvider.credential(
@@ -228,6 +243,10 @@ newPassword
 
 
 
+
+
+
+// Save password request
 
  await setDoc(
 
@@ -254,9 +273,53 @@ newPassword
 
 
 
- await sendEmailVerification(
-  user
- );
+
+
+
+
+// Send email link
+
+const actionCodeSettings = {
+
+
+ url:
+
+ `${window.location.origin}/password-change-verify`,
+
+
+ handleCodeInApp:true
+
+
+};
+
+
+
+
+
+
+await sendSignInLinkToEmail(
+
+ auth,
+
+ user.email,
+
+ actionCodeSettings
+
+);
+
+
+
+
+
+// Save email locally
+
+window.localStorage.setItem(
+
+"passwordChangeEmail",
+
+user.email
+
+);
 
 
 }
@@ -268,8 +331,10 @@ newPassword
 
 
 
-// APPLY PASSWORD CHANGE
 
+// =========================
+// APPLY PASSWORD CHANGE
+// =========================
 
 export async function applyPasswordChange(
 user
@@ -283,28 +348,6 @@ user
   );
 
  }
-
-
-
-
- // IMPORTANT:
- // reload latest firebase user status
-
- await user.reload();
-
-
-
-
-
- if(!user.emailVerified){
-
-  throw new Error(
-   "Please verify your email first."
-  );
-
- }
-
-
 
 
 
@@ -342,16 +385,20 @@ user
 
 
 
+
  await updatePassword(
-  user,
-  data.newPassword
+
+ user,
+
+ data.newPassword
+
  );
 
 
 
 
  await deleteDoc(
-  requestRef
+ requestRef
  );
 
 
@@ -365,8 +412,85 @@ user
 
 
 
-// FORGOT PASSWORD
 
+// =========================
+// VERIFY PASSWORD LINK
+// =========================
+
+export async function verifyPasswordChangeLink(){
+
+ const email =
+ window.localStorage.getItem(
+ "passwordChangeEmail"
+ );
+
+
+
+ if(
+ !email
+ ){
+
+  throw new Error(
+   "Email not found"
+  );
+
+ }
+
+
+
+ if(
+ !isSignInWithEmailLink(
+  auth,
+  window.location.href
+ )
+ ){
+
+  throw new Error(
+   "Invalid verification link"
+  );
+
+ }
+
+
+
+
+ const result =
+ await signInWithEmailLink(
+
+ auth,
+
+ email,
+
+ window.location.href
+
+ );
+
+
+
+ window.localStorage.removeItem(
+ "passwordChangeEmail"
+ );
+
+
+
+ await applyPasswordChange(
+ result.user
+ );
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// FORGOT PASSWORD
+// =========================
 
 export async function forgotPassword(
 email
@@ -395,7 +519,9 @@ email
 
 
 
+// =========================
 // LOGOUT
+// =========================
 
 export async function logout(){
 
@@ -410,7 +536,11 @@ export async function logout(){
 
 
 
+
+
+// =========================
 // DELETE ACCOUNT
+// =========================
 
 export async function deleteUserAccount(
 user
