@@ -6,12 +6,10 @@ import {
 
 import {
   useParams,
-  useNavigate,
 } from "react-router-dom";
 
 
 import {
-  FiArrowLeft,
   FiPackage,
   FiImage,
   FiEdit,
@@ -46,11 +44,6 @@ export default function UserReturnDetails(){
 const {
   id
 }=useParams();
-
-
-
-const navigate =
-useNavigate();
 
 
 
@@ -584,34 +577,9 @@ justify-between
 className="
 flex
 items-center
-gap-3
 "
 
 >
-
-
-<button
-
-onClick={()=>navigate(-1)}
-
-className="
-w-10
-h-10
-rounded-lg
-bg-white
-border
-border-gray-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiArrowLeft/>
-
-</button>
-
 
 
 
