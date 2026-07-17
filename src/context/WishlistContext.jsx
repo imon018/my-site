@@ -225,21 +225,19 @@ export default function WishlistProvider({
 
 
 
-        setWishlist(
-          prev => [
-            ...prev,
+        const newItem = await addWishlistItem(
+  user.uid,
+  product
+);
 
-            {
 
-              productId:
-                product.id,
+setWishlist(
+ prev => [
+  ...prev,
 
-              product,
-
-            }
-
-          ]
-        );
+  newItem
+ ]
+);
 
 
 
