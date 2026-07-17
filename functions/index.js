@@ -21,8 +21,6 @@ admin.initializeApp();
 
 
 
-
-
 const gmailEmail =
 defineSecret(
 "GMAIL_EMAIL"
