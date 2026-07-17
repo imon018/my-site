@@ -55,20 +55,17 @@ export default function AuthProvider({
 
 
 
-
-
-
-
-  useEffect(()=>{
-
-
-    const logout = async()=>{
+const logout = async()=>{
 
   await signOut(auth);
 
   setUser(null);
 
 };
+
+
+
+  useEffect(()=>{
 
 
     const unsubscribe = onAuthStateChanged(
