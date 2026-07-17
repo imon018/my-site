@@ -5,20 +5,37 @@ import {
 
 
 import {
+  useSearchParams,
   useNavigate
 } from "react-router-dom";
 
 
 import {
-  verifyPasswordChangeLink
-} from "../services/authService";
+  auth
+} from "../firebase/auth";
+
+
+import {
+  db
+} from "../firebase/firestore";
+
+
+import {
+  doc,
+  getDoc,
+  deleteDoc
+} from "firebase/firestore";
+
+
+import {
+  updatePassword
+} from "firebase/auth";
 
 
 import {
   successToast,
   errorToast
 } from "../components/ui/Toast";
-
 
 
 
@@ -32,10 +49,37 @@ useNavigate();
 
 
 const [
+searchParams
+]=useSearchParams();
+
+
+
+const token =
+searchParams.get(
+"token"
+);
+
+
+
+
+const [
+newPassword,
+setNewPassword
+]=useState("");
+
+
+
+const [
+confirmPassword,
+setConfirmPassword
+]=useState("");
+
+
+
+const [
 loading,
 setLoading
-]=useState(true);
-
+]=useState(false);
 
 
 
@@ -43,8 +87,16 @@ const [
 message,
 setMessage
 ]=useState(
-"Verifying password change..."
+""
 );
+
+
+
+const [
+requestData,
+setRequestData
+]=useState(null);
+
 
 
 
@@ -53,7 +105,9 @@ setMessage
 
 useEffect(()=>{
 
-verifyPasswordChange();
+
+checkRequest();
+
 
 },[]);
 
@@ -63,16 +117,222 @@ verifyPasswordChange();
 
 
 
-
-
-const verifyPasswordChange =
+const checkRequest =
 async()=>{
 
 
 try{
 
 
-await verifyPasswordChangeLink();
+if(!token){
+
+
+throw new Error(
+"Invalid password change link."
+);
+
+
+}
+
+
+
+
+
+const requestsRef =
+doc(
+db,
+"passwordChangeRequests",
+auth.currentUser?.uid
+);
+
+
+
+
+
+const snap =
+await getDoc(
+requestsRef
+);
+
+
+
+
+
+if(!snap.exists()){
+
+
+throw new Error(
+"Password change request not found."
+);
+
+
+}
+
+
+
+
+
+const data =
+snap.data();
+
+
+
+
+
+if(data.token !== token){
+
+
+throw new Error(
+"Invalid verification token."
+);
+
+
+}
+
+
+
+
+
+setRequestData(
+data
+);
+
+
+
+
+
+setMessage(
+"Please enter your new password."
+);
+
+
+
+
+
+}
+catch(error){
+
+
+console.log(error);
+
+
+errorToast(
+error.message
+);
+
+
+setMessage(
+error.message
+);
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+
+
+const handlePasswordChange =
+async()=>{
+
+
+try{
+
+
+if(!auth.currentUser){
+
+
+throw new Error(
+"Please login again."
+);
+
+
+}
+
+
+
+
+
+if(!newPassword || !confirmPassword){
+
+
+throw new Error(
+"Fill all password fields."
+);
+
+
+}
+
+
+
+
+
+if(newPassword.length < 6){
+
+
+throw new Error(
+"Password must be at least 6 characters."
+);
+
+
+}
+
+
+
+
+
+if(newPassword !== confirmPassword){
+
+
+throw new Error(
+"Passwords do not match."
+);
+
+
+}
+
+
+
+
+
+setLoading(true);
+
+
+
+
+
+await updatePassword(
+
+auth.currentUser,
+
+newPassword
+
+);
+
+
+
+
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"passwordChangeRequests",
+
+auth.currentUser.uid
+
+)
+
+);
 
 
 
@@ -86,22 +346,15 @@ successToast(
 
 
 
-setMessage(
-"Password changed successfully. Redirecting to login..."
-);
-
-
-
-
-
-
 setTimeout(()=>{
+
 
 navigate(
 "/login"
 );
 
-},3000);
+
+},2000);
 
 
 
@@ -111,22 +364,12 @@ navigate(
 catch(error){
 
 
-console.log(
-error
-);
-
+console.log(error);
 
 
 errorToast(
 error.message
 );
-
-
-
-setMessage(
-error.message
-);
-
 
 
 }
@@ -137,7 +380,6 @@ setLoading(false);
 
 
 }
-
 
 
 };
@@ -176,8 +418,6 @@ text-center
 
 
 
-
-
 <div className="
 text-5xl
 mb-5
@@ -191,14 +431,13 @@ mb-5
 
 
 
-
 <h1 className="
 text-2xl
 font-bold
 mb-4
 ">
 
-Password Change Verification
+Password Change
 
 </h1>
 
@@ -206,10 +445,10 @@ Password Change Verification
 
 
 
-
 <p className="
-text-gray-600
 text-sm
+text-gray-600
+mb-6
 ">
 
 {message}
@@ -220,22 +459,123 @@ text-sm
 
 
 
+{
+requestData &&
+
+<div className="
+space-y-3
+">
+
+
+<input
+
+type="password"
+
+placeholder="New Password"
+
+value={newPassword}
+
+onChange={(e)=>
+setNewPassword(
+e.target.value
+)
+}
+
+className="
+w-full
+h-12
+bg-[#FAF7F2]
+rounded-lg
+border
+border-gray-100
+px-4
+outline-none
+focus:border-amber-500
+"
+
+/>
+
+
+
+
+
+<input
+
+type="password"
+
+placeholder="Confirm Password"
+
+value={confirmPassword}
+
+onChange={(e)=>
+setConfirmPassword(
+e.target.value
+)
+}
+
+className="
+w-full
+h-12
+bg-[#FAF7F2]
+rounded-lg
+border
+border-gray-100
+px-4
+outline-none
+focus:border-amber-500
+"
+
+/>
+
+
+
+
+
+<button
+
+onClick={
+handlePasswordChange
+}
+
+disabled={loading}
+
+className="
+w-full
+h-12
+bg-amber-500
+text-white
+rounded-lg
+font-semibold
+disabled:opacity-50
+"
+
+>
 
 
 {
-loading &&
 
-<div className="
-mt-6
-text-amber-600
-font-semibold
-">
+loading
 
-Processing...
+?
+
+"Updating..."
+
+:
+
+"Update Password"
+
+}
+
+
+</button>
+
+
 
 </div>
 
 }
+
+
 
 
 
