@@ -2,6 +2,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import useAuth from "../../hooks/useAuth";
 
 import AdminDrawerHeader from "./AdminDrawerHeader";
 
@@ -23,7 +24,7 @@ export default function AdminDrawer({
 const navigate = useNavigate();
 
 
-
+const { logout } = useAuth();
 
 
 const closeDrawer = ()=>{
@@ -33,9 +34,15 @@ const closeDrawer = ()=>{
 };
 
 
+  const handleLogout = async()=>{
 
+await logout();
 
+navigate("/login");
 
+closeDrawer();
+
+};
 
 return (
 
