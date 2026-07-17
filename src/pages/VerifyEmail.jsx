@@ -1,6 +1,5 @@
 import {
-  useEffect,
-  useState,
+  useState
 } from "react";
 
 
@@ -17,25 +16,12 @@ import {
 
 
 import {
-  applyPasswordChange
-} from "../services/authService";
-
-
-import {
   successToast,
   errorToast,
 } from "../components/ui/Toast";
 
 
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
 
-
-import {
-  db
-} from "../firebase/firestore";
 
 
 
@@ -43,8 +29,10 @@ import {
 export default function VerifyEmail(){
 
 
+
 const location =
 useLocation();
+
 
 
 const navigate =
@@ -60,12 +48,16 @@ location.state?.email || "";
 
 
 
+
 const [
 message,
 setMessage
 ]=useState(
+
 "Please verify your email from your inbox."
+
 );
+
 
 
 
@@ -94,8 +86,11 @@ setLoading(true);
 
 
 
+
 const user =
 auth.currentUser;
+
+
 
 
 
@@ -103,12 +98,9 @@ auth.currentUser;
 if(!user){
 
 
-errorToast(
+throw new Error(
 "Please login again."
 );
-
-
-return;
 
 
 }
@@ -126,108 +118,58 @@ await user.reload();
 
 
 
+
 if(!user.emailVerified){
 
 
-errorToast(
+throw new Error(
 "Email is not verified yet."
 );
 
 
-return;
-
-
 }
 
 
 
 
 
-
-
-// =========================
-// PASSWORD CHANGE VERIFY
-// =========================
-
-
-const requestSnap =
-await getDoc(
-  doc(
-    db,
-    "passwordChangeRequests",
-    user.uid
-  )
-);
-
-
-
-if(requestSnap.exists()){
-
-  const requestData =
-  requestSnap.data();
-
-
-  if(requestData.uid !== user.uid){
-
-    throw new Error(
-      "Invalid password change request."
-    );
-
-  }
-
-
-  await applyPasswordChange(
-    user
-  );
-
-
-  successToast(
-    "Password changed successfully."
-  );
-
-
-
-  setMessage(
-    "Password changed successfully. Redirecting to login..."
-  );
-
-
-
-  setTimeout(()=>{
-
-    navigate(
-      "/login"
-    );
-
-  },3000);
-
-
-
-  return;
-
-}
-
-
-
-
-
-
-
-
-// =========================
-// REGISTER VERIFY
-// =========================
 
 
 successToast(
+
 "Email verified successfully."
+
 );
 
+
+
+
+
+
+setMessage(
+
+"Email verified successfully. Redirecting to login..."
+
+);
+
+
+
+
+
+
+
+
+setTimeout(()=>{
 
 
 navigate(
 "/login"
 );
+
+
+},2000);
+
+
 
 
 
@@ -245,9 +187,11 @@ error.message
 );
 
 
+
 setMessage(
 error.message
 );
+
 
 
 }
@@ -260,8 +204,8 @@ setLoading(false);
 }
 
 
-};
 
+};
 
 
 
@@ -279,6 +223,7 @@ mx-auto
 py-20
 px-6
 ">
+
 
 
 <div className="
@@ -306,6 +251,8 @@ mb-6
 
 
 
+
+
 <h1 className="
 text-3xl
 font-bold
@@ -321,6 +268,8 @@ Check Your Email
 
 
 
+
+
 <p className="
 text-gray-600
 mb-4
@@ -329,6 +278,9 @@ mb-4
 We've sent a verification link to:
 
 </p>
+
+
+
 
 
 
@@ -351,6 +303,7 @@ mb-8
 
 
 
+
 <p className="
 text-gray-500
 mb-8
@@ -366,11 +319,16 @@ mb-8
 
 
 
+
 <button
+
 
 onClick={checkVerification}
 
+
 disabled={loading}
+
+
 
 className="
 w-full
@@ -383,6 +341,7 @@ disabled:opacity-50
 "
 
 >
+
 
 {
 
@@ -407,9 +366,11 @@ loading
 
 
 
+
 <div className="
 mt-4
 ">
+
 
 <Link
 
@@ -427,7 +388,9 @@ Go To Login
 </Link>
 
 
+
 </div>
+
 
 
 
