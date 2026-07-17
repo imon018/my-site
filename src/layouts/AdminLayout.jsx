@@ -1,43 +1,93 @@
 import {
+  useState,
+} from "react";
+
+import {
   Outlet,
 } from "react-router-dom";
 
+
 import AdminBackButton from "../components/admin/AdminBackButton";
+
+import AdminDrawer from "../components/admin/AdminDrawer";
+
 
 
 export default function AdminLayout(){
 
-  return (
 
-    <div
-      className="
-      min-h-screen
-      bg-[#F8F5EF]
-      "
-    >
+const [
+  drawerOpen,
+  setDrawerOpen
+] = useState(false);
 
-      <main
-        className="
-        p-4
-        lg:p-8
-        "
-      >
 
-        <div className="
+
+return (
+
+<div
+
+className="
+min-h-screen
+bg-[#F8F5EF]
+"
+
+>
+
+
+{/* MOBILE DRAWER */}
+
+<AdminDrawer
+
+open={drawerOpen}
+
+setOpen={setDrawerOpen}
+
+/>
+
+
+
+
+
+<main
+
+className="
+p-4
+lg:p-8
+"
+
+>
+
+
+<div
+
+className="
 relative
-">
+"
 
-<AdminBackButton />
+>
+
+
+<AdminBackButton
+
+setDrawerOpen={setDrawerOpen}
+
+/>
+
 
 
 <Outlet />
 
+
 </div>
 
-      </main>
 
-    </div>
+</main>
 
-  );
+
+</div>
+
+);
+
 
 }
