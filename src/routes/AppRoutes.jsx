@@ -16,7 +16,8 @@ import DeleteAccount from "../pages/user/DeleteAccount";
 import ProfileEditPage from "../pages/ProfileEditPage";
 import UserOrderDetails from "../pages/user/UserOrderDetails";
 import ReturnOrder from "../pages/user/ReturnOrder";
-
+import MyReturns from "../pages/MyReturns";
+import UserReturnDetails from "../pages/user/UserReturnDetails";
 
 /* =========================
    ADMIN PAGES
@@ -175,6 +176,17 @@ element={<ReturnOrder />}
             path="orders"
             element={<MyOrders />}
           />
+
+           <Route
+  path="returns"
+  element={<MyReturns />}
+/>
+
+
+<Route
+  path="returns/:id"
+  element={<UserReturnDetails />}
+/>
 
           <Route
             path="wishlist"
