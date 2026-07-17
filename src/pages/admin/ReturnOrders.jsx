@@ -1,103 +1,270 @@
 import {
   useEffect,
-  useState
+  useState,
 } from "react";
 
 
 import {
-  useNavigate
+  useParams,
+  useNavigate,
 } from "react-router-dom";
 
 
 import {
-  FiSearch,
-  FiEye,
-  FiCalendar,
-  FiShoppingBag,
-  FiSend,
-  FiCheckCircle,
-  FiMoreVertical,
-  FiTrash2,
-  FiDollarSign
+  FiArrowLeft,
+  FiPackage,
+  FiImage,
+  FiEdit,
 } from "react-icons/fi";
 
 
 import {
-  getReturnOrders,
-  updateReturnStatus,
-  deleteOrder
+  getUserReturnDetails,
+  updateReturnRequest,
 } from "../../services/orderService";
+
+
+import useAuth from "../../hooks/useAuth";
 
 
 import {
   successToast,
-  errorToast
+  errorToast,
 } from "../../components/ui/Toast";
 
 
 
 
-export default function ReturnOrders(){
 
 
-const navigate = useNavigate();
+export default function UserReturnDetails(){
 
 
 
-const [orders,setOrders] = useState([]);
+const {
+ id
+}=useParams();
 
-const [loading,setLoading] = useState(true);
 
-const [search,setSearch] = useState("");
 
-const [menuOpen,setMenuOpen] = useState(null);
-
-const [deleteId,setDeleteId] = useState(null);
-
-const [statusFilter,setStatusFilter] =
-useState("All Status");
-
-const [dateFilter,setDateFilter] =
-useState("");
+const navigate =
+useNavigate();
 
 
 
 
-const statuses = [
-
-"All Status",
-"Submitted",
-"Accepted",
-"Rejected",
-"Picked Up",
-"Reviewing",
-"Shipped",
-"Exchanged",
-"Refunded"
-
-];
+const {
+ user
+}=useAuth();
 
 
 
+
+
+
+const [
+ order,
+ setOrder
+]=useState(null);
+
+
+
+const [
+ loading,
+ setLoading
+]=useState(true);
+
+
+
+
+const [
+ editMode,
+ setEditMode
+]=useState(false);
+
+
+
+const [
+ saving,
+ setSaving
+]=useState(false);
+
+
+
+
+
+
+
+
+// =========================
+// FORM STATE
+// =========================
+
+
+const [
+ reason,
+ setReason
+]=useState("");
+
+
+
+const [
+ description,
+ setDescription
+]=useState("");
+
+
+
+const [
+ returnType,
+ setReturnType
+]=useState("");
+
+
+
+const [
+ refundMethod,
+ setRefundMethod
+]=useState("");
+
+
+
+const [
+ refundNumber,
+ setRefundNumber
+]=useState("");
+
+
+
+
+const [
+ pickupAddress,
+ setPickupAddress
+]=useState({
+
+name:"",
+phone:"",
+address:"",
+postOffice:"",
+thana:"",
+district:"",
+
+});
+
+
+
+
+const [
+ images,
+ setImages
+]=useState([]);
+
+
+
+
+
+
+
+
+
+// =========================
+// LOAD RETURN
+// =========================
 
 
 useEffect(()=>{
 
-loadReturns();
 
-},[]);
-
+loadReturn();
 
 
+},[user]);
 
 
-async function loadReturns(){
+
+
+
+
+async function loadReturn(){
+
 
 try{
 
-const data = await getReturnOrders();
 
-setOrders(data || []);
+if(!user)
+return;
+
+
+
+const data =
+await getUserReturnDetails(id);
+
+
+
+setOrder(data);
+
+
+
+const request =
+data.returnRequest || {};
+
+
+
+
+setReason(
+request.reason || ""
+);
+
+
+
+setDescription(
+request.description || ""
+);
+
+
+
+setReturnType(
+request.returnType || ""
+);
+
+
+
+setRefundMethod(
+request.refundMethod || ""
+);
+
+
+
+setRefundNumber(
+request.refundNumber || ""
+);
+
+
+
+setPickupAddress(
+
+request.pickupAddress ||
+
+{
+
+name:"",
+phone:"",
+address:"",
+postOffice:"",
+thana:"",
+district:""
+
+}
+
+);
+
+
+
+setImages(
+request.images || []
+);
+
+
 
 }
 
@@ -105,9 +272,11 @@ catch(error){
 
 console.log(error);
 
+
 errorToast(
-"Failed to load return orders"
+"Failed to load return"
 );
+
 
 }
 
@@ -117,67 +286,6 @@ setLoading(false);
 
 }
 
-}
-
-
-
-
-
-async function changeStatus(id,status){
-
-try{
-
-
-await updateReturnStatus(
-id,
-status
-);
-
-
-
-setOrders(prev =>
-
-prev.map(order=>{
-
-if(order.id === id){
-
-return {
-
-...order,
-
-returnRequest:{
-...order.returnRequest,
-status
-}
-
-};
-
-}
-
-return order;
-
-})
-
-);
-
-
-
-successToast(
-"Return status updated"
-);
-
-
-}
-
-catch(error){
-
-console.log(error);
-
-errorToast(
-"Status update failed"
-);
-
-}
 
 }
 
@@ -185,1308 +293,16 @@ errorToast(
 
 
 
-async function handleDelete(){
 
-try{
 
 
-await deleteOrder(deleteId);
+// =========================
+// STATUS COLOR
+// =========================
 
 
-
-setOrders(prev =>
-
-prev.filter(
-order=>order.id !== deleteId
-)
-
-);
-
-
-
-successToast(
-"Return order deleted"
-);
-
-
-
-setDeleteId(null);
-
-
-}
-
-catch(error){
-
-console.log(error);
-
-errorToast(
-"Delete failed"
-);
-
-}
-
-}
-
-
-
-
-
-const filteredOrders = orders.filter(order=>{
-
-
-const text =
-search.toLowerCase();
-
-
-
-const searchMatch =
-
-order.customerName
-?.toLowerCase()
-.includes(text)
-
-||
-
-order.email
-?.toLowerCase()
-.includes(text)
-
-||
-
-order.id
-?.toLowerCase()
-.includes(text);
-
-
-
-const status =
-order.returnRequest?.status ||
-"Submitted";
-
-
-
-const statusMatch =
-
-statusFilter === "All Status"
-
-?
-
-true
-
-:
-
-status === statusFilter;
-
-
-
-const dateMatch =
-
-dateFilter === ""
-
-?
-
-true
-
-:
-
-new Date(
-order.returnRequest?.createdAt
-)
-.toISOString()
-.slice(0,10)
-=== dateFilter;
-
-
-
-return(
-
-searchMatch &&
-statusMatch &&
-dateMatch
-
-);
-
-
-});
-
-
-
-
-
-if(loading){
-
-return(
-
-<div
-
-className="
-min-h-screen
-flex
-items-center
-justify-center
-font-bold
-"
-
->
-
-Loading Return Orders...
-
-</div>
-
-);
-
-}
-
-
-
-
-
-return(
-
-<div
-
-className="
-space-y-4
-bg-[#faf9f6]
-min-h-screen
-p-3
-lg:p-6
-"
-
->
-
-
-
-
-
-{/* HEADER */}
-
-<div
-className="
-text-center
-"
->
-
-<h1
-className="
-text-2xl
-font-black
-text-slate-900
-"
->
-Return Orders
-</h1>
-
-
-<p
-className="
-text-xs
-text-gray-500
-mt-1
-"
->
-Dashboard › Return Orders
-</p>
-
-
-</div>
-
-
-
-
-
-
-{/* STATS */}
-
-<div
-
-className="
-grid
-grid-cols-2
-lg:grid-cols-4
-gap-2
-"
-
->
-
-
-<StatCard
-
-icon={<FiShoppingBag size={18}/>}
-
-title="Total Return"
-
-value={orders.length}
-
-color="orange"
-
-/>
-
-
-
-<StatCard
-
-icon={<FiSend size={18}/>}
-
-title="Submitted"
-
-value={
-orders.filter(
-item =>
-item.returnRequest?.status==="Submitted"
-).length
-}
-
-color="yellow"
-
-/>
-
-
-
-<StatCard
-
-icon={<FiCheckCircle size={18}/>}
-
-title="Accepted"
-
-value={
-orders.filter(
-item =>
-item.returnRequest?.status==="Accepted"
-).length
-}
-
-color="blue"
-
-/>
-
-
-
-<StatCard
-
-icon={<FiDollarSign size={18}/>}
-
-title="Refunded"
-
-value={
-orders.filter(
-item =>
-item.returnRequest?.status==="Refunded"
-).length
-}
-
-color="green"
-
-/>
-
-
-</div>
-
-
-
-
-
-
-{/* SEARCH */}
-
-<div className="relative">
-
-
-<FiSearch
-
-className="
-absolute
-left-4
-top-1/2
--translate-y-1/2
-text-gray-400
-"
-
-/>
-
-
-<input
-
-value={search}
-
-onChange={
-e=>setSearch(e.target.value)
-}
-
-placeholder="Search return order..."
-
-className="
-w-full
-h-12
-bg-white
-border
-border-gray-200
-rounded-xl
-pl-11
-pr-4
-outline-none
-text-sm
-"
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-{/* FILTER */}
-
-<div
-
-className="
-grid
-grid-cols-2
-gap-2
-"
-
->
-
-
-<select
-
-value={statusFilter}
-
-onChange={
-e=>setStatusFilter(e.target.value)
-}
-
-className="
-h-11
-bg-white
-border
-rounded-xl
-px-3
-text-xs
-font-semibold
-"
-
->
-
-
-{
-
-statuses.map(status=>(
-
-<option
-
-key={status}
-
-value={status}
-
->
-
-{status}
-
-</option>
-
-))
-
-}
-
-
-</select>
-
-
-
-
-<div
-
-className="
-h-11
-bg-white
-border
-rounded-xl
-flex
-items-center
-px-3
-gap-2
-"
-
->
-
-
-<FiCalendar size={14}/>
-
-
-<input
-
-type="date"
-
-value={dateFilter}
-
-onChange={
-e=>setDateFilter(e.target.value)
-}
-
-className="
-outline-none
-text-xs
-w-full
-"
-
-/>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-{/* MOBILE RETURN LIST */}
-
-<div
-
-className="
-lg:hidden
-space-y-3
-"
-
->
-
-
-{
-
-filteredOrders.map((order)=>(
-
-
-<div
-
-key={order.id}
-
-className="
-bg-white
-border
-border-gray-100
-rounded-xl
-p-3
-shadow-sm
-"
-
->
-
-
-<div
-
-className="
-flex
-justify-between
-items-center
-"
-
->
-
-
-<p className="font-bold text-sm">
-
-#{order.id.slice(0,8)}
-
-</p>
-
-
-
-<p className="text-xs text-gray-500">
-
-{
-new Date(
-order.returnRequest?.createdAt
-)
-.toLocaleDateString()
-}
-
-</p>
-
-
-</div>
-
-
-
-
-
-<div
-
-className="
-mt-3
-flex
-items-center
-gap-3
-"
-
->
-
-
-<img
-
-src={
-order.customerPhoto ||
-`https://ui-avatars.com/api/?name=${encodeURIComponent(order.customerName || "User")}`
-}
-
-className="
-w-10
-h-10
-rounded-full
-object-cover
-"
-
-/>
-
-
-<div>
-
-<p className="font-semibold text-sm">
-
-{order.customerName}
-
-</p>
-
-
-<p className="text-xs text-gray-500">
-
-{order.email}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-  <div
-
-className="
-mt-3
-flex
-justify-between
-items-center
-"
-
->
-
-
-<select
-
-value={
-order.returnRequest?.status || "Submitted"
-}
-
-onChange={
-e =>
-changeStatus(
-order.id,
-e.target.value
-)
-}
-
-className={`
-
-text-xs
-font-bold
-px-3
-py-2
-rounded-full
-
-${statusColor(
-order.returnRequest?.status
-)}
-
-`}
-
->
-
-
-{
-
-statuses.slice(1).map(status=>(
-
-<option
-
-key={status}
-
-value={status}
-
->
-
-{status}
-
-</option>
-
-))
-
-}
-
-
-</select>
-
-
-
-
-
-<div
-
-className="
-flex
-gap-2
-"
-
->
-
-
-<button
-
-onClick={()=>navigate(
-`/admin/return-orders/${order.id}`
-)}
-
-className="
-w-8
-h-8
-rounded-lg
-bg-blue-50
-text-blue-600
-flex
-items-center
-justify-center
-"
-
->
-
-<FiEye size={15}/>
-
-</button>
-
-
-
-
-
-<div
-
-className="
-relative
-"
-
->
-
-
-<button
-
-onClick={()=>setMenuOpen(
-menuOpen===order.id
-?
-null
-:
-order.id
-)}
-
-className="
-w-8
-h-8
-rounded-lg
-bg-gray-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiMoreVertical size={15}/>
-
-</button>
-
-
-
-
-
-{
-
-menuOpen===order.id && (
-
-<div
-
-className="
-absolute
-right-0
-top-10
-bg-white
-border
-rounded-lg
-shadow-lg
-w-32
-z-50
-"
-
->
-
-
-<button
-
-onClick={()=>{
-
-setDeleteId(order.id);
-
-setMenuOpen(null);
-
-}}
-
-className="
-w-full
-px-3
-py-2
-text-sm
-text-red-600
-flex
-items-center
-gap-2
-"
-
->
-
-
-<FiTrash2 size={14}/>
-
-Delete
-
-</button>
-
-
-</div>
-
-)
-
-}
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-  
-</div>
-
-  
-))
-
-}
-
-
-</div>
-
-
-
-{/* DESKTOP TABLE */}
-
-<div
-
-className="
-hidden
-lg:block
-bg-white
-rounded-xl
-border
-overflow-hidden
-"
-
->
-
-
-<table className="w-full">
-
-
-<thead className="bg-gray-50">
-
-
-<tr>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-ID
-
-</th>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-Customer
-
-</th>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-Date
-
-</th>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-Return Type
-
-</th>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-Status
-
-</th>
-
-
-<th className="px-5 py-3 text-left text-xs">
-
-Action
-
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-<tbody>
-
-
-{
-
-filteredOrders.map(order=>(
-
-
-<tr
-
-key={order.id}
-
-className="
-border-t
-"
-
->
-
-
-<td className="px-5 py-4 text-sm font-bold">
-
-#{order.id.slice(0,8)}
-
-</td>
-
-
-
-
-
-<td className="px-5 py-4 text-sm">
-
-{order.customerName}
-
-</td>
-
-
-
-
-
-<td className="px-5 py-4 text-xs">
-
-{
-new Date(
-order.returnRequest?.createdAt
-)
-.toLocaleDateString()
-}
-
-</td>
-
-
-
-
-
-<td className="px-5 py-4 text-sm">
-
-{
-order.returnRequest?.returnType
-}
-
-</td>
-
-
-
-
-
-<td className="px-5 py-4">
-
-
-<select
-
-value={
-order.returnRequest?.status || "Submitted"
-}
-
-onChange={
-e =>
-changeStatus(
-order.id,
-e.target.value
-)
-}
-
-className={`
-
-text-xs
-font-bold
-px-3
-py-2
-rounded-lg
-
-${statusColor(
-order.returnRequest?.status
-)}
-
-`}
-
->
-
-
-{
-
-statuses.slice(1).map(status=>(
-
-<option
-
-key={status}
-
-value={status}
-
->
-
-{status}
-
-</option>
-
-))
-
-}
-
-
-</select>
-
-
-</td>
-
-
-
-
-
-
-
-<td className="px-5 py-4">
-
-
-<div
-
-className="
-flex
-items-center
-gap-2
-"
-
->
-
-
-<button
-
-onClick={()=>navigate(
-`/admin/return-orders/${order.id}`
-)}
-
-className="
-w-8
-h-8
-rounded-lg
-bg-blue-50
-text-blue-600
-flex
-items-center
-justify-center
-"
-
->
-
-<FiEye size={15}/>
-
-</button>
-
-
-
-
-
-<div className="relative">
-
-
-<button
-
-onClick={()=>setMenuOpen(
-menuOpen===order.id
-?
-null
-:
-order.id
-)}
-
-className="
-w-8
-h-8
-rounded-lg
-bg-gray-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiMoreVertical size={15}/>
-
-</button>
-
-
-
-
-
-{
-
-menuOpen===order.id && (
-
-<div
-
-className="
-absolute
-right-0
-top-10
-bg-white
-border
-rounded-lg
-shadow-lg
-w-32
-z-50
-"
-
->
-
-
-<button
-
-onClick={()=>{
-
-setDeleteId(order.id);
-
-setMenuOpen(null);
-
-}}
-
-className="
-w-full
-px-3
-py-2
-text-sm
-text-red-600
-flex
-items-center
-gap-2
-"
-
->
-
-
-<FiTrash2 size={14}/>
-
-Delete
-
-</button>
-
-
-</div>
-
-)
-
-}
-
-
-</div>
-
-
-</div>
-
-
-</td>
-
-
-</tr>
-
-
-))
-
-}
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* DELETE MODAL */}
-
-{
-
-deleteId && (
-
-<div
-
-className="
-fixed
-inset-0
-bg-black/40
-flex
-items-center
-justify-center
-z-[100]
-"
-
->
-
-
-<div
-
-className="
-bg-white
-rounded-xl
-p-5
-w-80
-text-center
-"
-
->
-
-
-<h3 className="font-black text-lg">
-
-Are you sure?
-
-</h3>
-
-
-
-<p className="text-sm text-gray-500 mt-2">
-
-Delete this return order permanently?
-
-</p>
-
-
-
-<div className="flex gap-3 mt-5">
-
-
-<button
-
-onClick={()=>setDeleteId(null)}
-
-className="
-flex-1
-h-10
-rounded-lg
-bg-gray-100
-font-bold
-"
-
->
-
-No
-
-</button>
-
-
-
-<button
-
-onClick={handleDelete}
-
-className="
-flex-1
-h-10
-rounded-lg
-bg-red-500
-text-white
-font-bold
-"
-
->
-
-Yes
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-)
-
-}
-
-
-</div>
-
-
-);
-
-
-}
-
-
-
-
-
-
-function statusColor(status){
+const statusStyle =
+(status)=>{
 
 
 switch(status){
@@ -1502,9 +318,11 @@ case "Rejected":
 return "bg-red-100 text-red-700";
 
 
+
 case "Picked Up":
 
 return "bg-blue-100 text-blue-700";
+
 
 
 case "Reviewing":
@@ -1512,19 +330,23 @@ case "Reviewing":
 return "bg-purple-100 text-purple-700";
 
 
+
 case "Shipped":
 
 return "bg-indigo-100 text-indigo-700";
 
 
-case "Exchanged":
-
-return "bg-orange-100 text-orange-700";
-
 
 case "Refunded":
 
-return "bg-emerald-100 text-emerald-700";
+return "bg-green-100 text-green-700";
+
+
+
+case "Exchanged":
+
+return "bg-indigo-100 text-indigo-700";
+
 
 
 default:
@@ -1535,57 +357,128 @@ return "bg-yellow-100 text-yellow-700";
 }
 
 
-}
-
-
-
-
-
-function StatCard({
-
-icon,
-
-title,
-
-value,
-
-color
-
-}){
-
-
-const colors={
-
-
-orange:
-"bg-orange-50 text-orange-500",
-
-yellow:
-"bg-yellow-50 text-yellow-500",
-
-blue:
-"bg-blue-50 text-blue-500",
-
-green:
-"bg-green-50 text-green-500"
-
-
 };
 
 
 
-return(
+
+
+
+
+
+if(loading)
+
+
+return (
+
+<div
+
+className="
+min-h-screen
+flex
+items-center
+justify-center
+font-bold
+"
+
+>
+
+Loading...
+
+</div>
+
+);
+
+
+
+
+
+
+
+
+if(!order)
+
+
+return (
+
+<div
+
+className="
+min-h-screen
+flex
+items-center
+justify-center
+font-bold
+"
+
+>
+
+Return Not Found
+
+</div>
+
+);
+
+
+
+
+
+
+const request =
+order.returnRequest || {};
+
+
+
+const canEdit =
+request.status === "Submitted";
+
+
+
+
+
+
+return (
+
+<div
+
+className="
+min-h-screen
+bg-[#FCFAF5]
+px-4
+py-6
+"
+
+>
 
 
 <div
 
 className="
-bg-white
-border
-border-gray-100
-rounded-xl
-px-3
-py-3
+max-w-xl
+mx-auto
+space-y-4
+"
+
+>
+
+
+{/* HEADER */}
+
+
+<div
+
+className="
+flex
+items-center
+justify-between
+"
+
+>
+
+
+<div
+
+className="
 flex
 items-center
 gap-3
@@ -1594,26 +487,542 @@ gap-3
 >
 
 
-<div
+<button
 
-className={`
+onClick={()=>navigate(-1)}
 
-w-9
-h-9
+className="
+w-10
+h-10
 rounded-lg
+bg-white
+border
 flex
 items-center
 justify-center
+"
 
-${colors[color]}
+>
+
+<FiArrowLeft/>
+
+</button>
+
+
+
+<h1
+
+className="
+text-xl
+font-black
+"
+
+>
+
+Return Details
+
+</h1>
+
+
+</div>
+
+
+
+
+
+{
+
+canEdit && !editMode &&
+
+
+<button
+
+onClick={()=>setEditMode(true)}
+
+className="
+w-10
+h-10
+rounded-lg
+bg-white
+border
+flex
+items-center
+justify-center
+text-amber-600
+"
+
+>
+
+<FiEdit/>
+
+</button>
+
+
+}
+
+
+
+</div>
+
+
+  {/* STATUS CARD */}
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+"
+
+>
+
+
+<div
+
+className="
+flex
+justify-between
+items-center
+"
+
+>
+
+
+<div>
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+"
+
+>
+
+Return ID
+
+</p>
+
+
+
+<h2
+
+className="
+font-black
+"
+
+>
+
+#{order.id.slice(0,8)}
+
+</h2>
+
+
+</div>
+
+
+
+
+
+<span
+
+className={`
+
+px-3
+
+py-1
+
+rounded-full
+
+text-xs
+
+font-bold
+
+${
+
+statusStyle(
+request.status
+)
+
+}
 
 `}
 
 >
 
-{icon}
+{
+
+request.status ||
+
+"Submitted"
+
+}
+
+
+</span>
+
+
 
 </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* PRODUCTS */}
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+"
+
+>
+
+
+<h2
+
+className="
+font-black
+mb-4
+flex
+items-center
+gap-2
+"
+
+>
+
+<FiPackage/>
+
+Returned Products
+
+</h2>
+
+
+
+
+
+<div
+
+className="
+space-y-4
+"
+
+>
+
+
+{
+
+request.items?.map(
+
+(item,index)=>(
+
+
+<div
+
+key={index}
+
+className="
+flex
+items-center
+justify-between
+border-b
+border-gray-100
+pb-4
+"
+
+>
+
+
+<div
+
+className="
+flex
+items-center
+gap-3
+"
+
+>
+
+
+<img
+
+src={
+item.image ||
+"https://via.placeholder.com/70"
+}
+
+className="
+w-16
+h-16
+rounded-lg
+object-cover
+"
+
+/>
+
+
+
+<div>
+
+
+<h3
+
+className="
+font-bold
+text-sm
+"
+
+>
+
+{item.name}
+
+</h3>
+
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+"
+
+>
+
+Qty : {item.quantity}
+
+</p>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+<p
+
+className="
+font-black
+"
+
+>
+
+৳ {item.price}
+
+</p>
+
+
+
+</div>
+
+
+)
+
+
+}
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* PRODUCT PHOTOS */}
+
+
+{
+
+request.images?.length > 0 &&
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+"
+
+>
+
+
+<h2
+
+className="
+font-black
+mb-3
+flex
+items-center
+gap-2
+"
+
+>
+
+<FiImage/>
+
+Product Photos
+
+</h2>
+
+
+
+
+
+<div
+
+className="
+grid
+grid-cols-3
+gap-3
+"
+
+>
+
+
+{
+
+request.images.map(
+
+(img,index)=>{
+
+
+const imageUrl =
+
+typeof img === "string"
+
+?
+
+img
+
+:
+
+img?.imageUrl ||
+
+img?.url;
+
+
+
+
+return (
+
+
+<img
+
+key={index}
+
+src={imageUrl}
+
+className="
+w-full
+h-28
+rounded-lg
+object-cover
+border
+"
+
+/>
+
+
+)
+
+
+}
+
+
+)
+
+
+}
+
+
+
+</div>
+
+
+
+</div>
+
+
+}
+
+
+
+
+
+
+
+
+
+{/* RETURN INFORMATION */}
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+space-y-4
+"
+
+>
+
+
+<h2
+
+className="
+font-black
+"
+
+>
+
+Return Information
+
+</h2>
+
+
+
+
+
 
 
 
@@ -1621,18 +1030,712 @@ ${colors[color]}
 <div>
 
 
-<p className="text-[11px] text-gray-500">
+<p
 
-{title}
+className="
+text-xs
+text-gray-500
+mb-1
+"
+
+>
+
+Reason
 
 </p>
 
 
-<h2 className="text-lg font-black text-slate-900">
 
-{value}
+
+{
+
+editMode ?
+
+
+
+
+<select
+
+value={reason}
+
+onChange={
+
+e=>
+
+setReason(
+e.target.value
+)
+
+}
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+>
+
+
+<option>
+Product damaged
+</option>
+
+
+<option>
+Wrong product received
+</option>
+
+
+<option>
+Size issue
+</option>
+
+
+<option>
+Quality issue
+</option>
+
+
+<option>
+Color mismatch
+</option>
+
+
+<option>
+Other
+</option>
+
+
+</select>
+
+
+
+
+
+:
+
+
+
+
+<p
+
+className="
+font-bold
+"
+
+>
+
+{reason}
+
+</p>
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+mb-1
+"
+
+>
+
+Type
+
+</p>
+
+
+
+
+{
+
+editMode ?
+
+
+
+<select
+
+value={returnType}
+
+onChange={
+
+e=>
+
+setReturnType(
+e.target.value
+)
+
+}
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+>
+
+
+<option value="">
+Select
+</option>
+
+
+<option value="Refund">
+Refund
+</option>
+
+
+<option value="Exchange">
+Exchange
+</option>
+
+
+</select>
+
+
+
+
+:
+
+
+
+<p
+
+className="
+font-bold
+"
+
+>
+
+{returnType}
+
+</p>
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+mb-1
+"
+
+>
+
+Description
+
+</p>
+
+
+
+{
+
+editMode ?
+
+
+<textarea
+
+value={description}
+
+onChange={
+
+e=>
+
+setDescription(
+e.target.value
+)
+
+}
+
+rows="4"
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+
+:
+
+
+<p
+
+className="
+font-medium
+"
+
+>
+
+{description}
+
+</p>
+
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{
+
+request.refundMethod &&
+
+
+
+<div>
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+"
+
+>
+
+Refund Method
+
+</p>
+
+
+<p
+
+className="
+font-bold
+"
+
+>
+
+{request.refundMethod}
+
+-
+
+{request.refundNumber}
+
+</p>
+
+
+</div>
+
+
+
+}
+
+
+
+</div>
+
+
+  {/* PICKUP ADDRESS */}
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+"
+
+>
+
+
+<h2
+
+className="
+font-black
+mb-3
+"
+
+>
+
+Pickup Address
 
 </h2>
+
+
+
+
+
+{
+
+editMode ?
+
+
+<div
+
+className="
+space-y-3
+"
+
+>
+
+
+{
+
+[
+"name",
+"phone",
+"address",
+"postOffice",
+"thana",
+"district"
+
+].map(field=>(
+
+
+<input
+
+
+key={field}
+
+
+value={
+pickupAddress[field] || ""
+}
+
+
+onChange={(e)=>{
+
+
+setPickupAddress({
+
+...pickupAddress,
+
+
+[field]:
+e.target.value
+
+
+});
+
+
+}}
+
+
+placeholder={field}
+
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+))
+
+
+}
+
+
+
+</div>
+
+
+:
+
+
+<div
+
+className="
+space-y-1
+text-sm
+"
+
+>
+
+
+<p>
+{pickupAddress.name}
+</p>
+
+
+<p>
+{pickupAddress.phone}
+</p>
+
+
+<p>
+{pickupAddress.address}
+</p>
+
+
+<p>
+{pickupAddress.postOffice}
+</p>
+
+
+<p>
+{pickupAddress.thana}
+</p>
+
+
+<p>
+{pickupAddress.district}
+</p>
+
+
+</div>
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* EDIT ACTION */}
+
+
+{
+
+editMode &&
+
+
+<div
+
+className="
+flex
+gap-3
+"
+
+>
+
+
+<button
+
+
+onClick={()=>setEditMode(false)}
+
+
+disabled={saving}
+
+
+className="
+flex-1
+py-3
+rounded-lg
+border
+font-bold
+bg-white
+"
+
+>
+
+
+Cancel
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+
+disabled={saving}
+
+
+onClick={async()=>{
+
+
+try{
+
+
+setSaving(true);
+
+
+
+await updateReturnRequest(
+
+id,
+
+{
+
+
+reason,
+
+description,
+
+returnType,
+
+refundMethod,
+
+refundNumber,
+
+pickupAddress,
+
+images,
+
+
+}
+
+);
+
+
+
+
+successToast(
+"Return updated successfully"
+);
+
+
+
+setEditMode(false);
+
+
+
+loadReturn();
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+errorToast(
+
+error.message ||
+
+"Update failed"
+
+);
+
+
+}
+
+finally{
+
+
+setSaving(false);
+
+
+}
+
+
+
+}}
+
+
+className="
+flex-1
+py-3
+rounded-lg
+bg-amber-500
+text-white
+font-bold
+"
+
+>
+
+
+{
+
+saving
+?
+
+"Saving..."
+
+:
+
+"Save"
+
+}
+
+
+</button>
+
+
+
+</div>
+
+
+}
+
+
+
+
 
 
 </div>
@@ -1642,6 +1745,5 @@ ${colors[color]}
 
 
 );
-
 
 }
