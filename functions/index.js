@@ -83,7 +83,7 @@ gmailPassword.value()
 
 const link =
 
-`https://dream-mode-site.vercel.app/password-change-verify}`;
+`https://dream-mode-site.vercel.app/password-change-verify`;
 
 
 
