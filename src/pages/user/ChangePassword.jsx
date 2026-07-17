@@ -270,17 +270,6 @@ successToast(
 );
 
 
-navigate(
-  "/verify-email",
-  {
-    state:{
-      email:user.email,
-      type:"password-change"
-    }
-  }
-);
-
-
 
 
 }
