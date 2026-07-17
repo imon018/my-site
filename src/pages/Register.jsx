@@ -28,10 +28,10 @@ export default function Register() {
 
     try {
       await register(
-        name,
-        email,
-        password
-      );
+  email,
+  password,
+  name
+);
 
       successToast(
         "Verification email sent."
