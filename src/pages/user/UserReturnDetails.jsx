@@ -13,15 +13,30 @@ import {
 import {
   FiArrowLeft,
   FiPackage,
+  FiImage,
+  FiEdit,
+  FiX,
 } from "react-icons/fi";
 
 
 import {
-  getUserOrders,
+  getUserReturnDetails,
+  updateReturnRequest,
 } from "../../services/orderService";
 
 
 import useAuth from "../../hooks/useAuth";
+
+
+import {
+  successToast,
+  errorToast,
+} from "../../components/ui/Toast";
+
+
+
+
+
 
 
 
@@ -29,8 +44,9 @@ export default function UserReturnDetails(){
 
 
 const {
- id
+  id
 }=useParams();
+
 
 
 const navigate =
@@ -38,38 +54,157 @@ useNavigate();
 
 
 
+
 const {
- user
+  user
 }=useAuth();
 
 
 
 
+
+
 const [
- order,
- setOrder
+  order,
+  setOrder
 ]=useState(null);
 
 
 
+
 const [
- loading,
- setLoading
+  loading,
+  setLoading
 ]=useState(true);
 
 
 
 
+const [
+  editMode,
+  setEditMode
+]=useState(false);
 
+
+
+
+const [
+  saving,
+  setSaving
+]=useState(false);
+
+
+
+
+
+const [
+  previewImage,
+  setPreviewImage
+]=useState(null);
+
+
+
+
+
+
+
+
+
+// =========================
+// FORM STATES
+// =========================
+
+
+const [
+  reason,
+  setReason
+]=useState("");
+
+
+
+const [
+  description,
+  setDescription
+]=useState("");
+
+
+
+const [
+  returnType,
+  setReturnType
+]=useState("");
+
+
+
+const [
+  refundMethod,
+  setRefundMethod
+]=useState("");
+
+
+
+const [
+  refundNumber,
+  setRefundNumber
+]=useState("");
+
+
+
+
+
+
+const [
+  pickupAddress,
+  setPickupAddress
+]=useState({
+
+name:"",
+phone:"",
+address:"",
+postOffice:"",
+thana:"",
+district:"",
+
+});
+
+
+
+
+
+
+const [
+  images,
+  setImages
+]=useState([]);
+
+
+
+
+
+
+
+
+
+// =========================
+// LOAD RETURN DETAILS
+// =========================
 
 
 useEffect(()=>{
 
 
+if(user && id){
+
 loadReturn();
 
+}
 
-},[user]);
+
+},[
+user,
+id
+]);
+
 
 
 
@@ -82,26 +217,81 @@ async function loadReturn(){
 try{
 
 
-if(!user)
-return;
+setLoading(true);
 
 
 
-const orders =
-await getUserOrders(
-user.email
+const data =
+await getUserReturnDetails(id);
+
+
+
+setOrder(data);
+
+
+
+const request =
+data.returnRequest || {};
+
+
+
+
+setReason(
+request.reason || ""
 );
 
 
 
-const found =
-orders.find(
-item=>item.id===id
+setDescription(
+request.description || ""
 );
 
 
 
-setOrder(found);
+setReturnType(
+request.returnType || ""
+);
+
+
+
+setRefundMethod(
+request.refundMethod || ""
+);
+
+
+
+setRefundNumber(
+request.refundNumber || ""
+);
+
+
+
+
+
+setPickupAddress(
+
+request.pickupAddress ||
+
+{
+
+name:"",
+phone:"",
+address:"",
+postOffice:"",
+thana:"",
+district:""
+
+}
+
+);
+
+
+
+
+
+setImages(
+request.images || []
+);
 
 
 
@@ -109,73 +299,106 @@ setOrder(found);
 
 catch(error){
 
+
 console.log(error);
+
+
+
+errorToast(
+"Failed to load return details"
+);
+
 
 }
 
 finally{
 
+
 setLoading(false);
 
-}
-
 
 }
 
 
 
+}
 
 
 
+
+
+
+
+
+
+// =========================
+// STATUS COLOR
+// =========================
 
 
 const statusStyle =
+
 (status)=>{
 
 
-if(status==="Accepted"){
+switch(status){
+
+
+case "Accepted":
 
 return "bg-green-100 text-green-700";
 
-}
 
 
-if(status==="Rejected"){
+case "Rejected":
 
 return "bg-red-100 text-red-700";
 
-}
 
 
-if(status==="Picked Up"){
+case "Picked Up":
 
 return "bg-blue-100 text-blue-700";
 
-}
 
 
-if(status==="Reviewing"){
+case "Reviewing":
 
 return "bg-purple-100 text-purple-700";
 
-}
 
 
-if(status==="Refunded"){
-
-return "bg-green-100 text-green-700";
-
-}
-
-
-if(status==="Exchanged"){
+case "Shipped":
 
 return "bg-indigo-100 text-indigo-700";
 
-}
 
+
+case "Exchanged":
+
+return "bg-indigo-100 text-indigo-700";
+
+
+
+case "Refunded":
+
+return "bg-green-100 text-green-700";
+
+
+
+case "Completed":
+
+return "bg-purple-100 text-purple-700";
+
+
+
+default:
 
 return "bg-yellow-100 text-yellow-700";
+
+
+}
+
 
 
 };
@@ -188,46 +411,121 @@ return "bg-yellow-100 text-yellow-700";
 
 
 
-if(loading)
+// =========================
+// IMAGE URL HANDLER
+// =========================
+
+
+const getImageUrl = (img)=>{
+
+
+if(typeof img === "string"){
+
+return img;
+
+}
+
+
 
 return (
 
-<div className="
+img?.imageUrl ||
+
+img?.url ||
+
+""
+
+);
+
+
+};
+
+
+
+
+
+
+
+
+
+// =========================
+// EDIT AVAILABLE ONLY SUBMITTED
+// =========================
+
+
+const canEdit =
+
+order?.returnRequest?.status === "Submitted";
+
+
+
+
+
+
+
+
+
+if(loading){
+
+
+return (
+
+<div
+
+className="
 min-h-screen
 flex
 items-center
 justify-center
 font-bold
-">
+"
+
+>
 
 Loading...
 
 </div>
 
+
 );
 
 
+}
 
 
 
 
-if(!order)
+
+
+
+
+
+if(!order){
+
 
 return (
 
-<div className="
+<div
+
+className="
 min-h-screen
 flex
 items-center
 justify-center
 font-bold
-">
+"
+
+>
 
 Return Not Found
 
 </div>
 
+
 );
+
+
+}
 
 
 
@@ -235,15 +533,11 @@ Return Not Found
 
 
 const request =
+
 order.returnRequest || {};
 
 
-
-
-
-
 return (
-
 
 <div
 
@@ -255,7 +549,6 @@ py-6
 "
 
 >
-
 
 
 <div
@@ -280,6 +573,17 @@ space-y-4
 className="
 flex
 items-center
+justify-between
+"
+
+>
+
+
+<div
+
+className="
+flex
+items-center
 gap-3
 "
 
@@ -296,6 +600,7 @@ h-10
 rounded-lg
 bg-white
 border
+border-gray-100
 flex
 items-center
 justify-center
@@ -306,6 +611,7 @@ justify-center
 <FiArrowLeft/>
 
 </button>
+
 
 
 
@@ -321,6 +627,77 @@ font-black
 Return Details
 
 </h1>
+
+
+
+</div>
+
+
+
+
+
+
+{
+
+canEdit && !editMode &&
+
+<button
+
+onClick={()=>setEditMode(true)}
+
+className="
+w-10
+h-10
+rounded-lg
+bg-white
+border
+border-gray-100
+flex
+items-center
+justify-center
+text-amber-600
+"
+
+>
+
+<FiEdit/>
+
+</button>
+
+
+}
+
+
+
+{
+
+editMode &&
+
+<button
+
+onClick={()=>setEditMode(false)}
+
+className="
+w-10
+h-10
+rounded-lg
+bg-white
+border
+border-gray-100
+flex
+items-center
+justify-center
+text-red-500
+"
+
+>
+
+<FiX/>
+
+</button>
+
+
+}
 
 
 
@@ -425,10 +802,12 @@ request.status
 
 >
 
-
 {
+
 request.status ||
+
 "Submitted"
+
 }
 
 
@@ -436,8 +815,8 @@ request.status ||
 
 
 
-</div>
 
+</div>
 
 
 </div>
@@ -489,6 +868,8 @@ Returned Products
 
 
 
+
+
 <div
 
 className="
@@ -535,8 +916,11 @@ gap-3
 <img
 
 src={
+
 item.image ||
+
 "https://via.placeholder.com/70"
+
 }
 
 className="
@@ -544,9 +928,12 @@ w-16
 h-16
 rounded-lg
 object-cover
+bg-gray-50
 "
 
 />
+
+
 
 
 
@@ -577,13 +964,13 @@ text-gray-500
 
 >
 
-Qty : {item.quantity}
+Qty : {item.quantity || 1}
 
 </p>
 
 
-
 </div>
+
 
 
 </div>
@@ -600,7 +987,16 @@ font-black
 
 >
 
-৳ {item.price}
+৳ {
+
+Number(item.price || 0)
+
+*
+
+Number(item.quantity || 1)
+
+}
+
 
 </p>
 
@@ -623,6 +1019,7 @@ font-black
 </div>
 
 
+
 </div>
 
 
@@ -633,7 +1030,12 @@ font-black
 
 
 
-{/* RETURN INFO */}
+{/* PRODUCT PHOTOS */}
+
+
+{
+
+images.length > 0 &&
 
 
 <div
@@ -645,7 +1047,168 @@ border-gray-100
 rounded-lg
 shadow-sm
 p-5
-space-y-3
+"
+
+>
+
+
+<h2
+
+className="
+font-black
+mb-3
+flex
+items-center
+gap-2
+"
+
+>
+
+<FiImage/>
+
+Product Photos
+
+</h2>
+
+
+
+
+
+<div
+
+className="
+grid
+grid-cols-3
+gap-3
+"
+
+>
+
+
+{
+
+images.map(
+
+(img,index)=>{
+
+
+const url =
+
+getImageUrl(img);
+
+
+
+return (
+
+<img
+
+key={index}
+
+src={url}
+
+onClick={()=>setPreviewImage(url)}
+
+className="
+w-full
+h-28
+rounded-lg
+object-cover
+border
+cursor-pointer
+"
+
+/>
+
+
+);
+
+
+}
+
+
+)
+
+
+}
+
+
+
+</div>
+
+
+
+</div>
+
+
+}
+
+
+
+
+
+
+
+
+
+{/* IMAGE PREVIEW */}
+
+
+{
+
+previewImage &&
+
+
+<div
+
+className="
+fixed
+inset-0
+bg-black/80
+z-50
+flex
+items-center
+justify-center
+p-4
+"
+
+onClick={()=>setPreviewImage(null)}
+
+>
+
+
+<img
+
+src={previewImage}
+
+className="
+max-w-full
+max-h-full
+rounded-lg
+object-contain
+"
+
+/>
+
+
+</div>
+
+
+}
+
+
+  {/* RETURN INFORMATION */}
+
+
+<div
+
+className="
+bg-white
+border
+border-gray-100
+rounded-lg
+shadow-sm
+p-5
+space-y-4
 "
 
 >
@@ -665,26 +1228,107 @@ Return Information
 
 
 
+
+
+
+
+{/* REASON */}
+
+
 <div>
 
 
-<p className="
+<p
+
+className="
 text-xs
 text-gray-500
-">
+mb-1
+"
+
+>
 
 Reason
 
 </p>
 
 
+
+{
+
+editMode ?
+
+
+<select
+
+value={reason}
+
+onChange={(e)=>
+
+setReason(
+e.target.value
+)
+
+}
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+>
+
+
+<option value="Product damaged">
+Product damaged
+</option>
+
+
+<option value="Wrong product received">
+Wrong product received
+</option>
+
+
+<option value="Size issue">
+Size issue
+</option>
+
+
+<option value="Quality issue">
+Quality issue
+</option>
+
+
+<option value="Color mismatch">
+Color mismatch
+</option>
+
+
+<option value="Other">
+Other
+</option>
+
+
+</select>
+
+
+:
+
+
 <p className="
 font-bold
 ">
 
-{request.reason}
+{reason}
 
 </p>
+
+
+}
+
 
 
 </div>
@@ -693,29 +1337,177 @@ font-bold
 
 
 
+
+
+
+
+{/* TYPE */}
+
+
 <div>
 
 
-<p className="
+<p
+
+className="
 text-xs
 text-gray-500
-">
+mb-1
+"
+
+>
 
 Type
 
 </p>
 
 
+
+
+{
+
+editMode ?
+
+
+<select
+
+value={returnType}
+
+onChange={(e)=>
+
+setReturnType(
+e.target.value
+)
+
+}
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+>
+
+
+<option value="">
+Select
+</option>
+
+
+<option value="Refund">
+Refund
+</option>
+
+
+<option value="Exchange">
+Exchange
+</option>
+
+
+</select>
+
+
+:
+
+
 <p className="
 font-bold
 ">
 
-{request.returnType}
+{returnType}
 
 </p>
 
 
+}
+
+
+
 </div>
+
+
+
+
+
+
+
+
+
+{/* DESCRIPTION */}
+
+
+<div>
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+mb-1
+"
+
+>
+
+Description
+
+</p>
+
+
+
+{
+
+editMode ?
+
+
+<textarea
+
+value={description}
+
+onChange={(e)=>
+
+setDescription(
+e.target.value
+)
+
+}
+
+rows="4"
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+
+:
+
+
+<p className="
+font-medium
+">
+
+{description || "N/A"}
+
+</p>
+
+
+}
+
+
+
+</div>
+
+
 
 
 
@@ -724,28 +1516,111 @@ font-bold
 
 {
 
-request.description &&
+(request.refundMethod || editMode) &&
+
 
 <div>
 
 
-<p className="
+<p
+
+className="
 text-xs
 text-gray-500
-">
+mb-1
+"
 
-Description
+>
+
+Refund Method
 
 </p>
+
+
+
+{
+
+editMode ?
+
+
+<div className="
+space-y-2
+">
+
+
+<input
+
+value={refundMethod}
+
+onChange={(e)=>
+
+setRefundMethod(
+e.target.value
+)
+
+}
+
+placeholder="Refund Method"
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+
+<input
+
+value={refundNumber}
+
+onChange={(e)=>
+
+setRefundNumber(
+e.target.value
+)
+
+}
+
+placeholder="Refund Number"
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+</div>
+
+
+
+:
 
 
 <p className="
-font-medium
+font-bold
 ">
 
-{request.description}
+{refundMethod}
+
+-
+
+{refundNumber}
 
 </p>
+
+
+}
+
 
 
 </div>
@@ -796,29 +1671,130 @@ Pickup Address
 </h2>
 
 
-<p>
-{request.pickupAddress?.name}
-</p>
+
+
+
+
+{
+
+editMode ?
+
+
+
+<div className="
+space-y-3
+">
+
+
+{
+
+[
+"name",
+"phone",
+"address",
+"postOffice",
+"thana",
+"district"
+
+].map(field=>(
+
+
+<input
+
+key={field}
+
+value={
+pickupAddress[field] || ""
+}
+
+onChange={(e)=>{
+
+
+setPickupAddress({
+
+...pickupAddress,
+
+[field]:
+e.target.value
+
+});
+
+
+}}
+
+
+placeholder={field}
+
+
+className="
+w-full
+border
+rounded-lg
+p-3
+text-sm
+"
+
+/>
+
+
+))
+
+
+}
+
+
+
+</div>
+
+
+
+
+:
+
+
+
+<div className="
+space-y-1
+text-sm
+">
+
 
 <p>
-{request.pickupAddress?.phone}
+{pickupAddress.name}
 </p>
 
-<p>
-{request.pickupAddress?.address}
-</p>
 
 <p>
-{request.pickupAddress?.postOffice}
+{pickupAddress.phone}
 </p>
 
-<p>
-{request.pickupAddress?.thana}
-</p>
 
 <p>
-{request.pickupAddress?.district}
+{pickupAddress.address}
 </p>
+
+
+<p>
+{pickupAddress.postOffice}
+</p>
+
+
+<p>
+{pickupAddress.thana}
+</p>
+
+
+<p>
+{pickupAddress.district}
+</p>
+
+
+
+</div>
+
+
+
+}
 
 
 
@@ -829,6 +1805,187 @@ Pickup Address
 
 
 
+
+
+
+{/* SAVE BUTTON */}
+
+
+{
+
+editMode &&
+
+
+<div className="
+flex
+gap-3
+">
+
+
+<button
+
+onClick={()=>{
+
+setEditMode(false);
+
+loadReturn();
+
+}}
+
+className="
+flex-1
+py-3
+rounded-lg
+border
+font-bold
+bg-white
+"
+
+>
+
+Cancel
+
+</button>
+
+
+
+
+
+
+
+<button
+
+
+disabled={saving}
+
+
+onClick={async()=>{
+
+
+try{
+
+
+setSaving(true);
+
+
+
+
+
+await updateReturnRequest(
+
+id,
+
+{
+
+
+reason,
+
+description,
+
+returnType,
+
+refundMethod,
+
+refundNumber,
+
+pickupAddress,
+
+images,
+
+
+}
+
+);
+
+
+
+
+
+successToast(
+"Return updated successfully"
+);
+
+
+
+
+setEditMode(false);
+
+
+
+await loadReturn();
+
+
+
+}
+
+
+catch(error){
+
+
+console.log(error);
+
+
+
+errorToast(
+
+error.message ||
+
+"Update failed"
+
+);
+
+
+}
+
+
+finally{
+
+
+setSaving(false);
+
+
+}
+
+
+
+}}
+
+
+className="
+flex-1
+py-3
+rounded-lg
+bg-amber-500
+text-white
+font-bold
+"
+
+>
+
+
+{
+
+saving
+
+?
+
+"Saving..."
+
+:
+
+"Save"
+
+}
+
+
+</button>
+
+
+
+</div>
+
+
+}
 
 
 
@@ -839,6 +1996,5 @@ Pickup Address
 
 
 );
-
 
 }
