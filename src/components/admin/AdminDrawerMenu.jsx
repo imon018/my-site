@@ -751,7 +751,8 @@ gap-3
 px-5
 py-3
 rounded-xl
-bg-red-500
+bg-[#A0522D]
+hover:bg-[#8B4513]
 text-white
 hover:bg-red-600
 font-medium
