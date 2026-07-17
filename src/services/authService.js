@@ -7,18 +7,17 @@ import {
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  updatePassword,
 } from "firebase/auth";
 
 
-
 import {
-doc,
-setDoc,
-updateDoc,
-getDoc,
-addDoc,
-collection,
-serverTimestamp,
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 
@@ -30,6 +29,7 @@ import {
 import {
   db
 } from "../firebase/firestore";
+
 
 
 
@@ -204,11 +204,226 @@ await sendEmailVerification(
 user
 );
 
+
 }
 
 
 
 
+
+
+
+
+
+// =========================
+// PASSWORD CHANGE REQUEST
+// =========================
+
+export async function requestPasswordChange(
+
+user,
+
+currentPassword
+
+){
+
+if(!user){
+
+throw new Error(
+"User not found"
+);
+
+}
+
+
+
+// verify current password
+
+const credential =
+EmailAuthProvider.credential(
+
+user.email,
+
+currentPassword
+
+);
+
+
+
+await reauthenticateWithCredential(
+
+user,
+
+credential
+
+);
+
+
+
+
+// create token
+
+const token =
+crypto.randomUUID();
+
+
+
+
+// save request
+
+await setDoc(
+
+doc(
+
+db,
+
+"passwordChangeRequests",
+
+user.uid
+
+),
+
+{
+
+uid:user.uid,
+
+email:user.email,
+
+token,
+
+verified:false,
+
+createdAt:
+serverTimestamp()
+
+}
+
+);
+
+
+
+return true;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// APPLY PASSWORD CHANGE
+// =========================
+
+export async function applyPasswordChange(
+
+user,
+
+newPassword
+
+){
+
+if(!user){
+
+throw new Error(
+"User not found"
+);
+
+}
+
+
+
+if(!newPassword){
+
+throw new Error(
+"Password required."
+);
+
+}
+
+
+
+if(newPassword.length < 6){
+
+throw new Error(
+"Password must be at least 6 characters."
+);
+
+}
+
+
+
+
+
+await updatePassword(
+
+user,
+
+newPassword
+
+);
+
+
+
+
+// remove request
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"passwordChangeRequests",
+
+user.uid
+
+)
+
+);
+
+
+
+return true;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
+// VERIFY PASSWORD CHANGE LINK
+// =========================
+
+export async function verifyPasswordChangeLink(
+token
+){
+
+
+if(!token){
+
+throw new Error(
+"Invalid password change link."
+);
+
+}
+
+
+
+return true;
+
+
+}
 
 
 
@@ -289,6 +504,7 @@ throw new Error(
 );
 
 }
+
 
 
 await deleteUser(
