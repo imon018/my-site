@@ -118,7 +118,7 @@ gmailPassword.value()
 const link =
 
 
-`https://dream-mode-site.vercel.app/password-change-verify?token=${data.token}`;
+`https://dream-mode-site-eight.vercel.app/password-change-verify?token=${data.token}`;
 
 
 
