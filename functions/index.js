@@ -1,5 +1,10 @@
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
-const { defineSecret } = require("firebase-functions/params");
+const {
+  onDocumentCreated
+} = require("firebase-functions/v2/firestore");
+
+const {
+  defineSecret
+} = require("firebase-functions/params");
 
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
@@ -8,9 +13,6 @@ const nodemailer = require("nodemailer");
 admin.initializeApp();
 
 
-// ==========================
-// SECRETS
-// ==========================
 
 const gmailEmail =
 defineSecret("GMAIL_EMAIL");
@@ -23,25 +25,18 @@ defineSecret("GMAIL_PASSWORD");
 
 
 
-// ==========================
-// SEND PASSWORD CHANGE EMAIL
-// ==========================
-
-
 exports.sendPasswordChangeEmail =
 
 onDocumentCreated(
 
 {
+ document:
+ "passwordChangeRequests/{requestId}",
 
-document:
-"passwordChangeRequests/{uid}",
-
-
-secrets:[
-gmailEmail,
-gmailPassword
-]
+ secrets:[
+ gmailEmail,
+ gmailPassword
+ ]
 
 },
 
@@ -54,25 +49,17 @@ event.data.data();
 
 
 
-const uid =
-event.params.uid;
-
-
-
 const transporter =
-
 nodemailer.createTransport({
 
 service:"gmail",
 
 auth:{
-
 user:
 gmailEmail.value(),
 
 pass:
 gmailPassword.value()
-
 }
 
 });
@@ -83,7 +70,7 @@ gmailPassword.value()
 
 const link =
 
-`https://dream-mode-site.vercel.app/password-change-verify`;
+`https://dream-mode-site.vercel.app/password-change-verify?token=${data.token}`;
 
 
 
@@ -92,38 +79,27 @@ const link =
 await transporter.sendMail({
 
 from:
-
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
 to:
-
 data.email,
 
 
 subject:
-
-"Password Change Request",
+"Password Change Verification",
 
 
 html:
 
 `
 
-<div style="font-family:Arial">
-
 <h2>
-Password Change Request
+Dream Mode Password Change
 </h2>
 
-
 <p>
-We received a request to change your Dream Mode account password.
-</p>
-
-
-<p>
-Click the button below to verify password change:
+Click below to verify password change.
 </p>
 
 
@@ -135,7 +111,6 @@ color:white;
 padding:12px 20px;
 border-radius:8px;
 text-decoration:none;
-display:inline-block;
 ">
 
 Verify Password Change
@@ -144,22 +119,13 @@ Verify Password Change
 
 
 <p>
-If you did not request this, ignore this email.
+This link will expire soon.
 </p>
-
-
-<br/>
-
-<p>
-Dream Mode Team
-</p>
-
-
-</div>
 
 `
 
 });
+
 
 
 return null;
