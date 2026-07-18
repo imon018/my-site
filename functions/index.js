@@ -30,37 +30,36 @@ admin.initializeApp();
 
 const gmailEmail =
 defineSecret(
-"GMAIL_EMAIL"
+  "GMAIL_EMAIL"
 );
 
 
 
 const gmailPassword =
 defineSecret(
-"GMAIL_PASSWORD"
+  "GMAIL_PASSWORD"
 );
 
 
 
 
 
-
-// =========================
+// =================================================
 // SEND PASSWORD CHANGE EMAIL
-// =========================
+// =================================================
 
 exports.sendPasswordChangeEmail =
 
 onDocumentCreated(
 
 {
-  document:
-  "passwordChangeRequests/{requestId}",
+document:
+"passwordChangeRequests/{requestId}",
 
-  secrets:[
-    gmailEmail,
-    gmailPassword
-  ]
+secrets:[
+gmailEmail,
+gmailPassword
+]
 
 },
 
@@ -80,11 +79,15 @@ return null;
 }
 
 
+
 if(data.verified === true){
 
 return null;
 
 }
+
+
+
 
 
 const transporter =
@@ -110,7 +113,6 @@ gmailPassword.value()
 
 
 
-
 const link =
 
 `https://dream-mode-site-eight.vercel.app/password-change-verify?token=${data.token}`;
@@ -128,11 +130,9 @@ from:
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-
 to:
 
 data.email,
-
 
 
 subject:
@@ -141,16 +141,11 @@ subject:
 
 
 
-
 html:
 
 `
 
-<div style="
-font-family:Arial;
-padding:20px;
-">
-
+<div style="font-family:Arial;padding:20px">
 
 <h2>
 Dream Mode Password Change
@@ -162,30 +157,16 @@ You requested to change your password.
 </p>
 
 
-<p>
-Click the button below to continue.
-</p>
-
-
-
 <a href="${link}"
 
 style="
-
 display:inline-block;
-
 background:#F59E0B;
-
 color:white;
-
 padding:12px 20px;
-
 border-radius:8px;
-
 text-decoration:none;
-
 font-weight:bold;
-
 ">
 
 Change Password
@@ -193,33 +174,20 @@ Change Password
 </a>
 
 
-
-
-<p style="
-margin-top:20px;
-color:#666;
-">
-
+<p>
 If you did not request this, ignore this email.
-
 </p>
-
-
-
-<br/>
 
 
 <p>
 Dream Mode Team
 </p>
 
-
 </div>
 
 `
 
 });
-
 
 
 
@@ -237,13 +205,11 @@ return null;
 
 
 
-// =========================
+// =================================================
 // CHANGE PASSWORD
-// =========================
-
+// =================================================
 
 exports.changePassword =
-
 
 onCall(
 
@@ -251,19 +217,14 @@ async(request)=>{
 
 
 const {
-
 uid,
-
 password
-
 }=request.data;
 
 
 
 
-
 if(!uid || !password){
-
 
 throw new HttpsError(
 
@@ -273,17 +234,12 @@ throw new HttpsError(
 
 );
 
-
 }
 
 
 
 
-
-
-
 if(password.length < 6){
-
 
 throw new HttpsError(
 
@@ -293,12 +249,7 @@ throw new HttpsError(
 
 );
 
-
 }
-
-
-
-
 
 
 
@@ -307,19 +258,16 @@ try{
 
 
 await admin.auth()
+
 .updateUser(
 
 uid,
 
 {
-
-password: password
-
+password
 }
 
 );
-
-
 
 
 
@@ -330,7 +278,9 @@ success:true
 };
 
 
+
 }
+
 catch(error){
 
 
@@ -356,22 +306,35 @@ throw new HttpsError(
 );
 
 
-// =========================
+
+
+
+
+
+
+
+// =================================================
 // SEND DELETE ACCOUNT EMAIL
-// =========================
+// =================================================
 
 exports.sendDeleteAccountEmail =
 
 onDocumentCreated(
 
 {
-  document:
-  "deleteAccountRequests/{requestId}",
 
-  secrets:[
-    gmailEmail,
-    gmailPassword
-  ]
+document:
+
+"deleteAccountRequests/{requestId}",
+
+
+secrets:[
+
+gmailEmail,
+
+gmailPassword
+
+]
 
 },
 
@@ -380,11 +343,21 @@ async(event)=>{
 
 
 const data =
+
 event.data.data();
 
 
 
 if(!data){
+
+return null;
+
+}
+
+
+
+
+if(data.verified === true){
 
 return null;
 
@@ -418,11 +391,9 @@ gmailPassword.value()
 
 
 
-
 const link =
 
 `https://dream-mode-site-eight.vercel.app/delete-account-verify?token=${data.token}`;
-
 
 
 
@@ -449,15 +420,11 @@ subject:
 
 
 
-
 html:
 
 `
 
-<div style="
-font-family:Arial;
-padding:20px;
-">
+<div style="font-family:Arial;padding:20px">
 
 
 <h2>
@@ -465,68 +432,43 @@ Dream Mode Account Delete
 </h2>
 
 
-
 <p>
 You requested to permanently delete your account.
 </p>
 
 
-
 <p>
-Click the button below to confirm deletion.
+Click below to confirm deletion.
 </p>
-
 
 
 
 <a href="${link}"
 
 style="
-
 display:inline-block;
-
 background:#DC2626;
-
 color:white;
-
 padding:12px 20px;
-
 border-radius:8px;
-
 text-decoration:none;
-
 font-weight:bold;
-
 ">
 
-Confirm Account Delete
+Confirm Delete Account
 
 </a>
 
 
 
-
-
-<p style="
-margin-top:20px;
-color:#666;
-">
-
+<p>
 If you did not request this, ignore this email.
-
 </p>
-
-
-
-
-
-<br/>
 
 
 <p>
 Dream Mode Team
 </p>
-
 
 
 </div>
@@ -539,9 +481,205 @@ Dream Mode Team
 
 
 
-
-
 return null;
 
 
 });
+
+
+
+
+
+
+
+
+
+// =================================================
+// DELETE ACCOUNT AFTER EMAIL VERIFY
+// =================================================
+
+exports.deleteAccount =
+
+onCall(
+
+async(request)=>{
+
+
+const {
+
+uid
+
+}=request.data;
+
+
+
+
+if(!uid){
+
+throw new HttpsError(
+
+"invalid-argument",
+
+"User id required."
+
+);
+
+}
+
+
+
+
+
+try{
+
+
+const requestRef =
+
+admin.firestore()
+
+.collection(
+"deleteAccountRequests"
+)
+
+.doc(uid);
+
+
+
+
+
+const requestSnap =
+
+await requestRef.get();
+
+
+
+
+
+if(!requestSnap.exists){
+
+
+throw new HttpsError(
+
+"not-found",
+
+"Delete request not found."
+
+);
+
+
+}
+
+
+
+
+
+const data =
+
+requestSnap.data();
+
+
+
+
+
+if(data.verified !== true){
+
+
+throw new HttpsError(
+
+"permission-denied",
+
+"Email verification required."
+
+);
+
+
+}
+
+
+
+
+
+
+
+// Delete Firebase Auth user
+
+await admin.auth()
+
+.deleteUser(uid);
+
+
+
+
+
+
+// Delete Firestore profile
+
+await admin.firestore()
+
+.collection("users")
+
+.doc(uid)
+
+.delete();
+
+
+
+
+
+
+// Delete delete request
+
+await requestRef.delete();
+
+
+
+
+
+
+
+return {
+
+success:true
+
+};
+
+
+
+}
+
+catch(error){
+
+
+console.log(
+"Delete Account Error:",
+error
+);
+
+
+
+
+if(error instanceof HttpsError){
+
+throw error;
+
+}
+
+
+
+
+throw new HttpsError(
+
+"internal",
+
+"Unable to delete account."
+
+);
+
+
+}
+
+
+
+}
+
+);
