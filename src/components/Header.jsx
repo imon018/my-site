@@ -5,7 +5,8 @@ import {
 
 import {
   Link,
-  useNavigate
+  useNavigate,
+  useLocation
 } from "react-router-dom";
 
 
@@ -75,6 +76,15 @@ const navigate = useNavigate();
 
 
 
+const location = useLocation();
+
+const isPanel =
+location.pathname.startsWith("/profile") ||
+location.pathname.startsWith("/admin");
+
+
+
+
 const isAdmin =
 user?.role === "admin";
 
@@ -113,6 +123,8 @@ return (
 <>
 
   {/* ================= TOP BAR ================= */}
+
+{!isPanel && (
 
 <div
 className="
@@ -156,6 +168,8 @@ whitespace-nowrap
 
 </div>
 
+)}
+
 
 
 
@@ -163,15 +177,15 @@ whitespace-nowrap
 {/* ================= HEADER ================= */}
 
 <header
-className="
+className={`
 sticky
-top-8
+${isPanel ? "top-0" : "top-8"}
 z-50
 bg-white
 border-b
 border-slate-100
 shadow-md
-"
+`}
 >
 
 <div className="container-box">
