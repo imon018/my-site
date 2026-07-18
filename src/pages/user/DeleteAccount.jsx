@@ -3,28 +3,12 @@ import {
 } from "react";
 
 
-import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  deleteUser,
-} from "firebase/auth";
-
-
-import {
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
-
-
 import useAuth from "../../hooks/useAuth";
 
 
 import {
-  db,
-} from "../../firebase/firestore";
-
-
-import Button from "../../components/ui/Button";
+  createDeleteAccountRequest,
+} from "../../services/deleteAccountService";
 
 
 import {
@@ -33,9 +17,11 @@ import {
 } from "../../components/ui/Toast";
 
 
-import {
-  useNavigate,
-} from "react-router-dom";
+import Button from "../../components/ui/Button";
+
+
+
+
 
 
 
@@ -43,226 +29,314 @@ import {
 export default function DeleteAccount(){
 
 
-  const { user } = useAuth();
 
+const {
+  user
+} = useAuth();
 
-  const navigate =
-    useNavigate();
 
 
 
-  const [password,setPassword] =
-    useState("");
 
+const [
+password,
+setPassword
+]=useState("");
 
-  const [loading,setLoading] =
-    useState(false);
 
 
 
 
+const [
+loading,
+setLoading
+]=useState(false);
 
 
-  const handleDelete =
-  async()=>{
 
 
-    if(!password){
 
-      errorToast(
-        "Enter your password."
-      );
 
-      return;
 
-    }
 
 
+const handleDeleteRequest =
+async()=>{
 
-    const confirm =
-      window.confirm(
-        "Delete your account permanently?"
-      );
 
 
+if(!password){
 
-    if(!confirm)
-      return;
 
+errorToast(
+"Enter your password."
+);
 
 
+return;
 
 
-    try{
+}
 
 
-      setLoading(true);
 
 
 
-      const credential =
-        EmailAuthProvider.credential(
 
-          user.email,
 
-          password
+const confirm =
+window.confirm(
 
-        );
+"Are you sure? Your account will be permanently deleted after email verification."
 
+);
 
 
-      await reauthenticateWithCredential(
 
-        user,
 
-        credential
 
-      );
 
+if(!confirm){
 
 
+return;
 
-      await deleteDoc(
 
-        doc(
+}
 
-          db,
 
-          "users",
 
-          user.uid
 
-        )
 
-      );
 
 
 
+try{
 
-      await deleteUser(user);
 
+setLoading(true);
 
 
-      successToast(
-        "Account deleted successfully."
-      );
 
 
 
-      navigate("/");
 
 
+await createDeleteAccountRequest(
 
-    }catch(error){
+user,
 
+password
 
-      console.log(error);
+);
 
 
-      errorToast(
-        error.message
-      );
 
 
-    }finally{
 
 
-      setLoading(false);
 
+successToast(
 
-    }
+"Verification email sent. Please check your inbox."
 
+);
 
-  };
 
 
 
 
 
 
-  return (
+setPassword("");
 
-    <div>
 
 
-      <h1 className="text-3xl font-bold mb-8 text-red-600">
 
-        Delete Account
 
-      </h1>
+}
+catch(error){
 
 
+console.log(error);
 
 
-      <div className="bg-white rounded-3xl shadow p-8">
 
+errorToast(
+error.message
+);
 
-        <p className="text-gray-600 mb-5">
 
-          This action cannot be undone.
 
-        </p>
+}
+finally{
 
 
+setLoading(false);
 
 
-        <input
+}
 
-          type="password"
 
-          className="
-          w-full
-          border
-          rounded-xl
-          p-3
-          "
 
-          placeholder="Enter your password"
 
-          value={password}
+};
 
-          onChange={(e)=>
-            setPassword(
-              e.target.value
-            )
-          }
 
-        />
 
 
 
 
-        <Button
 
-          onClick={handleDelete}
 
-          disabled={loading}
 
-          className="
-          w-full
-          mt-6
-          bg-red-600
-          "
+return (
 
-        >
+<div>
 
-          {
-            loading
-            ?
-            "Deleting..."
-            :
-            "Delete Account"
-          }
 
+<h1 className="
+text-3xl
+font-bold
+mb-8
+text-red-600
+">
 
-        </Button>
+Delete Account
 
+</h1>
 
-      </div>
 
 
-    </div>
 
-  );
+
+
+
+
+<div className="
+bg-white
+rounded-3xl
+shadow
+p-8
+">
+
+
+
+
+
+
+<p className="
+text-gray-600
+mb-5
+">
+
+Enter your password. We will send a verification email before deleting your account.
+
+</p>
+
+
+
+
+
+
+
+
+<input
+
+
+type="password"
+
+
+placeholder="Enter your password"
+
+
+value={password}
+
+
+onChange={(e)=>
+
+setPassword(
+e.target.value
+)
+
+}
+
+
+className="
+w-full
+border
+rounded-xl
+p-3
+outline-none
+focus:border-red-500
+"
+
+
+
+
+/>
+
+
+
+
+
+
+
+
+
+<Button
+
+
+onClick={handleDeleteRequest}
+
+
+disabled={loading}
+
+
+className="
+w-full
+mt-6
+bg-red-600
+"
+
+
+>
+
+
+{
+
+loading
+
+?
+
+"Sending Email..."
+
+:
+
+"Delete Account"
+
+}
+
+
+
+</Button>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+);
+
 
 }
