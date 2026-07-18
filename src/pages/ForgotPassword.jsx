@@ -152,8 +152,9 @@ min-h-screen
 bg-[#FAF7F2]
 p-4
 flex
-items-center
+items-start
 justify-center
+pt-10
 "
 
 >
