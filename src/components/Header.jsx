@@ -739,89 +739,72 @@ ${isAdmin || user ? "bg-[#FAF7F2]" : "bg-white"}
 
     {/* ================= GUEST ================= */}
 
-    {!user && (
-      <>
-        <div className="bg-[#071F57] text-white p-6">
+{!user && (
+  <>
 
-          <div className="flex items-center justify-between">
+    <div className="py-4">
 
-            <div className="flex items-center gap-3">
+      <Link
+        to="/"
+        onClick={() => setMobileOpen(false)}
+        className="block px-6 py-4"
+      >
+        Home
+      </Link>
 
-              <img
-                src={settings.logoUrl || "/logo.png"}
-                className="w-10 h-10 object-contain"
-              />
 
-              <div>
+      <Link
+        to="/shop"
+        onClick={() => setMobileOpen(false)}
+        className="block px-6 py-4"
+      >
+        Shop
+      </Link>
 
-                <h2 className="text-xl font-bold">
-                  {settings.storeName || "DREAM MODE"}
-                </h2>
 
-                <p className="text-xs text-white/70">
-                  Premium Fashion
-                </p>
+      <Link
+        to="/cart"
+        onClick={() => setMobileOpen(false)}
+        className="flex justify-between px-6 py-4"
+      >
+        Cart
+        <span>{cartCount}</span>
+      </Link>
 
-              </div>
 
-            </div>
+      <Link
+        to="/login"
+        onClick={() => setMobileOpen(false)}
+        className="block px-6 py-4"
+      >
+        Login
+      </Link>
 
-            <button
-              onClick={() => setMobileOpen(false)}
-            >
-              ✕
-            </button>
 
-          </div>
+      <Link
+        to="/register"
+        onClick={() => setMobileOpen(false)}
+        className="
+        mx-6
+        mt-3
+        flex
+        justify-center
+        rounded-xl
+        bg-[#071F57]
+        text-white
+        py-3
+        "
+      >
+        Join Now
+      </Link>
 
-        </div>
 
-        <div className="py-4">
+    </div>
 
-          <Link
-            to="/"
-            onClick={() => setMobileOpen(false)}
-            className="block px-6 py-4"
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/shop"
-            onClick={() => setMobileOpen(false)}
-            className="block px-6 py-4"
-          >
-            Shop
-          </Link>
-
-          <Link
-            to="/cart"
-            onClick={() => setMobileOpen(false)}
-            className="flex justify-between px-6 py-4"
-          >
-            Cart
-            <span>{cartCount}</span>
-          </Link>
-
-          <Link
-            to="/login"
-            onClick={() => setMobileOpen(false)}
-            className="block px-6 py-4"
-          >
-            Login
-          </Link>
-
-          <Link
-            to="/register"
-            onClick={() => setMobileOpen(false)}
-            className="mx-6 mt-3 flex justify-center rounded-xl bg-[#071F57] text-white py-3"
-          >
-            Join Now
-          </Link>
-
-        </div>
-      </>
-    )}
+  </>
+)}
+ 
+      
 
     {/* ================= ADMIN ================= */}
 
