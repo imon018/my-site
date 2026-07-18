@@ -12,7 +12,8 @@ import {
 
 import {
  FiPackage,
- FiImage
+ FiImage,
+ FiArrowLeft
 } from "react-icons/fi";
 
 
@@ -224,15 +225,52 @@ space-y-4
 ">
 
 
+<div
+className="
+relative
+flex
+items-center
+justify-center
+"
+>
+
+<button
+
+onClick={()=>navigate(-1)}
+
+className="
+absolute
+left-0
+w-10
+h-10
+rounded-full
+bg-white
+border
+border-gray-100
+shadow-sm
+flex
+items-center
+justify-center
+"
+
+>
+
+<FiArrowLeft size={22}/>
+
+</button>
+
+
 <h1
 className="
 text-2xl
 font-black
-text-center
 "
 >
 Return Order Details
 </h1>
+
+
+</div>
 
 
 
