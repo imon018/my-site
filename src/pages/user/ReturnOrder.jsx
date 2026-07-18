@@ -770,6 +770,9 @@ py-2
 "
 >
 
+
+{/* BACK BUTTON */}
+
 <button
 
 onClick={()=>navigate(-1)}
@@ -791,11 +794,24 @@ justify-center
 
 >
 
-<FiArrowLeft size={22}/>
+<FiArrowLeft
+size={22}
+/>
 
 </button>
 
-  
+
+
+
+
+{/* TITLE AREA */}
+
+<div
+className="
+text-center
+"
+>
+
 <h1
 
 className="
@@ -824,6 +840,10 @@ mt-1
 Request product return
 
 </p>
+
+
+</div>
+
 
 
 </div>
