@@ -1,54 +1,50 @@
 import {
-  useEffect,
-  useState,
+useEffect,
+useState
 } from "react";
 
 
 import {
-  useSearchParams,
-  useNavigate,
+useSearchParams,
+useNavigate
 } from "react-router-dom";
 
 
 import {
-  collection,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
+collection,
+query,
+where,
+getDocs,
+doc,
+updateDoc
 } from "firebase/firestore";
 
 
 import {
-  httpsCallable
+httpsCallable
 } from "firebase/functions";
 
 
 import {
-  db
+db
 } from "../firebase/firestore";
 
 
 import {
-  functions
+functions
 } from "../firebase/firebaseConfig";
 
 
 import {
-  successToast,
-  errorToast,
+successToast,
+errorToast
 } from "../components/ui/Toast";
 
 
 
 
 
-
-
-
 export default function DeleteAccountVerify(){
-
 
 
 const navigate =
@@ -68,8 +64,6 @@ searchParams.get("token");
 
 
 
-
-
 const [
 requestData,
 setRequestData
@@ -77,12 +71,10 @@ setRequestData
 
 
 
-
 const [
 requestId,
 setRequestId
 ]=useState(null);
-
 
 
 
@@ -105,19 +97,11 @@ setLoading
 
 
 
-
-
-
 useEffect(()=>{
-
 
 findRequest();
 
-
 },[]);
-
-
-
 
 
 
@@ -142,8 +126,8 @@ throw new Error(
 
 
 
-
 const q =
+
 query(
 
 collection(
@@ -163,8 +147,10 @@ token
 
 
 
+
 const snap =
 await getDocs(q);
+
 
 
 
@@ -182,7 +168,8 @@ throw new Error(
 
 
 
-const deleteDocData =
+
+const item =
 snap.docs[0];
 
 
@@ -190,16 +177,14 @@ snap.docs[0];
 
 
 setRequestId(
-deleteDocData.id
+item.id
 );
 
 
 
 setRequestData(
-deleteDocData.data()
+item.data()
 );
-
-
 
 
 
@@ -226,7 +211,6 @@ error.message
 }
 
 
-
 };
 
 
@@ -250,22 +234,40 @@ setLoading(true);
 
 
 
-if(!requestData){
+await updateDoc(
 
-throw new Error(
-"Invalid request."
-);
+doc(
+
+db,
+
+"deleteAccountRequests",
+
+requestId
+
+),
+
+{
+
+verified:true
 
 }
+
+);
+
+
 
 
 
 
 
 const deleteAccount =
+
 httpsCallable(
+
 functions,
+
 "deleteAccount"
+
 );
 
 
@@ -276,6 +278,7 @@ functions,
 await deleteAccount({
 
 uid:
+
 requestData.uid
 
 });
@@ -285,37 +288,7 @@ requestData.uid
 
 
 
-
-
-await deleteDoc(
-
-doc(
-
-db,
-
-"deleteAccountRequests",
-
-requestId
-
-)
-
-);
-
-
-
-
-
-
-
 successToast(
-"Account deleted successfully."
-);
-
-
-
-
-
-setMessage(
 "Account deleted successfully."
 );
 
@@ -350,11 +323,6 @@ error.message
 
 
 
-setMessage(
-error.message
-);
-
-
 }
 finally{
 
@@ -367,9 +335,6 @@ setLoading(false);
 
 
 };
-
-
-
 
 
 
@@ -397,7 +362,6 @@ max-w-md
 w-full
 text-center
 ">
-
 
 
 <div className="
@@ -436,7 +400,6 @@ mb-6
 
 
 {
-
 requestData &&
 
 <>
@@ -462,13 +425,9 @@ font-semibold
 {
 
 loading
-
 ?
-
 "Deleting..."
-
 :
-
 "Yes, Delete My Account"
 
 }
@@ -486,8 +445,8 @@ onClick={()=>navigate("/")}
 className="
 w-full
 h-12
-bg-gray-100
 mt-3
+bg-gray-100
 rounded-xl
 "
 
@@ -498,20 +457,16 @@ No, Cancel
 </button>
 
 
-
 </>
 
 }
 
 
 
-
-
 </div>
 
 
 </div>
-
 
 );
 
