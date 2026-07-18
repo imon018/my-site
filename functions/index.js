@@ -28,6 +28,7 @@ admin.initializeApp();
 
 
 
+
 const gmailEmail =
 defineSecret(
   "GMAIL_EMAIL"
@@ -44,6 +45,49 @@ defineSecret(
 
 
 
+const WEBSITE_URL =
+"https://dream-mode-site-eight.vercel.app";
+
+
+
+
+
+
+
+
+
+// =================================================
+// MAIL SENDER
+// =================================================
+
+function createTransporter(){
+
+
+return nodemailer.createTransport({
+
+service:"gmail",
+
+auth:{
+
+user:gmailEmail.value(),
+
+pass:gmailPassword.value()
+
+}
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
 // =================================================
 // SEND PASSWORD CHANGE EMAIL
 // =================================================
@@ -53,12 +97,230 @@ exports.sendPasswordChangeEmail =
 onDocumentCreated(
 
 {
+
 document:
 "passwordChangeRequests/{requestId}",
+
 
 secrets:[
 gmailEmail,
 gmailPassword
+]
+
+},
+
+
+async(event)=>{
+
+
+const data =
+event.data.data();
+
+
+
+if(!data)
+return null;
+
+
+
+const transporter =
+createTransporter();
+
+
+
+const link =
+
+`${WEBSITE_URL}/password-change-verify?token=${data.token}`;
+
+
+
+
+
+await transporter.sendMail({
+
+from:
+
+`"Dream Mode" <${gmailEmail.value()}>`,
+
+
+to:data.email,
+
+
+subject:
+"Password Change Verification",
+
+
+
+html:`
+
+<div style="font-family:Arial;padding:20px">
+
+
+<h2>
+Dream Mode Password Change
+</h2>
+
+
+<p>
+You requested to change your password.
+</p>
+
+
+<a href="${link}"
+
+style="
+background:#F59E0B;
+color:white;
+padding:12px 20px;
+border-radius:8px;
+text-decoration:none;
+font-weight:bold;
+">
+
+Change Password
+
+</a>
+
+
+<p>
+If you did not request this, ignore this email.
+</p>
+
+
+</div>
+
+`
+
+});
+
+
+return null;
+
+
+});
+
+
+
+
+
+
+
+
+
+// =================================================
+// CHANGE PASSWORD (LOGIN REQUIRED)
+// =================================================
+
+exports.changePassword =
+
+onCall(
+
+async(request)=>{
+
+
+const {
+uid,
+password
+}=request.data;
+
+
+
+
+if(!uid || !password){
+
+throw new HttpsError(
+"invalid-argument",
+"Invalid password request."
+);
+
+}
+
+
+
+if(password.length < 6){
+
+throw new HttpsError(
+"invalid-argument",
+"Password must be at least 6 characters."
+);
+
+}
+
+
+
+try{
+
+
+await admin.auth()
+.updateUser(
+
+uid,
+
+{
+password
+}
+
+);
+
+
+
+return {
+success:true
+};
+
+
+
+}
+
+catch(error){
+
+
+throw new HttpsError(
+
+"internal",
+
+"Unable to update password."
+
+);
+
+
+}
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+
+// =================================================
+// SEND FORGOT PASSWORD EMAIL
+// =================================================
+
+exports.sendForgotPasswordEmail =
+
+onDocumentCreated(
+
+{
+
+document:
+
+"passwordResetRequests/{requestId}",
+
+
+secrets:[
+
+gmailEmail,
+
+gmailPassword
+
 ]
 
 },
@@ -80,34 +342,10 @@ return null;
 
 
 
-if(data.verified === true){
-
-return null;
-
-}
-
-
-
 
 
 const transporter =
-
-nodemailer.createTransport({
-
-service:"gmail",
-
-auth:{
-
-user:
-gmailEmail.value(),
-
-
-pass:
-gmailPassword.value()
-
-}
-
-});
+createTransporter();
 
 
 
@@ -115,7 +353,7 @@ gmailPassword.value()
 
 const link =
 
-`https://dream-mode-site-eight.vercel.app/password-change-verify?token=${data.token}`;
+`${WEBSITE_URL}/reset-password?token=${data.token}`;
 
 
 
@@ -130,14 +368,12 @@ from:
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-to:
-
-data.email,
+to:data.email,
 
 
 subject:
 
-"Password Change Verification",
+"Reset Your Dream Mode Password",
 
 
 
@@ -147,13 +383,14 @@ html:
 
 <div style="font-family:Arial;padding:20px">
 
+
 <h2>
-Dream Mode Password Change
+Dream Mode Password Reset
 </h2>
 
 
 <p>
-You requested to change your password.
+You requested to reset your password.
 </p>
 
 
@@ -169,9 +406,10 @@ text-decoration:none;
 font-weight:bold;
 ">
 
-Change Password
+Reset Password
 
 </a>
+
 
 
 <p>
@@ -179,15 +417,18 @@ If you did not request this, ignore this email.
 </p>
 
 
+
 <p>
 Dream Mode Team
 </p>
+
 
 </div>
 
 `
 
 });
+
 
 
 
@@ -206,10 +447,10 @@ return null;
 
 
 // =================================================
-// CHANGE PASSWORD
+// RESET PASSWORD (NO LOGIN REQUIRED)
 // =================================================
 
-exports.changePassword =
+exports.resetPassword =
 
 onCall(
 
@@ -226,13 +467,15 @@ password
 
 if(!uid || !password){
 
+
 throw new HttpsError(
 
 "invalid-argument",
 
-"Invalid password request."
+"Invalid reset request."
 
 );
+
 
 }
 
@@ -241,6 +484,7 @@ throw new HttpsError(
 
 if(password.length < 6){
 
+
 throw new HttpsError(
 
 "invalid-argument",
@@ -248,6 +492,7 @@ throw new HttpsError(
 "Password must be at least 6 characters."
 
 );
+
 
 }
 
@@ -264,10 +509,14 @@ await admin.auth()
 uid,
 
 {
+
 password
+
 }
 
 );
+
+
 
 
 
@@ -278,7 +527,6 @@ success:true
 };
 
 
-
 }
 
 catch(error){
@@ -287,12 +535,11 @@ catch(error){
 console.log(error);
 
 
-
 throw new HttpsError(
 
 "internal",
 
-"Unable to update password."
+"Password reset failed."
 
 );
 
@@ -343,58 +590,24 @@ async(event)=>{
 
 
 const data =
-
 event.data.data();
 
 
 
-if(!data){
-
+if(!data)
 return null;
-
-}
-
-
-
-
-if(data.verified === true){
-
-return null;
-
-}
-
 
 
 
 
 const transporter =
-
-nodemailer.createTransport({
-
-service:"gmail",
-
-auth:{
-
-user:
-gmailEmail.value(),
-
-
-pass:
-gmailPassword.value()
-
-}
-
-});
-
-
-
+createTransporter();
 
 
 
 const link =
 
-`https://dream-mode-site-eight.vercel.app/delete-account-verify?token=${data.token}`;
-
+`${WEBSITE_URL}/delete-account-verify?token=${data.token}`;
 
 
 
@@ -407,11 +620,7 @@ from:
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-
-to:
-
-data.email,
-
+to:data.email,
 
 
 subject:
@@ -433,12 +642,7 @@ Dream Mode Account Delete
 
 
 <p>
-You requested to permanently delete your account.
-</p>
-
-
-<p>
-Click below to confirm deletion.
+Confirm account deletion.
 </p>
 
 
@@ -446,29 +650,16 @@ Click below to confirm deletion.
 <a href="${link}"
 
 style="
-display:inline-block;
 background:#DC2626;
 color:white;
 padding:12px 20px;
 border-radius:8px;
 text-decoration:none;
-font-weight:bold;
 ">
 
-Confirm Delete Account
+Delete Account
 
 </a>
-
-
-
-<p>
-If you did not request this, ignore this email.
-</p>
-
-
-<p>
-Dream Mode Team
-</p>
 
 
 </div>
@@ -476,9 +667,6 @@ Dream Mode Team
 `
 
 });
-
-
-
 
 
 return null;
@@ -493,9 +681,10 @@ return null;
 
 
 
-// =========================
+
+// =================================================
 // VERIFY DELETE ACCOUNT
-// =========================
+// =================================================
 
 exports.verifyDeleteAccount =
 
@@ -505,9 +694,7 @@ async(request)=>{
 
 
 const {
-
 token
-
 }=request.data;
 
 
@@ -515,18 +702,12 @@ token
 if(!token){
 
 throw new HttpsError(
-
 "invalid-argument",
-
 "Token required."
-
 );
 
 }
 
-
-
-try{
 
 
 const snapshot =
@@ -548,16 +729,11 @@ token
 
 
 
-
 if(snapshot.empty){
 
-
 throw new HttpsError(
-
 "not-found",
-
-"Delete request not found."
-
+"Request not found."
 );
 
 }
@@ -570,7 +746,6 @@ const doc =
 snapshot.docs[0];
 
 
-
 const data =
 doc.data();
 
@@ -578,39 +753,14 @@ doc.data();
 
 
 
-if(data.verified !== true){
-
-
-await doc.ref.update({
-
-verified:true
-
-});
-
-
-}
-
-
-
-
-
-// Delete Firebase Authentication User
 
 await admin.auth()
-
 .deleteUser(
-
 data.uid
-
 );
 
 
 
-
-
-
-
-// Delete Firestore User Profile
 
 await admin.firestore()
 
@@ -624,14 +774,7 @@ await admin.firestore()
 
 
 
-
-
-// Delete Delete Request
-
 await doc.ref.delete();
-
-
-
 
 
 
@@ -642,29 +785,6 @@ success:true
 
 };
 
-
-
-}
-
-catch(error){
-
-
-console.log(
-error
-);
-
-
-
-throw new HttpsError(
-
-"internal",
-
-error.message
-
-);
-
-
-}
 
 
 }
