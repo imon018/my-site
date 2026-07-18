@@ -57,8 +57,9 @@ const WEBSITE_URL =
 
 
 // =================================================
-// MAIL SENDER
+// MAIL TRANSPORTER
 // =================================================
+
 
 function createTransporter(){
 
@@ -69,9 +70,14 @@ service:"gmail",
 
 auth:{
 
-user:gmailEmail.value(),
 
-pass:gmailPassword.value()
+user:
+gmailEmail.value(),
+
+
+pass:
+gmailPassword.value()
+
 
 }
 
@@ -90,22 +96,30 @@ pass:gmailPassword.value()
 
 // =================================================
 // SEND PASSWORD CHANGE EMAIL
+// LOGIN REQUIRED
 // =================================================
 
+
 exports.sendPasswordChangeEmail =
+
 
 onDocumentCreated(
 
 {
 
 document:
+
 "passwordChangeRequests/{requestId}",
 
 
 secrets:[
+
 gmailEmail,
+
 gmailPassword
+
 ]
+
 
 },
 
@@ -118,13 +132,19 @@ event.data.data();
 
 
 
-if(!data)
+if(!data){
+
 return null;
+
+}
+
 
 
 
 const transporter =
 createTransporter();
+
+
 
 
 
@@ -136,22 +156,34 @@ const link =
 
 
 
+
+
 await transporter.sendMail({
+
 
 from:
 
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-to:data.email,
+
+to:
+
+data.email,
+
 
 
 subject:
+
 "Password Change Verification",
 
 
 
-html:`
+
+html:
+
+
+`
 
 <div style="font-family:Arial;padding:20px">
 
@@ -161,14 +193,17 @@ Dream Mode Password Change
 </h2>
 
 
+
 <p>
 You requested to change your password.
 </p>
 
 
+
 <a href="${link}"
 
 style="
+display:inline-block;
 background:#F59E0B;
 color:white;
 padding:12px 20px;
@@ -182,8 +217,15 @@ Change Password
 </a>
 
 
+
 <p>
 If you did not request this, ignore this email.
+</p>
+
+
+
+<p>
+Dream Mode Team
 </p>
 
 
@@ -192,6 +234,9 @@ If you did not request this, ignore this email.
 `
 
 });
+
+
+
 
 
 return null;
@@ -208,103 +253,13 @@ return null;
 
 
 // =================================================
-// CHANGE PASSWORD (LOGIN REQUIRED)
-// =================================================
-
-exports.changePassword =
-
-onCall(
-
-async(request)=>{
-
-
-const {
-uid,
-password
-}=request.data;
-
-
-
-
-if(!uid || !password){
-
-throw new HttpsError(
-"invalid-argument",
-"Invalid password request."
-);
-
-}
-
-
-
-if(password.length < 6){
-
-throw new HttpsError(
-"invalid-argument",
-"Password must be at least 6 characters."
-);
-
-}
-
-
-
-try{
-
-
-await admin.auth()
-.updateUser(
-
-uid,
-
-{
-password
-}
-
-);
-
-
-
-return {
-success:true
-};
-
-
-
-}
-
-catch(error){
-
-
-throw new HttpsError(
-
-"internal",
-
-"Unable to update password."
-
-);
-
-
-}
-
-
-
-}
-
-);
-
-
-
-
-
-
-
-
-
-// =================================================
 // SEND FORGOT PASSWORD EMAIL
+// LOGIN NOT REQUIRED
 // =================================================
+
 
 exports.sendForgotPasswordEmail =
+
 
 onDocumentCreated(
 
@@ -322,6 +277,7 @@ gmailEmail,
 gmailPassword
 
 ]
+
 
 },
 
@@ -363,12 +319,18 @@ const link =
 
 await transporter.sendMail({
 
+
+
 from:
 
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-to:data.email,
+
+to:
+
+data.email,
+
 
 
 subject:
@@ -377,7 +339,9 @@ subject:
 
 
 
+
 html:
+
 
 `
 
@@ -389,9 +353,11 @@ Dream Mode Password Reset
 </h2>
 
 
+
 <p>
 You requested to reset your password.
 </p>
+
 
 
 <a href="${link}"
@@ -447,10 +413,13 @@ return null;
 
 
 // =================================================
-// RESET PASSWORD (NO LOGIN REQUIRED)
+// CHANGE PASSWORD
+// LOGIN REQUIRED
 // =================================================
 
-exports.resetPassword =
+
+exports.changePassword =
+
 
 onCall(
 
@@ -458,8 +427,11 @@ async(request)=>{
 
 
 const {
+
 uid,
+
 password
+
 }=request.data;
 
 
@@ -472,12 +444,12 @@ throw new HttpsError(
 
 "invalid-argument",
 
-"Invalid reset request."
+"Invalid password request."
 
 );
 
-
 }
+
 
 
 
@@ -493,8 +465,8 @@ throw new HttpsError(
 
 );
 
-
 }
+
 
 
 
@@ -522,9 +494,12 @@ password
 
 return {
 
+
 success:true
 
+
 };
+
 
 
 }
@@ -535,11 +510,12 @@ catch(error){
 console.log(error);
 
 
+
 throw new HttpsError(
 
 "internal",
 
-"Password reset failed."
+"Unable to update password."
 
 );
 
@@ -558,13 +534,207 @@ throw new HttpsError(
 
 
 
+
+
+// =================================================
+// RESET PASSWORD
+// LOGIN NOT REQUIRED
+// =================================================
+
+
+exports.resetPassword =
+
+
+onCall(
+
+async(request)=>{
+
+
+const {
+
+token,
+
+password
+
+}=request.data;
+
+
+
+
+
+if(!token || !password){
+
+
+throw new HttpsError(
+
+"invalid-argument",
+
+"Invalid reset request."
+
+);
+
+}
+
+
+
+
+
+if(password.length < 6){
+
+
+throw new HttpsError(
+
+"invalid-argument",
+
+"Password must be at least 6 characters."
+
+);
+
+}
+
+
+
+
+
+try{
+
+
+
+const snapshot =
+
+await admin.firestore()
+
+.collection(
+
+"passwordResetRequests"
+
+)
+
+.where(
+
+"token",
+
+"==",
+
+token
+
+)
+
+.get();
+
+
+
+
+
+
+
+if(snapshot.empty){
+
+
+throw new HttpsError(
+
+"not-found",
+
+"Invalid or expired reset link."
+
+);
+
+
+}
+
+
+
+
+
+
+const resetDoc =
+
+snapshot.docs[0];
+
+
+
+
+const data =
+
+resetDoc.data();
+
+
+
+
+
+
+
+await admin.auth()
+
+.updateUser(
+
+data.uid,
+
+{
+
+password
+
+}
+
+);
+
+
+
+
+
+
+await resetDoc.ref.delete();
+
+
+
+
+
+
+
+return {
+
+
+success:true
+
+
+};
+
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+
+throw new HttpsError(
+
+"internal",
+
+error.message
+
+);
+
+
+}
+
+
+}
+
+);
 
 
 // =================================================
 // SEND DELETE ACCOUNT EMAIL
 // =================================================
 
+
 exports.sendDeleteAccountEmail =
+
 
 onDocumentCreated(
 
@@ -583,6 +753,7 @@ gmailPassword
 
 ]
 
+
 },
 
 
@@ -590,18 +761,28 @@ async(event)=>{
 
 
 const data =
+
 event.data.data();
 
 
 
-if(!data)
+if(!data){
+
 return null;
+
+}
+
 
 
 
 
 const transporter =
+
 createTransporter();
+
+
+
+
 
 
 
@@ -613,14 +794,25 @@ const link =
 
 
 
+
+
+
 await transporter.sendMail({
+
+
 
 from:
 
 `"Dream Mode" <${gmailEmail.value()}>`,
 
 
-to:data.email,
+
+
+to:
+
+data.email,
+
+
 
 
 subject:
@@ -629,7 +821,9 @@ subject:
 
 
 
+
 html:
+
 
 `
 
@@ -641,8 +835,15 @@ Dream Mode Account Delete
 </h2>
 
 
+
 <p>
-Confirm account deletion.
+You requested to permanently delete your account.
+</p>
+
+
+
+<p>
+Click the button below to confirm deletion.
 </p>
 
 
@@ -650,16 +851,30 @@ Confirm account deletion.
 <a href="${link}"
 
 style="
+display:inline-block;
 background:#DC2626;
 color:white;
 padding:12px 20px;
 border-radius:8px;
 text-decoration:none;
+font-weight:bold;
 ">
 
-Delete Account
+Confirm Delete Account
 
 </a>
+
+
+
+<p>
+If you did not request this, ignore this email.
+</p>
+
+
+
+<p>
+Dream Mode Team
+</p>
 
 
 </div>
@@ -667,6 +882,10 @@ Delete Account
 `
 
 });
+
+
+
+
 
 
 return null;
@@ -686,7 +905,9 @@ return null;
 // VERIFY DELETE ACCOUNT
 // =================================================
 
+
 exports.verifyDeleteAccount =
+
 
 onCall(
 
@@ -694,19 +915,36 @@ async(request)=>{
 
 
 const {
+
 token
+
 }=request.data;
+
+
 
 
 
 if(!token){
 
+
 throw new HttpsError(
+
 "invalid-argument",
+
 "Token required."
+
 );
 
+
 }
+
+
+
+
+
+try{
+
+
 
 
 
@@ -715,13 +953,19 @@ const snapshot =
 await admin.firestore()
 
 .collection(
+
 "deleteAccountRequests"
+
 )
 
 .where(
+
 "token",
+
 "==",
+
 token
+
 )
 
 .get();
@@ -729,12 +973,21 @@ token
 
 
 
+
+
+
+
 if(snapshot.empty){
 
+
 throw new HttpsError(
+
 "not-found",
-"Request not found."
+
+"Delete request not found."
+
 );
+
 
 }
 
@@ -742,31 +995,63 @@ throw new HttpsError(
 
 
 
-const doc =
+
+
+
+const requestDoc =
+
 snapshot.docs[0];
 
 
+
+
+
 const data =
-doc.data();
+
+requestDoc.data();
 
 
 
 
+
+
+
+
+
+// Delete Firebase Authentication User
 
 
 await admin.auth()
+
 .deleteUser(
+
 data.uid
+
 );
 
 
 
 
+
+
+
+
+// Delete Firestore User Profile
+
+
 await admin.firestore()
 
-.collection("users")
+.collection(
 
-.doc(data.uid)
+"users"
+
+)
+
+.doc(
+
+data.uid
+
+)
 
 .delete();
 
@@ -774,16 +1059,53 @@ await admin.firestore()
 
 
 
-await doc.ref.delete();
+
+
+
+// Delete Request Document
+
+
+await requestDoc.ref.delete();
+
+
+
 
 
 
 
 return {
 
+
 success:true
 
+
 };
+
+
+
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+
+throw new HttpsError(
+
+"internal",
+
+error.message
+
+);
+
+
+}
+
 
 
 
