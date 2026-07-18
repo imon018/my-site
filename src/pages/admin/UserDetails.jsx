@@ -6,12 +6,14 @@ import {
 
 import {
   useParams,
+  useNavigate,
 } from "react-router-dom";
 
 
 import {
   FiMail,
   FiPhone,
+  FiArrowLeft,
 } from "react-icons/fi";
 
 
@@ -31,6 +33,8 @@ export default function UserDetails(){
 
 
 const { id } = useParams();
+
+const navigate = useNavigate();
 
 
 
@@ -217,36 +221,55 @@ mx-auto
 
 <div
 className="
+relative
 mb-6
+flex
+items-center
+justify-center
 "
 >
 
 
+<button
 
-<div>
+onClick={()=>navigate(-1)}
+
+className="
+absolute
+left-0
+w-10
+h-10
+rounded-xl
+bg-white
+border
+border-gray-100
+shadow-sm
+flex
+items-center
+justify-center
+text-[#071F57]
+"
+
+>
+
+<FiArrowLeft size={20}/>
+
+</button>
+
 
 <h1
+
 className="
 text-2xl
 font-black
 text-[#172033]
 "
+
 >
+
 User Details
+
 </h1>
-
-
-<p
-className="
-text-sm
-text-gray-500
-"
->
-Dashboard › Users
-</p>
-
-
-</div>
 
 
 </div>
