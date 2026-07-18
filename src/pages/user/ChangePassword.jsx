@@ -199,6 +199,7 @@ p-4
 border
 border-gray-100
 shadow-sm
+text-center
 ">
 
 
