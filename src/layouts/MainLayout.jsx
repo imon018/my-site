@@ -45,17 +45,15 @@ export default function MainLayout() {
 
 
       {
-        !isAdminPanel && (
+ !isUserPanel && !isAdminPanel && (
 
-          <>
-            <AnnouncementBar />
+   <AnnouncementBar />
 
-            <Header />
-          </>
+ )
+}
 
-        )
-      }
 
+<Header />
 
 
 
