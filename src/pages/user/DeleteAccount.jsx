@@ -235,13 +235,14 @@ p-4
 border
 border-gray-100
 shadow-sm
+text-center
 ">
 
 
 <h1 className="
 text-xl
-font-bold
 text-red-600
+font-bold
 ">
 
 Delete Account
