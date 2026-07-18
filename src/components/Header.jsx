@@ -865,52 +865,66 @@ ${isAdmin || user ? "bg-[#FAF7F2]" : "bg-white"}
 
   {/* ================= FOOTER ================= */}
 
+{
+!user && (
+
+<div
+  className="
+  border-t
+  border-slate-200
+  p-6
+  bg-white
+  "
+>
+
   <div
     className="
-border-t
-border-slate-200
-p-6
-bg-white
-"
+    rounded-2xl
+    bg-[#071F57]
+    text-white
+    p-5
+    text-center
+    "
   >
 
-    <div
+    <img
+      src={settings.logoUrl || "/logo.png"}
+      className="w-14 h-14 mx-auto mb-3 object-contain"
+    />
+
+    <h3 className="text-xl font-bold">
+      {settings.storeName || "Dream Mode"}
+    </h3>
+
+    <p className="text-xs text-white/70 mt-2">
+      Dress Your Dream,
+      Live Your Style
+    </p>
+
+    <Link
+      to="/shop"
+      onClick={() => setMobileOpen(false)}
       className="
-rounded-2xl
-bg-[#071F57]
-text-white
-p-5
-text-center
-"
+      mt-5
+      flex
+      items-center
+      justify-center
+      py-3
+      rounded-xl
+      bg-white
+      text-[#071F57]
+      font-semibold
+      "
     >
-
-      <img
-        src={settings.logoUrl || "/logo.png"}
-        className="w-14 h-14 mx-auto mb-3 object-contain"
-      />
-
-      <h3 className="text-xl font-bold">
-        {settings.storeName || "Dream Mode"}
-      </h3>
-
-      <p className="text-xs text-white/70 mt-2">
-        Dress Your Dream,
-        Live Your Style
-      </p>
-
-      <Link
-        to="/shop"
-        onClick={() => setMobileOpen(false)}
-        className="mt-5 flex items-center justify-center py-3 rounded-xl bg-white text-[#071F57] font-semibold"
-      >
-        Shop Now
-      </Link>
-
-    </div>
+      Shop Now
+    </Link>
 
   </div>
 
 </div>
+
+)
+}
 
 {/* ================= OVERLAY ================= */}
 
