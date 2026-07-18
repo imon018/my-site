@@ -31,6 +31,7 @@ import {
 
 
 
+
 export default function ForgotPassword(){
 
 
@@ -46,6 +47,7 @@ const [
 loading,
 setLoading
 ]=useState(false);
+
 
 
 
@@ -74,10 +76,12 @@ return;
 
 
 
+
 try{
 
 
 setLoading(true);
+
 
 
 
@@ -113,7 +117,11 @@ console.log(error);
 
 
 errorToast(
-error.message
+
+error.message ||
+
+"Failed to send reset email."
+
 );
 
 
@@ -125,6 +133,7 @@ setLoading(false);
 
 
 }
+
 
 
 };
@@ -139,26 +148,31 @@ setLoading(false);
 
 return (
 
-<div className="
+<div
+
+className="
 min-h-screen
 bg-[#FAF7F2]
 p-4
 flex
 items-center
 justify-center
-">
+"
+
+>
 
 
 
 
+<div
 
-
-<div className="
+className="
 w-full
 max-w-md
-space-y-4
-">
+space-y-3
+"
 
+>
 
 
 
@@ -167,7 +181,10 @@ space-y-4
 
 {/* HEADER */}
 
-<div className="
+
+<div
+
+className="
 bg-white
 rounded-lg
 p-4
@@ -175,10 +192,14 @@ border
 border-gray-100
 shadow-sm
 text-center
-">
+"
+
+>
 
 
-<div className="
+<div
+
+className="
 w-12
 h-12
 mx-auto
@@ -189,20 +210,28 @@ items-center
 justify-center
 text-amber-500
 mb-3
-">
+"
+
+>
 
 <FiLock size={22}/>
+
 
 </div>
 
 
 
 
-<h1 className="
+
+<h1
+
+className="
 text-xl
 font-bold
 text-gray-900
-">
+"
+
+>
 
 Forgot Password
 
@@ -211,15 +240,22 @@ Forgot Password
 
 
 
-<p className="
+
+<p
+
+className="
 text-xs
 text-gray-500
 mt-1
-">
+"
+
+>
 
 Enter your email to receive password reset link.
 
 </p>
+
+
 
 
 </div>
@@ -232,21 +268,35 @@ Enter your email to receive password reset link.
 
 
 
-{/* FORM */}
+{/* FORM CARD */}
 
-<div className="
+
+
+<div
+
+className="
 bg-white
 rounded-lg
 p-4
 border
 border-gray-100
 shadow-sm
-">
+"
+
+>
 
 
-<div className="
+
+
+
+
+<div
+
+className="
 relative
-">
+"
+
+>
 
 
 <FiMail
@@ -260,6 +310,7 @@ text-gray-400
 "
 
 />
+
 
 
 
@@ -315,14 +366,17 @@ focus:border-amber-500
 
 
 
+<p
 
-<p className="
+className="
 text-xs
 text-gray-500
 mt-3
-">
+"
 
-✓ A password reset verification email will be sent to your inbox.
+>
+
+✓ A verification email will be sent before changing your password.
 
 </p>
 
@@ -366,6 +420,7 @@ loading
 }
 
 
+
 </Button>
 
 
@@ -375,10 +430,15 @@ loading
 
 
 
-<div className="
+
+<div
+
+className="
 text-center
 mt-4
-">
+"
+
+>
 
 
 <Link
@@ -400,17 +460,8 @@ Back to Login
 
 
 
-</div>
-
-
-
-
-
-
 
 </div>
-
-
 
 
 
@@ -420,7 +471,18 @@ Back to Login
 </div>
 
 
+
+
+
+
 </div>
+
+
+
+
+
+</div>
+
 
 );
 
