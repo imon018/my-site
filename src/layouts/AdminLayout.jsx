@@ -1,26 +1,14 @@
 import {
-  useState,
-} from "react";
-
-import {
   Outlet,
 } from "react-router-dom";
-
-
-import AdminDrawer from "../components/admin/AdminDrawer";
 
 
 export default function AdminLayout(){
 
 
-const [
-  drawerOpen,
-  setDrawerOpen
-] = useState(false);
+  return (
 
-
-return (
-
+    
 <div
 
 className="
@@ -29,17 +17,6 @@ bg-[#F8F5EF]
 "
 
 >
-
-
-{/* MOBILE DRAWER */}
-
-<AdminDrawer
-
-open={drawerOpen}
-
-setOpen={setDrawerOpen}
-
-/>
 
 
 
