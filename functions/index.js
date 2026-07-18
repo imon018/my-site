@@ -350,3 +350,194 @@ throw new HttpsError(
 }
 
 );
+
+
+// =========================
+// SEND DELETE ACCOUNT EMAIL
+// =========================
+
+exports.sendDeleteAccountEmail =
+
+onDocumentCreated(
+
+{
+  document:
+  "deleteAccountRequests/{requestId}",
+
+  secrets:[
+    gmailEmail,
+    gmailPassword
+  ]
+
+},
+
+
+async(event)=>{
+
+
+const data =
+event.data.data();
+
+
+
+if(!data){
+
+return null;
+
+}
+
+
+
+
+
+const transporter =
+
+nodemailer.createTransport({
+
+service:"gmail",
+
+auth:{
+
+user:
+gmailEmail.value(),
+
+
+pass:
+gmailPassword.value()
+
+}
+
+});
+
+
+
+
+
+
+
+const link =
+
+`https://dream-mode-site-eight.vercel.app/delete-account-verify?token=${data.token}`;
+
+
+
+
+
+
+
+await transporter.sendMail({
+
+from:
+
+`"Dream Mode" <${gmailEmail.value()}>`,
+
+
+
+to:
+
+data.email,
+
+
+
+subject:
+
+"Delete Account Verification",
+
+
+
+
+html:
+
+`
+
+<div style="
+font-family:Arial;
+padding:20px;
+">
+
+
+<h2>
+Dream Mode Account Delete
+</h2>
+
+
+
+<p>
+You requested to permanently delete your account.
+</p>
+
+
+
+<p>
+Click the button below to confirm deletion.
+</p>
+
+
+
+
+<a href="${link}"
+
+style="
+
+display:inline-block;
+
+background:#DC2626;
+
+color:white;
+
+padding:12px 20px;
+
+border-radius:8px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+">
+
+Confirm Account Delete
+
+</a>
+
+
+
+
+
+<p style="
+margin-top:20px;
+color:#666;
+">
+
+If you did not request this, ignore this email.
+
+</p>
+
+
+
+
+
+<br/>
+
+
+<p>
+Dream Mode Team
+</p>
+
+
+
+</div>
+
+`
+
+});
+
+
+
+
+
+
+
+return null;
+
+
+});
