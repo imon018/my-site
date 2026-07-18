@@ -18,8 +18,6 @@ import {
   FiLock,
   FiTrash2,
   FiLogOut,
-  FiMenu,
-  FiX,
   FiBell,
   FiRefreshCw,
 } from "react-icons/fi";
@@ -157,39 +155,6 @@ min-h-screen
 bg-gray-100
 flex
 ">
-
-
-
-
-
-
-{/* MOBILE MENU BUTTON */}
-
-
-<button
-
-onClick={()=>setSidebarOpen(true)}
-
-className="
-lg:hidden
-fixed
-top-4
-left-4
-z-50
-bg-slate-900
-text-white
-p-3
-rounded-xl
-"
-
->
-
-<FiMenu size={22}/>
-
-</button>
-
-
-
 
 
 
