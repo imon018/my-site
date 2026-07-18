@@ -3,12 +3,15 @@ import {
 } from "react-router-dom";
 
 
+import Header from "../components/Header";
+
+
+
 export default function AdminLayout(){
 
 
-  return (
+return (
 
-    
 <div
 
 className="
@@ -19,6 +22,7 @@ bg-[#F8F5EF]
 >
 
 
+<Header />
 
 
 
@@ -32,7 +36,6 @@ lg:p-8
 >
 
 
-
 <Outlet />
 
 
@@ -41,7 +44,6 @@ lg:p-8
 
 </div>
 
-  
 );
 
 
