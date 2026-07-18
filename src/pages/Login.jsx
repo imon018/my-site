@@ -1,5 +1,5 @@
 import {
-  useState,
+  useState
 } from "react";
 
 
@@ -8,6 +8,14 @@ import {
   useLocation,
   Link,
 } from "react-router-dom";
+
+
+import {
+  FiMail,
+  FiLock,
+  FiEye,
+  FiEyeOff
+} from "react-icons/fi";
 
 
 import {
@@ -27,15 +35,23 @@ import Button from "../components/ui/Button";
 
 
 
+
+
+
 export default function Login(){
+
 
 
 const navigate =
 useNavigate();
 
 
+
 const location =
 useLocation();
+
+
+
 
 
 
@@ -46,6 +62,8 @@ setEmail
 
 
 
+
+
 const [
 password,
 setPassword
@@ -53,10 +71,32 @@ setPassword
 
 
 
+
+
+const [
+showPassword,
+setShowPassword
+]=useState(false);
+
+
+
+
+
+const [
+loading,
+setLoading
+]=useState(false);
+
+
+
+
+
 const [
 unverifiedUser,
 setUnverifiedUser
 ]=useState(null);
+
+
 
 
 
@@ -72,7 +112,22 @@ e.preventDefault();
 
 
 
+
+if(loading)
+return;
+
+
+
+
+
+
 try{
+
+
+setLoading(true);
+
+
+
 
 
 const result =
@@ -80,6 +135,8 @@ await login(
 email,
 password
 );
+
+
 
 
 
@@ -95,11 +152,11 @@ await user.reload();
 
 
 
-// Email verification check
 
 if(
 !user.emailVerified
 ){
+
 
 
 setUnverifiedUser(
@@ -120,7 +177,9 @@ errorToast(
 
 return;
 
+
 }
+
 
 
 
@@ -138,12 +197,16 @@ successToast(
 
 
 const redirect =
+
 new URLSearchParams(
 location.search
 )
+
 .get(
 "redirect"
 );
+
+
 
 
 
@@ -167,8 +230,6 @@ return;
 
 
 
-
-// Role check from Firestore
 
 if(
 result.role === "admin"
@@ -195,7 +256,9 @@ navigate(
 
 
 
+
 }
+
 catch(error){
 
 
@@ -208,8 +271,10 @@ error
 
 
 
+
 let message =
 "Login failed. Please try again.";
+
 
 
 
@@ -268,7 +333,11 @@ message =
 error.message ||
 "Login failed.";
 
+
 }
+
+
+
 
 
 
@@ -277,11 +346,21 @@ message
 );
 
 
+
+}
+
+finally{
+
+
+setLoading(false);
+
+
 }
 
 
 
 };
+
 
 
 
@@ -305,9 +384,12 @@ return;
 
 
 
+
 await resendVerificationEmail(
 unverifiedUser
 );
+
+
 
 
 
@@ -342,23 +424,151 @@ error.message
 
 return (
 
-<div className="
+<div
+
+className="
+min-h-screen
+bg-[#FAF7F2]
+p-4
+flex
+items-center
+justify-center
+text-gray-900
+"
+
+>
+
+
+
+
+
+
+
+<div
+
+className="
+w-full
 max-w-md
+space-y-3
+"
+
+>
+
+
+
+
+
+
+
+{/* HEADER */}
+
+
+
+<div
+
+className="
+bg-white
+rounded-lg
+p-4
+border
+border-gray-100
+shadow-sm
+text-center
+"
+
+>
+
+
+
+<div
+
+className="
+w-12
+h-12
 mx-auto
-py-20
-px-6
-">
+rounded-full
+bg-[#FFF7E8]
+flex
+items-center
+justify-center
+text-amber-500
+mb-3
+"
+
+>
+
+<FiLock size={22}/>
 
 
-<h1 className="
-text-3xl
+</div>
+
+
+
+
+
+<h1
+
+className="
+text-xl
 font-bold
-mb-6
-">
+"
+
+>
 
 Login
 
 </h1>
+
+
+
+
+
+<p
+
+className="
+text-xs
+text-gray-500
+mt-1
+"
+
+>
+
+Login to your Dream Mode account.
+
+</p>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* FORM CARD */}
+
+
+
+
+<div
+
+className="
+bg-white
+rounded-lg
+p-4
+border
+border-gray-100
+shadow-sm
+"
+
+>
+
 
 
 
@@ -369,35 +579,125 @@ Login
 onSubmit={handleLogin}
 
 className="
-space-y-4
+space-y-3
 "
 
 >
 
 
 
+
+
+
+
+
+
+{/* EMAIL */}
+
+
+
+<div
+
+className="
+relative
+"
+
+>
+
+
+<FiMail
+
+className="
+absolute
+left-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+"
+
+/>
+
+
+
+
+
 <input
+
 
 type="email"
 
-className="
-w-full
-border
-p-3
-rounded-xl
-"
 
-placeholder="Email"
+placeholder="Email Address"
+
+
 
 value={email}
 
+
+
 onChange={(e)=>
+
 setEmail(
 e.target.value
 )
+
 }
 
+
+
+className="
+w-full
+h-12
+bg-[#FAF7F2]
+rounded-lg
+border
+border-gray-100
+pl-10
+text-sm
+outline-none
+focus:border-amber-500
+"
+
 />
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* PASSWORD */}
+
+
+
+
+<div
+
+className="
+relative
+"
+
+>
+
+
+<FiLock
+
+className="
+absolute
+left-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+"
+
+/>
+
 
 
 
@@ -405,26 +705,147 @@ e.target.value
 
 <input
 
-type="password"
 
-className="
-w-full
-border
-p-3
-rounded-xl
-"
+type={
+
+showPassword
+
+?
+
+"text"
+
+:
+
+"password"
+
+}
+
+
 
 placeholder="Password"
 
+
+
 value={password}
 
+
+
 onChange={(e)=>
+
 setPassword(
 e.target.value
 )
+
 }
 
+
+
+className="
+w-full
+h-12
+bg-[#FAF7F2]
+rounded-lg
+border
+border-gray-100
+pl-10
+pr-10
+text-sm
+outline-none
+focus:border-amber-500
+"
+
 />
+
+
+
+
+
+
+
+
+<button
+
+type="button"
+
+onClick={()=>
+
+
+setShowPassword(
+!showPassword
+)
+
+}
+
+
+className="
+absolute
+right-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+"
+
+>
+
+
+{
+
+showPassword
+
+?
+
+<FiEyeOff/>
+
+:
+
+<FiEye/>
+
+}
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div
+
+className="
+text-right
+"
+
+>
+
+<Link
+
+to="/forgot-password"
+
+className="
+text-xs
+text-amber-600
+font-semibold
+hover:underline
+"
+
+>
+
+Forgot Password?
+
+</Link>
+
+
+</div>
+
+
 
 
 
@@ -435,13 +856,34 @@ e.target.value
 
 type="submit"
 
+disabled={loading}
+
 className="
 w-full
+h-12
+rounded-lg
+text-sm
+font-semibold
 "
 
 >
 
-Login
+
+{
+
+loading
+
+?
+
+"Logging..."
+
+:
+
+"Login"
+
+}
+
+
 
 </Button>
 
@@ -451,42 +893,22 @@ Login
 
 
 
-<div className="
-text-center
-space-y-3
-">
 
 
-
-<Link
-
-to="/forgot-password"
+<div
 
 className="
-block
-text-blue-600
-hover:underline
+text-center
 text-sm
+text-gray-600
 "
 
 >
 
-Forgot Password?
-
-</Link>
-
-
-
-
-
-<p className="
-text-sm
-text-gray-600
-">
-
 Don't have an account?
 
 {" "}
+
 
 
 <Link
@@ -494,7 +916,7 @@ Don't have an account?
 to="/register"
 
 className="
-text-blue-600
+text-amber-600
 font-semibold
 "
 
@@ -503,9 +925,6 @@ font-semibold
 Register Now
 
 </Link>
-
-
-</p>
 
 
 
@@ -525,13 +944,12 @@ unverifiedUser &&
 
 type="button"
 
-onClick={
-handleResendVerification
-}
+onClick={handleResendVerification}
 
 className="
 w-full
-text-blue-600
+text-sm
+text-amber-600
 font-medium
 "
 
@@ -547,10 +965,34 @@ Resend Verification Email
 
 
 
+
+
+
 </form>
 
 
+
+
+
+
+
 </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
 
 );
 
