@@ -80,7 +80,11 @@ return null;
 }
 
 
+if(data.verified === true){
 
+return null;
+
+}
 
 
 const transporter =
