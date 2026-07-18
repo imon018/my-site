@@ -15,12 +15,12 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiTrash2,
-  FiEdit,
+  FiInfo,
   FiShield,
   FiUser,
   FiLoader,
+  FiArrowLeft,
 } from "react-icons/fi";
-
 
 import {
   getUsers,
@@ -62,6 +62,10 @@ useState(null);
 
 const [filterOpen,setFilterOpen] =
 useState(false);
+
+
+const [deleteUserData,setDeleteUserData] =
+useState(null);
 
 
 
@@ -145,35 +149,19 @@ setLoading(false);
 
 
 
-async function removeUser(user){
-
-
-const confirmDelete =
-window.confirm(
-`Are you sure you want to delete ${user.email}?`
-);
-
-
-
-if(!confirmDelete)
-return;
-
-
+async function removeUser(){
 
 try{
 
-
 await deleteUser(
-user.id
+deleteUserData.id
 );
-
 
 
 await loadUsers();
 
 
-
-setRoleMenu(null);
+setDeleteUserData(null);
 
 
 }
@@ -184,9 +172,7 @@ console.log(error);
 
 }
 
-
 }
-
 
 
 
@@ -286,43 +272,62 @@ mx-auto
 
 {/* HEADER */}
 
-
 <div
 className="
+relative
 mb-6
+flex
+items-center
+justify-center
 "
 >
 
 
+<button
+
+onClick={()=>
+navigate(-1)
+}
+
+className="
+absolute
+left-0
+w-10
+h-10
+rounded-xl
+bg-white
+border
+border-gray-100
+shadow-sm
+flex
+items-center
+justify-center
+text-[#071F57]
+"
+
+>
+
+<FiArrowLeft size={20}/>
+
+</button>
+
+
+
+
 <h1
+
 className="
 text-2xl
 md:text-3xl
 font-black
 text-[#172033]
 "
+
 >
 
 Users
 
 </h1>
-
-
-<p
-className="
-text-sm
-text-gray-500
-mt-1
-"
->
-
-Dashboard
-<span className="mx-2">
-›
-</span>
-Users
-
-</p>
 
 
 </div>
@@ -1216,7 +1221,7 @@ justify-center
 
 >
 
-<FiEdit size={16}/>
+<FiInfo size={16}/>
 
 </button>
 
@@ -1234,7 +1239,7 @@ justify-center
 <button
 
 onClick={()=>
-removeUser(user)
+setDeleteUserData(user)
 }
 
 className="
@@ -1447,14 +1452,139 @@ disabled:opacity-40
 
 
 </div>
-
-
-
-
-
+  
 }
 
 
+
+  {
+deleteUserData &&
+
+<div
+
+className="
+fixed
+inset-0
+bg-black/40
+flex
+items-center
+justify-center
+z-50
+"
+
+>
+
+
+<div
+
+className="
+bg-white
+rounded-2xl
+p-6
+w-[320px]
+shadow-xl
+"
+
+>
+
+
+<h2
+
+className="
+text-lg
+font-bold
+text-gray-800
+"
+
+>
+
+Delete User?
+
+</h2>
+
+
+
+<p
+
+className="
+text-sm
+text-gray-500
+mt-2
+"
+
+>
+
+Are you sure you want to delete this..?
+
+</p>
+
+
+
+
+
+<div
+
+className="
+flex
+gap-3
+mt-6
+"
+
+>
+
+
+<button
+
+onClick={()=>
+setDeleteUserData(null)
+}
+
+className="
+flex-1
+py-3
+rounded-xl
+bg-gray-100
+"
+
+>
+
+No
+
+</button>
+
+
+
+
+
+<button
+
+onClick={removeUser}
+
+className="
+flex-1
+py-3
+rounded-xl
+bg-red-500
+text-white
+"
+
+>
+
+Yes
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+}
+  
 
 </div>
 
