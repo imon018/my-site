@@ -1513,7 +1513,7 @@ saving
 ?
 "Saving..."
 :
-"Save Changes"
+"Save"
 }
 
 
