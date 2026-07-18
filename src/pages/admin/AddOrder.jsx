@@ -52,11 +52,9 @@ const [price,setPrice]=useState("");
 
 const [quantity,setQuantity]=useState(1);
 
-  const { user } = useAuth();
+const [loading,setLoading] = useState(false);
 
-
-
-
+const { user } = useAuth();
 
 const handleSubmit=async(e)=>{
 
@@ -1173,8 +1171,9 @@ e.target.value
 
 type="submit"
 
-className="
+disabled={loading}
 
+className="
 w-full
 
 h-12
@@ -1195,11 +1194,25 @@ text-sm
 
 shadow-md
 
+disabled:opacity-50
+
 "
 
 >
 
-🛒 Add Order
+{
+
+loading
+
+?
+
+"Adding..."
+
+:
+
+"🛒 Add Order"
+
+}
 
 </Button>
 
