@@ -36,7 +36,8 @@ const token =
 crypto.randomUUID();
 
 
-
+const expiresAt =
+Date.now() + 15 * 60 * 1000;
 
 
 await setDoc(
@@ -60,6 +61,8 @@ email:user.email,
 token,
 
 verified:false,
+
+expiresAt,
 
 createdAt:
 serverTimestamp()
