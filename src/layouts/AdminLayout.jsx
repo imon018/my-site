@@ -10,7 +10,6 @@ import {
 import AdminDrawer from "../components/admin/AdminDrawer";
 
 
-
 export default function AdminLayout(){
 
 
@@ -18,7 +17,6 @@ const [
   drawerOpen,
   setDrawerOpen
 ] = useState(false);
-
 
 
 return (
