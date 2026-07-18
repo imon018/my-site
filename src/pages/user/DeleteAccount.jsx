@@ -507,7 +507,7 @@ loading
 
 ?
 
-"Sending..."
+"Deleting..."
 
 :
 
