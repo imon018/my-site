@@ -12,19 +12,13 @@ import {
 
 
 
-
 // =========================
 // CREATE DELETE ACCOUNT REQUEST
 // =========================
 
 export async function createDeleteAccountRequest(
-
-user,
-
-password
-
+  user
 ){
-
 
 
 if(!user){
@@ -38,22 +32,6 @@ throw new Error(
 
 
 
-
-if(!password){
-
-throw new Error(
-"Password required."
-);
-
-}
-
-
-
-
-
-
-// Generate verification token
-
 const token =
 crypto.randomUUID();
 
@@ -61,10 +39,7 @@ crypto.randomUUID();
 
 
 
-
-
 await setDoc(
-
 
 doc(
 
@@ -76,34 +51,22 @@ user.uid
 
 ),
 
-
 {
-
 
 uid:user.uid,
 
-
 email:user.email,
-
-
-password,
-
 
 token,
 
-
 verified:false,
-
 
 createdAt:
 serverTimestamp()
 
-
 }
 
-
 );
-
 
 
 
