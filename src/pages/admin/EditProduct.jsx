@@ -12,10 +12,10 @@ import {
 
 import {
   FiUpload,
-  FiImage,
   FiArrowUp,
   FiArrowDown,
   FiTrash2,
+  FiX,
 } from "react-icons/fi";
 
 
@@ -385,9 +385,6 @@ updated[0]
 
 
 }
-
-
-
 
 
 
@@ -996,14 +993,20 @@ absolute
 left-3
 top-1/2
 -translate-y-1/2
+
 w-7
 h-7
+
 rounded-md
+
 bg-[#FFF7E8]
+
 flex
 items-center
 justify-center
+
 text-amber-500
+
 "
 
 >
@@ -1028,30 +1031,168 @@ accept="image/*"
 onChange={(e)=>{
 
 setNewImages(
-Array.from(
-e.target.files
-)
+Array.from(e.target.files)
 );
-
 
 }}
 
 
 className="
+
 w-full
+
 h-12
+
 pl-12
+
 pr-3
+
 rounded-lg
+
 border
+
 border-gray-200
+
 outline-none
+
 text-sm
+
 text-gray-700
+
 focus:border-amber-400
+
+"
+
+ />
+
+
+
+</div>
+
+
+
+
+
+
+
+{
+newImages.length > 0 &&
+
+
+<div
+
+className="
+grid
+grid-cols-2
+md:grid-cols-4
+
+gap-4
+
+mt-4
+"
+
+>
+
+
+{
+newImages.map(
+(file,index)=>(
+
+
+<div
+
+key={index}
+
+className="
+relative
+border
+border-gray-100
+rounded-lg
+overflow-hidden
+"
+
+>
+
+
+<img
+
+src={
+URL.createObjectURL(file)
+}
+
+alt=""
+
+className="
+h-32
+w-full
+object-cover
 "
 
 />
+
+
+
+
+
+<button
+
+type="button"
+
+onClick={()=>{
+
+setNewImages(
+newImages.filter(
+(_,i)=>i!==index
+)
+);
+
+}}
+
+className="
+
+absolute
+
+top-2
+right-2
+
+w-7
+h-7
+
+rounded-full
+
+bg-red-500
+
+text-white
+
+flex
+items-center
+justify-center
+
+"
+
+>
+
+<FiX size={14}/>
+
+</button>
+
+
+
+</div>
+
+
+
+)
+
+)
+
+}
+
+
+</div>
+
+
+}
 
 
 </div>
