@@ -13,6 +13,7 @@ import {
   FiPackage,
   FiImage,
   FiEdit,
+  FiArrowLeft,
   FiX,
 } from "react-icons/fi";
 
@@ -558,30 +559,53 @@ space-y-4
 
 
 
-{/* HEADER */}
-
+  {/* HEADER */}
 
 <div
-
 className="
+relative
 flex
 items-center
-justify-between
+justify-center
+py-2
+"
+>
+
+
+{/* BACK BUTTON */}
+
+<button
+
+onClick={()=>window.history.back()}
+
+className="
+absolute
+left-0
+w-10
+h-10
+rounded-full
+bg-white
+border
+border-gray-100
+shadow-sm
+flex
+items-center
+justify-center
 "
 
 >
 
+<FiArrowLeft
+size={22}
+/>
 
-<div
-
-className="
-flex
-items-center
-"
-
->
+</button>
 
 
+
+
+
+{/* TITLE */}
 
 <h1
 
@@ -598,12 +622,9 @@ Return Details
 
 
 
-</div>
 
 
-
-
-
+{/* EDIT BUTTON */}
 
 {
 
@@ -614,6 +635,8 @@ canEdit && !editMode &&
 onClick={()=>setEditMode(true)}
 
 className="
+absolute
+right-0
 w-10
 h-10
 rounded-lg
@@ -637,6 +660,7 @@ text-amber-600
 
 
 
+
 {
 
 editMode &&
@@ -646,6 +670,8 @@ editMode &&
 onClick={()=>setEditMode(false)}
 
 className="
+absolute
+right-0
 w-10
 h-10
 rounded-lg
@@ -670,10 +696,6 @@ text-red-500
 
 
 </div>
-
-
-
-
 
 
 
