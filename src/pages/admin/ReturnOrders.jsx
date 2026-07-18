@@ -377,21 +377,7 @@ text-slate-900
 Return Orders
 </h1>
 
-
-<p
-className="
-text-xs
-text-gray-500
-mt-1
-"
->
-Dashboard › Return Orders
-</p>
-
-
 </div>
-
-
 
 
 
