@@ -220,71 +220,48 @@ error.message
 
 
 
-
 const handleDelete =
 async()=>{
 
-
 try{
-
 
 setLoading(true);
 
 
-
-
-
-await updateDoc(
-
-doc(
-
-db,
-
-"deleteAccountRequests",
-
-requestId
-
-),
-
+const response =
+await fetch(
+"https://us-central1-dream-mode.cloudfunctions.net/verifyDeleteAccount",
 {
 
-verified:true
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+token
+
+})
 
 }
 
 );
 
 
+const data =
+await response.json();
 
 
 
+if(!data.success){
 
-
-const deleteAccount =
-
-httpsCallable(
-
-functions,
-
-"deleteAccount"
-
+throw new Error(
+data.message
 );
 
-
-
-
-
-
-await deleteAccount({
-
-uid:
-
-requestData.uid
-
-});
-
-
-
+}
 
 
 
@@ -294,18 +271,17 @@ successToast(
 
 
 
+setMessage(
+"Account deleted successfully. Redirecting..."
+);
+
 
 
 setTimeout(()=>{
 
-
 navigate("/");
 
-
 },2000);
-
-
-
 
 
 
@@ -316,25 +292,26 @@ catch(error){
 console.log(error);
 
 
-
 errorToast(
 error.message
 );
 
 
+setMessage(
+error.message
+);
+
 
 }
 finally{
 
-
 setLoading(false);
-
 
 }
 
 
-
 };
+
 
 
 
