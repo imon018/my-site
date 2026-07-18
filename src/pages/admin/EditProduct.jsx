@@ -985,44 +985,13 @@ relative
 >
 
 
-<div
-
-className="
-absolute
-left-3
-top-1/2
--translate-y-1/2
-
-w-10
-h-10
-
-rounded-xl
-
-bg-[#FFF7E8]
-
-flex
-items-center
-justify-center
-
-text-amber-500
-
-"
-
->
-
-<FiUploadCloud size={22}/>
-
-</div>
-
-
-
 
 
 <label
 
 className="
 w-full
-h-64
+h-56
 border-2
 border-dashed
 border-amber-400
@@ -1040,11 +1009,11 @@ bg-[#FFFDF8]
 
 <FiUploadCloud
 
-size={55}
+size={40}
 
 className="
 text-amber-500
-mb-4
+mb-3
 "
 
 />
