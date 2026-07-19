@@ -2,7 +2,6 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  sendEmailVerification,
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
@@ -37,16 +36,6 @@ import {
   functions
 } from "../firebase/functions";
 
-
-const APP_URL = window.location.origin;
-
-const actionCodeSettings = {
-
-  url: `${APP_URL}/verify-email`,
-
-  handleCodeInApp: false,
-
-};
 
 
 // =========================
@@ -186,11 +175,26 @@ serverTimestamp()
 
 
 
-await sendEmailVerification(
+await setDoc(
 
-  result.user,
+doc(
+db,
+"emailVerificationRequests",
+result.user.uid
+),
 
-  actionCodeSettings
+{
+
+uid: result.user.uid,
+
+email,
+
+name,
+
+createdAt:
+serverTimestamp()
+
+}
 
 );
 
