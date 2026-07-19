@@ -1,5 +1,6 @@
 import {
-  useState
+  useState,
+  useEffect
 } from "react";
 
 
@@ -11,8 +12,16 @@ import {
 
 
 import {
-  auth
-} from "../firebase/auth";
+  doc,
+  getDoc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
+
+
+import {
+  db
+} from "../firebase/firestore";
 
 
 import {
@@ -21,10 +30,9 @@ import {
 } from "../components/ui/Toast";
 
 
-import useAuth from "../hooks/useAuth";
-
-
 import ResendVerificationButton from "../components/auth/ResendVerificationButton";
+
+
 
 
 export default function VerifyEmail(){
@@ -40,30 +48,6 @@ const navigate =
 useNavigate();
 
 
-const {
-  refreshUser,
-} = useAuth();
-  
-
-const email =
-location.state?.email || "";
-
-
-
-
-
-
-const [
-message,
-setMessage
-]=useState(
-
-"Please verify your email from your inbox."
-
-);
-
-
-
 
 
 const [
@@ -75,35 +59,80 @@ setLoading
 
 
 
+const [
+message,
+setMessage
+]=useState(
+"Please verify your email address."
+);
 
 
 
-const checkVerification =
+
+
+const [
+verified,
+setVerified
+]=useState(false);
+
+
+
+
+
+
+const email =
+location.state?.email || "";
+
+
+
+
+
+
+const params =
+new URLSearchParams(
+location.search
+);
+
+
+
+const token =
+params.get("token");
+
+
+
+
+
+
+useEffect(()=>{
+
+
+if(token){
+
+verifyEmail();
+
+}
+
+
+},[]);
+
+
+
+
+
+
+
+const verifyEmail =
 async()=>{
 
 
 try{
 
 
-setLoading(true);
-
-
-
-
-
-const user =
-auth.currentUser;
-
-
-
-
-
-
-if(!user){
+if(!token){
 
 
 throw new Error(
-"Please login again."
+"Invalid verification link."
 );
 
 
@@ -113,15 +142,109 @@ throw new Error(
 
 
 
-await refreshUser();
+setLoading(true);
 
-if(!auth.currentUser?.emailVerified){
 
-  throw new Error(
-    "Email is not verified yet."
-  );
+
+
+
+const requestRef =
+doc(
+
+db,
+
+"emailVerificationRequests",
+
+token
+
+);
+
+
+
+
+
+const snap =
+await getDoc(
+requestRef
+);
+
+
+
+
+
+
+
+if(!snap.exists()){
+
+
+throw new Error(
+"Verification link expired or invalid."
+);
+
 
 }
+
+
+
+
+
+const data =
+snap.data();
+
+
+
+
+
+
+
+const userRef =
+doc(
+
+db,
+
+"users",
+
+data.uid
+
+);
+
+
+
+
+
+
+await updateDoc(
+
+userRef,
+
+{
+
+emailVerified:true
+
+}
+
+);
+
+
+
+
+
+
+
+
+await deleteDoc(
+
+requestRef
+
+);
+
+
+
+
+
+
+
+setVerified(true);
 
 
 
@@ -142,10 +265,9 @@ successToast(
 
 setMessage(
 
-"Email verified successfully. Redirecting to login..."
+"Your email has been verified successfully. Redirecting..."
 
 );
-
 
 
 
@@ -168,7 +290,9 @@ navigate(
 
 
 
+
 }
+
 catch(error){
 
 
@@ -189,6 +313,7 @@ error.message
 
 
 }
+
 finally{
 
 
@@ -198,46 +323,69 @@ setLoading(false);
 }
 
 
-
 };
-
-
-
-
-
-
-
 
 
 return (
 
-<div className="
-max-w-xl
-mx-auto
-py-20
-px-6
-">
+<div
+className="
+min-h-screen
+bg-[#faf9f6]
+flex
+items-center
+justify-center
+px-4
+py-12
+"
+>
 
 
 
-<div className="
+<div
+
+className="
+w-full
+max-w-md
 bg-white
+border
+border-gray-100
 rounded-2xl
-shadow-lg
-p-8
+shadow-sm
+p-6
 text-center
-">
+"
+
+>
 
 
 
 
 
-<div className="
-text-6xl
+<div
+
+className="
+w-20
+h-20
+mx-auto
+rounded-full
+bg-amber-50
+flex
+items-center
+justify-center
+text-5xl
 mb-6
-">
+"
 
-📧
+>
+
+{
+verified
+?
+"✅"
+:
+"📧"
+}
 
 </div>
 
@@ -247,13 +395,24 @@ mb-6
 
 
 
-<h1 className="
-text-3xl
-font-bold
-mb-4
-">
+<h1
 
-Check Your Email
+className="
+text-2xl
+font-bold
+text-gray-800
+mb-3
+"
+
+>
+
+{
+verified
+?
+"Email Verified"
+:
+"Verify Your Email"
+}
 
 </h1>
 
@@ -264,12 +423,27 @@ Check Your Email
 
 
 
-<p className="
-text-gray-600
-mb-4
-">
+<p
 
-We've sent a verification link to:
+className="
+text-gray-500
+text-sm
+mb-5
+"
+
+>
+
+{
+verified
+?
+
+"Your account email verification is complete."
+
+:
+
+"We have sent a verification link to your email address."
+
+}
 
 </p>
 
@@ -279,29 +453,75 @@ We've sent a verification link to:
 
 
 
+{
+email && (
 
-<p className="
+<div
+
+className="
+bg-gray-50
+border
+border-gray-100
+rounded-xl
+p-3
+mb-5
+"
+
+>
+
+<p
+
+className="
+text-xs
+text-gray-400
+mb-1
+"
+
+>
+
+Email
+
+</p>
+
+
+
+<p
+
+className="
 font-semibold
-text-lg
+text-gray-700
 break-all
-mb-8
-">
+"
+
+>
 
 {email}
 
 </p>
 
 
+</div>
+
+)
+
+}
 
 
 
 
 
 
-<p className="
+
+
+<p
+
+className="
+text-sm
 text-gray-500
-mb-8
-">
+mb-6
+"
+
+>
 
 {message}
 
@@ -313,24 +533,25 @@ mb-8
 
 
 
+{
+!verified && (
 
 <button
 
-
-onClick={checkVerification}
-
+onClick={verifyEmail}
 
 disabled={loading}
 
 
-
 className="
 w-full
-bg-blue-600
+bg-[#F59E0B]
 text-white
 py-3
 rounded-xl
-hover:bg-blue-700
+font-semibold
+transition
+hover:bg-amber-600
 disabled:opacity-50
 "
 
@@ -343,45 +564,66 @@ loading
 
 ?
 
-"Checking..."
+"Verifying..."
 
 :
 
-"I Have Verified Email"
+"I Have Verified My Email"
 
 }
 
 
 </button>
 
+)
 
-{
-  !auth.currentUser?.emailVerified && (
+}
 
-    <div className="mt-4 flex justify-center">
 
-      <ResendVerificationButton />
+  {
+!verified && (
 
-    </div>
+<div
 
-  )
+className="
+mt-4
+flex
+justify-center
+"
+
+>
+
+<ResendVerificationButton />
+
+</div>
+
+)
+
 }
 
 
 
 
 
-<div className="
-mt-4
-">
 
+
+
+<div
+
+className="
+mt-6
+"
+
+>
 
 <Link
 
 to="/login"
 
 className="
-text-blue-600
+text-sm
+text-amber-600
+font-semibold
 hover:underline
 "
 
@@ -390,7 +632,6 @@ hover:underline
 Go To Login
 
 </Link>
-
 
 
 </div>
