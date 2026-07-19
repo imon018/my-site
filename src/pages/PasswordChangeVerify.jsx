@@ -448,14 +448,19 @@ setLoading(false);
 
 return (
 
-<div className="
+<div
+
+className="
 min-h-screen
 bg-[#FAF7F2]
 p-4
 flex
-items-center
+items-start
 justify-center
-">
+pt-10
+"
+
+>
 
 
 <div className="
