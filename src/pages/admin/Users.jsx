@@ -1107,6 +1107,7 @@ overflow-hidden
 >
 
 
+
 <button
 
 onClick={()=>{
@@ -1128,30 +1129,35 @@ role:newRole
 });
 
 
-}}
-
-
-
-if(!confirm)
-return;
-
-
-
-changeRole(
-user.id,
-newRole
-)
-.then(()=>{
-
-loadUsers();
-
 setRoleMenu(null);
 
-});
-
-
 }}
 
+className="
+w-full
+px-4
+py-3
+text-left
+text-sm
+hover:bg-[#FFF7E8]
+"
+
+>
+
+{
+user.role==="admin"
+?
+"Make User"
+:
+"Make Admin"
+}
+
+</button>
+
+  
+
+
+  
 className="
 w-full
 px-4
