@@ -14,9 +14,7 @@ import {
 collection,
 query,
 where,
-getDocs,
-doc,
-updateDoc
+getDocs
 } from "firebase/firestore";
 
 
@@ -32,7 +30,7 @@ db
 
 import {
 functions
-} from "../firebase/firebaseConfig";
+} from "../firebase/functions";
 
 
 import {
@@ -228,37 +226,53 @@ try{
 setLoading(true);
 
 
-const response =
-await fetch(
-"https://us-central1-dream-mode.cloudfunctions.net/verifyDeleteAccount",
-{
+// This must go through the Firebase
+// callable-function client SDK, not a
+// raw fetch(). verifyDeleteAccount is
+// defined with onCall(), which expects
+// the request wrapped in the Firebase
+// callable protocol ({"data": {...}}
+// plus specific headers). A plain
+// fetch() with {token} in the body does
+// not match that, so the function never
+// actually receives the token - it just
+// fails, which is what produced the
+// blank/cross error toast.
 
-method:"POST",
+const verifyDeleteAccount =
 
-headers:{
-"Content-Type":"application/json"
-},
+httpsCallable(
 
-body:JSON.stringify({
+functions,
 
-token
-
-})
-
-}
+"verifyDeleteAccount"
 
 );
 
 
+
+
+const result =
+
+await verifyDeleteAccount({
+
+token
+
+});
+
+
+
+
 const data =
-await response.json();
+
+result.data;
 
 
 
 if(!data.success){
 
 throw new Error(
-data.message
+"Account deletion failed."
 );
 
 }
