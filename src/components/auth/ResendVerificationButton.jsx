@@ -4,10 +4,6 @@ import {
 } from "react";
 
 import {
-  auth,
-} from "../../firebase/auth";
-
-import {
   resendVerificationEmail,
 } from "../../services/authService";
 
@@ -103,9 +99,7 @@ export default function ResendVerificationButton(){
 
       setLoading(true);
 
-      await resendVerificationEmail(
-        auth.currentUser
-      );
+      await resendVerificationEmail();
 
       const now =
         Date.now();
