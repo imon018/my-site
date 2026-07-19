@@ -33,236 +33,313 @@ import {
 export const AuthContext = createContext();
 
 
+
 export default function AuthProvider({
   children,
 }) {
 
 
-  const [
-    user,
-    setUser
-  ] = useState(null);
+
+const [
+  user,
+  setUser
+]=useState(null);
 
 
 
-  const [
-    loading,
-    setLoading
-  ] = useState(true);
+const [
+  loading,
+  setLoading
+]=useState(true);
+
+
+
 
 
 
 const logout = async()=>{
 
+
   await signOut(auth);
+
 
   setUser(null);
 
-};
-
-
-  const refreshUser = async()=>{
-
-  const firebaseUser =
-    auth.currentUser;
-
-  if(!firebaseUser){
-
-    setUser(null);
-
-    return;
-
-  }
-
-  try{
-
-    await reload(firebaseUser);
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        firebaseUser.uid
-      );
-
-    const userSnap =
-      await getDoc(
-        userRef
-      );
-
-    if(userSnap.exists()){
-
-      setUser({
-
-  uid: firebaseUser.uid,
-  email: firebaseUser.email,
-  emailVerified: firebaseUser.emailVerified,
-  photoURL:
-    userSnap.data().photoURL || firebaseUser.photoURL,
-  metadata: firebaseUser.metadata,
-
-  ...userSnap.data(),
-
-});
-
-    }else{
-
-      setUser(
-        firebaseUser
-      );
-
-    }
-
-  }catch(error){
-
-    console.log(error);
-
-  }
 
 };
 
 
 
-  useEffect(()=>{
 
 
-    const unsubscribe = onAuthStateChanged(
 
-      auth,
 
-      async(firebaseUser)=>{
 
 
-        try{
+const buildUserData = async(firebaseUser)=>{
 
 
-          if(!firebaseUser){
-
-
-            setUser(null);
-
-            setLoading(false);
-
-            return;
-
-          }
-
-
-
-
-
-
-          const userRef = doc(
-
-            db,
-
-            "users",
-
-            firebaseUser.uid
-
-          );
-
-
-
-
-
-          const userSnap = await getDoc(
-            userRef
-          );
-
-
-
-
-
-
-          if(userSnap.exists()){
-
-
-            setUser({
-
-              ...firebaseUser,
-
-              ...userSnap.data(),
-
-            });
-
-
-
-          }else{
-
-
-            setUser(firebaseUser);
-
-
-          }
-
-
-
-
-
-
-        }catch(error){
-
-
-          console.log(error);
-
-
-          setUser(firebaseUser);
-
-
-        }
-        finally{
-
-
-          setLoading(false);
-
-
-        }
-
-
-      }
-
-    );
-
-
-
-
-
-    return ()=>unsubscribe();
-
-
-  },[]);
-
-
-
-
-
-
-
-  return (
-
-
-    <AuthContext.Provider
-
-      value={{
-
-        user,
-        setUser,
-        loading,
-        logout,
-        refreshUser,
-
-      }}
-
-    >
-
-      {children}
-
-
-    </AuthContext.Provider>
-
-
+  const userRef =
+  doc(
+    db,
+    "users",
+    firebaseUser.uid
   );
+
+
+
+  const userSnap =
+  await getDoc(
+    userRef
+  );
+
+
+
+
+  if(userSnap.exists()){
+
+
+    const firestoreData =
+    userSnap.data();
+
+
+
+
+    return {
+
+
+      ...firebaseUser,
+
+
+      ...firestoreData,
+
+
+
+      emailVerified:
+      firestoreData.emailVerified || false,
+
+
+    };
+
+
+  }
+
+
+
+  return {
+
+
+    ...firebaseUser,
+
+
+    emailVerified:
+    false,
+
+
+  };
+
+
+
+};
+
+
+
+
+
+
+
+
+
+const refreshUser = async()=>{
+
+
+const firebaseUser =
+auth.currentUser;
+
+
+
+if(!firebaseUser){
+
+
+  setUser(null);
+
+
+  return;
+
+
+}
+
+
+
+try{
+
+
+  await reload(firebaseUser);
+
+
+
+  const updatedUser =
+  await buildUserData(
+    firebaseUser
+  );
+
+
+
+  setUser(
+    updatedUser
+  );
+
+
+
+}catch(error){
+
+
+  console.log(error);
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+
+
+useEffect(()=>{
+
+
+const unsubscribe =
+
+onAuthStateChanged(
+
+auth,
+
+async(firebaseUser)=>{
+
+
+try{
+
+
+if(!firebaseUser){
+
+
+  setUser(null);
+
+
+  setLoading(false);
+
+
+  return;
+
+
+}
+
+
+
+
+const userData =
+
+await buildUserData(
+
+firebaseUser
+
+);
+
+
+
+
+setUser(
+
+userData
+
+);
+
+
+
+}catch(error){
+
+
+console.log(error);
+
+
+
+setUser(
+firebaseUser
+);
+
+
+
+}
+
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
+
+}
+
+);
+
+
+
+
+
+return ()=>unsubscribe();
+
+
+
+},[]);
+
+
+
+
+
+
+
+
+
+return (
+
+
+<AuthContext.Provider
+
+
+value={{
+
+user,
+
+setUser,
+
+loading,
+
+logout,
+
+refreshUser,
+
+}}
+
+
+>
+
+
+{children}
+
+
+</AuthContext.Provider>
+
+
+
+);
 
 
 }
@@ -274,10 +351,11 @@ const logout = async()=>{
 
 
 
+
 export function useAuth(){
 
 
-  return useContext(AuthContext);
+return useContext(AuthContext);
 
 
 }
