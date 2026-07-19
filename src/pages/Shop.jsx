@@ -210,7 +210,7 @@ export default function Shop() {
 
   return (
 
-  <div className="min-h-screen bg-[#FAF7F2]">
+  <div className="bg-[#FAF7F2]">
 
 
       <ShopHero />
