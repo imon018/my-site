@@ -12,7 +12,9 @@ import {
 import {
   FiUser,
   FiMail,
-  FiLock
+  FiLock,
+  FiEye,
+  FiEyeOff
 } from "react-icons/fi";
 
 
@@ -67,7 +69,10 @@ setPassword
 ]=useState("");
 
 
-
+const [
+showPassword,
+setShowPassword
+]=useState(false);
 
 
 
@@ -513,10 +518,13 @@ text-gray-400
 
 <input
 
-
-type="password"
-
-
+type={
+showPassword
+?
+"text"
+:
+"password"
+}
 
 className="
 w-full
@@ -526,6 +534,7 @@ rounded-lg
 border
 border-gray-100
 pl-10
+pr-10
 text-sm
 outline-none
 focus:border-amber-500
@@ -533,23 +542,55 @@ focus:border-amber-500
 
 placeholder="Password"
 
-
-
 value={password}
 
-
-
 onChange={(e)=>
+setPassword(e.target.value)
+}
 
-setPassword(
-e.target.value
+/>
+
+
+<button
+
+type="button"
+
+onClick={()=>
+
+
+setShowPassword(
+!showPassword
 )
 
 }
 
+className="
+absolute
+right-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+"
+
+>
 
 
-/>
+{
+
+showPassword
+
+?
+
+<FiEyeOff/>
+
+:
+
+<FiEye/>
+
+}
+
+
+</button>
 
 
 
