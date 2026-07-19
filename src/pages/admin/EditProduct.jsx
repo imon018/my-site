@@ -633,6 +633,7 @@ className="
 text-2xl
 font-black
 text-[#172033]
+text-center
 "
 
 >
