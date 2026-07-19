@@ -208,21 +208,30 @@ export async function resendVerificationEmail(
 user
 ){
 
+  if(!user){
 
-if(!user){
+    throw new Error(
+      "Please login again."
+    );
 
-throw new Error(
-"User not found"
-);
+  }
 
-}
+  // Always get latest user info
+  await user.reload();
 
+  if(user.emailVerified){
 
+    throw new Error(
+      "Your email is already verified."
+    );
 
-await sendEmailVerification(
-user
-);
+  }
 
+  await sendEmailVerification(
+    user
+  );
+
+  return true;
 
 }
 
