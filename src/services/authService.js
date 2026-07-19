@@ -191,6 +191,9 @@ email,
 
 name,
 
+token:
+crypto.randomUUID(),
+
 createdAt:
 serverTimestamp()
 
