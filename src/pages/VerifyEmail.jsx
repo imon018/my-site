@@ -12,19 +12,13 @@ import {
 
 
 import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+  httpsCallable
+} from "firebase/functions";
 
 
 import {
-  db
-} from "../firebase/firestore";
+  functions
+} from "../firebase/functions";
 
 
 import {
@@ -165,113 +159,33 @@ setLoading(true);
 
 
 
-const verificationQuery =
+const verifyEmailToken =
 
-query(
+httpsCallable(
 
-collection(
-db,
-"emailVerificationRequests"
-),
+functions,
 
-where(
-"token",
-"==",
+"verifyEmailToken"
+
+);
+
+
+
+
+const result =
+
+await verifyEmailToken({
+
 token
-)
 
-);
-
-
-
-
-
-
-
-const snap =
-await getDocs(
-verificationQuery
-);
-
-
-
-
-
-
-
-if(
-snap.empty
-){
-
-
-throw new Error(
-"Verification link expired or invalid."
-);
-
-
-}
-
-
-
-
-
-
-
-const requestDoc =
-snap.docs[0];
-
+});
 
 
 
 
 const data =
-requestDoc.data();
 
-
-
-
-
-
-
-const userRef =
-doc(
-
-db,
-
-"users",
-
-data.uid
-
-);
-
-
-
-
-
-
-await updateDoc(
-
-userRef,
-
-{
-
-emailVerified:true
-
-}
-
-);
-
-
-
-
-
-
-
-await deleteDoc(
-
-requestDoc.ref
-
-);
+result.data;
 
 
 
