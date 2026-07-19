@@ -38,6 +38,15 @@ import {
 } from "../firebase/functions";
 
 
+const APP_URL = window.location.origin;
+
+const actionCodeSettings = {
+
+  url: `${APP_URL}/verify-email`,
+
+  handleCodeInApp: false,
+
+};
 
 
 // =========================
@@ -179,7 +188,9 @@ serverTimestamp()
 
 await sendEmailVerification(
 
-result.user
+  result.user,
+
+  actionCodeSettings
 
 );
 
@@ -228,9 +239,14 @@ user
   }
 
   await sendEmailVerification(
-    user
-  );
 
+  user,
+
+  actionCodeSettings
+
+);
+
+  
   return true;
 
 }
