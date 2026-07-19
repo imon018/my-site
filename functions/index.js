@@ -620,6 +620,171 @@ throw new HttpsError(
 
 
 // =================================================
+// VERIFY EMAIL TOKEN
+// LOGIN NOT REQUIRED
+// =================================================
+
+
+exports.verifyEmailToken =
+
+
+onCall(
+
+async(request)=>{
+
+
+const {
+
+token
+
+}=request.data;
+
+
+
+
+if(!token){
+
+
+throw new HttpsError(
+
+"invalid-argument",
+
+"Token required."
+
+);
+
+}
+
+
+
+
+try{
+
+
+// The person clicking the email link is
+// NOT logged in (signOut happens right
+// after registration), so a client-side
+// updateDoc on users/{uid} would fail
+// Firestore rules ("Missing or
+// insufficient permissions"). Doing this
+// with the Admin SDK bypasses rules -
+// the token itself (unguessable, single
+// use) is what proves the request is
+// legitimate.
+
+const snap =
+
+await admin.firestore()
+
+.collection("emailVerificationRequests")
+
+.where("token","==",token)
+
+.limit(1)
+
+.get();
+
+
+
+
+if(snap.empty){
+
+
+throw new HttpsError(
+
+"not-found",
+
+"Verification link expired or invalid."
+
+);
+
+}
+
+
+
+
+const requestDoc =
+
+snap.docs[0];
+
+
+const data =
+
+requestDoc.data();
+
+
+
+
+await admin.firestore()
+
+.collection("users")
+
+.doc(data.uid)
+
+.set(
+
+{
+
+emailVerified:true
+
+},
+
+{
+
+merge:true
+
+}
+
+);
+
+
+
+
+await requestDoc.ref.delete();
+
+
+
+
+return {
+
+success:true,
+
+email:data.email
+
+};
+
+}
+
+catch(error){
+
+
+if(error instanceof HttpsError){
+
+throw error;
+
+}
+
+
+console.log(error);
+
+
+throw new HttpsError(
+
+"internal",
+
+"Email verification failed."
+
+);
+
+}
+
+
+}
+
+);
+
+
+// =================================================
 // SEND PASSWORD CHANGE EMAIL
 // LOGIN REQUIRED
 // =================================================
