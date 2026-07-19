@@ -21,7 +21,7 @@ import {
 } from "../components/ui/Toast";
 
 
-
+import ResendVerificationButton from "../components/auth/ResendVerificationButton";
 
 
 
@@ -361,7 +361,17 @@ loading
 </button>
 
 
+{
+  !auth.currentUser?.emailVerified && (
 
+    <div className="mt-4 flex justify-center">
+
+      <ResendVerificationButton />
+
+    </div>
+
+  )
+}
 
 
 
