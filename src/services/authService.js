@@ -311,25 +311,16 @@ return result.user;
 // =========================
 
 export async function resendVerificationEmail(
-
 email
-
 ){
-
 
 if(!email){
 
-
 throw new Error(
-
 "Email required."
-
 );
 
-
 }
-
-
 
 
 
@@ -338,25 +329,17 @@ const q =
 query(
 
 collection(
-
 db,
-
-"users"
-
+"emailVerificationRequests"
 ),
 
 where(
-
 "email",
-
 "==",
-
 email
-
 )
 
 );
-
 
 
 
@@ -370,16 +353,11 @@ await getDocs(q);
 
 
 
-
 if(snapshot.empty){
 
-
 throw new Error(
-
-"No account found with this email."
-
+"No verification request found."
 );
-
 
 }
 
@@ -387,21 +365,13 @@ throw new Error(
 
 
 
-
-const userDoc =
-
+const oldDoc =
 snapshot.docs[0];
 
 
 
-
-
-
-const userData =
-
-userDoc.data();
-
-
+const data =
+oldDoc.data();
 
 
 
@@ -415,37 +385,24 @@ db,
 
 "emailVerificationRequests",
 
-userDoc.id
+data.uid
 
 ),
 
 {
 
-uid:
+uid:data.uid,
 
-userDoc.id,
+email:data.email,
 
-
-email:
-
-userData.email,
-
-
-name:
-
-userData.name || "",
-
+name:data.name || "",
 
 token:
-
 crypto.randomUUID(),
-
 
 verified:false,
 
-
 createdAt:
-
 serverTimestamp()
 
 }
@@ -456,12 +413,10 @@ serverTimestamp()
 
 
 
-
 return true;
 
 
 }
-
 
 // =========================
 // CHANGE PASSWORD REQUEST
