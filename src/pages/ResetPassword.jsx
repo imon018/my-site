@@ -300,12 +300,13 @@ min-h-screen
 bg-[#FAF7F2]
 p-4
 flex
-items-center
+items-start
 justify-center
+text-gray-900
+pt-10
 "
 
 >
-
 
 
 
