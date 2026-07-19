@@ -38,6 +38,7 @@ import ResendVerificationButton from "../components/auth/ResendVerificationButto
 
 
 
+
 export default function VerifyEmail(){
 
 
@@ -83,8 +84,18 @@ setVerified
 
 
 
+
+// Email from register navigation
+// fallback sessionStorage
+
 const email =
-location.state?.email || "";
+location.state?.email
+||
+sessionStorage.getItem(
+"verificationEmail"
+)
+||
+"";
 
 
 
@@ -124,6 +135,7 @@ verifyEmail();
 
 
 
+
 const verifyEmail =
 async()=>{
 
@@ -146,6 +158,8 @@ throw new Error(
 
 
 setLoading(true);
+
+
 
 
 
@@ -253,7 +267,6 @@ emailVerified:true
 
 
 
-
 await deleteDoc(
 
 requestDoc.ref
@@ -289,6 +302,16 @@ setMessage(
 
 "Your email has been verified successfully. Redirecting..."
 
+);
+
+
+
+
+
+
+
+sessionStorage.removeItem(
+"verificationEmail"
 );
 
 
@@ -609,6 +632,9 @@ loading
 }
 
 
+
+
+
 {
 !verified && (
 
@@ -622,7 +648,13 @@ justify-center
 
 >
 
-<ResendVerificationButton />
+
+<ResendVerificationButton
+
+email={email}
+
+/>
+
 
 </div>
 
