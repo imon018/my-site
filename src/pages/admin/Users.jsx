@@ -50,6 +50,9 @@ const [search,setSearch] =
 useState("");
 
 
+const [roleChangeData,setRoleChangeData] =
+useState(null);
+
 
 const [roleFilter,setRoleFilter] =
 useState("all");
@@ -174,6 +177,34 @@ console.log(error);
 }
 
 
+
+
+
+async function confirmRoleChange(){
+
+try{
+
+await changeRole(
+roleChangeData.id,
+roleChangeData.role
+);
+
+
+await loadUsers();
+
+
+setRoleChangeData(null);
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
 
 
 
@@ -1081,7 +1112,6 @@ overflow-hidden
 
 onClick={()=>{
 
-
 const newRole =
 user.role==="admin"
 ?
@@ -1090,17 +1120,16 @@ user.role==="admin"
 "admin";
 
 
+setRoleChangeData({
 
-const confirm =
-window.confirm(
-`Are you sure you want to make ${
-newRole==="admin"
-?
-"Admin"
-:
-"User"
-}?`
-);
+id:user.id,
+
+role:newRole
+
+});
+
+
+}}
 
 
 
@@ -1549,6 +1578,100 @@ Yes
 }
   
 
+
+  {
+roleChangeData &&
+
+<div className="
+fixed
+inset-0
+bg-black/40
+flex
+items-center
+justify-center
+z-50
+">
+
+
+<div className="
+bg-white
+rounded-2xl
+p-6
+w-[320px]
+">
+
+<h2 className="font-bold text-lg">
+Change Role?
+</h2>
+
+
+<p className="text-gray-500 mt-2">
+
+Are you sure you want to make 
+{roleChangeData.role==="admin"
+?
+"Admin"
+:
+"User"
+}?
+
+</p>
+
+
+<div className="
+flex
+gap-3
+mt-5
+">
+
+
+<button
+
+onClick={()=>setRoleChangeData(null)}
+
+className="
+flex-1
+py-3
+bg-gray-100
+rounded-xl
+"
+
+>
+No
+</button>
+
+
+
+<button
+
+onClick={confirmRoleChange}
+
+className="
+flex-1
+py-3
+bg-amber-500
+text-white
+rounded-xl
+"
+
+>
+Yes
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+}
+
+
+
+  
 </div>
 
 </div>
