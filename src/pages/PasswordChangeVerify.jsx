@@ -37,7 +37,10 @@ import {
 } from "../components/ui/Toast";
 
 
-
+import {
+  FiEye,
+  FiEyeOff
+} from "react-icons/fi";
 
 
 export default function PasswordChangeVerify(){
@@ -60,7 +63,16 @@ searchParams.get(
 );
 
 
+const [
+showNewPassword,
+setShowNewPassword
+]=useState(false);
+  
 
+const [
+showConfirmPassword,
+setShowConfirmPassword
+]=useState(false);
 
 
 const [
@@ -529,22 +541,13 @@ space-y-3
 ">
 
 
+<div className="relative">
+
 <input
-
-type="password"
-
+type={showNewPassword ? "text" : "password"}
 placeholder="New Password"
-
 value={newPassword}
-
-onChange={(e)=>
-
-setNewPassword(
-e.target.value
-)
-
-}
-
+onChange={(e)=>setNewPassword(e.target.value)}
 className="
 w-full
 h-12
@@ -553,34 +556,41 @@ rounded-lg
 border
 border-gray-100
 px-4
+pr-12
 outline-none
 focus:border-amber-500
 "
-
 />
 
+<button
+type="button"
+onClick={()=>setShowNewPassword(!showNewPassword)}
+className="
+absolute
+right-4
+top-1/2
+-translate-y-1/2
+text-gray-500
+"
+>
+{showNewPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+</button>
+
+</div>
 
 
 
 
 
+
+
+<div className="relative">
 
 <input
-
-type="password"
-
+type={showConfirmPassword ? "text" : "password"}
 placeholder="Confirm Password"
-
 value={confirmPassword}
-
-onChange={(e)=>
-
-setConfirmPassword(
-e.target.value
-)
-
-}
-
+onChange={(e)=>setConfirmPassword(e.target.value)}
 className="
 w-full
 h-12
@@ -589,11 +599,27 @@ rounded-lg
 border
 border-gray-100
 px-4
+pr-12
 outline-none
 focus:border-amber-500
 "
-
 />
+
+<button
+type="button"
+onClick={()=>setShowConfirmPassword(!showConfirmPassword)}
+className="
+absolute
+right-4
+top-1/2
+-translate-y-1/2
+text-gray-500
+"
+>
+{showConfirmPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+</button>
+
+</div>
 
 
 
