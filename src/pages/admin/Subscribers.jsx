@@ -41,7 +41,12 @@ setSearch
 ]=useState("");
 
 
+const [
+deleteId,
+setDeleteId
+]=useState(null);
 
+  
 
 useEffect(()=>{
 
@@ -80,47 +85,32 @@ console.log(error);
 
 
 
-const remove = async(id)=>{
+const remove=(id)=>{
 
+setDeleteId(id);
 
-const confirm =
-window.confirm(
-"Delete this subscriber?"
-);
+};
 
-
-
-if(!confirm)
-return;
-
-
+const confirmDelete=async()=>{
 
 try{
 
-
-await deleteSubscriber(id);
-
+await deleteSubscriber(deleteId);
 
 successToast(
-"Subscriber deleted"
-);
-
+"Subscriber deleted");
 
 load();
 
+setDeleteId(null);
 
 }
-
 catch(error){
 
-
 errorToast(
-"Delete failed"
-);
-
+"Delete failed");
 
 }
-
 
 };
 
@@ -648,6 +638,102 @@ No subscribers found
 </div>
 
 
+
+
+
+  {
+deleteId && (
+
+<div
+className="
+fixed
+inset-0
+bg-black/40
+flex
+items-center
+justify-center
+z-[100]
+"
+>
+
+<div
+className="
+bg-white
+rounded-xl
+p-5
+w-[300px]
+shadow-xl
+"
+>
+
+<h3
+className="
+font-black
+text-lg
+text-slate-900
+"
+>
+Delete Subscriber?
+</h3>
+
+<p
+className="
+text-sm
+text-gray-500
+mt-2
+"
+>
+Are you sure you want to delete this subscriber?
+</p>
+
+<div
+className="
+flex
+gap-3
+mt-5
+"
+>
+
+<button
+onClick={()=>setDeleteId(null)}
+className="
+flex-1
+h-10
+rounded-lg
+bg-gray-200
+font-bold
+text-sm
+"
+>
+No
+</button>
+
+<button
+onClick={confirmDelete}
+className="
+flex-1
+h-10
+rounded-lg
+bg-red-500
+text-white
+font-bold
+text-sm
+"
+>
+Yes
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)
+}
+
+
+  
 </div>
 
 
