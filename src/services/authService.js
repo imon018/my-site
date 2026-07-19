@@ -194,6 +194,8 @@ name,
 token:
 crypto.randomUUID(),
 
+verified:false
+
 createdAt:
 serverTimestamp()
 
