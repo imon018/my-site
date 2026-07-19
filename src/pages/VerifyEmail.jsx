@@ -12,8 +12,11 @@ import {
 
 
 import {
+  collection,
+  query,
+  where,
+  getDocs,
   doc,
-  getDoc,
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -148,24 +151,32 @@ setLoading(true);
 
 
 
-const requestRef =
-doc(
+const verificationQuery =
 
+query(
+
+collection(
 db,
+"emailVerificationRequests"
+),
 
-"emailVerificationRequests",
-
+where(
+"token",
+"==",
 token
+)
 
 );
+
+
 
 
 
 
 
 const snap =
-await getDoc(
-requestRef
+await getDocs(
+verificationQuery
 );
 
 
@@ -174,7 +185,9 @@ requestRef
 
 
 
-if(!snap.exists()){
+if(
+snap.empty
+){
 
 
 throw new Error(
@@ -188,8 +201,17 @@ throw new Error(
 
 
 
+
+
+const requestDoc =
+snap.docs[0];
+
+
+
+
+
 const data =
-snap.data();
+requestDoc.data();
 
 
 
@@ -234,7 +256,7 @@ emailVerified:true
 
 await deleteDoc(
 
-requestRef
+requestDoc.ref
 
 );
 
@@ -324,6 +346,13 @@ setLoading(false);
 
 
 };
+
+
+
+
+
+
+
 
 
 return (
@@ -580,7 +609,7 @@ loading
 }
 
 
-  {
+{
 !verified && (
 
 <div
