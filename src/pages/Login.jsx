@@ -224,7 +224,7 @@ navigate(
 
 }
 
-
+}
 
 catch(error){
 
