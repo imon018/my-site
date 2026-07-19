@@ -8,7 +8,9 @@ import PremiumHighlights from "../components/PremiumHighlights";
 import Newsletter from "../components/Newsletter";
 
 export default function Home() {
+  
   return (
+  <div className="min-h-screen bg-[#FAF7F2]">
     <AnimatedWrapper>
 
       <Hero />
@@ -26,5 +28,6 @@ export default function Home() {
       <Newsletter />
 
     </AnimatedWrapper>
-  );
+  </div>
+);
 }
