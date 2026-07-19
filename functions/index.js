@@ -427,6 +427,196 @@ throw new HttpsError(
 );
 
 
+// =================================================
+// RESEND VERIFICATION EMAIL
+// LOGIN NOT REQUIRED
+// =================================================
+
+
+exports.resendVerificationEmail =
+
+
+onCall(
+
+async(request)=>{
+
+
+const {
+
+email
+
+}=request.data;
+
+
+
+
+if(!email){
+
+
+throw new HttpsError(
+
+"invalid-argument",
+
+"Email required."
+
+);
+
+}
+
+
+
+
+let userRecord;
+
+
+try{
+
+userRecord =
+
+await admin.auth()
+
+.getUserByEmail(
+
+email
+
+);
+
+}
+
+catch(error){
+
+throw new HttpsError(
+
+"not-found",
+
+"No account found with this email."
+
+);
+
+}
+
+
+
+
+const userDoc =
+
+await admin.firestore()
+
+.collection("users")
+
+.doc(userRecord.uid)
+
+.get();
+
+
+
+
+if(
+
+userDoc.exists
+
+&&
+
+userDoc.data().emailVerified === true
+
+){
+
+throw new HttpsError(
+
+"already-exists",
+
+"This email is already verified."
+
+);
+
+}
+
+
+
+
+const token =
+
+crypto.randomUUID();
+
+
+
+
+try{
+
+// Creating a brand new document (instead of
+// updating the old one) does two things:
+// 1) Admin SDK write bypasses Firestore rules,
+//    so no "Missing or insufficient permissions".
+// 2) A new doc re-triggers sendVerificationEmail
+//    (onDocumentCreated), which an update would not.
+
+await admin.firestore()
+
+.collection("emailVerificationRequests")
+
+.doc(token)
+
+.set({
+
+uid:
+
+userRecord.uid,
+
+
+email,
+
+
+name:
+
+userDoc.exists
+
+? (userDoc.data().name || "")
+
+: "",
+
+
+token,
+
+
+verified:false,
+
+
+createdAt:
+
+admin.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+
+
+return {
+
+success:true
+
+};
+
+}
+
+catch(error){
+
+console.log(error);
+
+
+throw new HttpsError(
+
+"internal",
+
+"Failed to resend verification email."
+
+);
+
+}
+
+
+}
+
+);
 
 
 // =================================================
