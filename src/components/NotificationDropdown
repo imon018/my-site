@@ -112,7 +112,7 @@ export default function NotificationDropdown({
             No Notifications
           </div>
         ) : (
-          notifications.slice(0, 10).map((item) => (
+          notifications.slice(0, 5).map((item) => (
             <div
               key={item.id}
               className={`
@@ -198,10 +198,9 @@ export default function NotificationDropdown({
             hover:underline
           "
         >
-          See More →
+          See All →
         </Link>
       </div>
     </div>
   );
 }
-
