@@ -1,152 +1,263 @@
-import { db } from "../firebase/firestore";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+
+import useAuth from "../hooks/useAuth";
+
 
 import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  getDocs,
-  limit,
-} from "firebase/firestore";
+  listenUserNotifications,
+  listenAdminNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  deleteNotification,
+  deleteAllNotifications,
+} from "../services/notificationService";
 
-/* ===========================================
-   Notification Types
-=========================================== */
 
-export const NotificationTypes = {
-  REGISTER: "register",
-  LOGIN: "login",
-  PROFILE: "profile",
-  ORDER: "order",
-  ORDER_STATUS: "order_status",
-  RETURN: "return",
-  CANCEL: "cancel",
-  REVIEW: "review",
-  PRODUCT: "product",
-  BANNER: "banner",
-  SETTINGS: "settings",
-  SUBSCRIBER: "subscriber",
-  ADMIN: "admin",
-  SYSTEM: "system",
-  CUSTOM: "custom",
-};
 
-/* ===========================================
-   Priority
-=========================================== */
+const NotificationContext = createContext();
 
-export const NotificationPriority = {
-  HIGH: "high",
-  MEDIUM: "medium",
-  LOW: "low",
-};
 
-/* ===========================================
-   Build Notification Object
-=========================================== */
 
-function buildNotification(data) {
-  return {
-    title: data.title || "Notification",
+export function NotificationProvider({
+  children
+}) {
 
-    message: data.message || "",
 
-    type: data.type || NotificationTypes.SYSTEM,
+  const {
+    user
+  } = useAuth();
 
-    priority:
-      data.priority || NotificationPriority.LOW,
 
-    receiverId: data.receiverId,
 
-    senderId: data.senderId || null,
+  const [
+    notifications,
+    setNotifications
+  ] = useState([]);
 
-    senderName: data.senderName || "",
 
-    senderRole: data.senderRole || "",
 
-    actionUrl: data.actionUrl || "",
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
 
-    image: data.image || "",
 
-    extra: data.extra || {},
 
-    isRead: false,
 
-    isDeleted: false,
 
-    createdAt: serverTimestamp(),
+  useEffect(()=>{
+
+
+    if(!user){
+
+      setNotifications([]);
+
+      setLoading(false);
+
+      return;
+
+    }
+
+
+
+    let unsubscribe;
+
+
+
+    // ================================
+    // ADMIN NOTIFICATION
+    // ================================
+
+
+    if(user.role === "admin"){
+
+
+      unsubscribe =
+      listenAdminNotifications(
+        (data)=>{
+
+          setNotifications(data);
+
+          setLoading(false);
+
+        }
+      );
+
+
+    }
+
+
+
+    // ================================
+    // USER NOTIFICATION
+    // ================================
+
+
+    else{
+
+
+      unsubscribe =
+      listenUserNotifications(
+
+        user.uid,
+
+        (data)=>{
+
+          setNotifications(data);
+
+          setLoading(false);
+
+        }
+
+      );
+
+
+    }
+
+
+
+
+
+    return ()=>{
+
+
+      if(unsubscribe){
+
+        unsubscribe();
+
+      }
+
+
+    };
+
+
+
+  },[user]);
+
+
+
+
+
+
+
+  const unreadCount =
+notifications.filter(
+(item)=>!item.isRead
+).length;
+
+
+
+
+
+
+
+  const markAsRead = async(id)=>{
+
+
+    await markNotificationRead(id);
+
+
   };
-}
 
-/* ===========================================
-   Duplicate Prevention
-=========================================== */
 
-async function hasDuplicate(data) {
-  const q = query(
-    collection(db, "notifications"),
-    where("receiverId", "==", data.receiverId),
-    where("title", "==", data.title),
-    where("message", "==", data.message),
-    limit(1)
+
+
+
+
+
+  const markAllAsRead = async()=>{
+
+
+    await markAllNotificationsRead(
+      notifications
+    );
+
+
+  };
+
+
+
+
+
+
+
+  const removeNotification = async(id)=>{
+
+
+    await deleteNotification(id);
+
+
+  };
+
+
+
+
+
+
+
+  const removeAllNotifications = async()=>{
+
+
+    await deleteAllNotifications(
+      notifications
+    );
+
+
+  };
+
+
+
+
+
+
+
+  return (
+
+
+    <NotificationContext.Provider
+
+      value={{
+
+        notifications,
+
+        unreadCount,
+
+        loading,
+
+        markAsRead,
+
+        markAllAsRead,
+
+        removeNotification,
+
+        removeAllNotifications,
+
+      }}
+
+    >
+
+
+      {children}
+
+
+    </NotificationContext.Provider>
+
+
   );
 
-  const snap = await getDocs(q);
 
-  return !snap.empty;
 }
 
-/* ===========================================
-   Create Notification
-=========================================== */
 
-export async function createNotification(data) {
-  try {
-    const notification = buildNotification(data);
 
-    const duplicate = await hasDuplicate(notification);
 
-    if (duplicate) return;
 
-    await addDoc(
-      collection(db, "notifications"),
-      notification
-    );
-  } catch (error) {
-    console.error(
-      "Create Notification Error:",
-      error
-    );
-  }
-}
 
-/* ===========================================
-   Shortcut Helpers
-=========================================== */
-
-export async function notifyAdmin(data) {
-  return createNotification({
-    ...data,
-    receiverId: "ADMIN",
-  });
-}
-
-export async function notifyUser(userId, data) {
-  return createNotification({
-    ...data,
-    receiverId: userId,
-  });
-}
-
-export async function notifyAllUsers(data) {
-  return createNotification({
-    ...data,
-    receiverId: "ALL_USERS",
-  });
-}
+export const useNotifications = () =>
+useContext(NotificationContext);
