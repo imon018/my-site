@@ -1,7 +1,8 @@
 import {
-  useState
+  useState,
+  useRef,
+  useEffect
 } from "react";
-
 
 import {
   Link,
@@ -123,7 +124,7 @@ const [
 ]=useState(false);
 
 
-
+const searchRef = useRef(null);
 
 
 const [
@@ -184,7 +185,48 @@ setSearchOpen(false);
 };
 
 
+useEffect(()=>{
 
+
+const handleClickOutside = (e)=>{
+
+
+if(
+searchRef.current &&
+!searchRef.current.contains(e.target)
+){
+
+setSearchOpen(false);
+
+setSearch("");
+
+}
+
+
+};
+
+
+
+document.addEventListener(
+"mousedown",
+handleClickOutside
+);
+
+
+
+return ()=>{
+
+
+document.removeEventListener(
+"mousedown",
+handleClickOutside
+);
+
+
+};
+
+
+},[]);
 
 
 return (
@@ -419,89 +461,153 @@ gap-4
 >
 
 
- {/* SEARCH */}
+  {/* SEARCH */}
 
-<div className="relative flex items-center gap-1">
+<div
+ref={searchRef}
+className="
+relative
+flex
+items-center
+gap-1
+"
+>
 
-  {
-    searchOpen && (
 
-      <form
-        onSubmit={handleSearch}
-        className="
-        absolute
-        right-9
-        top-1/2
-        -translate-y-1/2
-        w-[240px]
-        z-0
-        "
-      >
+<form
+onSubmit={handleSearch}
+className={`
+absolute
+right-9
+top-1/2
+-translate-y-1/2
+transition-all
+duration-300
+ease-in-out
+origin-right
+overflow-hidden
 
-        <FiSearch
-          size={18}
-          className="
-          absolute
-          left-3
-          top-1/2
-          -translate-y-1/2
-          text-gray-400
-          "
-        />
+${
+searchOpen
+?
+"w-[240px] opacity-100 scale-x-100"
+:
+"w-0 opacity-0 scale-x-95 pointer-events-none"
+}
 
-        <input
-          autoFocus
-          value={search}
-          onChange={(e)=>setSearch(e.target.value)}
-          placeholder="Search products..."
-          className="
-          w-full
-          h-10
-          bg-[#FAF7F2]
-          border
-          border-gray-200
-          rounded-full
-          pl-10
-          pr-10
-          text-sm
-          outline-none
-          focus:border-[#D4AF37]
-          "
-        />
+`}
+>
 
-        <button
-          type="button"
-          onClick={()=>{
-            setSearchOpen(false);
-            setSearch("");
-          }}
-          className="
-          absolute
-          right-3
-          top-1/2
-          -translate-y-1/2
-          text-gray-500
-          "
-        >
-          <FiX size={18}/>
-        </button>
 
-      </form>
+<FiSearch
 
-    )
-  }
+size={18}
 
-  <button
-    onClick={()=>setSearchOpen(true)}
-    className="relative z-10"
-  >
-    <FiSearch
-      size={22}
-      className="text-[#071F57]"
-    />
-  </button>
+className="
+absolute
+left-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+"
+
+/>
+
+
+
+
+<input
+
+autoFocus={searchOpen}
+
+value={search}
+
+onChange={(e)=>
+setSearch(e.target.value)
+}
+
+placeholder="Search products..."
+
+className="
+w-full
+h-10
+bg-[#FAF7F2]
+border
+border-gray-200
+rounded-full
+pl-10
+pr-10
+text-sm
+outline-none
+focus:border-[#D4AF37]
+"
+
+/>
+
+
+
+
+<button
+
+type="button"
+
+onClick={()=>{
+
+setSearchOpen(false);
+
+setSearch("");
+
+}}
+
+className="
+absolute
+right-3
+top-1/2
+-translate-y-1/2
+text-gray-500
+"
+
+>
+
+<FiX size={18}/>
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+
+<button
+
+onClick={()=>setSearchOpen(true)}
+
+className="
+relative
+z-10
+"
+
+>
+
+<FiSearch
+
+size={22}
+
+className="text-[#071F57]"
+
+/>
+
+</button>
+
+
 
 </div>
+
+
 
 
 
