@@ -96,7 +96,8 @@ export default function MobileBottomNav() {
         border-t
         border-amber-500/15
         shadow-[0_-10px_30px_rgba(15,23,42,0.10)]
-        rounded-t-2xl
+        rounded-2xl
+        mb-1.5
         "
       >
         {navItems.map((item) => {
