@@ -97,6 +97,7 @@ overflow-y-auto
 bg-[#FAF7F2]
 px-4
 py-5
+pb-28
 space-y-2
 "
 
