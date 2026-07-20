@@ -42,6 +42,9 @@ import UserDrawerHeader from "./user/UserDrawerHeader";
 import UserDrawerMenu from "./user/UserDrawerMenu";
 
 
+import NotificationDropdown from "./NotificationDropdown";
+
+
 import {
   logout
 } from "../services/authService";
@@ -128,6 +131,14 @@ const searchRef = useRef(null);
 
 
 const [
+ notifOpen,
+ setNotifOpen
+]=useState(false);
+
+const notifRef = useRef(null);
+
+
+const [
  search,
  setSearch
 ]=useState("");
@@ -202,6 +213,15 @@ setSearch("");
 
 }
 
+
+if(
+notifRef.current &&
+!notifRef.current.contains(e.target)
+){
+
+setNotifOpen(false);
+
+}
 
 };
 
@@ -619,6 +639,11 @@ className="text-[#071F57]"
 {/* NOTIFICATION */}
 
 
+<div
+ref={notifRef}
+className="relative"
+>
+
 <button
 
 onClick={()=>{
@@ -634,17 +659,7 @@ return;
 
 
 
-if(isAdmin){
-
-navigate("/admin/notifications");
-
-}
-
-else{
-
-navigate("/profile/notifications");
-
-}
+setNotifOpen(prev => !prev);
 
 
 }}
@@ -699,6 +714,17 @@ justify-center
 
 
 </button>
+
+{
+notifOpen && (
+<NotificationDropdown
+close={()=>setNotifOpen(false)}
+notificationPath={isAdmin ? "/admin/notifications" : "/profile/notifications"}
+/>
+)
+}
+
+</div>
 
 
 
