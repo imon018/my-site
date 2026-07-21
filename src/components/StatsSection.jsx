@@ -418,7 +418,7 @@ export default function StatsSection(){
 
                           {
                             review.name ||
-                            "Dream Mode Customer"
+                            "Customer"
                           }
 
 
