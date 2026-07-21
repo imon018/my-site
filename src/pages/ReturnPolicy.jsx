@@ -45,7 +45,7 @@ description="Learn about our product return process and customer friendly return
 
 
 <p>
-At {settings.storeName || "DREAM MODE"}, customer satisfaction is our priority.
+At {settings.storeName || ""}, customer satisfaction is our priority.
 We carefully check every product before delivery to
 provide you with the best shopping experience.
 </p>
@@ -138,7 +138,7 @@ Return Shipping
 
 
 <p>
-If the issue is caused by Dream Mode, we will support the
+If the issue is caused by {settings.storeName || ""}, we will support the
 return process. For customer preference based returns,
 shipping charges may apply.
 </p>
