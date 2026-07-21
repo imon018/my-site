@@ -56,12 +56,11 @@ function AppContent(){
 
 const {
   settings,
-  loading: settingsLoading,
 } = useSettings();
 
 
 
-  if (loading || settingsLoading) {
+  if(loading){
 
 
     return (
@@ -95,31 +94,33 @@ const {
 
 
           <h2
-  className="
-    text-2xl
-    font-bold
-  "
->
-  {settings.storeName}
-</h2>
 
-<p
-  className="
-    text-gray-500
-    mt-2
-  "
->
-  Loading...
-</p>
+            className="
+            text-2xl
+            font-bold
+            "
 
-<p
-  className="
-    text-gray-500
-    text-sm
-  "
->
-  Checking authentication
-</p>
+          >
+
+            Loading {settings?.storeName || "DREAM MODE"}...
+
+          </h2>
+
+
+
+
+          <p
+
+            className="
+            text-gray-500
+            mt-2
+            "
+
+          >
+
+            Checking authentication
+
+          </p>
 
 
 
