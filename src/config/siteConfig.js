@@ -4,7 +4,7 @@ export const getSiteConfig = (settings = {}) => {
 
     appName:
       settings.storeName ||
-      "DREAM MODE",
+      "",
 
 
     email:
