@@ -84,23 +84,7 @@ function buildNotification(data) {
   };
 }
 
-/* ===========================================
-   Duplicate Prevention
-=========================================== */
 
-async function hasDuplicate(data) {
-  const q = query(
-    collection(db, "notifications"),
-    where("receiverId", "==", data.receiverId),
-    where("title", "==", data.title),
-    where("message", "==", data.message),
-    limit(1)
-  );
-
-  const snap = await getDocs(q);
-
-  return !snap.empty;
-}
 
 /* ===========================================
    Create Notification
@@ -109,10 +93,6 @@ async function hasDuplicate(data) {
 export async function createNotification(data) {
   try {
     const notification = buildNotification(data);
-
-    const duplicate = await hasDuplicate(notification);
-
-    if (duplicate) return;
 
     await addDoc(
       collection(db, "notifications"),
@@ -303,9 +283,9 @@ export async function markAllNotificationsRead(
 
 export async function deleteNotification(id) {
   try {
-    await updateDoc(doc(db, "notifications", id), {
-      isDeleted: true,
-    });
+    await deleteDoc(
+      doc(db, "notifications", id)
+    );
   } catch (error) {
     console.error(error);
   }
@@ -321,9 +301,9 @@ export async function deleteAllNotifications(
   try {
     await Promise.all(
       notifications.map((item) =>
-        updateDoc(doc(db, "notifications", item.id), {
-          isDeleted: true,
-        })
+        deleteDoc(
+          doc(db, "notifications", item.id)
+        )
       )
     );
   } catch (error) {
