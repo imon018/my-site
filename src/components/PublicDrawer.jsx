@@ -544,13 +544,12 @@ Dashboard
 
 
 <div
-
 className="
 border-t
 p-6
-mb-24
+pb-32
+shrink-0
 "
-
 >
 
 
