@@ -514,10 +514,10 @@ photoURL:
     flex-col
     items-center
     justify-center
-    gap-2
+    gap-1
     w-full
-    h-36
-    rounded-3xl
+    h-24
+    rounded-2xl
     border-2
     border-dashed
     border-yellow-300
@@ -542,18 +542,17 @@ photoURL:
   />
 
   <FiUploadCloud
-  size={52}
+  size={34}
   className="text-yellow-500"
 />
 
-  <h4 className="font-bold text-lg text-blue-900">
-    Upload Photos
-  </h4>
+<h4 className="font-semibold text-base text-blue-900">
+  Upload Photos
+</h4>
 
-  <p className="text-sm text-gray-500 text-center">
-    JPG • PNG • WEBP <br />
-    Maximum 5 Images
-  </p>
+<p className="text-xs text-gray-500 text-center">
+  JPG • PNG • WEBP • Max 5 Images
+</p>
 
 </label>
 
