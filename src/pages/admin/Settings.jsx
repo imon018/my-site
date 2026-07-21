@@ -915,7 +915,7 @@ text-amber-500
 
 <input
 
-type="text"
+type="url"
 
 name="websiteUrl"
 
