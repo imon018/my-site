@@ -177,7 +177,7 @@ export async function getLatestReviews(
 
           let name =
             data.userName ||
-            "Dream Mode Customer";
+            "Customer";
 
 
           let photo =
