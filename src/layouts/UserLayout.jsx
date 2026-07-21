@@ -383,7 +383,7 @@ font-bold
 
 {
 settings?.storeName ||
-"Dream Mode"
+""
 }
 
 
