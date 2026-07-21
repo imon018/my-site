@@ -22,7 +22,7 @@ export default function Contact() {
     e.preventDefault();
 
     alert(
-      "Thank you for contacting Dream Mode. We will get back to you soon."
+      `Thank you for contacting ${settings.storeName || ""}. We will get back to you soon.`
     );
 
   };
@@ -50,7 +50,7 @@ export default function Contact() {
 
         <p>
           Have questions about products, orders, delivery or
-          policies? Contact {settings.storeName || "DREAM MODE"} support team and we
+          policies? Contact {settings.storeName || ""} support team and we
           will assist you as soon as possible.
         </p>
 
