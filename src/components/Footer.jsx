@@ -80,7 +80,7 @@ src={
 }
 alt={
   settings.storeName ||
-  "Dream Mode"
+  ""
 }
 className="
 w-14
@@ -102,14 +102,14 @@ object-contain
 >
   <span className="text-white">
 {
-(settings.storeName || "DREAM MODE")
+(settings.storeName || "")
 .split(" ")[0]
 }
 </span>{" "}
 
 <span className="text-amber-500">
 {
-(settings.storeName || "DREAM MODE")
+(settings.storeName || "")
 .split(" ").slice(1).join(" ")
 }
 </span>
@@ -143,7 +143,7 @@ text-sm
 "
 >
 
-{settings.storeName || "Dream Mode"} is your trusted destination for premium dress. We ensure quality, style and customer satisfaction.
+{settings.storeName || ""} is your trusted destination for premium dress. We ensure quality, style and customer satisfaction.
 
 </p>
 
@@ -362,13 +362,13 @@ text-sm
 
 <p className="flex gap-3">
 <FiPhone className="text-amber-500"/>
-{settings.phone || "+8801406978619"}
+{settings.phone || ""}
 </p>
 
 
 <p className="flex gap-3">
 <FiMail className="text-amber-500"/>
-{settings.email || "dreammode27@gmail.com"}
+{settings.email || ""}
 </p>
 
 
@@ -479,7 +479,7 @@ text-sm
 "
 >
 
-© 2026 All Rights Reserved by {settings.storeName || "DREAM MODE"}
+© 2026 All Rights Reserved by {settings.storeName || ""}
 
 </div>
 
