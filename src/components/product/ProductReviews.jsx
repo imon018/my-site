@@ -11,6 +11,7 @@ import {
   addReview,
   getProductReviews,
   hasUserReviewed,
+  formatReviewDate,
 } from "../../services/reviewService";
 
 import {
@@ -21,6 +22,7 @@ import {
 
 import { FiUploadCloud } from "react-icons/fi";
 
+import { uploadImages } from "../../services/uploadService";
 
 
 export default function ProductReviews({
@@ -31,6 +33,12 @@ export default function ProductReviews({
   const {
     user,
   } = useAuth();
+
+
+  const [
+  selectedImage,
+  setSelectedImage,
+] = useState(null);
 
 
 
@@ -226,6 +234,14 @@ export default function ProductReviews({
 
 
 
+      let uploadedImages = [];
+
+if (images.length > 0) {
+  uploadedImages = await uploadImages(images);
+}
+
+
+
       await addReview({
 
         productId,
@@ -237,7 +253,7 @@ export default function ProductReviews({
 
         userName:
   user.name ||
-  "Dream Mode Customer",
+  "Customer",
 
 photoURL:
   user.photoURL || "",
@@ -255,6 +271,7 @@ photoURL:
 
 
         verifiedBuyer:false,
+        images: uploadedImages,
 
 
       });
@@ -267,7 +284,8 @@ photoURL:
       );
 
 
-
+			setImages([]);
+      
       setComment("");
 
       setRating(5);
@@ -533,12 +551,16 @@ photoURL:
     type="file"
     multiple
     accept="image/*"
+    disabled={loading}
     className="hidden"
-    onChange={(e)=>
-      setImages(
-        Array.from(e.target.files).slice(0,5)
-      )
-    }
+      onChange={(e)=>{
+  const files = Array.from(e.target.files);
+
+  setImages((prev)=>
+    [...prev, ...files].slice(0,5)
+  );
+}}
+    
   />
 
   <FiUploadCloud
@@ -559,23 +581,59 @@ photoURL:
 {
   images.length > 0 && (
 
-    <div className="flex gap-3 flex-wrap mt-4">
+    <div className="flex flex-wrap gap-3 mt-4">
 
       {
         images.map((image, index) => (
 
-          <img
+          <div
             key={index}
-            src={URL.createObjectURL(image)}
-            alt=""
-            className="
-              w-24
-              h-24
-              rounded-xl
-              object-cover
-              border
-            "
-          />
+            className="relative"
+          >
+
+            <img
+              src={URL.createObjectURL(image)}
+              alt={`Preview ${index + 1}`}
+              className="
+                w-24
+                h-24
+                rounded-xl
+                object-cover
+                border
+                border-gray-200
+                shadow-sm
+              "
+            />
+
+            <button
+              type="button"
+              onClick={() =>
+                setImages(
+                  images.filter((_, i) => i !== index)
+                )
+              }
+              className="
+                absolute
+                -top-2
+                -right-2
+                w-6
+                h-6
+                rounded-full
+                bg-red-500
+                text-white
+                text-xs
+                font-bold
+                flex
+                items-center
+                justify-center
+                shadow-md
+                hover:bg-red-600
+              "
+            >
+              ✕
+            </button>
+
+          </div>
 
         ))
       }
@@ -716,49 +774,84 @@ photoURL:
               ">
 
 
-                <div>
-
-
-                  <h4 className="
-                    font-black
-                    text-blue-900
-                  ">
-                    {review.userName}
-                  </h4>
-
-
-                  <p className="
-                    text-yellow-500
-                    mt-1
-                  ">
-                    {"⭐".repeat(
-                      review.rating
-                    )}
-                  </p>
-
-
-                </div>
-
-
-
-
-
                 {
-                  review.verifiedBuyer &&
+  review.photoURL ? (
 
-                  <span className="
-                    px-3
-                    py-1
-                    rounded-full
-                    bg-green-100
-                    text-green-700
-                    text-xs
-                    font-bold
-                  ">
-                    ✓ Verified Buyer
-                  </span>
+    <img
+      src={review.photoURL}
+      alt={review.userName}
+      className="
+        w-12
+        h-12
+        rounded-full
+        object-cover
+      "
+    />
 
-                }
+  ) : (
+
+    <div
+      className="
+        w-12
+        h-12
+        rounded-full
+        bg-gradient-to-r
+        from-blue-900
+        to-yellow-500
+        text-white
+        flex
+        items-center
+        justify-center
+        font-black
+        text-sm
+      "
+    >
+      DM
+    </div>
+
+  )
+}
+
+
+<div className="flex-1 ml-3">
+
+  <h4 className="
+    font-black
+    text-blue-900
+  ">
+    {review.userName}
+  </h4>
+
+  <div className="
+    flex
+    items-center
+    gap-2
+    mt-1
+  ">
+
+    <span className="text-yellow-500">
+      {"⭐".repeat(review.rating)}
+    </span>
+
+    {
+      review.verifiedBuyer && (
+
+        <span className="
+          text-xs
+          font-semibold
+          text-green-600
+        ">
+          ✓ Verified Purchase
+        </span>
+
+      )
+    }
+
+  </div>
+
+</div>
+
+
 
 
               </div>
@@ -775,6 +868,60 @@ photoURL:
                 {review.comment}
               </p>
 
+              
+
+
+              {
+  review.images?.length > 0 && (
+
+    <div className="
+      flex
+      flex-wrap
+      gap-3
+      mt-4
+    ">
+
+      {
+        review.images.map((img,index)=>(
+
+  <img
+    key={index}
+    src={img.imageUrl}
+    alt=""
+    onClick={() =>
+      setSelectedImage(img.imageUrl)
+    }
+    className="
+      w-20
+      h-20
+      rounded-xl
+      object-cover
+      cursor-pointer
+      border
+      hover:scale-105
+      transition
+    "
+  />
+
+))
+      }
+
+    </div>
+
+  )
+}
+
+
+              <p className="
+  mt-4
+  text-sm
+  text-gray-500
+">
+  {formatReviewDate(review.createdAt)}
+</p>
+
+              
+
 
 
             </div>
@@ -786,7 +933,63 @@ photoURL:
 
       </div>
 
+{
+  selectedImage && (
 
+    <div
+      onClick={() =>
+        setSelectedImage(null)
+      }
+      className="
+        fixed
+        inset-0
+        bg-black/80
+        z-[9999]
+        flex
+        items-center
+        justify-center
+        p-4
+      "
+    >
+
+      <img
+        src={selectedImage}
+        alt=""
+        onClick={(e)=>
+          e.stopPropagation()
+        }
+        className="
+          max-w-full
+          max-h-[90vh]
+          rounded-2xl
+          shadow-2xl
+        "
+      />
+
+      <button
+        onClick={() =>
+          setSelectedImage(null)
+        }
+        className="
+          absolute
+          top-5
+          right-5
+          w-10
+          h-10
+          rounded-full
+          bg-white
+          text-black
+          font-bold
+          text-xl
+        "
+      >
+        ✕
+      </button>
+
+    </div>
+
+  )
+}
 
 
     </section>
