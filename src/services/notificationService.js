@@ -456,12 +456,12 @@ export async function notifyOrderCancelled(order) {
   });
 
   await notifyUser(order.userId, {
-    title: "Order Cancelled",
-    message: "Your cancellation request has been submitted.",
-    type: NotificationTypes.CANCEL,
-    priority: NotificationPriority.MEDIUM,
-    actionUrl: `/orders/${order.id}`,
-  });
+  title: "Return Request Sent",
+  message: "Your return request has been submitted.",
+  type: NotificationTypes.RETURN,
+  priority: NotificationPriority.MEDIUM,
+  actionUrl: `/profile/returns/${order.id}`,
+});
 }
 
 // =========================
@@ -474,7 +474,7 @@ export async function notifyReturnRequest(order) {
     message: `${order.customerName} requested a return.`,
     type: NotificationTypes.RETURN,
     priority: NotificationPriority.HIGH,
-    actionUrl: `/admin/orders/${order.id}`,
+    actionUrl: `/admin/return-orders/${order.id}`,
   });
 
   await notifyUser(order.userId, {
