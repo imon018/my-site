@@ -10,6 +10,7 @@ import {
   FiMail,
   FiPhone,
   FiMapPin,
+  FiGlobe,
   FiFacebook,
   FiMessageCircle,
   FiUploadCloud,
@@ -418,11 +419,6 @@ text-xl
 
 
 </div>
-
-
-
-
-
 
 
 
@@ -873,13 +869,36 @@ text-sm
 text-[#172033]
 mb-2
 ">
-
 Website URL
-
 </label>
 
 
-<div className="relative">
+<div className="
+relative
+">
+
+<div className="
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+w-12
+h-12
+rounded-xl
+bg-amber-50
+flex
+items-center
+justify-center
+">
+
+<FiGlobe
+className="
+text-amber-500
+text-xl
+"
+/>
+
+</div>
 
 
 <input
@@ -892,12 +911,21 @@ value={settings.websiteUrl}
 
 onChange={handleChange}
 
-placeholder="https://example.com"
+placeholder="Website URL"
 
-className={inputClass}
+className="
+w-full
+h-14
+pl-20
+rounded-xl
+border
+border-gray-200
+focus:ring-2
+focus:ring-amber-400
+outline-none
+"
 
 />
-
 
 </div>
 
