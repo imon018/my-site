@@ -15,6 +15,11 @@ import {
 
 
 import {
+  useSettings,
+} from "../../context/SettingsContext";
+
+
+import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -48,7 +53,9 @@ const {
 }=data;
 
 
-
+const {
+  settings,
+} = useSettings();
 
 
 const cards=[
@@ -304,7 +311,7 @@ font-semibold
 
 >
 
-Dream Mode Analytics
+{settings.storeName || ""} Analytics
 
 </p>
 
