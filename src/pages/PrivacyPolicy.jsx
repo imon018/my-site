@@ -23,7 +23,7 @@ export default function PrivacyPolicy(){
 
     {
       question:
-      `Does ${settings.storeName || "DREAM MODE"} share customer information?`,
+      `Does ${settings.storeName || ""} share customer information?`,
 
       answer:
       "No. Customer information is never sold or shared for unauthorized purposes."
@@ -68,7 +68,7 @@ export default function PrivacyPolicy(){
 
 
       description={
-        `Learn how ${settings.storeName || "DREAM MODE"} collects, uses and protects your personal information.`
+        `Learn how ${settings.storeName || ""} collects, uses and protects your personal information.`
       }
 
 
@@ -84,7 +84,7 @@ export default function PrivacyPolicy(){
 
         <p>
 
-          {settings.storeName || "DREAM MODE"}
+          {settings.storeName || ""}
 
           {" "}respects your privacy and is committed to
           protecting your personal information.
