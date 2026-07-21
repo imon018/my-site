@@ -51,6 +51,8 @@ address:"",
 
 facebook:"",
 
+websiteUrl:"",
+
 whatsapp:"",
 
 logoUrl:"",
@@ -450,167 +452,6 @@ handleSave();
 }}
 
 >
-
-
-
-
-
-
-
-
-
-{/* STORE LOGO */}
-
-
-<div>
-
-
-<label
-
-className="
-block
-font-bold
-text-sm
-text-[#172033]
-mb-2
-"
-
->
-
-Store Logo
-
-</label>
-
-
-
-
-
-<label
-
-htmlFor="logo"
-
-className="
-h-36
-rounded-xl
-border-dashed
-border
-border-gray-300
-bg-[#FAF7F2]
-flex
-flex-col
-items-center
-justify-center
-cursor-pointer
-overflow-hidden
-"
-
->
-
-
-
-{
-
-logoPreview ?
-
-
-
-<img
-
-src={logoPreview}
-
-className="
-w-28
-h-28
-object-contain
-rounded-xl
-"
-
-/>
-
-
-
-:
-
-
-
-<>
-
-
-<FiUploadCloud
-
-className="
-text-amber-500
-text-3xl
-mb-2
-"
-
-/>
-
-
-<p
-
-className="
-text-sm
-font-semibold
-"
-
->
-
-Upload Store Logo
-
-</p>
-
-
-
-<p
-
-className="
-text-xs
-text-gray-400
-"
-
->
-
-PNG JPG WEBP
-
-</p>
-
-
-
-</>
-
-
-}
-
-
-
-</label>
-
-
-
-
-
-<input
-
-id="logo"
-
-type="file"
-
-accept="image/*"
-
-className="hidden"
-
-onChange={handleLogoChange}
-
-/>
-
-
-
-</div>
-
-
-
-
 
 
 
@@ -1020,7 +861,47 @@ focus:border-amber-400
 
 
 
+  {/* WEBSITE */}
 
+
+  <div>
+
+<label className="
+block
+font-bold
+text-sm
+text-[#172033]
+mb-2
+">
+
+Website URL
+
+</label>
+
+
+<div className="relative">
+
+
+<input
+
+type="text"
+
+name="websiteUrl"
+
+value={settings.websiteUrl}
+
+onChange={handleChange}
+
+placeholder="https://example.com"
+
+className={inputClass}
+
+/>
+
+
+</div>
+
+</div>
 
 
 
@@ -1214,6 +1095,155 @@ className={inputClass}
 
 
 
+
+  {/* STORE LOGO */}
+
+
+<div>
+
+
+<label
+
+className="
+block
+font-bold
+text-sm
+text-[#172033]
+mb-2
+"
+
+>
+
+Store Logo
+
+</label>
+
+
+
+
+
+<label
+
+htmlFor="logo"
+
+className="
+h-36
+rounded-xl
+border-dashed
+border
+border-gray-300
+bg-[#FAF7F2]
+flex
+flex-col
+items-center
+justify-center
+cursor-pointer
+overflow-hidden
+"
+
+>
+
+
+
+{
+
+logoPreview ?
+
+
+
+<img
+
+src={logoPreview}
+
+className="
+w-28
+h-28
+object-contain
+rounded-xl
+"
+
+/>
+
+
+
+:
+
+
+
+<>
+
+
+<FiUploadCloud
+
+className="
+text-amber-500
+text-3xl
+mb-2
+"
+
+/>
+
+
+<p
+
+className="
+text-sm
+font-semibold
+"
+
+>
+
+Upload Store Logo
+
+</p>
+
+
+
+<p
+
+className="
+text-xs
+text-gray-400
+"
+
+>
+
+PNG JPG WEBP
+
+</p>
+
+
+
+</>
+
+
+}
+
+
+
+</label>
+
+
+
+
+
+<input
+
+id="logo"
+
+type="file"
+
+accept="image/*"
+
+className="hidden"
+
+onChange={handleLogoChange}
+
+/>
+
+
+
+</div>
 
 
 
