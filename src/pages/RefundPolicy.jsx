@@ -48,7 +48,7 @@ description="Understand our refund process, eligibility and payment guidelines."
 
 
 <p>
-{settings.storeName || "DREAM MODE"} provides refunds for eligible cases after
+{settings.storeName || ""} provides refunds for eligible cases after
 proper verification.
 </p>
 
