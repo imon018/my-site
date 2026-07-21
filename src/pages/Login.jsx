@@ -4,6 +4,11 @@ import {
 
 
 import {
+  useSettings,
+} from "../context/SettingsContext";
+
+
+import {
   useNavigate,
   useLocation,
   Link,
@@ -51,7 +56,9 @@ const location =
 useLocation();
 
 
-
+const {
+  settings,
+} = useSettings();
 
 
 
@@ -559,7 +566,7 @@ mt-1
 
 >
 
-Login to your Dream Mode account.
+Login to your {settings.storeName || ""} account.
 
 </p>
 
