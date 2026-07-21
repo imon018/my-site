@@ -7,8 +7,12 @@ import {
   FaStore,
 } from "react-icons/fa";
 
+import { useSettings } from "../context/SettingsContext";
+
 
 export default function WhyChooseUs() {
+
+const { settings } = useSettings();
 
   const items = [
     {
@@ -64,7 +68,7 @@ export default function WhyChooseUs() {
   whitespace-nowrap
   "
 >
-            Why Choose Dream Mode
+            Why Choose {settings.storeName || ""}
           </h2>
 
         </div>
