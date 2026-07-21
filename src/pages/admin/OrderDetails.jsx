@@ -1595,9 +1595,16 @@ disabled:opacity-50
 
   {showProductsModal && (
   <div className="fixed inset-0 z-[999] bg-black/40 flex items-end">
-    <div className="bg-white w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
-
-      <div className="p-5">
+    <div className="bg-white w-full rounded-t-3xl max-h-[80vh] flex flex-col">
+      
+      <div
+  className="
+    flex-1
+    overflow-y-auto
+    p-5
+    pb-[calc(8rem+env(safe-area-inset-bottom))]
+  "
+>
 
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-lg font-bold">
