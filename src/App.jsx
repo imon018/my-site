@@ -102,7 +102,7 @@ const {
 
           >
 
-            Loading {settings?.storeName || "DREAM MODE"}...
+            Loading {settings?.storeName || "Dream Mode"}...
 
           </h2>
 
