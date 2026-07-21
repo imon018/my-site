@@ -95,33 +95,31 @@ const {
 
 
           <h2
+  className="
+    text-2xl
+    font-bold
+  "
+>
+  {settings.storeName}
+</h2>
 
-            className="
-            text-2xl
-            font-bold
-            "
+<p
+  className="
+    text-gray-500
+    mt-2
+  "
+>
+  Loading...
+</p>
 
-          >
-
-            Loading {settings?.storeName || ""}...
-
-          </h2>
-
-
-
-
-          <p
-
-            className="
-            text-gray-500
-            mt-2
-            "
-
-          >
-
-            Checking authentication
-
-          </p>
+<p
+  className="
+    text-gray-500
+    text-sm
+  "
+>
+  Checking authentication
+</p>
 
 
 
