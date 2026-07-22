@@ -642,6 +642,7 @@ flex
 gap-3
 mt-4
 overflow-x-auto
+pb-2
 "
 >
 
@@ -710,6 +711,17 @@ ${
 
 
 
+  {/* PRODUCT INFO CARD */}
+
+<div
+className="
+mt-6
+bg-[#fffaf0]
+rounded-lg
+p-5
+"
+>
+
   {/*  HERO TITLE */}
 
 
@@ -717,8 +729,8 @@ ${
 className="
 text-xl
 font-bold
-mt-6
-text-gray-800
+mt-2
+text-purple-700
 "
 >
 
@@ -803,9 +815,9 @@ landing.offerPrice > 0
 
 <span
 className="
-text-4xl
+text-2xl
 font-black
-text-red-500
+text-purple-700
 "
 >
 
@@ -820,6 +832,7 @@ text-red-500
 className="
 text-xl
 text-gray-400
+font-bold
 line-through
 "
 >
@@ -895,10 +908,12 @@ text-red-500
 
 <div
 className="
-mt-8
+mt-5
 border
-rounded-xl
-p-5
+border-gray-200
+rounded-lg
+px-4
+py-2
 flex
 justify-between
 items-center
@@ -940,8 +955,8 @@ setQuantity(quantity-1)
 }}
 
 className="
-w-10
-h-10
+w-6
+h-6
 rounded-lg
 bg-gray-200
 font-bold
@@ -974,8 +989,8 @@ text-xl
 onClick={()=>setQuantity(quantity+1)}
 
 className="
-w-10
-h-10
+w-6
+h-6
 rounded-lg
 bg-amber-500
 text-white
@@ -996,7 +1011,7 @@ font-bold
 
 
 
-
+</div>
 
 
 
