@@ -12,31 +12,46 @@ import {
   FiEdit3,
   FiMonitor,
   FiSmartphone,
+  FiX,
+  FiMaximize2,
 } from "react-icons/fi";
 
 import Button from "../../components/ui/Button";
 
 
+
 export default function LandingPreview(){
+
 
 const navigate = useNavigate();
 
 
+
 const [landing,setLanding] = useState(null);
+
 
 const [view,setView] = useState("mobile");
 
+
 const [quantity,setQuantity] = useState(1);
+
+
+const [activeImage,setActiveImage] = useState(null);
+
+
+const [fullscreen,setFullscreen] = useState(false);
+
+
 
 
 
 useEffect(()=>{
 
-const data =
 
-sessionStorage.getItem(
+const data = sessionStorage.getItem(
 "landingPreviewData"
 );
+
 
 
 if(data){
@@ -48,11 +63,17 @@ JSON.parse(data)
 }
 
 
+
 },[]);
 
 
 
+
+
+
+
 if(!landing){
+
 
 return (
 
@@ -86,20 +107,53 @@ Preview Data পাওয়া যায়নি
 
 </h2>
 
+
 </div>
+
 
 </div>
 
 );
+
 
 }
 
 
 
 
+
+
+
+const images =
+
+landing.heroImages?.length
+
+?
+
+landing.heroImages
+
+:
+
+landing.heroImage
+
+?
+
+[landing.heroImage]
+
+:
+
+[];
+
+
+
+
+
+
+
 const discount =
 
-landing.offerPrice > 0 && landing.price > 0
+landing.offerPrice > 0 &&
+landing.price > 0
 
 ?
 
@@ -127,7 +181,32 @@ landing.price
 
 
 
+
+
+const formattedText = (text)=>{
+
+
+if(!text)
+
+return "";
+
+
+
+return text
+.replace(/\\n/g,"\n");
+
+
+};
+
+
+
+
+
+
+
+
 return (
+
 
 <div
 className="
@@ -139,49 +218,40 @@ lg:p-8
 >
 
 
+
 <div
 className="
 max-w-7xl
 mx-auto
-space-y-6
 "
 >
 
 
 
 
-{/* HEADER */}
+
+
+{/* PREVIEW HEADER */}
+
 
 <div
 className="
 bg-white
-rounded-xl
+rounded-2xl
 border
 border-amber-200
-p-5
 shadow-sm
+p-6
 "
 >
 
 
-<div
-className="
-flex
-flex-col
-lg:flex-row
-justify-between
-gap-5
-"
->
-
-
-
-<div>
 
 <h1
 className="
-text-3xl
+text-4xl
 font-black
+text-gray-900
 "
 >
 
@@ -190,16 +260,20 @@ Preview Landing Page
 </h1>
 
 
+
+
+
 <div
 className="
 flex
 items-center
-gap-2
-mt-4
+gap-3
+mt-5
+text-xl
 font-bold
-text-lg
 "
 >
+
 
 <FiArrowLeft/>
 
@@ -209,10 +283,6 @@ Preview - {landing.title}
 </div>
 
 
-</div>
-
-
-
 
 
 
@@ -220,18 +290,23 @@ Preview - {landing.title}
 className="
 flex
 gap-3
+mt-6
 "
 >
+
 
 
 <Button
 
 type="button"
 
+onClick={()=>navigate(-1)}
+
 className="
 bg-slate-900
 text-white
 rounded-xl
+px-6
 flex
 items-center
 gap-2
@@ -252,9 +327,10 @@ Edit
 type="button"
 
 className="
-bg-amber-500
+bg-black
 text-white
 rounded-xl
+px-6
 "
 >
 
@@ -263,8 +339,6 @@ Publish
 </Button>
 
 
-</div>
-
 
 </div>
 
@@ -273,11 +347,15 @@ Publish
 
 
 
-{/* VIEW BUTTON */}
+
+
+{/* VIEW SWITCH */}
+
+
 
 <div
 className="
-mt-6
+mt-8
 flex
 justify-center
 "
@@ -300,13 +378,13 @@ flex
 onClick={()=>setView("mobile")}
 
 className={`
-px-5
+px-6
 py-3
 rounded-lg
 flex
-items-center
 gap-2
-font-semibold
+items-center
+font-bold
 
 ${
 view==="mobile"
@@ -322,7 +400,6 @@ view==="mobile"
 }
 
 `}
-
 >
 
 
@@ -337,18 +414,20 @@ Mobile View
 
 
 
+
+
 <button
 
 onClick={()=>setView("desktop")}
 
 className={`
-px-5
+px-6
 py-3
 rounded-lg
 flex
-items-center
 gap-2
-font-semibold
+items-center
+font-bold
 
 ${
 view==="desktop"
@@ -364,7 +443,6 @@ view==="desktop"
 }
 
 `}
-
 >
 
 
@@ -376,12 +454,18 @@ Desktop View
 </button>
 
 
+
+
+
 </div>
 
 
 </div>
 
 
+
+
+
 </div>
 
 
@@ -389,30 +473,33 @@ Desktop View
 
 
 
-{/* PREVIEW DEVICE */}
+
+
+
+{/* PREVIEW AREA */}
+
+
 
 <div
-className={`
-mx-auto
-bg-white
-shadow-xl
-overflow-hidden
 
-${
+className={
+
 view==="mobile"
 
 ?
 
-"max-w-sm rounded-[35px] border-[8px] border-black"
+"mt-8 mx-auto max-w-sm bg-white rounded-[35px] overflow-hidden"
 
 :
 
-"w-full rounded-xl border"
+"mt-8 w-full bg-white rounded-2xl overflow-hidden"
 
 }
 
-`}
 >
+
+
+
 
 
 <div
@@ -425,7 +512,12 @@ p-5
 
 
 
-{/* HERO IMAGE */}
+
+
+
+{/* IMAGE GALLERY */}
+
+
 
 <div
 className="
@@ -433,36 +525,54 @@ relative
 "
 >
 
+
+
+{
+images.length > 0 && (
+
+
+<>
+
+
 <img
 
 src={
-landing.heroImages?.[0]
+
+activeImage || images[0]
+
 }
 
 alt="product"
 
+onClick={()=>setFullscreen(true)}
+
 className="
 w-full
-rounded-2xl
+h-[420px]
 object-cover
+rounded-2xl
+cursor-pointer
 "
+
 />
 
 
+
 {
-discount > 0 && (
+
+discount > 0 &&
 
 <div
 className="
 absolute
-top-3
-right-3
+top-4
+right-4
 bg-red-500
 text-white
 px-4
 py-2
 rounded-full
-font-bold
+font-black
 "
 >
 
@@ -470,9 +580,19 @@ font-bold
 
 </div>
 
+}
+
+
+
+</>
+
+
 )
 
 }
+
+
+
 
 
 </div>
@@ -481,17 +601,105 @@ font-bold
 
 
 
-{/* HERO TITLE */}
 
-<h2
+
+{/* THUMBNAILS */}
+
+
+{
+
+images.length > 1 && (
+
+
+<div
 className="
-text-2xl
-font-black
-mt-6
+flex
+gap-3
+mt-4
+overflow-x-auto
 "
 >
 
-{landing.heroTitle}
+
+{
+
+images.map((img,index)=>(
+
+
+<img
+
+key={index}
+
+src={img}
+
+alt="thumb"
+
+onClick={()=>setActiveImage(img)}
+
+className={`
+w-20
+h-20
+object-cover
+rounded-xl
+cursor-pointer
+border-2
+
+${
+(activeImage || images[0])===img
+
+?
+
+"border-amber-500"
+
+:
+
+"border-transparent"
+
+}
+
+`}
+
+/>
+
+
+
+))
+
+
+}
+
+
+
+</div>
+
+
+)
+
+}
+
+
+
+
+
+</div>
+
+
+
+  // =============================
+// HERO TITLE
+// =============================
+
+
+<h2
+className="
+text-xl
+font-bold
+mt-6
+text-gray-800
+"
+>
+
+{formattedText(landing.heroTitle)}
 
 </h2>
 
@@ -501,18 +709,21 @@ mt-6
 
 {/* PRODUCT NAME */}
 
-<h3
+<h1
 className="
-text-xl
-font-bold
-text-amber-600
+text-3xl
+font-black
 mt-3
+text-gray-900
 "
 >
 
 {landing.title}
 
-</h3>
+</h1>
+
+
+
 
 
 
@@ -520,32 +731,42 @@ mt-3
 
 {/* HERO DESCRIPTION */}
 
-<p
+
+<div
 className="
-mt-4
+mt-5
 text-gray-600
-leading-7
+leading-8
+whitespace-pre-line
 "
 >
 
-{landing.heroDescription}
+{formattedText(
+landing.heroDescription
+)}
 
-</p>
+</div>
 
 
-// =========================
-// PRICE SECTION
-// =========================
+
+
+
+
+
+
+{/* PRICE SECTION */}
 
 
 <div
 className="
-mt-6
+mt-8
 flex
 items-center
 gap-4
+flex-wrap
 "
 >
+
 
 
 {
@@ -556,9 +777,10 @@ landing.offerPrice > 0
 
 <>
 
+
 <span
 className="
-text-3xl
+text-4xl
 font-black
 text-red-500
 "
@@ -569,9 +791,11 @@ text-red-500
 </span>
 
 
+
+
 <span
 className="
-text-lg
+text-xl
 text-gray-400
 line-through
 "
@@ -582,16 +806,39 @@ line-through
 </span>
 
 
+
+{
+
+discount > 0 &&
+
+<span
+className="
+bg-red-100
+text-red-600
+px-3
+py-1
+rounded-lg
+font-bold
+"
+>
+
+{discount}% OFF
+
+</span>
+
+}
+
+
+
 </>
 
 
 :
 
-(
 
 <span
 className="
-text-3xl
+text-4xl
 font-black
 text-red-500
 "
@@ -601,9 +848,11 @@ text-red-500
 
 </span>
 
-)
+
 
 }
+
+
 
 
 </div>
@@ -613,25 +862,30 @@ text-red-500
 
 
 
+
+
+
 {/* QUANTITY */}
+
 
 
 <div
 className="
-mt-6
+mt-8
 border
 rounded-xl
-p-4
+p-5
 flex
-items-center
 justify-between
+items-center
 "
 >
 
 
 <span
 className="
-font-bold
+font-black
+text-lg
 "
 >
 
@@ -640,11 +894,13 @@ font-bold
 </span>
 
 
+
+
 <div
 className="
 flex
 items-center
-gap-4
+gap-5
 "
 >
 
@@ -660,13 +916,12 @@ setQuantity(quantity-1)
 }}
 
 className="
-w-9
-h-9
+w-10
+h-10
 rounded-lg
 bg-gray-200
 font-bold
 "
-
 >
 
 -
@@ -675,9 +930,11 @@ font-bold
 
 
 
+
 <span
 className="
-font-bold
+font-black
+text-xl
 "
 >
 
@@ -693,14 +950,13 @@ font-bold
 onClick={()=>setQuantity(quantity+1)}
 
 className="
-w-9
-h-9
+w-10
+h-10
 rounded-lg
 bg-amber-500
 text-white
 font-bold
 "
-
 >
 
 +
@@ -725,9 +981,10 @@ font-bold
 {/* ORDER FORM */}
 
 
+
 <div
 className="
-mt-8
+mt-10
 bg-gray-50
 rounded-2xl
 p-5
@@ -735,9 +992,10 @@ p-5
 >
 
 
-<h3
+
+<h2
 className="
-text-xl
+text-2xl
 font-black
 mb-5
 "
@@ -745,23 +1003,22 @@ mb-5
 
 অর্ডার করুন
 
-</h3>
+</h2>
+
 
 
 
 
 <input
-
 placeholder="আপনার নাম"
 
 className="
 w-full
 border
 rounded-lg
-p-3
+p-4
 mb-3
 "
-
 />
 
 
@@ -775,70 +1032,18 @@ className="
 w-full
 border
 rounded-lg
-p-3
+p-4
 mb-3
 "
 
 />
-
-
-
-
-<input
-
-placeholder="ঠিকানা"
-
-className="
-w-full
-border
-rounded-lg
-p-3
-mb-3
-"
-
-/>
-
-
-
-
-<input
-
-placeholder="থানা"
-
-className="
-w-full
-border
-rounded-lg
-p-3
-mb-3
-"
-
-/>
-
-
-
-
-<input
-
-placeholder="জেলা"
-
-className="
-w-full
-border
-rounded-lg
-p-3
-mb-3
-"
-
-/>
-
 
 
 
 
 <textarea
 
-placeholder="অতিরিক্ত নোট"
+placeholder="আপনার ঠিকানা"
 
 rows="3"
 
@@ -846,7 +1051,8 @@ className="
 w-full
 border
 rounded-lg
-p-3
+p-4
+mb-3
 "
 
 ></textarea>
@@ -855,27 +1061,82 @@ p-3
 
 
 
-<button
+<select
 
 className="
-mt-5
 w-full
-bg-amber-500
-text-white
-py-4
-rounded-xl
-font-black
-text-lg
+border
+rounded-lg
+p-4
+mb-3
 "
+
 >
 
-অর্ডার করুন এখনই
+<option>
 
-</button>
+বিভাগ নির্বাচন করুন
+
+</option>
+
+
+</select>
+
+
+
+
+
+<select
+
+className="
+w-full
+border
+rounded-lg
+p-4
+"
+
+>
+
+<option>
+
+জেলা নির্বাচন করুন
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<textarea
+
+placeholder="অতিরিক্ত নোট (যদি থাকে)"
+
+rows="3"
+
+className="
+mt-3
+w-full
+border
+rounded-lg
+p-4
+"
+
+></textarea>
+
+
+
 
 
 
 </div>
+
+
+
 
 
 
@@ -886,18 +1147,20 @@ text-lg
 {/* PRODUCT DESCRIPTION */}
 
 
+
 <div
 className="
-mt-8
+mt-10
 "
 >
 
 
+
 <h2
 className="
-text-2xl
+text-3xl
 font-black
-mb-3
+mb-5
 "
 >
 
@@ -906,17 +1169,23 @@ mb-3
 </h2>
 
 
-<p
+
+
+
+<div
 className="
-text-gray-600
+text-gray-700
 leading-8
 whitespace-pre-line
 "
 >
 
-{landing.description}
+{formattedText(
+landing.description
+)}
 
-</p>
+</div>
+
 
 
 </div>
@@ -926,25 +1195,26 @@ whitespace-pre-line
 
 
 
-
 {/* OUR PROMISE */}
+
 
 
 <div
 className="
-mt-8
-bg-amber-50
+mt-10
+bg-[#FFF9E8]
 rounded-2xl
-p-5
+p-6
 "
 >
 
 
+
 <h2
 className="
-text-2xl
+text-3xl
 font-black
-mb-4
+mb-5
 "
 >
 
@@ -954,10 +1224,12 @@ mb-4
 
 
 
+
 <ul
 className="
-space-y-3
+space-y-4
 text-gray-700
+text-lg
 "
 >
 
@@ -990,6 +1262,7 @@ text-gray-700
 </li>
 
 
+
 </ul>
 
 
@@ -1002,7 +1275,118 @@ text-gray-700
 
 
 
+{/* ORDER BUTTON FULL WIDTH */}
+
+
+<button
+
+className="
+mt-8
+w-full
+bg-amber-500
+text-white
+py-5
+rounded-xl
+font-black
+text-xl
+"
+>
+
+অর্ডার করুন এখনই
+
+</button>
+
+
+
+
 </div>
+
+
+
+  
+// =============================
+// MOBILE IMAGE FULLSCREEN
+// =============================
+
+
+{
+fullscreen && (
+
+<div
+className="
+fixed
+inset-0
+bg-black/90
+z-50
+flex
+items-center
+justify-center
+p-5
+"
+>
+
+
+<button
+
+onClick={()=>setFullscreen(false)}
+
+className="
+absolute
+top-5
+right-5
+bg-white
+text-black
+rounded-full
+w-12
+h-12
+flex
+items-center
+justify-center
+text-xl
+"
+>
+
+<FiX/>
+
+</button>
+
+
+
+
+<img
+
+src={
+activeImage || images[0]
+}
+
+alt="fullscreen"
+
+className="
+max-h-full
+max-w-full
+rounded-xl
+object-contain
+"
+
+/>
+
+
+
+</div>
+
+)
+
+}
+
+
+
+
+
+
+
+
+
+{/* CLOSE PREVIEW CONTAINER */}
 
 
 </div>
@@ -1015,6 +1399,5 @@ text-gray-700
 
 
 );
-
 
 }
