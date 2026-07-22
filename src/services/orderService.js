@@ -949,6 +949,56 @@ order.returnRequested === true
 
 
 
+// =================================
+// ADMIN ADD RETURN
+// =================================
+
+export const addReturnByAdmin =
+async (returnData) => {
+
+  const docRef =
+    await addDoc(
+      orderRef,
+      {
+        ...returnData,
+        createdAt: new Date(),
+      }
+    );
+
+  const returnId = docRef.id;
+
+  await updateDoc(
+    doc(
+      db,
+      "orders",
+      returnId
+    ),
+    {
+      returnId,
+    }
+  );
+
+  await createAdminNotification({
+
+    title: "🔄 New Return Added",
+
+    message:
+      `${returnData.customerName || "Customer"} return has been added.`,
+
+    type: "return",
+
+    actionUrl:
+      `/admin/return-orders/${returnId}`,
+
+    priority: "high",
+
+  });
+
+  return returnId;
+
+};
+
+
 
 
 // =================================
