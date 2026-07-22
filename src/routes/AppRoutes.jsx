@@ -44,6 +44,7 @@ import ReturnOrders from "../pages/admin/ReturnOrders";
 import ReturnOrderDetails from "../pages/admin/ReturnOrderDetails";
 import AddReturn from "../pages/admin/AddReturn";
 import LandingPages from "../pages/admin/LandingPages";
+import CreateLandingPage from "../pages/admin/CreateLandingPage";
 
 
 /* =========================
@@ -434,6 +435,11 @@ element={<ReturnOrder />}
         <Route
   path="landing"
   element={<LandingPages />}
+/>
+
+         <Route
+  path="landing/create"
+  element={<CreateLandingPage />}
 />
 
 
