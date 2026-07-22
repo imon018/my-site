@@ -629,7 +629,7 @@ border-t-indigo-700
 <div
 className="
 mt-6
-bg-gray-50
+bg-[#fffaf0]
 rounded-lg
 p-5
 "
@@ -649,9 +649,8 @@ images.length > 1 && (
 className="
 flex
 gap-3
-mt-4
+mt-2
 overflow-x-auto
-pb-2
 "
 >
 
@@ -723,7 +722,7 @@ ${
 
 <h2
 className="
-text-xl
+text-xs
 font-bold
 mt-2
 text-purple-700
@@ -788,15 +787,15 @@ mb-3
 
 <div
 className="
-w-5
-h-5
+w-6
+h-6
 rounded-full
-bg-purple-600
+bg-purple-700
 text-white
 flex
 items-center
 justify-center
-text-xs
+text-sm
 font-bold
 shrink-0
 "
@@ -1051,6 +1050,16 @@ font-bold
 </div>
 
 
+<div
+className="
+my-8
+border-t
+border-gray-300
+"
+></div>
+
+
+
 {/* ORDER FORM */}
 
 
@@ -1058,8 +1067,7 @@ font-bold
 <div
 className="
 mt-10
-bg-gray-50
-rounded-lg
+bg-[#fffaf0]
 p-5
 "
 >
