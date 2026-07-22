@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,9 @@ import {
   FiSettings,
   FiEye,
   FiXCircle,
+  FiSearch,
+  FiUpload,
+  FiCheck,
 } from "react-icons/fi";
 
 import Button from "../../components/ui/Button";
@@ -27,425 +30,692 @@ import {
   createLandingPage,
 } from "../../services/landingPageService";
 
+import {
+  uploadImages,
+} from "../../services/uploadService";
+
+import useSettings from "../../hooks/useSettings";
+
 export default function CreateLandingPage() {
 
-  const navigate = useNavigate();
+const navigate=useNavigate();
 
-  const [loading,setLoading]=useState(false);
+const { settings }=useSettings();
 
-  const [products,setProducts]=useState([]);
+const fileInputRef=useRef(null);
 
-  const [selectedProduct,setSelectedProduct]=
-    useState("");
+const searchRef=useRef(null);
 
-  const [title,setTitle]=
-    useState("");
+const [loading,setLoading]=useState(false);
 
-  const [slug,setSlug]=
-    useState("");
+const [products,setProducts]=useState([]);
 
-  const [description,setDescription]=
-    useState("");
+const [selectedProduct,setSelectedProduct]=useState("");
 
-  const [price,setPrice]=
-    useState("");
+const [productSearch,setProductSearch]=useState("");
 
-  const [offerPrice,setOfferPrice]=
-    useState("");
+const [showDropdown,setShowDropdown]=useState(false);
 
-  const [heroImage,setHeroImage]=
-    useState("");
+const [title,setTitle]=useState("");
 
-  const [deliveryZone,setDeliveryZone]=
-    useState("inside");
+const [slug,setSlug]=useState("");
 
-  const [deliveryCharge,setDeliveryCharge]=
-    useState(80);
+const [description,setDescription]=useState("");
 
-  const [cashOnDelivery,setCashOnDelivery]=
-    useState(true);
+const [heroTitle,setHeroTitle]=useState("");
 
-  const [status,setStatus]=
-    useState("draft");
+const [heroDescription,setHeroDescription]=useState("");
 
-  const [showCancelModal,setShowCancelModal]=
-    useState(false);
+const [price,setPrice]=useState("");
 
-  useEffect(()=>{
+const [offerPrice,setOfferPrice]=useState("");
 
-    loadProducts();
+const [heroImages,setHeroImages]=useState([]);
 
-  },[]);
+const [uploading,setUploading]=useState(false);
 
-  async function loadProducts(){
+const [deliveryZone,setDeliveryZone]=useState("inside");
 
-    try{
+const [deliveryCharge,setDeliveryCharge]=useState(80);
 
-      const data=
-        await getProductsFromDB();
+const [cashOnDelivery,setCashOnDelivery]=useState(true);
 
-      setProducts(data);
+const [status]=useState("published");
 
-    }
+const [showCancelModal,setShowCancelModal]=useState(false);
 
-    catch(error){
+const [facebookPixel,setFacebookPixel]=useState("");
 
-      console.log(error);
+const [googleAnalytics,setGoogleAnalytics]=useState("");
 
-      errorToast(
-        "Failed to load products."
-      );
+const [successMessage,setSuccessMessage]=useState("");
 
-    }
+const [collectName,setCollectName]=useState(true);
 
-  }
+const [collectPhone,setCollectPhone]=useState(true);
 
-  function handleProductSelect(id){
+const [collectAddress,setCollectAddress]=useState(true);
 
-    setSelectedProduct(id);
+const [collectCity,setCollectCity]=useState(false);
 
-    const product=
-      products.find(
-        item=>item.id===id
-      );
+const [collectNotes,setCollectNotes]=useState(false);
 
-    if(!product) return;
+const websiteUrl=
+settings?.websiteUrl?.trim()
+||
+window.location.origin;
 
-    setTitle(
-      product.name || ""
-    );
+useEffect(()=>{
 
-    setSlug(
+loadProducts();
 
-      (product.name || "")
+},[]);
 
-      .toLowerCase()
+useEffect(()=>{
 
-      .replace(/\s+/g,"-")
+function handleClickOutside(e){
 
-      .replace(/[^a-z0-9-]/g,"")
+if(
+searchRef.current &&
+!searchRef.current.contains(e.target)
+){
 
-    );
+setShowDropdown(false);
 
-    setDescription(
-      product.description || ""
-    );
+}
 
-    setPrice(
-      product.price || ""
-    );
+}
 
-    setOfferPrice(
-      product.price || ""
-    );
+document.addEventListener(
+"mousedown",
+handleClickOutside
+);
 
-    setHeroImage(
+return()=>{
 
-      product.image ||
+document.removeEventListener(
+"mousedown",
+handleClickOutside
+);
 
-      product.images?.[0] ||
+};
 
-      ""
+},[]);
 
-    );
+
+
+async function loadProducts(){
+
+  try{
+
+    const data=
+    await getProductsFromDB();
+
+    setProducts(data);
 
   }
 
-  useEffect(()=>{
+  catch(error){
 
-    switch(deliveryZone){
+    console.log(error);
 
-      case "inside":
-
-        setDeliveryCharge(80);
-
-      break;
-
-      case "sub":
-
-        setDeliveryCharge(100);
-
-      break;
-
-      case "outside":
-
-        setDeliveryCharge(120);
-
-      break;
-
-      default:
-
-        setDeliveryCharge(80);
-
-    }
-
-  },[
-    deliveryZone
-  ]);
-
-  const landingData=useMemo(()=>({
-
-    productId:
-      selectedProduct,
-
-    title,
-
-    slug,
-
-    description,
-
-    price:Number(price),
-
-    offerPrice:Number(
-      offerPrice
-    ),
-
-    heroImage,
-
-    deliveryCharge,
-
-    cashOnDelivery,
-
-    status,
-
-    views:0,
-
-    orders:0,
-
-    revenue:0,
-
-    createdAt:new Date(),
-
-  }),[
-
-    selectedProduct,
-
-    title,
-
-    slug,
-
-    description,
-
-    price,
-
-    offerPrice,
-
-    heroImage,
-
-    deliveryCharge,
-
-    cashOnDelivery,
-
-    status,
-
-  ]);
-
-  function handlePreview(){
-
-    if(!slug){
-
-      errorToast(
-        "Landing URL required."
-      );
-
-      return;
-
-    }
-
-    window.open(
-
-      `/landing/${slug}`,
-
-      "_blank"
-
+    errorToast(
+      "Failed to load products."
     );
 
   }
 
-  async function handleSubmit(e){
+}
 
-    e.preventDefault();
+const filteredProducts=
 
-    if(
+products.filter(product=>{
 
-      !selectedProduct ||
+const keyword=
 
-      !title ||
+productSearch
+.toLowerCase()
+.trim();
 
-      !slug ||
+if(!keyword) return true;
 
-      !description ||
+return(
 
-      !heroImage
+(product.name||"")
 
-    ){
+.toLowerCase()
 
-      errorToast(
+.includes(keyword)
 
-        "Please fill all required fields."
+);
 
-      );
+});
 
-      return;
+function handleProductSelect(id){
 
-    }
+setSelectedProduct(id);
 
-    try{
+const product=
 
-      setLoading(true);
+products.find(
 
-      await createLandingPage(
-        landingData
-      );
+item=>item.id===id
 
-      successToast(
-        "Landing Page Created Successfully."
-      );
+);
 
-      navigate(
-        "/admin/landing"
-      );
+if(!product) return;
 
-    }
+setProductSearch(
+product.name||""
+);
 
-    catch(error){
+setShowDropdown(false);
 
-      console.log(error);
+setTitle(
+product.name||""
+);
 
-      errorToast(
+setSlug(
 
-        error.message ||
+(product.name||"")
 
-        "Failed to create landing page."
+.toLowerCase()
 
-      );
+.replace(/\s+/g,"-")
 
-    }
+.replace(/[^a-z0-9-]/g,"")
 
-    finally{
+);
 
-      setLoading(false);
+setDescription(
+product.description||""
+);
 
-    }
+setHeroTitle(
+product.name||""
+);
 
-  }
+setHeroDescription(
+product.shortDescription||
+product.description||
+""
+);
 
-  function handleCancel(){
+setPrice(
+product.price||0
+);
 
-    navigate("/admin/landing");
+setOfferPrice(
 
-  }
+product.offerPrice||
 
-  return(
+product.price||
 
-    <div
-      className="
-      min-h-screen
-      bg-[#FAF7F2]
-      p-4
-      lg:p-8
-      "
-    >
+0
 
-      <div
-        className="
-        max-w-5xl
-        mx-auto
-        space-y-6
-        "
-      >
+);
+
+const images=[];
+
+if(product.image){
+
+images.push(product.image);
+
+}
+
+if(
+
+Array.isArray(product.images)
+
+){
+
+product.images.forEach(img=>{
+
+if(
+
+img &&
+
+!images.includes(img)
+
+){
+
+images.push(img);
+
+}
+
+});
+
+}
+
+setHeroImages(images);
+
+}
+
+async function handleImageUpload(e){
+
+const files=
+
+Array.from(
+e.target.files||[]
+);
+
+if(!files.length) return;
+
+try{
+
+setUploading(true);
+
+const uploaded=
+
+await uploadImages(files);
+
+setHeroImages(prev=>[
+
+...prev,
+
+...uploaded.map(
+
+item=>item.imageUrl
+
+)
+
+]);
+
+successToast(
+
+"Image uploaded."
+
+);
+
+}
+
+catch(error){
+
+console.log(error);
+
+errorToast(
+
+"Image upload failed."
+
+);
+
+}
+
+finally{
+
+setUploading(false);
+
+}
+
+}
+
+function removeHeroImage(index){
+
+setHeroImages(
+
+prev=>
+
+prev.filter(
+
+(_,i)=>i!==index
+
+)
+
+);
+
+}
+
+useEffect(()=>{
+
+switch(deliveryZone){
+
+case "inside":
+
+setDeliveryCharge(80);
+
+break;
+
+case "sub":
+
+setDeliveryCharge(100);
+
+break;
+
+case "outside":
+
+setDeliveryCharge(120);
+
+break;
+
+default:
+
+setDeliveryCharge(80);
+
+}
+
+},[
+deliveryZone
+]);
+
+const landingData=
+
+useMemo(()=>({
+
+productId:selectedProduct,
+
+title,
+
+slug,
+
+description,
+
+heroTitle,
+
+heroDescription,
+
+heroImages,
+
+price:Number(price),
+
+offerPrice:Number(
+offerPrice
+),
+
+deliveryCharge,
+
+cashOnDelivery,
+
+status,
+
+views:0,
+
+orders:0,
+
+revenue:0,
+
+facebookPixel,
+
+googleAnalytics,
+
+successMessage,
+
+orderForm:{
+
+collectName,
+
+collectPhone,
+
+collectAddress,
+
+collectCity,
+
+collectNotes,
+
+},
+
+createdAt:new Date(),
+
+}),[
+
+selectedProduct,
+
+title,
+
+slug,
+
+description,
+
+heroTitle,
+
+heroDescription,
+
+heroImages,
+
+price,
+
+offerPrice,
+
+deliveryCharge,
+
+cashOnDelivery,
+
+status,
+
+facebookPixel,
+
+googleAnalytics,
+
+successMessage,
+
+collectName,
+
+collectPhone,
+
+collectAddress,
+
+collectCity,
+
+collectNotes,
+
+]);
+
+function handlePreview(){
+
+if(!slug){
+
+errorToast(
+
+"Landing URL required."
+
+);
+
+return;
+
+}
+
+window.open(
+
+`/landing/${slug}`,
+
+"_blank"
+
+);
+
+}
+
+async function handleSubmit(e){
+
+e.preventDefault();
+
+if(
+
+!selectedProduct||
+
+!title||
+
+!slug||
+
+!heroImages.length
+
+){
+
+errorToast(
+
+"Please fill all required fields."
+
+);
+
+return;
+
+}
+
+try{
+
+setLoading(true);
+
+await createLandingPage(
+
+landingData
+
+);
+
+successToast(
+
+"Landing Page Created Successfully."
+
+);
+
+navigate(
+
+"/admin/landing"
+
+);
+
+}
+
+catch(error){
+
+console.log(error);
+
+errorToast(
+
+error.message||
+
+"Failed to create landing page."
+
+);
+
+}
+
+finally{
+
+setLoading(false);
+
+}
+
+}
+
+function handleCancel(){
+
+navigate(
+
+"/admin/landing"
+
+);
+
+}
 
 
-        {/* =========================
-    HEADER
-========================= */}
+
+return(
 
 <div
-  className="
-  bg-white
-  rounded-lg
-  border
-  border-amber-200
-  shadow-sm
-  overflow-hidden
-  "
->
-
-  <div
-    className="
-    px-6
-    py-5
-    flex
-    items-center
-    justify-between
-    "
-  >
-
-    <div>
-
-      <h1
-        className="
-        text-2xl
-        lg:text-3xl
-        font-black
-        text-slate-900
-        "
-      >
-
-        Create Landing Page
-
-      </h1>
-
-      <p
-        className="
-        text-gray-500
-        mt-1
-        "
-      >
-
-        Facebook Single Product Landing Builder
-
-      </p>
-
-    </div>
-
-    <div
-      className="
-      w-14
-      h-14
-      rounded-lg
-      bg-amber-500
-      flex
-      items-center
-      justify-center
-      text-white
-      "
-    >
-
-      <FiPackage size={28}/>
-
-    </div>
-
-  </div>
-
-</div>
-
-{/* =========================
-    BASIC INFORMATION
-========================= */}
-
-<form
-
-  onSubmit={handleSubmit}
-
-  className="space-y-6"
-
+className="
+min-h-screen
+bg-[#FAF7F2]
+p-4
+lg:p-8
+"
 >
 
 <div
 className="
+max-w-5xl
+mx-auto
+space-y-6
+"
+>
+
+{/* =========================
+HEADER
+========================= */}
+
+<div
+className="
 bg-white
-rounded-lg
+rounded-xl
+border
+border-amber-200
+shadow-sm
+overflow-hidden
+"
+>
+
+<div
+className="
+px-6
+py-5
+flex
+items-center
+justify-between
+"
+>
+
+<div>
+
+<h1
+className="
+text-2xl
+lg:text-3xl
+font-black
+text-slate-900
+"
+>
+
+Create Landing Page
+
+</h1>
+
+<p
+className="
+text-gray-500
+mt-1
+"
+>
+
+Facebook Single Product Landing Builder
+
+</p>
+
+</div>
+
+<div
+className="
+w-14
+h-14
+rounded-xl
+bg-amber-500
+flex
+items-center
+justify-center
+text-white
+"
+>
+
+<FiPackage size={28}/>
+
+</div>
+
+</div>
+
+</div>
+
+<form
+
+onSubmit={handleSubmit}
+
+className="space-y-6"
+
+>
+
+{/* =========================
+BASIC INFORMATION
+========================= */}
+
+<div
+className="
+bg-white
+rounded-xl
 border
 border-amber-200
 shadow-sm
@@ -483,6 +753,8 @@ justify-center
 
 </div>
 
+<div>
+
 <h2
 className="
 text-lg
@@ -494,6 +766,19 @@ Basic Information
 
 </h2>
 
+<p
+className="
+text-xs
+text-gray-500
+"
+>
+
+Landing Page Basic Setup
+
+</p>
+
+</div>
+
 </div>
 
 <div
@@ -503,7 +788,7 @@ space-y-5
 "
 >
 
-{/* Landing Name */}
+{/* PAGE NAME */}
 
 <div>
 
@@ -515,11 +800,11 @@ mb-2
 "
 >
 
-Landing Page Name
+Page Name
 
 <span className="text-red-500">
 
- *
+*
 
 </span>
 
@@ -537,7 +822,7 @@ e.target.value
 
 }
 
-placeholder="Wireless Earbuds Offer"
+placeholder="Page Name"
 
 className="
 w-full
@@ -556,7 +841,7 @@ focus:ring-amber-100
 
 </div>
 
-{/* Slug */}
+{/* SLUG */}
 
 <div>
 
@@ -568,11 +853,11 @@ mb-2
 "
 >
 
-Slug (URL)
+Slug URL
 
 <span className="text-red-500">
 
- *
+*
 
 </span>
 
@@ -600,7 +885,7 @@ whitespace-nowrap
 "
 >
 
-dreammode.com/lp/
+{websiteUrl}/landing/
 
 </div>
 
@@ -616,7 +901,7 @@ e.target.value
 
 }
 
-placeholder="your-landing-page"
+placeholder="landing-page"
 
 className="
 flex-1
@@ -634,18 +919,23 @@ className="
 text-xs
 text-gray-500
 mt-2
+break-all
 "
 >
 
-এই URL দিয়েই Facebook Ad চলবে।
+Facebook Ad URL:
+{websiteUrl}/landing/{slug||"your-page"}
 
 </p>
 
 </div>
 
-{/* Product */}
+{/* PRODUCT SEARCH */}
 
-<div>
+<div
+className="relative"
+ref={searchRef}
+>
 
 <label
 className="
@@ -659,70 +949,211 @@ Select Product
 
 <span className="text-red-500">
 
- *
+*
 
 </span>
 
 </label>
 
-<select
+<div
+className="
+relative
+"
+>
 
-value={selectedProduct}
+<FiSearch
+className="
+absolute
+left-4
+top-4
+text-gray-400
+"
+/>
 
-onChange={(e)=>
+<input
 
-handleProductSelect(
+value={productSearch}
+
+onFocus={()=>setShowDropdown(true)}
+
+onChange={(e)=>{
+
+setProductSearch(
 e.target.value
-)
+);
 
-}
+setShowDropdown(true);
+
+}}
+
+placeholder="Search Product..."
 
 className="
 w-full
 h-12
+pl-11
+pr-4
 rounded-lg
 border
 border-amber-200
-px-4
 outline-none
 focus:border-amber-500
 focus:ring-4
 focus:ring-amber-100
 "
+/>
 
->
-
-<option value="">
-
-Choose Product
-
-</option>
+</div>
 
 {
 
-products.map(product=>(
+showDropdown && (
 
-<option
+<div
+className="
+absolute
+left-0
+right-0
+mt-2
+bg-white
+border
+border-amber-200
+rounded-xl
+shadow-xl
+overflow-hidden
+z-50
+max-h-80
+overflow-y-auto
+"
+>
+
+{
+
+filteredProducts.length===0
+
+?
+
+<div
+className="
+p-6
+text-center
+text-gray-400
+"
+>
+
+No Product Found
+
+</div>
+
+:
+
+filteredProducts.map(product=>(
+
+<button
 
 key={product.id}
 
-value={product.id}
+type="button"
 
+onClick={()=>handleProductSelect(product.id)}
+
+className="
+w-full
+flex
+items-center
+gap-3
+p-3
+hover:bg-amber-50
+transition
+border-b
+last:border-b-0
+"
+
+>
+
+<img
+
+src={
+product.image||
+
+product.images?.[0]
+
+}
+
+alt={product.name}
+
+className="
+w-14
+h-14
+rounded-lg
+object-cover
+border
+"
+
+/>
+
+<div
+className="
+flex-1
+text-left
+"
+>
+
+<h4
+className="
+font-semibold
+line-clamp-1
+"
 >
 
 {product.name}
 
-</option>
+</h4>
+
+<p
+className="
+text-sm
+text-amber-600
+font-bold
+"
+>
+
+৳{product.price}
+
+</p>
+
+</div>
+
+{
+
+selectedProduct===product.id && (
+
+<FiCheck
+className="
+text-green-600
+text-xl
+"
+/>
+
+)
+
+}
+
+</button>
 
 ))
 
 }
 
-</select>
+</div>
+
+)
+
+}
 
 </div>
 
-{/* Description */}
+{/* DESCRIPTION */}
 
 <div>
 
@@ -752,7 +1183,7 @@ e.target.value
 
 }
 
-placeholder="Write product description..."
+placeholder="Write landing page description..."
 
 className="
 w-full
@@ -771,153 +1202,37 @@ focus:ring-amber-100
 
 </div>
 
-{/* Status */}
-
-<div>
-
-<label
-className="
-block
-font-semibold
-mb-3
-"
->
-
-Status
-
-</label>
-
-<div
-className="
-grid
-grid-cols-2
-gap-3
-"
->
-
-<button
-
-type="button"
-
-onClick={()=>
-
-setStatus("published")
-
-}
-
-className={`
-
-h-12
-
-rounded-lg
-
-border
-
-font-semibold
-
-transition
-
-${
-status==="published"
-
-?
-
-"bg-amber-500 border-amber-500 text-white"
-
-:
-
-"border-amber-200 bg-white"
-
-}
-
-`}
-
->
-
-Published
-
-</button>
-
-<button
-
-type="button"
-
-onClick={()=>
-
-setStatus("draft")
-
-}
-
-className={`
-
-h-12
-
-rounded-lg
-
-border
-
-font-semibold
-
-transition
-
-${
-status==="draft"
-
-?
-
-"bg-slate-900 border-slate-900 text-white"
-
-:
-
-"border-amber-200 bg-white"
-
-}
-
-`}
-
->
-
-Draft
-
-</button>
-
 </div>
 
 </div>
-
-</div>
-
-</div>
-
-{/* Pricing Section - Part 3 */}
 
 
   {/* =========================
-    PRICING
+HERO SECTION
 ========================= */}
 
 <div
-  className="
-  bg-white
-  rounded-lg
-  border
-  border-amber-200
-  shadow-sm
-  overflow-hidden
-  "
+className="
+bg-white
+rounded-xl
+border
+border-amber-200
+shadow-sm
+overflow-hidden
+"
 >
 
 <div
-  className="
-  px-5
-  py-4
-  bg-amber-50
-  border-b
-  border-amber-100
-  flex
-  items-center
-  gap-3
-  "
+className="
+px-5
+py-4
+bg-amber-50
+border-b
+border-amber-100
+flex
+items-center
+gap-3
+"
 >
 
 <div
@@ -930,12 +1245,10 @@ text-white
 flex
 items-center
 justify-center
-font-bold
-text-lg
 "
 >
 
-৳
+<FiImage size={18}/>
 
 </div>
 
@@ -948,7 +1261,7 @@ font-bold
 "
 >
 
-Pricing
+Hero Section
 
 </h2>
 
@@ -959,7 +1272,7 @@ text-gray-500
 "
 >
 
-Set regular and offer price.
+Upload Hero Image & Content
 
 </p>
 
@@ -970,6 +1283,303 @@ Set regular and offer price.
 <div
 className="
 p-5
+space-y-5
+"
+>
+
+{/* Upload */}
+
+<div>
+
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
+
+Hero Images
+
+</label>
+
+<input
+
+ref={fileInputRef}
+
+type="file"
+
+multiple
+
+accept="image/*"
+
+onChange={handleImageUpload}
+
+className="hidden"
+
+/>
+
+<button
+
+type="button"
+
+onClick={()=>fileInputRef.current.click()}
+
+className="
+w-full
+h-28
+border-2
+border-dashed
+border-amber-300
+rounded-xl
+bg-amber-50
+hover:bg-amber-100
+transition
+flex
+flex-col
+items-center
+justify-center
+gap-2
+"
+
+>
+
+<FiUpload
+size={26}
+className="text-amber-500"
+/>
+
+<p
+className="
+font-semibold
+text-gray-700
+"
+>
+
+{
+
+uploading
+
+?
+
+"Uploading..."
+
+:
+
+"Upload Hero Images"
+
+}
+
+</p>
+
+<span
+className="
+text-xs
+text-gray-500
+"
+>
+
+PNG / JPG / WEBP
+
+</span>
+
+</button>
+
+</div>
+
+{/* Preview */}
+
+{
+
+heroImages.length>0 && (
+
+<div
+className="
+grid
+grid-cols-2
+md:grid-cols-4
+gap-4
+"
+>
+
+{
+
+heroImages.map((image,index)=>(
+
+<div
+
+key={index}
+
+className="
+relative
+group
+rounded-xl
+overflow-hidden
+border
+border-amber-200
+"
+
+>
+
+<img
+
+src={image}
+
+alt="Hero"
+
+className="
+w-full
+h-40
+object-cover
+"
+
+/>
+
+<button
+
+type="button"
+
+onClick={()=>
+
+removeHeroImage(index)
+
+}
+
+className="
+absolute
+top-2
+right-2
+w-8
+h-8
+rounded-full
+bg-red-500
+text-white
+flex
+items-center
+justify-center
+opacity-0
+group-hover:opacity-100
+transition
+"
+
+>
+
+<FiXCircle/>
+
+</button>
+
+</div>
+
+))
+
+}
+
+</div>
+
+)
+
+}
+
+{/* Hero Title */}
+
+<div>
+
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
+
+Hero Title
+
+</label>
+
+<input
+
+value={heroTitle}
+
+onChange={(e)=>
+
+setHeroTitle(
+e.target.value
+)
+
+}
+
+placeholder="Amazing Product"
+
+className="
+w-full
+h-12
+rounded-lg
+border
+border-amber-200
+px-4
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
+
+/>
+
+</div>
+
+{/* Hero Description */}
+
+<div>
+
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
+
+Hero Description
+
+</label>
+
+<textarea
+
+rows={5}
+
+value={heroDescription}
+
+onChange={(e)=>
+
+setHeroDescription(
+e.target.value
+)
+
+}
+
+placeholder="Write hero description..."
+
+className="
+w-full
+rounded-lg
+border
+border-amber-200
+p-4
+resize-none
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
+
+/>
+
+</div>
+
+{/* Pricing */}
+
+<div
+className="
 grid
 md:grid-cols-2
 gap-5
@@ -1003,8 +1613,6 @@ e.target.value
 )
 
 }
-
-placeholder="0"
 
 className="
 w-full
@@ -1051,8 +1659,6 @@ e.target.value
 
 }
 
-placeholder="0"
-
 className="
 w-full
 h-12
@@ -1074,14 +1680,203 @@ focus:ring-amber-100
 
 </div>
 
-{/* =========================
-    HERO IMAGE
+</div>
+
+
+
+  {/* =========================
+ORDER FORM SETUP
 ========================= */}
 
 <div
 className="
 bg-white
+rounded-xl
+border
+border-amber-200
+shadow-sm
+overflow-hidden
+"
+>
+
+<div
+className="
+px-5
+py-4
+bg-amber-50
+border-b
+border-amber-100
+flex
+items-center
+gap-3
+"
+>
+
+<div
+className="
+w-10
+h-10
 rounded-lg
+bg-amber-500
+text-white
+flex
+items-center
+justify-center
+font-bold
+"
+>
+
+📝
+
+</div>
+
+<div>
+
+<h2
+className="
+text-lg
+font-bold
+"
+>
+
+Order Form Setup
+
+</h2>
+
+<p
+className="
+text-xs
+text-gray-500
+"
+>
+
+Choose which fields customers must fill.
+
+</p>
+
+</div>
+
+</div>
+
+<div
+className="
+p-5
+space-y-4
+"
+>
+
+{[
+["Customer Name",collectName,setCollectName],
+["Phone Number",collectPhone,setCollectPhone],
+["Address",collectAddress,setCollectAddress],
+["City",collectCity,setCollectCity],
+["Order Notes",collectNotes,setCollectNotes],
+].map(([label,value,setValue])=>(
+
+<div
+
+key={label}
+
+className="
+flex
+items-center
+justify-between
+rounded-lg
+border
+border-amber-200
+p-4
+"
+
+>
+
+<div>
+
+<h3
+className="font-semibold"
+>
+
+{label}
+
+</h3>
+
+<p
+className="
+text-xs
+text-gray-500
+mt-1
+"
+>
+
+Show this field on landing page.
+
+</p>
+
+</div>
+
+<label
+className="
+relative
+inline-flex
+cursor-pointer
+"
+>
+
+<input
+
+type="checkbox"
+
+checked={value}
+
+onChange={(e)=>
+
+setValue(
+e.target.checked
+)
+
+}
+
+className="sr-only peer"
+
+/>
+
+<div
+className="
+w-11
+h-6
+bg-gray-300
+rounded-full
+peer-checked:bg-amber-500
+after:content-['']
+after:absolute
+after:left-[2px]
+after:top-[2px]
+after:bg-white
+after:w-5
+after:h-5
+after:rounded-full
+after:transition-all
+peer-checked:after:translate-x-5
+"
+/>
+
+</label>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+{/* =========================
+ADDITIONAL SETTINGS
+========================= */}
+
+<div
+className="
+bg-white
+rounded-xl
 border
 border-amber-200
 shadow-sm
@@ -1115,7 +1910,7 @@ justify-center
 "
 >
 
-<FiImage/>
+<FiSettings/>
 
 </div>
 
@@ -1128,7 +1923,7 @@ font-bold
 "
 >
 
-Hero Image
+Additional Settings
 
 </h2>
 
@@ -1139,7 +1934,7 @@ text-gray-500
 "
 >
 
-Auto loaded from selected product.
+Tracking & Custom Settings
 
 </p>
 
@@ -1147,622 +1942,508 @@ Auto loaded from selected product.
 
 </div>
 
-<div className="p-5">
-
-{
-
-heroImage ? (
-
 <div
 className="
-rounded-lg
-overflow-hidden
-border
-border-amber-200
-bg-amber-50
+p-5
+space-y-5
 "
 >
 
-<img
+<div>
 
-src={heroImage}
-
-alt={title}
-
+<label
 className="
-w-full
-h-72
-lg:h-[430px]
-object-cover
-"
-
-/>
-
-</div>
-
-) : (
-
-<div
-className="
-h-72
-lg:h-[430px]
-rounded-lg
-border-2
-border-dashed
-border-amber-300
-bg-amber-50
-flex
-flex-col
-items-center
-justify-center
-"
->
-
-<div
-className="
-w-20
-h-20
-rounded-full
-bg-amber-100
-flex
-items-center
-justify-center
-"
->
-
-<FiImage
-size={38}
-className="text-amber-500"
-/>
-
-</div>
-
-<p
-className="
-mt-5
+block
 font-semibold
-text-gray-500
+mb-2
 "
 >
 
-No Hero Image Found
+Facebook Pixel ID
 
-</p>
+</label>
 
-<p
-className="
-text-sm
-text-gray-400
-mt-1
-"
->
+<input
 
-Please select a product.
+value={facebookPixel}
 
-</p>
+onChange={(e)=>
 
-</div>
-
+setFacebookPixel(
+e.target.value
 )
 
 }
 
+placeholder="123456789012345"
+
+className="
+w-full
+h-12
+rounded-lg
+border
+border-amber-200
+px-4
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
+
+/>
+
+</div>
+
+<div>
+
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
+
+Google Analytics ID
+
+</label>
+
+<input
+
+value={googleAnalytics}
+
+onChange={(e)=>
+
+setGoogleAnalytics(
+e.target.value
+)
+
+}
+
+placeholder="G-XXXXXXXXXX"
+
+className="
+w-full
+h-12
+rounded-lg
+border
+border-amber-200
+px-4
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
+
+/>
+
+</div>
+
+<div>
+
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
+
+Order Success Message
+
+</label>
+
+<textarea
+
+rows={4}
+
+value={successMessage}
+
+onChange={(e)=>
+
+setSuccessMessage(
+e.target.value
+)
+
+}
+
+placeholder="Thank you. Your order has been placed successfully."
+
+className="
+w-full
+rounded-lg
+border
+border-amber-200
+p-4
+resize-none
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
+
+/>
+
+</div>
+
 </div>
 
 </div>
 
-{/* Delivery Settings - Part 4 */}
 
 
   {/* =========================
-    DELIVERY SETTINGS
+DELIVERY SETTINGS
 ========================= */}
 
 <div
-  className="
-  bg-white
-  rounded-lg
-  border
-  border-amber-200
-  shadow-sm
-  overflow-hidden
-  "
+className="
+bg-white
+rounded-xl
+border
+border-amber-200
+shadow-sm
+overflow-hidden
+"
 >
 
-  <div
-    className="
-    px-5
-    py-4
-    bg-amber-50
-    border-b
-    border-amber-100
-    flex
-    items-center
-    gap-3
-    "
-  >
+<div
+className="
+px-5
+py-4
+bg-amber-50
+border-b
+border-amber-100
+flex
+items-center
+gap-3
+"
+>
 
-    <div
-      className="
-      w-10
-      h-10
-      rounded-lg
-      bg-amber-500
-      text-white
-      flex
-      items-center
-      justify-center
-      "
-    >
+<div
+className="
+w-10
+h-10
+rounded-lg
+bg-amber-500
+text-white
+flex
+items-center
+justify-center
+"
+>
 
-      <FiTruck/>
+<FiTruck/>
 
-    </div>
+</div>
 
-    <div>
+<div>
 
-      <h2
-        className="
-        text-lg
-        font-bold
-        "
-      >
+<h2
+className="
+text-lg
+font-bold
+"
+>
 
-        Delivery Settings
+Delivery Settings
 
-      </h2>
+</h2>
 
-      <p
-        className="
-        text-xs
-        text-gray-500
-        "
-      >
+<p
+className="
+text-xs
+text-gray-500
+"
+>
 
-        Configure delivery charge & payment.
+Configure delivery & payment options.
 
-      </p>
+</p>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <div
-    className="
-    p-5
-    space-y-5
-    "
-  >
+<div
+className="
+p-5
+space-y-5
+"
+>
 
-    {/* Delivery Charge */}
+<div>
 
-    <div>
+<label
+className="
+block
+font-semibold
+mb-2
+"
+>
 
-      <label
-        className="
-        block
-        font-semibold
-        mb-2
-        "
-      >
+Delivery Charge
 
-        Delivery Charge
+</label>
 
-      </label>
+<select
 
-      <select
+value={deliveryZone}
 
-        value={deliveryZone}
+onChange={(e)=>
 
-        onChange={(e)=>
+setDeliveryZone(
+e.target.value
+)
 
-          setDeliveryZone(
-            e.target.value
-          )
+}
 
-        }
+className="
+w-full
+h-12
+rounded-lg
+border
+border-amber-200
+px-4
+outline-none
+focus:border-amber-500
+focus:ring-4
+focus:ring-amber-100
+"
 
-        className="
-        w-full
-        h-12
-        rounded-lg
-        border
-        border-amber-200
-        px-4
-        outline-none
-        focus:border-amber-500
-        focus:ring-4
-        focus:ring-amber-100
-        "
+>
 
-      >
+<option value="inside">
 
-        <option value="inside">
+Dhaka Inside — ৳80
 
-          Dhaka Inside — ৳80
+</option>
 
-        </option>
+<option value="sub">
 
-        <option value="sub">
+Sub Area — ৳100
 
-          Sub Area — ৳100
+</option>
 
-        </option>
+<option value="outside">
 
-        <option value="outside">
+Outside Dhaka — ৳120
 
-          Outside Dhaka — ৳120
+</option>
 
-        </option>
+</select>
 
-      </select>
+</div>
 
-    </div>
+<div
+className="
+rounded-lg
+border
+border-amber-200
+p-4
+flex
+items-center
+justify-between
+"
+>
 
-    {/* Selected Charge */}
+<div>
 
-    <div
-      className="
-      rounded-lg
-      border
-      border-amber-200
-      bg-amber-50
-      p-4
-      flex
-      items-center
-      justify-between
-      "
-    >
+<h3
+className="
+font-semibold
+"
+>
 
-      <div>
+Cash On Delivery
 
-        <p
-          className="
-          text-sm
-          text-gray-500
-          "
-        >
+</h3>
 
-          Selected Delivery Charge
+<p
+className="
+text-sm
+text-gray-500
+mt-1
+"
+>
 
-        </p>
+Enable COD Payment
 
-        <h3
-          className="
-          text-2xl
-          font-bold
-          text-amber-600
-          "
-        >
+</p>
 
-          ৳{deliveryCharge}
+</div>
 
-        </h3>
+<label
+className="
+relative
+inline-flex
+cursor-pointer
+"
+>
 
-      </div>
+<input
 
-      <div
-        className="
-        w-12
-        h-12
-        rounded-lg
-        bg-amber-500
-        text-white
-        flex
-        items-center
-        justify-center
-        "
-      >
+type="checkbox"
 
-        <FiTruck/>
+checked={cashOnDelivery}
 
-      </div>
+onChange={(e)=>
 
-    </div>
+setCashOnDelivery(
+e.target.checked
+)
 
-    {/* COD */}
+}
 
-    <div
-      className="
-      rounded-lg
-      border
-      border-amber-200
-      p-4
-      flex
-      items-center
-      justify-between
-      "
-    >
+className="sr-only peer"
 
-      <div>
+/>
 
-        <h3
-          className="
-          font-semibold
-          "
-        >
+<div
+className="
+w-11
+h-6
+rounded-full
+bg-gray-300
+peer-checked:bg-amber-500
+after:content-['']
+after:absolute
+after:left-[2px]
+after:top-[2px]
+after:w-5
+after:h-5
+after:bg-white
+after:rounded-full
+after:transition-all
+peer-checked:after:translate-x-5
+"
+/>
 
-          Cash On Delivery
+</label>
 
-        </h3>
+</div>
 
-        <p
-          className="
-          text-sm
-          text-gray-500
-          mt-1
-          "
-        >
-
-          Enable COD payment
-
-        </p>
-
-      </div>
-
-      <label
-        className="
-        relative
-        inline-flex
-        cursor-pointer
-        "
-      >
-
-        <input
-
-          type="checkbox"
-
-          checked={cashOnDelivery}
-
-          onChange={(e)=>
-
-            setCashOnDelivery(
-              e.target.checked
-            )
-
-          }
-
-          className="sr-only peer"
-
-        />
-
-        <div
-          className="
-          w-11
-          h-6
-          rounded-full
-          bg-gray-300
-          peer-checked:bg-amber-500
-          after:content-['']
-          after:absolute
-          after:left-[2px]
-          after:top-[2px]
-          after:w-5
-          after:h-5
-          after:bg-white
-          after:rounded-full
-          after:transition-all
-          peer-checked:after:translate-x-5
-          "
-        />
-
-      </label>
-
-    </div>
-
-  </div>
+</div>
 
 </div>
 
 {/* =========================
-    LANDING STATUS
+ACTION BUTTONS
 ========================= */}
 
 <div
-  className="
-  bg-white
-  rounded-lg
-  border
-  border-amber-200
-  shadow-sm
-  overflow-hidden
-  "
+className="
+grid
+gap-3
+md:grid-cols-3
+"
 >
 
-  <div
-    className="
-    px-5
-    py-4
-    bg-amber-50
-    border-b
-    border-amber-100
-    flex
-    items-center
-    gap-3
-    "
-  >
+<Button
 
-    <div
-      className="
-      w-10
-      h-10
-      rounded-lg
-      bg-amber-500
-      text-white
-      flex
-      items-center
-      justify-center
-      "
-    >
+type="submit"
 
-      <FiSettings/>
+disabled={
+loading||
+uploading
+}
 
-    </div>
+className="
+h-12
+rounded-xl
+bg-amber-500
+hover:bg-amber-600
+text-white
+font-bold
+"
 
-    <h2
-      className="
-      text-lg
-      font-bold
-      "
-    >
-
-      Landing Status
-
-    </h2>
-
-  </div>
-
-  <div className="p-5">
-
-    <select
-
-      value={status}
-
-      onChange={(e)=>
-
-        setStatus(
-          e.target.value
-        )
-
-      }
-
-      className="
-      w-full
-      h-12
-      rounded-lg
-      border
-      border-amber-200
-      px-4
-      outline-none
-      focus:border-amber-500
-      focus:ring-4
-      focus:ring-amber-100
-      "
-
-    >
-
-      <option value="draft">
-
-        Draft
-
-      </option>
-
-      <option value="published">
-
-        Published
-
-      </option>
-
-    </select>
-
-  </div>
-
-</div>
-
-{/* Action Buttons - Part 5 */}
-
-
-  {/* =========================
-    ACTION BUTTONS
-========================= */}
-
-<div
-  className="
-  grid
-  gap-3
-  md:grid-cols-3
-  "
 >
 
-  {/* CREATE */}
+{
 
-  <Button
-    type="submit"
-    disabled={loading}
-    className="
-    h-12
-    rounded-lg
-    bg-amber-500
-    hover:bg-amber-600
-    text-white
-    font-bold
-    "
-  >
+loading
 
-    {
+?
 
-      loading
+"Creating..."
 
-      ? "Creating..."
+:
 
-      : "Create Landing Page"
+"Create Landing Page"
 
-    }
+}
 
-  </Button>
+</Button>
 
-  {/* PREVIEW */}
+<Button
 
-  <Button
-    type="button"
-    onClick={handlePreview}
-    className="
-    h-12
-    rounded-lg
-    bg-slate-900
-    hover:bg-slate-800
-    text-white
-    font-bold
-    flex
-    items-center
-    justify-center
-    gap-2
-    "
-  >
+type="button"
 
-    <FiEye/>
+onClick={handlePreview}
 
-    Preview
+className="
+h-12
+rounded-xl
+bg-slate-900
+hover:bg-slate-800
+text-white
+font-bold
+flex
+items-center
+justify-center
+gap-2
+"
 
-  </Button>
+>
 
-  {/* CANCEL */}
+<FiEye/>
 
-  <Button
-    type="button"
-    onClick={()=>
-      setShowCancelModal(true)
-    }
-    className="
-    h-12
-    rounded-lg
-    bg-red-500
-    hover:bg-red-600
-    text-white
-    font-bold
-    flex
-    items-center
-    justify-center
-    gap-2
-    "
-  >
+Preview
 
-    <FiXCircle/>
+</Button>
 
-    Cancel
+<Button
 
-  </Button>
+type="button"
+
+onClick={()=>
+
+setShowCancelModal(true)
+
+}
+
+className="
+h-12
+rounded-xl
+bg-red-500
+hover:bg-red-600
+text-white
+font-bold
+flex
+items-center
+justify-center
+gap-2
+"
+
+>
+
+<FiXCircle/>
+
+Cancel
+
+</Button>
 
 </div>
 
 </form>
 
-{/* =========================
+
+
+  {/* =========================
     CANCEL MODAL
 ========================= */}
 
 {
-
 showCancelModal && (
 
 <div
@@ -1771,6 +2452,7 @@ fixed
 inset-0
 z-50
 bg-black/50
+backdrop-blur-sm
 flex
 items-center
 justify-center
@@ -1781,47 +2463,43 @@ p-4
 <div
 className="
 w-full
-max-w-sm
+max-w-md
 bg-white
-rounded-lg
-shadow-xl
+rounded-2xl
+shadow-2xl
 overflow-hidden
+animate-[fadeIn_.2s_ease]
 "
 >
 
-<div className="p-6">
+<div className="p-7">
 
 <div
 className="
 mx-auto
-mb-4
-w-16
-h-16
+w-20
+h-20
 rounded-full
 bg-red-100
 flex
 items-center
 justify-center
+mb-5
 "
 >
 
 <FiXCircle
-
-size={34}
-
-className="
-text-red-500
-"
-
+size={42}
+className="text-red-500"
 />
 
 </div>
 
 <h2
 className="
-text-center
-text-xl
+text-2xl
 font-bold
+text-center
 "
 >
 
@@ -1831,13 +2509,18 @@ Cancel Landing Page
 
 <p
 className="
+mt-3
 text-center
 text-gray-500
-mt-3
+leading-7
 "
 >
 
-Are you sure you want to cancel this?
+Are you sure you want to cancel?
+
+<br/>
+
+All unsaved changes will be lost.
 
 </p>
 
@@ -1846,7 +2529,7 @@ className="
 grid
 grid-cols-2
 gap-3
-mt-6
+mt-8
 "
 >
 
@@ -1862,9 +2545,11 @@ setShowCancelModal(false)
 
 className="
 bg-gray-200
+hover:bg-gray-300
 text-gray-700
-rounded-lg
+rounded-xl
 "
+
 >
 
 No
@@ -1881,8 +2566,9 @@ className="
 bg-red-500
 hover:bg-red-600
 text-white
-rounded-lg
+rounded-xl
 "
+
 >
 
 Yes
@@ -1908,3 +2594,6 @@ Yes
 );
 
 }
+
+
+
