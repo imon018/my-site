@@ -18,2136 +18,971 @@ import {
 
 export default function CreateLandingPage() {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
-const [products,setProducts]=useState([]);
+  const [products, setProducts] = useState([]);
 
-const [selectedProduct,setSelectedProduct]=useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
 
-const [title,setTitle]=useState("");
+  const [title, setTitle] = useState("");
 
-const [slug,setSlug]=useState("");
+  const [slug, setSlug] = useState("");
 
-const [description,setDescription]=useState("");
+  const [description, setDescription] = useState("");
 
-const [price,setPrice]=useState("");
+  const [price, setPrice] = useState("");
 
-const [offerPrice,setOfferPrice]=useState("");
+  const [offerPrice, setOfferPrice] = useState("");
 
-const [heroImage,setHeroImage]=useState("");
+  const [heroImage, setHeroImage] = useState("");
 
-const [gallery,setGallery]=useState([]);
+  const [gallery, setGallery] = useState([]);
 
-const [status,setStatus]=useState("draft");
+  const [deliveryCharge, setDeliveryCharge] = useState(80);
 
-const [offerText,setOfferText]=useState("");
+  const [cashOnDelivery, setCashOnDelivery] =
+    useState(true);
 
-const [countdown,setCountdown]=useState("");
+  const [status, setStatus] =
+    useState("draft");
 
-const [deliveryCharge,setDeliveryCharge]=useState(80);
+  useEffect(() => {
 
-const [cod,setCod]=useState(true);
+    loadProducts();
 
-const [stickyButton,setStickyButton]=useState(true);
+  }, []);
 
-const [features,setFeatures]=useState([
-"",
-"",
-"",
-""
-]);
+  async function loadProducts() {
 
-const [faq,setFaq]=useState([
-{
-question:"",
-answer:""
-}
-]);
+    try {
 
-const [reviews,setReviews]=useState([
-{
-name:"",
-comment:"",
-rating:5
-}
-]);
+      const data =
+        await getProductsFromDB();
 
-useEffect(()=>{
+      setProducts(data);
 
-loadProducts();
+    }
 
-},[]);
+    catch (error) {
 
-async function loadProducts(){
+      console.log(error);
 
-try{
+      errorToast("Failed to load products.");
 
-const data=await getProductsFromDB();
+    }
 
-setProducts(data);
+  }
 
-}
+  function handleProductSelect(id) {
 
-catch(error){
+    setSelectedProduct(id);
 
-console.log(error);
+    const product = products.find(
+      item => item.id === id
+    );
 
-}
+    if (!product) return;
 
-}
+    setTitle(product.name || "");
 
-function handleProductSelect(id){
+    setSlug(
 
-setSelectedProduct(id);
+      (product.name || "")
 
-const product=
+        .toLowerCase()
 
-products.find(
+        .replace(/\s+/g, "-")
 
-item=>item.id===id
+        .replace(/[^a-z0-9-]/g, "")
 
-);
+    );
 
-if(!product) return;
+    setDescription(
+      product.description || ""
+    );
 
-setTitle(product.name);
+    setPrice(product.price || "");
 
-setSlug(
+    setOfferPrice(product.price || "");
 
-product.name
+    setHeroImage(product.image || "");
 
-.toLowerCase()
+    setGallery(product.images || []);
 
-.replace(/\s+/g,"-")
+  }
 
-.replace(/[^a-z0-9-]/g,"")
 
-);
 
-setDescription(
+  async function handleSubmit(e) {
 
-product.description
+    e.preventDefault();
 
-);
+    if (
 
-setPrice(
+      !selectedProduct ||
 
-product.price
+      !title ||
 
-);
+      !slug ||
 
-setOfferPrice(
+      !description ||
 
-product.price
+      !heroImage
 
-);
+    ) {
 
-setHeroImage(
+      errorToast(
 
-product.image
+        "Please fill all required fields."
 
-);
+      );
 
-setGallery(
+      return;
 
-product.images || []
+    }
 
-);
+    const landingData = {
 
-}
+      productId: selectedProduct,
 
-function updateFeature(
+      title,
 
-index,
+      slug,
 
-value
+      description,
 
-){
+      price: Number(price),
 
-const list=[
+      offerPrice: Number(offerPrice),
 
-...features
+      heroImage,
 
-];
+      gallery,
 
-list[index]=value;
+      deliveryCharge: Number(deliveryCharge),
 
-setFeatures(list);
+      cashOnDelivery,
 
-}
+      status,
 
-function updateFaqQuestion(
+      views: 0,
 
-index,
+      orders: 0,
 
-value
+      revenue: 0,
 
-){
+      createdAt: new Date(),
 
-const list=[
+    };
 
-...faq
+    try {
 
-];
+      setLoading(true);
 
-list[index].question=value;
+      await createLandingPage(
 
-setFaq(list);
+        landingData
 
-}
+      );
 
-function updateFaqAnswer(
+      successToast(
 
-index,
+        "Landing Page Created Successfully."
 
-value
+      );
 
-){
+      navigate(
 
-const list=[
+        "/admin/landing"
 
-...faq
+      );
 
-];
+    }
 
-list[index].answer=value;
+    catch (error) {
 
-setFaq(list);
+      console.log(error);
 
-}
+      errorToast(
 
-function addFaq(){
+        error.message ||
 
-setFaq([
+        "Failed to create landing page."
 
-...faq,
+      );
 
-{
+    }
 
-question:"",
+    finally {
 
-answer:""
+      setLoading(false);
 
-}
+    }
 
-]);
+  }
 
-}
+  return (
 
-function removeFaq(index){
+    <div
+      className="
+      min-h-screen
+      bg-[#FAF7F2]
+      p-4
+      lg:p-8
+      "
+    >
 
-setFaq(
+      <div
+        className="
+        max-w-5xl
+        mx-auto
+        "
+      >
 
-faq.filter(
+        <div className="mb-6">
 
-(_,i)=>
+          <h1
+            className="
+            text-3xl
+            font-black
+            text-slate-900
+            "
+          >
 
-i!==index
+            Create Landing Page
 
-)
+          </h1>
 
-);
+          <p
+            className="
+            text-gray-500
+            mt-1
+            "
+          >
 
-}
+            Facebook Single Product Landing Builder
 
-function updateReviewName(
+          </p>
 
-index,
+        </div>
 
-value
+        <form
 
-){
+          onSubmit={handleSubmit}
 
-const list=[
+          className="
+          bg-white
+          rounded-2xl
+          border
+          border-gray-100
+          shadow-sm
+          p-6
+          space-y-6
+          "
+        >
 
-...reviews
 
-];
+                    {/* PRODUCT */}
 
-list[index].name=value;
+          <div>
 
-setReviews(list);
+            <label
+              className="
+              block
+              font-bold
+              mb-2
+              "
+            >
 
-}
+              Select Product
 
-function updateReviewComment(
+            </label>
 
-index,
+            <select
 
-value
+              value={selectedProduct}
 
-){
+              onChange={(e)=>
 
-const list=[
+                handleProductSelect(
+                  e.target.value
+                )
 
-...reviews
+              }
 
-];
+              className="
+              w-full
+              h-12
+              rounded-xl
+              border
+              border-gray-200
+              px-4
+              outline-none
+              "
 
-list[index].comment=value;
+            >
 
-setReviews(list);
+              <option value="">
 
-}
+                Choose Product
 
-function updateReviewRating(
+              </option>
 
-index,
+              {
 
-value
+                products.map(product=>(
 
-){
+                  <option
 
-const list=[
+                    key={product.id}
 
-...reviews
+                    value={product.id}
 
-];
+                  >
 
-list[index].rating=value;
+                    {product.name}
 
-setReviews(list);
+                  </option>
 
-}
+                ))
 
-function addReview(){
+              }
 
-setReviews([
+            </select>
 
-...reviews,
+          </div>
 
-{
+          {/* TITLE */}
 
-name:"",
+          <div>
 
-comment:"",
+            <label
+              className="
+              block
+              font-bold
+              mb-2
+              "
+            >
 
-rating:5
+              Landing Title
 
-}
+            </label>
 
-]);
+            <input
 
-}
+              value={title}
 
-function removeReview(index){
+              onChange={(e)=>
 
-setReviews(
+                setTitle(
+                  e.target.value
+                )
 
-reviews.filter(
+              }
 
-(_,i)=>
+              className="
+              w-full
+              h-12
+              rounded-xl
+              border
+              border-gray-200
+              px-4
+              "
 
-i!==index
+            />
 
-)
+          </div>
 
-);
+          {/* SLUG */}
 
-}
+          <div>
 
-async function handleSubmit(e){
+            <label
+              className="
+              block
+              font-bold
+              mb-2
+              "
+            >
 
-e.preventDefault();
+              Landing URL
 
-if(
+            </label>
 
-!selectedProduct ||
+            <input
 
-!title ||
+              value={slug}
 
-!slug ||
+              onChange={(e)=>
 
-!description ||
+                setSlug(
+                  e.target.value
+                )
 
-!heroImage
+              }
 
-){
+              className="
+              w-full
+              h-12
+              rounded-xl
+              border
+              border-gray-200
+              px-4
+              "
 
-errorToast(
+            />
 
-"Please fill all required fields."
+            <p
+              className="
+              text-xs
+              text-gray-500
+              mt-2
+              "
+            >
 
-);
+              /landing/{slug}
 
-return;
+            </p>
 
-}
+          </div>
 
+          {/* PRICE */}
 
-  const landingData={
+          <div
+            className="
+            grid
+            md:grid-cols-2
+            gap-4
+            "
+          >
 
-productId:selectedProduct,
+            <div>
 
-title,
+              <label
+                className="
+                block
+                font-bold
+                mb-2
+                "
+              >
 
-slug,
+                Regular Price
 
-description,
+              </label>
 
-price:Number(price),
+              <input
 
-offerPrice:Number(offerPrice),
+                type="number"
 
-heroImage,
+                value={price}
 
-gallery,
+                onChange={(e)=>
 
-offerText,
+                  setPrice(
+                    e.target.value
+                  )
 
-countdown,
+                }
 
-deliveryCharge:Number(deliveryCharge),
+                className="
+                w-full
+                h-12
+                rounded-xl
+                border
+                border-gray-200
+                px-4
+                "
 
-cashOnDelivery:cod,
+              />
 
-stickyButton,
+            </div>
 
-features,
+            <div>
 
-faq,
+              <label
+                className="
+                block
+                font-bold
+                mb-2
+                "
+              >
 
-reviews,
+                Offer Price
 
-status,
+              </label>
 
-views:0,
+              <input
 
-orders:0,
+                type="number"
 
-revenue:0,
+                value={offerPrice}
 
-createdAt:new Date()
+                onChange={(e)=>
 
-};
+                  setOfferPrice(
+                    e.target.value
+                  )
 
-try{
+                }
 
-setLoading(true);
+                className="
+                w-full
+                h-12
+                rounded-xl
+                border
+                border-gray-200
+                px-4
+                "
 
-await createLandingPage(
+              />
 
-landingData
+            </div>
 
-);
+          </div>
 
-successToast(
+          {/* DESCRIPTION */}
 
-"Landing Page Created Successfully."
+          <div>
 
-);
+            <label
+              className="
+              block
+              font-bold
+              mb-2
+              "
+            >
 
-navigate(
+              Description
 
-"/admin/landing-pages"
+            </label>
 
-);
+            <textarea
 
-}
+              rows={6}
 
-catch(error){
+              value={description}
 
-console.log(error);
+              onChange={(e)=>
 
-errorToast(
+                setDescription(
+                  e.target.value
+                )
 
-error.message ||
+              }
 
-"Failed to create landing page."
+              className="
+              w-full
+              rounded-xl
+              border
+              border-gray-200
+              p-4
+              resize-none
+              "
 
-);
+            />
 
-}
+          </div>
 
-finally{
 
-setLoading(false);
 
-}
+                    {/* HERO IMAGE */}
 
-}
+          <div>
 
-return(
+            <label
+              className="
+              block
+              font-bold
+              mb-3
+              "
+            >
 
-<div className="
+              Hero Image
 
-min-h-screen
+            </label>
 
-bg-[#FAF7F2]
+            {
 
-p-4
+              heroImage ? (
 
-lg:p-8
+                <img
 
-">
+                  src={heroImage}
 
-<div className="
+                  alt={title}
 
-max-w-5xl
+                  className="
+                  w-full
+                  h-72
+                  rounded-xl
+                  object-cover
+                  border
+                  "
 
-mx-auto
+                />
 
-">
+              ) : (
 
-<div className="mb-6">
+                <div
+                  className="
+                  h-72
+                  rounded-xl
+                  border-2
+                  border-dashed
+                  flex
+                  items-center
+                  justify-center
+                  text-gray-400
+                  "
+                >
 
-<h1 className="
+                  No Hero Image
 
-text-3xl
+                </div>
 
-font-black
+              )
 
-text-slate-900
+            }
 
-">
+          </div>
 
-Create Landing Page
+          {/* GALLERY */}
 
-</h1>
+          <div>
 
-<p className="
+            <label
+              className="
+              block
+              font-bold
+              mb-3
+              "
+            >
 
-text-gray-500
+              Gallery Preview
 
-mt-1
+            </label>
 
-">
+            {
 
-Facebook Landing Builder
+              gallery.length > 0 ? (
 
-</p>
+                <div
+                  className="
+                  grid
+                  grid-cols-2
+                  md:grid-cols-4
+                  gap-4
+                  "
+                >
 
-</div>
+                  {
 
-<form
+                    gallery.map(
 
-onSubmit={handleSubmit}
+                      (image,index)=>(
 
-className="
+                        <img
 
-bg-white
+                          key={index}
 
-rounded-2xl
+                          src={image}
 
-border
+                          alt=""
 
-border-gray-100
+                          className="
+                          w-full
+                          h-32
+                          rounded-xl
+                          object-cover
+                          border
+                          "
 
-shadow-sm
+                        />
 
-p-6
+                      )
 
-space-y-6
+                    )
 
-"
+                  }
 
->
+                </div>
 
-{/* PRODUCT */}
+              ) : (
 
-<div>
+                <div
+                  className="
+                  h-32
+                  rounded-xl
+                  border-2
+                  border-dashed
+                  flex
+                  items-center
+                  justify-center
+                  text-gray-400
+                  "
+                >
 
-<label className="
+                  No Gallery Images
 
-block
+                </div>
 
-font-bold
+              )
 
-mb-2
+            }
 
-">
+          </div>
 
-Select Product
+          {/* DELIVERY */}
 
-</label>
+          <div
+            className="
+            grid
+            md:grid-cols-2
+            gap-4
+            "
+          >
 
-<select
+            <div>
 
-value={selectedProduct}
+              <label
+                className="
+                block
+                font-bold
+                mb-2
+                "
+              >
 
-onChange={(e)=>
+                Delivery Charge
 
-handleProductSelect(
+              </label>
 
-e.target.value
+              <input
 
-)
+                type="number"
 
-}
+                value={deliveryCharge}
 
-className="
+                onChange={(e)=>
 
-w-full
+                  setDeliveryCharge(
+                    e.target.value
+                  )
 
-h-12
+                }
 
-rounded-xl
+                className="
+                w-full
+                h-12
+                rounded-xl
+                border
+                border-gray-200
+                px-4
+                "
 
-border
+              />
 
-border-gray-200
+            </div>
 
-px-4
+            <div
+              className="
+              bg-amber-50
+              border
+              border-amber-200
+              rounded-xl
+              px-4
+              py-4
+              flex
+              items-center
+              justify-between
+              "
+            >
 
-outline-none
+              <div>
 
-"
+                <h3
+                  className="
+                  font-bold
+                  "
+                >
 
->
+                  Cash On Delivery
 
-<option value="">
+                </h3>
 
-Choose Product
+                <p
+                  className="
+                  text-xs
+                  text-gray-500
+                  "
+                >
 
-</option>
+                  Enable COD
 
-{
+                </p>
 
-products.map(product=>(
+              </div>
 
-<option
+              <input
 
-key={product.id}
+                type="checkbox"
 
-value={product.id}
+                checked={cashOnDelivery}
 
->
+                onChange={(e)=>
 
-{product.name}
+                  setCashOnDelivery(
+                    e.target.checked
+                  )
 
-</option>
+                }
 
-))
+                className="
+                w-5
+                h-5
+                "
 
-}
+              />
 
-</select>
+            </div>
 
-</div>
+          </div>
 
-{/* TITLE */}
+          {/* STATUS */}
 
-<div>
+          <div>
 
-<label className="
+            <label
+              className="
+              block
+              font-bold
+              mb-2
+              "
+            >
 
-block
+              Landing Status
 
-font-bold
+            </label>
 
-mb-2
+            <select
 
-">
+              value={status}
 
-Landing Title
+              onChange={(e)=>
 
-</label>
+                setStatus(
+                  e.target.value
+                )
 
-<input
+              }
 
-value={title}
+              className="
+              w-full
+              h-12
+              rounded-xl
+              border
+              border-gray-200
+              px-4
+              outline-none
+              "
 
-onChange={(e)=>
+            >
 
-setTitle(
+              <option value="draft">
 
-e.target.value
+                Draft
 
-)
+              </option>
 
-}
+              <option value="published">
 
-className="
+                Published
 
-w-full
+              </option>
 
-h-12
+            </select>
 
-rounded-xl
+          </div>
 
-border
 
-border-gray-200
 
-px-4
+                    {/* ACTION BUTTONS */}
 
-"
+          <div
+            className="
+            flex
+            flex-col
+            md:flex-row
+            gap-3
+            pt-2
+            "
+          >
 
-/>
+            <Button
 
-</div>
+              type="submit"
 
-{/* SLUG */}
+              disabled={loading}
 
-<div>
+              className="
+              flex-1
+              h-12
+              rounded-xl
+              bg-gradient-to-r
+              from-amber-400
+              to-amber-500
+              text-white
+              font-black
+              "
 
-<label className="
+            >
 
-block
+              {
 
-font-bold
+                loading
 
-mb-2
+                  ? "Creating Landing..."
 
-">
+                  : "Create Landing Page"
 
-Landing URL
+              }
 
-</label>
+            </Button>
 
-<input
+            <Button
 
-value={slug}
+              type="button"
 
-onChange={(e)=>
+              onClick={()=>
 
-setSlug(
+                navigate("/admin/landing")
 
-e.target.value
+              }
 
-)
+              className="
+              flex-1
+              h-12
+              rounded-xl
+              bg-gray-200
+              text-slate-700
+              font-black
+              "
 
-}
+            >
 
-className="
+              Cancel
 
-w-full
+            </Button>
 
-h-12
+          </div>
 
-rounded-xl
+        </form>
 
-border
+      </div>
 
-border-gray-200
+    </div>
 
-px-4
-
-"
-
-/>
-
-<p className="
-
-text-xs
-
-text-gray-500
-
-mt-2
-
-">
-
-/landing/{slug}
-
-</p>
-
-</div>
-
-{/* PRICE */}
-
-<div className="
-
-grid
-
-md:grid-cols-2
-
-gap-4
-
-">
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Regular Price
-
-</label>
-
-<input
-
-type="number"
-
-value={price}
-
-onChange={(e)=>
-
-setPrice(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-</div>
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Offer Price
-
-</label>
-
-<input
-
-type="number"
-
-value={offerPrice}
-
-onChange={(e)=>
-
-setOfferPrice(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-</div>
-
-</div>
-
-{/* DESCRIPTION */}
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Description
-
-</label>
-
-<textarea
-
-rows={6}
-
-value={description}
-
-onChange={(e)=>
-
-setDescription(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-rounded-xl
-
-border
-
-border-gray-200
-
-p-4
-
-resize-none
-
-"
-
-/>
-
-</div>
-
-{/* HERO IMAGE */}
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-3
-
-">
-
-Hero Image
-
-</label>
-
-<img
-
-src={heroImage}
-
-alt=""
-
-className="
-
-w-full
-
-h-72
-
-rounded-xl
-
-object-cover
-
-border
-
-"
-
-/>
-
-</div>
-
-
-
-  {/* GALLERY */}
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-3
-
-">
-
-Gallery Preview
-
-</label>
-
-<div className="
-
-grid
-
-grid-cols-2
-
-md:grid-cols-4
-
-gap-4
-
-">
-
-{
-
-gallery.map((image,index)=>(
-
-<img
-
-key={index}
-
-src={image}
-
-alt=""
-
-className="
-
-w-full
-
-h-32
-
-rounded-xl
-
-object-cover
-
-border
-
-"
-
-/>
-
-))
+  );
 
 }
-
-</div>
-
-</div>
-
-{/* OFFER */}
-
-<div className="
-
-grid
-
-md:grid-cols-2
-
-gap-4
-
-">
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Offer Badge
-
-</label>
-
-<input
-
-value={offerText}
-
-onChange={(e)=>
-
-setOfferText(
-
-e.target.value
-
-)
-
-}
-
-placeholder="🔥 Free Delivery"
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-</div>
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Countdown
-
-</label>
-
-<input
-
-type="datetime-local"
-
-value={countdown}
-
-onChange={(e)=>
-
-setCountdown(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-</div>
-
-</div>
-
-{/* DELIVERY */}
-
-<div className="
-
-grid
-
-md:grid-cols-2
-
-gap-4
-
-">
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Delivery Charge
-
-</label>
-
-<input
-
-type="number"
-
-value={deliveryCharge}
-
-onChange={(e)=>
-
-setDeliveryCharge(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-</div>
-
-<div className="
-
-flex
-
-items-center
-
-justify-between
-
-bg-amber-50
-
-rounded-xl
-
-px-4
-
-py-4
-
-">
-
-<div>
-
-<h3 className="font-bold">
-
-Cash On Delivery
-
-</h3>
-
-<p className="text-xs text-gray-500">
-
-Enable COD
-
-</p>
-
-</div>
-
-<input
-
-type="checkbox"
-
-checked={cod}
-
-onChange={(e)=>
-
-setCod(
-
-e.target.checked
-
-)
-
-}
-
-className="
-
-w-5
-
-h-5
-
-"
-
-/>
-
-</div>
-
-</div>
-
-{/* FEATURES */}
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-3
-
-">
-
-Product Features
-
-</label>
-
-<div className="space-y-3">
-
-{
-
-features.map((item,index)=>(
-
-<input
-
-key={index}
-
-value={item}
-
-onChange={(e)=>
-
-updateFeature(
-
-index,
-
-e.target.value
-
-)
-
-}
-
-placeholder={`Feature ${index+1}`}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-"
-
-/>
-
-))
-
-}
-
-</div>
-
-</div>
-
-{/* FAQ */}
-
-<div>
-
-<div className="
-
-flex
-
-justify-between
-
-items-center
-
-mb-3
-
-">
-
-<h2 className="font-bold">
-
-FAQ
-
-</h2>
-
-<button
-
-type="button"
-
-onClick={addFaq}
-
-className="
-
-px-4
-
-py-2
-
-rounded-lg
-
-bg-blue-500
-
-text-white
-
-"
-
->
-
-Add FAQ
-
-</button>
-
-</div>
-
-{
-
-faq.map((item,index)=>(
-
-<div
-
-key={index}
-
-className="
-
-border
-
-rounded-xl
-
-p-4
-
-mb-4
-
-space-y-3
-
-"
-
->
-
-<input
-
-value={item.question}
-
-onChange={(e)=>
-
-updateFaqQuestion(
-
-index,
-
-e.target.value
-
-)
-
-}
-
-placeholder="Question"
-
-className="
-
-w-full
-
-h-11
-
-rounded-lg
-
-border
-
-px-4
-
-"
-
-/>
-
-<textarea
-
-rows={3}
-
-value={item.answer}
-
-onChange={(e)=>
-
-updateFaqAnswer(
-
-index,
-
-e.target.value
-
-)
-
-}
-
-placeholder="Answer"
-
-className="
-
-w-full
-
-rounded-lg
-
-border
-
-p-4
-
-"
-
-/>
-
-<button
-
-type="button"
-
-onClick={()=>
-
-removeFaq(
-
-index
-
-)
-
-}
-
-className="
-
-text-red-500
-
-font-bold
-
-"
-
->
-
-Delete FAQ
-
-</button>
-
-</div>
-
-))
-
-}
-
-</div>
-
-{/* REVIEWS */}
-
-<div>
-
-<div className="
-
-flex
-
-justify-between
-
-items-center
-
-mb-3
-
-">
-
-<h2 className="font-bold">
-
-Customer Reviews
-
-</h2>
-
-<button
-
-type="button"
-
-onClick={addReview}
-
-className="
-
-px-4
-
-py-2
-
-rounded-lg
-
-bg-green-500
-
-text-white
-
-"
-
->
-
-Add Review
-
-</button>
-
-</div>
-
-{
-
-reviews.map((review,index)=>(
-
-<div
-
-key={index}
-
-className="
-
-border
-
-rounded-xl
-
-p-4
-
-mb-4
-
-space-y-3
-
-"
-
->
-
-<input
-
-value={review.name}
-
-onChange={(e)=>
-
-updateReviewName(
-
-index,
-
-e.target.value
-
-)
-
-}
-
-placeholder="Customer Name"
-
-className="
-
-w-full
-
-h-11
-
-rounded-lg
-
-border
-
-px-4
-
-"
-
-/>
-
-<textarea
-
-rows={3}
-
-value={review.comment}
-
-onChange={(e)=>
-
-updateReviewComment(
-
-index,
-
-e.target.value
-
-)
-
-}
-
-placeholder="Customer Review"
-
-className="
-
-w-full
-
-rounded-lg
-
-border
-
-p-4
-
-"
-
-/>
-
-<select
-
-value={review.rating}
-
-onChange={(e)=>
-
-updateReviewRating(
-
-index,
-
-Number(e.target.value)
-
-)
-
-}
-
-className="
-
-w-full
-
-h-11
-
-rounded-lg
-
-border
-
-px-4
-
-"
-
->
-
-<option value={5}>★★★★★</option>
-
-<option value={4}>★★★★☆</option>
-
-<option value={3}>★★★☆☆</option>
-
-<option value={2}>★★☆☆☆</option>
-
-<option value={1}>★☆☆☆☆</option>
-
-</select>
-
-<button
-
-type="button"
-
-onClick={()=>
-
-removeReview(
-
-index
-
-)
-
-}
-
-className="
-
-text-red-500
-
-font-bold
-
-"
-
->
-
-Delete Review
-
-</button>
-
-</div>
-
-))
-
-}
-
-</div>
-
-
-
-  {/* STATUS */}
-
-<div className="
-
-grid
-
-md:grid-cols-2
-
-gap-4
-
-">
-
-<div>
-
-<label className="
-
-block
-
-font-bold
-
-mb-2
-
-">
-
-Landing Status
-
-</label>
-
-<select
-
-value={status}
-
-onChange={(e)=>
-
-setStatus(
-
-e.target.value
-
-)
-
-}
-
-className="
-
-w-full
-
-h-12
-
-rounded-xl
-
-border
-
-border-gray-200
-
-px-4
-
-outline-none
-
-"
-
->
-
-<option value="draft">
-
-Draft
-
-</option>
-
-<option value="published">
-
-Published
-
-</option>
-
-</select>
-
-</div>
-
-<div className="
-
-bg-amber-50
-
-rounded-xl
-
-border
-
-border-amber-200
-
-px-4
-
-py-4
-
-flex
-
-items-center
-
-justify-between
-
-">
-
-<div>
-
-<h3 className="
-
-font-bold
-
-text-slate-900
-
-">
-
-Sticky Order Button
-
-</h3>
-
-<p className="
-
-text-xs
-
-text-gray-500
-
-mt-1
-
-">
-
-Show floating order button on mobile
-
-</p>
-
-</div>
-
-<input
-
-type="checkbox"
-
-checked={stickyButton}
-
-onChange={(e)=>
-
-setStickyButton(
-
-e.target.checked
-
-)
-
-}
-
-className="
-
-w-5
-
-h-5
-
-"
-
-/>
-
-</div>
-
-</div>
-
-{/* SUMMARY */}
-
-<div className="
-
-rounded-2xl
-
-border
-
-border-green-200
-
-bg-green-50
-
-p-5
-
-space-y-2
-
-">
-
-<h2 className="
-
-text-lg
-
-font-black
-
-text-green-700
-
-">
-
-Landing Summary
-
-</h2>
-
-<div className="
-
-grid
-
-grid-cols-2
-
-gap-3
-
-text-sm
-
-">
-
-<p>
-
-<b>Product:</b>
-
-{" "}
-
-{title || "-"}
-
-</p>
-
-<p>
-
-<b>Price:</b>
-
-{" "}
-
-৳ {price || 0}
-
-</p>
-
-<p>
-
-<b>Offer:</b>
-
-{" "}
-
-৳ {offerPrice || 0}
-
-</p>
-
-<p>
-
-<b>Status:</b>
-
-{" "}
-
-{status}
-
-</p>
-
-<p>
-
-<b>Gallery:</b>
-
-{" "}
-
-{gallery.length} Images
-
-</p>
-
-<p>
-
-<b>Reviews:</b>
-
-{" "}
-
-{reviews.length}
-
-</p>
-
-<p>
-
-<b>FAQ:</b>
-
-{" "}
-
-{faq.length}
-
-</p>
-
-<p>
-
-<b>Features:</b>
-
-{" "}
-
-{
-
-features.filter(
-
-item=>item.trim()!==""
-
-).length
-
-}
-
-</p>
-
-</div>
-
-</div>
-
-{/* BUTTONS */}
-
-<div className="
-
-flex
-
-flex-col
-
-md:flex-row
-
-gap-3
-
-pt-2
-
-">
-
-<Button
-
-type="submit"
-
-disabled={loading}
-
-className="
-
-flex-1
-
-h-12
-
-rounded-xl
-
-bg-gradient-to-r
-
-from-amber-400
-
-to-amber-500
-
-text-white
-
-font-black
-
-"
-
->
-
-{
-
-loading
-
-?
-
-"Creating Landing..."
-
-:
-
-"Create Landing Page"
-
-}
-
-</Button>
-
-<Button
-
-type="button"
-
-onClick={()=>
-
-navigate(
-
-"/admin/landing-pages"
-
-)
-
-}
-
-className="
-
-flex-1
-
-h-12
-
-rounded-xl
-
-bg-gray-200
-
-text-slate-700
-
-font-black
-
-"
-
->
-
-Cancel
-
-</Button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-);
-
-}
-
-
-
