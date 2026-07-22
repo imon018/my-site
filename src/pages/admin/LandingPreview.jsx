@@ -481,39 +481,43 @@ Desktop View
 
 
 <div
-
 className={
-
 view==="mobile"
-
 ?
-
-"mt-8 mx-auto max-w-sm bg-white rounded-[35px] overflow-hidden"
-
+"mt-8 mx-auto max-w-sm overflow-hidden"
 :
-
-"mt-8 w-full bg-white rounded-2xl overflow-hidden"
-
+"mt-8 w-full overflow-hidden"
 }
-
 >
+
+
+
+
+<div className="pt-5">
+
 
 
 
 
 
 <div
-className="
-p-5
-"
+  className="
+  bg-purple-700
+  text-white
+  py-3
+  px-4
+  flex
+  items-center
+  justify-center
+  gap-2
+  font-bold
+  "
 >
+  🎁
+  <span>আজই অর্ডার করুন, ক্যাশ অন ডেলিভারি</span>
+</div>
 
-
-
-
-
-
-
+  
 
 {/* IMAGE GALLERY */}
 
@@ -550,7 +554,6 @@ className="
 w-full
 h-[420px]
 object-cover
-rounded-2xl
 cursor-pointer
 "
 
@@ -565,20 +568,23 @@ discount > 0 &&
 <div
 className="
 absolute
-top-4
-right-4
-bg-red-500
+top-0
+left-0
+bg-red-600
 text-white
 px-4
-py-2
-rounded-full
+py-3
 font-black
+leading-5
 "
+style={{
+clipPath:"polygon(0 0,100% 0,100% 80%,50% 100%,0 80%)"
+}}
 >
-
-{discount}% OFF
-
+{discount}%<br/>
+OFF
 </div>
+
   
 
 }
@@ -641,7 +647,7 @@ className={`
 w-20
 h-20
 object-cover
-rounded-lg
+rounded-md
 cursor-pointer
 border-2
 
