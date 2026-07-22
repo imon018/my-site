@@ -39,12 +39,12 @@ export default function MobileLandingPages({ data }) {
         </h1>
 
         <Link
-          to="/admin/landing-pages/create"
-          className="h-10 px-3 rounded-lg bg-amber-500 text-white flex items-center gap-2"
-        >
-          <FiPlus />
-          Create
-        </Link>
+  to="/admin/landing/create"
+  className="h-10 px-3 rounded-lg bg-amber-500 text-white flex items-center gap-2"
+>
+  <FiPlus />
+  
+</Link>
 
       </div>
 
