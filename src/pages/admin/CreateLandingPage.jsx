@@ -6,7 +6,6 @@ import {
   FiPackage,
   FiEdit3,
   FiImage,
-  FiTruck,
   FiSettings,
   FiEye,
   FiXCircle,
@@ -361,37 +360,7 @@ prev.filter(
 
 }
 
-useEffect(()=>{
 
-switch(deliveryZone){
-
-case "inside":
-
-setDeliveryCharge(80);
-
-break;
-
-case "sub":
-
-setDeliveryCharge(100);
-
-break;
-
-case "outside":
-
-setDeliveryCharge(120);
-
-break;
-
-default:
-
-setDeliveryCharge(80);
-
-}
-
-},[
-deliveryZone
-]);
 
 const landingData=
 
@@ -416,10 +385,6 @@ price:Number(price),
 offerPrice:Number(
 offerPrice
 ),
-
-deliveryCharge,
-
-cashOnDelivery,
 
 status,
 
