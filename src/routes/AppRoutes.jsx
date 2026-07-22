@@ -432,7 +432,7 @@ element={<ReturnOrder />}
 />
 
         <Route
-  path="/admin/landing-pages"
+  path="landing"
   element={<LandingPages />}
 />
 
