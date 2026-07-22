@@ -13,6 +13,7 @@ import {
   FiMonitor,
   FiSmartphone,
   FiX,
+  FiGift,
   FiMaximize2,
 } from "react-icons/fi";
 
@@ -219,12 +220,7 @@ lg:p-8
 
 
 
-<div
-className="
-max-w-7xl
-mx-auto
-"
->
+<div className="w-full max-w-none">
 
 
 
@@ -480,20 +476,18 @@ Desktop View
 
 
 
-<div
 className={
 view==="mobile"
 ?
-"mt-8 mx-auto max-w-sm overflow-hidden"
+"mt-0 w-full overflow-hidden"
 :
 "mt-8 w-full overflow-hidden"
 }
->
 
 
 
 
-<div className="pt-5">
+<div className="pt-0">
 
 
 
@@ -501,20 +495,27 @@ view==="mobile"
 
 
 <div
-  className="
-  bg-purple-700
-  text-white
-  py-3
-  px-4
-  flex
-  items-center
-  justify-center
-  gap-2
-  font-bold
-  "
+className="
+bg-purple-700
+text-white
+h-10
+px-3
+flex
+items-center
+justify-center
+gap-2
+text-xs
+font-semibold
+whitespace-nowrap
+"
 >
-  🎁
-  <span>আজই অর্ডার করুন, ক্যাশ অন ডেলিভারি</span>
+
+<FiGift className="text-base shrink-0"/>
+
+<span>
+আজই অর্ডার করুন, ফ্রি ডেলিভারি!
+</span>
+
 </div>
 
   
@@ -570,19 +571,38 @@ className="
 absolute
 top-0
 left-0
-bg-red-600
+w-16
+bg-indigo-600
 text-white
-px-4
-py-3
-font-black
-leading-5
+text-center
+font-bold
+z-20
 "
-style={{
-clipPath:"polygon(0 0,100% 0,100% 80%,50% 100%,0 80%)"
-}}
 >
-{discount}%<br/>
+
+<div className="py-3">
+<div className="text-2xl">
+{discount}%
+</div>
+
+<div className="text-base">
 OFF
+</div>
+</div>
+
+<div
+className="
+w-0
+h-0
+border-l-[32px]
+border-r-[32px]
+border-t-[18px]
+border-l-transparent
+border-r-transparent
+border-t-indigo-700
+"
+/>
+
 </div>
 
   
@@ -895,7 +915,7 @@ text-lg
 "
 >
 
-পরিমাণ
+Quantity
 
 </span>
 
