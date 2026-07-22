@@ -70,7 +70,8 @@ const [price,setPrice]=useState("");
 
 const [offerPrice,setOfferPrice]=useState("");
 
-const [heroImages,setHeroImages]=useState([]);
+const [heroImages,setHeroImages]=
+useState([]);
 
 const [uploading,setUploading]=useState(false);
 
