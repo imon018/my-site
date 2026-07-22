@@ -708,7 +708,7 @@ className="
 w-full
 h-12
 border
-rounded-xl
+rounded-lg
 px-4
 outline-none
 focus:border-amber-400
@@ -1051,7 +1051,7 @@ mt-4
 className="
 flex
 items-center
-gap-2
+gap-1
 "
 >
 
@@ -1064,14 +1064,14 @@ decreaseQty(product.id)
 }
 
 className="
-w-7
-h-7
-rounded-lg
+w-6
+h-6
+rounded-md
 bg-gray-100
 flex
 items-center
 justify-center
-text-sm
+text-xs
 "
 
 >
@@ -1083,8 +1083,9 @@ text-sm
 <span
 className="
 font-bold
-min-w-[20px]
+w-4
 text-center
+text-sm
 "
 >
 
@@ -1101,15 +1102,15 @@ increaseQty(product.id)
 }
 
 className="
-w-7
-h-7
-rounded-lg
+w-6
+h-6
+rounded-md
 bg-amber-500
 text-white
 flex
 items-center
 justify-center
-text-sm
+text-xs
 "
 
 >
