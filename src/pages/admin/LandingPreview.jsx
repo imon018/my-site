@@ -624,7 +624,16 @@ border-t-indigo-700
 
 
 
+ {/* PRODUCT INFO CARD */}
 
+<div
+className="
+mt-6
+bg-[#FAFAFA]
+rounded-lg
+p-5
+"
+>
 
 
 
@@ -711,16 +720,7 @@ ${
 
 
 
-  {/* PRODUCT INFO CARD */}
-
-<div
-className="
-mt-6
-bg-[#fffaf0]
-rounded-lg
-p-5
-"
->
+ 
 
   {/*  HERO TITLE */}
 
@@ -776,9 +776,47 @@ whitespace-pre-line
 "
 >
 
-{formattedText(
-landing.heroDescription
-)}
+{
+formattedText(landing.heroDescription)
+.split("\n")
+.map((line,index)=>(
+<div
+key={index}
+className="
+flex
+items-start
+gap-3
+mb-3
+"
+>
+
+<div
+className="
+w-5
+h-5
+rounded-full
+bg-purple-600
+text-white
+flex
+items-center
+justify-center
+text-xs
+font-bold
+shrink-0
+"
+>
+✓
+</div>
+
+
+<span>
+{line}
+</span>
+
+
+</div>
+))
+}
 
 </div>
 
@@ -955,8 +993,8 @@ setQuantity(quantity-1)
 }}
 
 className="
-w-6
-h-6
+w-8
+h-8
 rounded-lg
 bg-gray-200
 font-bold
@@ -989,8 +1027,8 @@ text-xl
 onClick={()=>setQuantity(quantity+1)}
 
 className="
-w-6
-h-6
+w-8
+h-8
 rounded-lg
 bg-amber-500
 text-white
