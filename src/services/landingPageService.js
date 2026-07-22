@@ -91,6 +91,103 @@ export const updateLandingPage = async (id, data) => {
   });
 };
 
+
+// =========================
+// Increment Landing View
+// =========================
+export const incrementLandingView = async (id) => {
+  const ref = doc(db, "landingPages", id);
+
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  await updateDoc(ref, {
+    views: (data.views || 0) + 1,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+
+
+// =========================
+// Increment Landing Orders
+// =========================
+export const incrementLandingOrders = async (
+  id,
+  amount = 0
+) => {
+  const ref = doc(db, "landingPages", id);
+
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  await updateDoc(ref, {
+    orders: (data.orders || 0) + 1,
+    revenue: (data.revenue || 0) + Number(amount),
+    updatedAt: serverTimestamp(),
+  });
+};
+
+
+// =========================
+// Get Published Landing Pages
+// =========================
+export const getPublishedLandingPages = async () => {
+  const q = query(
+    landingCollection,
+    where("status", "==", "published")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
+
+
+
+// =========================
+// Duplicate Landing Page
+// =========================
+export const duplicateLandingPage = async (id) => {
+  const landing = await getLandingPageById(id);
+
+  if (!landing) return null;
+
+  delete landing.id;
+
+  landing.slug =
+    landing.slug +
+    "-" +
+    Date.now();
+
+  landing.title =
+    landing.title +
+    " Copy";
+
+  landing.status = "draft";
+
+  landing.createdAt = serverTimestamp();
+  landing.updatedAt = serverTimestamp();
+
+  const docRef = await addDoc(
+    landingCollection,
+    landing
+  );
+
+  return docRef.id;
+};
+
+
+
 // Delete Landing Page
 export const deleteLandingPage = async (id) => {
   const ref = doc(db, "landingPages", id);
