@@ -365,7 +365,7 @@ justify-center
 <div
 className="
 bg-gray-100
-rounded-xl
+rounded-lg
 p-1
 flex
 "
@@ -579,6 +579,8 @@ font-black
 {discount}% OFF
 
 </div>
+  
+ ) 
 
 }
 
@@ -640,7 +642,7 @@ className={`
 w-20
 h-20
 object-cover
-rounded-xl
+rounded-lg
 cursor-pointer
 border-2
 
@@ -823,6 +825,8 @@ font-bold
 {discount}% OFF
 
 </span>
+
+  )
 
 }
 
@@ -1390,8 +1394,6 @@ object-contain
 
 </div>
 
-
-</div>
 
 
 );
