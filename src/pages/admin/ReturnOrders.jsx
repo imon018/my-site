@@ -18,7 +18,8 @@ import {
   FiCheckCircle,
   FiMoreVertical,
   FiTrash2,
-  FiDollarSign
+  FiDollarSign,
+  FiPlus,
 } from "react-icons/fi";
 
 
@@ -360,25 +361,40 @@ lg:p-6
 
 
 {/* HEADER */}
+{/* HEADER */}
 
-<div
-className="
-text-center
-"
->
+<div className="flex items-center justify-between">
 
-<h1
-className="
-text-2xl
-font-black
-text-slate-900
-"
->
-Return Orders
-</h1>
+  <div>
+
+    <h1 className="text-2xl font-black text-slate-900">
+      Return Orders
+    </h1>
+
+    <p className="text-sm text-gray-500">
+      Manage customer return requests
+    </p>
+
+  </div>
+
+  <button
+    onClick={() => navigate("/admin/add-return")}
+    className="
+      w-11
+      h-11
+      rounded-xl
+      bg-amber-500
+      text-white
+      flex
+      items-center
+      justify-center
+      shadow-sm
+    "
+  >
+    <FiPlus size={20} />
+  </button>
 
 </div>
-
 
 
 
