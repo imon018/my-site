@@ -22,6 +22,7 @@ import {
 
 import {
   getLandingPageBySlug,
+  incrementLandingOrders,
 } from "../services/landingPageService";
 
 import { createOrder } from "../services/orderService";
@@ -1510,16 +1511,6 @@ await incrementLandingOrders(
 );
 
 orderData.orderId = orderId;
-
-
-  
-sessionStorage.setItem(
-
-"landingOrderSuccessPreviewData",
-
-JSON.stringify(orderData)
-
-);
 
 
 
