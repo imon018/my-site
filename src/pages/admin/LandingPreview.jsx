@@ -13,7 +13,7 @@ import {
   FiMonitor,
   FiHome,
   FiFileText,
-  FiSmartPhone,
+  FiSmartphone,
   FiMap,
   FiMapPin,
   FiUser,
