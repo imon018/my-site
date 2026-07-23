@@ -1209,6 +1209,10 @@ pr-4
 py-3
 border
 rounded-lg
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
@@ -1244,6 +1248,10 @@ pr-4
 py-3
 border
 rounded-lg
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
@@ -1280,6 +1288,10 @@ py-3
 border
 rounded-lg
 resize-none
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
@@ -1319,6 +1331,10 @@ pr-4
 py-3
 border
 rounded-lg
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
@@ -1348,6 +1364,10 @@ pr-4
 py-3
 border
 rounded-lg
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
@@ -1387,6 +1407,10 @@ py-3
 border
 rounded-lg
 resize-none
+focus:border-purple-700
+focus:ring-2
+focus:ring-purple-700/30
+focus:outline-none
 "
 />
 
