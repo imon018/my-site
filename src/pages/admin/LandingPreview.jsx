@@ -335,7 +335,7 @@ type="button"
 onClick={()=>navigate(-1)}
 
 className="
-bg-purple-200
+bg-purple-700
 text-white
 rounded-lg
 px-4
@@ -362,7 +362,7 @@ Edit
 type="button"
 
 className="
-bg-purple-200
+bg-purple-700
 text-white
 rounded-lg
 px-4
@@ -441,7 +441,7 @@ view==="mobile"
 >
 
 
-<FiSmartphone/>
+<FiSmartphone size={18}/>
 
 Mobile View
 
@@ -484,7 +484,7 @@ view==="desktop"
 >
 
 
-<FiMonitor/>
+<FiSmartphone size={18}/>
 
 Desktop View
 
@@ -519,18 +519,54 @@ Desktop View
 
 
 <div
-className="
+className={`
 mt-0
-w-full
 overflow-hidden
 bg-[#FAF7F2]
-"
+transition-all
+duration-300
+mx-auto
+
+${
+view === "mobile"
+
+?
+
+"w-full"
+
+:
+
+"max-w-5xl"
+
+}
+
+`}
 >
 
 
 
 
-<div className="pt-0">
+<div
+className={`
+pt-0
+transition-all
+duration-300
+
+${
+view === "desktop"
+
+?
+
+"rounded-lg shadow-lg overflow-hidden"
+
+:
+
+""
+
+}
+
+`}
+>
 
 
 
@@ -594,12 +630,25 @@ alt="product"
 
 onClick={()=>setFullscreen(true)}
 
-className="
+className={`
 w-full
-h-[420px]
 object-cover
 cursor-pointer
-"
+
+${
+view === "desktop"
+
+?
+
+"h-[520px]"
+
+:
+
+"h-[420px]"
+
+}
+
+`}
 
 />
 
