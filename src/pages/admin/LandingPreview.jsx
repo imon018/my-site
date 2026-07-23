@@ -1595,6 +1595,59 @@ leading-5
 
 <button
 
+onClick={()=>{
+
+
+const orderData = {
+
+title:
+landing.title,
+
+
+heroImages:
+images,
+
+
+price:
+landing.offerPrice > 0
+?
+landing.offerPrice
+:
+landing.price,
+
+
+regularPrice:
+landing.price,
+
+
+quantity,
+
+
+successMessage:
+landing.successMessage ||
+"আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।"
+
+};
+
+
+
+sessionStorage.setItem(
+
+"landingOrderSuccessPreviewData",
+
+JSON.stringify(orderData)
+
+);
+
+
+
+navigate(
+"/admin/landing/order-success-preview"
+);
+
+
+}}
+
 className="
 mt-2
 w-full
@@ -1605,16 +1658,12 @@ rounded-lg
 font-bold
 text-lg
 "
+
 >
 
 অর্ডার করুন এখনই
 
 </button>
-
-
-
-
-</div>
 
 
 
