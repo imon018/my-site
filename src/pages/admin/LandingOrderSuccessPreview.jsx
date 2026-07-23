@@ -701,287 +701,152 @@ overflow-hidden
   
   
 
-{/* PRODUCT CARD */}
-
+  {/* PRODUCT CARD */}
 
 <div
+className="
+mt-4
+bg-gray-50
+rounded-lg
+border
+border-gray-200
+p-3
+"
+>
 
+<p
+className="
+text-lg
+font-bold
+text-gray-900
+mb-4
+"
+>
+অর্ডারকৃত পণ্য
+</p>
+
+<div
 className="
 bg-white
 rounded-xl
 border
-border-purple-200
+border-gray-200
 shadow-sm
-overflow-hidden
-"
-
->
-
-
-
-<div
-
-className="
-p-5
-"
-
->
-
-
-
-<div
-
-className="
+p-4
 flex
 items-center
-gap-2
-mb-4
+gap-4
 "
-
 >
 
+{/* PRODUCT IMAGE */}
 
-<FiShoppingBag
-
+<div
 className="
-text-purple-700
+w-24
+h-24
+shrink-0
+rounded-xl
+overflow-hidden
+bg-gray-100
 "
+>
 
-size={22}
-
+<img
+src={order.heroImages?.[0]}
+alt={order.title}
+className="
+w-full
+h-full
+object-cover
+"
 />
-
-
-
-<h2
-
-className="
-text-lg
-font-black
-"
-
->
-
-Product Details
-
-</h2>
-
-
 
 </div>
 
-
-
-
-
-
-{
-
-order.heroImages?.length > 0 && (
-
-
-<img
-
-src={
-order.heroImages[0]
-}
-
-alt="product"
-
-className="
-w-full
-h-64
-object-cover
-rounded-xl
-border
-"
-
-
-
-
-/>
-
-
-)
-
-}
-
-
-
-
+{/* PRODUCT DETAILS */}
 
 <div
-
 className="
-mt-5
+flex-1
+min-w-0
 "
-
 >
 
+<h3
+className="
+text-xl
+font-bold
+text-gray-900
+truncate
+"
+>
+{order.title}
+</h3>
 
-<h1
+<p
+className="
+text-gray-500
+mt-1
+"
+>
+{order.variant || ""}
+</p>
 
+<p
+className="
+text-gray-500
+mt-2
+"
+>
+পরিমাণ: {order.quantity}
+</p>
+
+</div>
+
+{/* PRICE */}
+
+<div
+className="
+text-right
+shrink-0
+"
+>
+
+<p
 className="
 text-2xl
 font-black
-text-gray-900
-"
-
->
-
-{
-order.title
-}
-
-</h1>
-
-
-
-
-<div
-
-className="
-mt-4
-flex
-items-center
-justify-between
-"
-
->
-
-
-<div>
-
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Price
-
-</p>
-
-
-
-<p
-
-className="
-text-3xl
-font-black
 text-purple-700
 "
-
 >
-
 ৳{order.price}
-
 </p>
 
-
-</div>
-
-
-
-
-<div
-
-className="
-text-right
-"
-
->
-
+{
+Number(order.regularPrice) >
+Number(order.price) && (
 
 <p
-
 className="
+mt-1
 text-sm
-text-gray-500
-"
-
->
-
-Quantity
-
-</p>
-
-
-
-<p
-
-className="
-text-xl
-font-black
-"
-
->
-
-{
-order.quantity
-}
-
-</p>
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-{
-
-order.regularPrice >
-
-order.price && (
-
-
-<p
-
-className="
-mt-3
 text-gray-400
 line-through
-font-semibold
 "
-
 >
-
-Regular Price: ৳{order.regularPrice}
-
+৳{order.regularPrice}
 </p>
-
 
 )
 
 }
 
-
+</div>
 
 </div>
 
-
-
 </div>
-
-
-
-</div>
-
-
-
-
 
 
 
