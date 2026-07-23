@@ -541,7 +541,8 @@ view === "mobile"
 "w-[1280px] max-w-none mx-auto"
 
 }
-
+`}
+>
 
 
 
