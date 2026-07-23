@@ -393,7 +393,7 @@ w-24
 h-24
 mx-auto
 rounded-full
-bg-green-100
+bg-green-600
 flex
 items-center
 justify-center
