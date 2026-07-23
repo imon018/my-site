@@ -50,37 +50,30 @@ const [fullscreen,setFullscreen] = useState(false);
 
 
 
-useEffect(()=>{
+useEffect(() => {
 
+  const data = sessionStorage.getItem("landingPreviewData");
 
-const data = sessionStorage.getItem(
-"landingPreviewData"
-);
+  if (data) {
 
+    const parsed = JSON.parse(data);
 
+    setLanding(parsed);
 
-if(data){
+    const imgs =
+      parsed.heroImages?.length
+        ? parsed.heroImages
+        : parsed.heroImage
+        ? [parsed.heroImage]
+        : [];
 
-const parsed = JSON.parse(data);
+    if (imgs.length) {
+      setActiveImage(imgs[0]);
+    }
 
-setLanding(parsed);
+  }
 
-const images =
-  landing?.heroImages?.length
-    ? landing.heroImages
-    : landing?.heroImage
-    ? [landing.heroImage]
-    : [];
-
-if (imgs.length) {
-  setActiveImage(imgs[0]);
- }
-}
-
-
-
-
-},[]);
+}, []);
 
 
 
@@ -1481,7 +1474,7 @@ leading-6
 
 </div>
 
-
+</div>
 
 
 
