@@ -73,7 +73,6 @@ const images = useMemo(() => {
 
   
 
-
 useEffect(() => {
 
   async function loadLanding() {
