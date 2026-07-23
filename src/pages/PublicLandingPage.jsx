@@ -5,16 +5,12 @@ import {
 } from "react";
 
 import {
-  useNavigate,
+  useParams,
 } from "react-router-dom";
 
 import {
-  FiArrowLeft,
-  FiEdit3,
-  FiMonitor,
   FiHome,
   FiFileText,
-  FiSmartphone,
   FiMap,
   FiMapPin,
   FiUser,
@@ -23,22 +19,20 @@ import {
   FiGift,
 } from "react-icons/fi";
 
-import Button from "../../components/ui/Button";
+
+import {
+  getLandingPageBySlug,
+} from "../../services/landingPageService";
 
 
+export default function PublicLandingPage(){
 
 
-export default function LandingPreview(){
-
-
-const navigate = useNavigate();
-
-
+const { slug } = useParams();
 
 const [landing,setLanding] = useState(null);
 
-
-const [view,setView] = useState("mobile");
+const [loading,setLoading] = useState(true);
 
 
 const [quantity,setQuantity] = useState(1);
@@ -50,35 +44,14 @@ const [activeImage,setActiveImage] = useState(null);
 const [fullscreen,setFullscreen] = useState(false);
 
 
-
-
-useEffect(() => {
-
-  const data = sessionStorage.getItem("landingPreviewData");
-
-  if (data) {
-
-    const parsed = JSON.parse(data);
-
-    setLanding(parsed);
-
-    const imgs =
-      parsed.heroImages?.length
-        ? parsed.heroImages
-        : parsed.heroImage
-        ? [parsed.heroImage]
-        : [];
-
-    if (imgs.length) {
-      setActiveImage(imgs[0]);
-    }
-
-  }
-
-}, []);
-
-
-
+const [formData, setFormData] = useState({
+  name: "",
+  phone: "",
+  address: "",
+  thana: "",
+  district: "",
+  notes: "",
+});
 
 // Moved above the early return, and memoized so it doesn't
 // produce a brand-new array reference on every render.
@@ -95,7 +68,63 @@ const images = useMemo(() => {
 }, [landing]);
 
 
+  
 
+
+useEffect(() => {
+
+  async function loadLanding() {
+    setLoading(true);
+
+    try {
+
+      const data =
+        await getLandingPageBySlug(slug);
+
+      if (!data) {
+
+        setLanding(null);
+
+        return;
+
+      }
+
+      setLanding(data);
+
+      const imgs =
+        data.heroImages?.length
+          ? data.heroImages
+          : data.heroImage
+          ? [data.heroImage]
+          : [];
+
+      if (imgs.length) {
+
+        setActiveImage(imgs[0]);
+
+      }
+
+    }
+
+    catch (error) {
+
+  console.log(error);
+
+}
+
+finally {
+
+  setLoading(false);
+
+}
+
+}
+
+loadLanding();
+
+}, [slug]);
+
+  
 
   useEffect(() => {
   if (images.length <= 1) return;
@@ -113,7 +142,38 @@ const images = useMemo(() => {
 
 
 
+if (loading) {
 
+  return (
+
+    <div
+      className="
+      min-h-screen
+      flex
+      items-center
+      justify-center
+      bg-[#FAF7F2]
+      "
+    >
+
+      <div
+        className="
+        text-xl
+        font-bold
+        text-purple-700
+        "
+      >
+        Loading...
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+  
 if(!landing){
 
 
@@ -145,7 +205,7 @@ font-bold
 "
 >
 
-Preview Data পাওয়া যায়নি
+Landing Page পাওয়া যায়নি
 
 </h2>
 
@@ -195,7 +255,20 @@ landing.price
 
 
 
+const handleChange = (e) => {
 
+  const { name, value } = e.target;
+
+  setFormData((prev) => ({
+
+    ...prev,
+
+    [name]: value,
+
+  }));
+
+};
+  
 
 
 const formattedText = (text)=>{
@@ -239,276 +312,8 @@ bg-[#FAF7F2]
 
 
 
-{/* PREVIEW HEADER */}
 
 
-<div
-className="
-bg-white
-rounded-lg
-border
-border-amber-200
-shadow-sm
-p-4
-"
->
-
-
-
-<h1
-className="
-text-3xl
-font-black
-text-gray-900
-whitespace-nowrap
-"
->
-Preview Landing Page
-</h1>
-
-
-
-
-<div
-className="
-flex
-items-center
-gap-3
-mt-4
-text-xl
-font-bold
-"
->
-
-
-<button
-
-onClick={()=>{
-navigate("/admin/landing/create");
-}}
-
-className="
-w-9
-h-9
-rounded-full
-bg-white
-border
-border-gray-200
-shadow-sm
-flex
-items-center
-justify-center
-shrink-0
-"
-
->
-
-<FiArrowLeft size={22}/>
-
-</button>
-
-
-<span>
-Preview - {landing.title}
-</span>
-
-
-</div>
-
-
-
-
-
-<div
-className="
-flex
-justify-center
-gap-3
-mt-4
-"
->
-
-
-
-<Button
-
-type="button"
-
-onClick={()=>{
-navigate("/admin/landing/create");
-}}
-
-className="
-bg-purple-700
-text-white
-rounded-lg
-px-4
-py-2
-h-8
-flex
-items-center
-gap-2
-text-sm
-"
->
-
-<FiEdit3/>
-
-Edit
-
-</Button>
-
-
-
-
-<Button
-
-type="button"
-
-className="
-bg-purple-700
-text-white
-rounded-lg
-px-4
-py-2
-h-8
-text-sm
-"
->
-
-Publish
-
-</Button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* VIEW SWITCH */}
-
-
-
-<div
-className="
-mt-4
-flex
-justify-center
-"
->
-
-
-<div
-className="
-bg-gray-100
-rounded-lg
-p-1
-flex
-"
->
-
-
-
-<button
-
-onClick={()=>setView("mobile")}
-
-className={`
-px-3
-py-1
-rounded-lg
-flex
-gap-2
-items-center
-font-bold
-
-${
-view==="mobile"
-
-?
-
-"bg-white shadow text-amber-600"
-
-:
-
-"text-gray-500"
-
-}
-
-`}
->
-
-
-<FiSmartphone size={18}/>
-
-Mobile View
-
-
-</button>
-
-
-
-
-
-
-
-<button
-
-onClick={()=>setView("desktop")}
-
-className={`
-px-3
-py-1
-rounded-lg
-flex
-gap-2
-items-center
-font-bold
-
-${
-view==="desktop"
-
-?
-
-"bg-white shadow text-amber-600"
-
-:
-
-"text-gray-500"
-
-}
-
-`}
->
-
-
-<FiMonitor size={18}/>
-
-Desktop View
-
-
-</button>
-
-
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-</div>
 
 
 
@@ -523,53 +328,19 @@ Desktop View
 
 
 <div
-className={`
+className="
 mt-0
-overflow-x-auto
-overflow-y-hidden
 bg-[#FAF7F2]
-transition-all
-duration-300
-mx-auto
-
-
-${
-view === "mobile"
-
-?
-
-"w-full"
-
-:
-
-"w-[1280px] max-w-none mx-auto"
-
-}
-`}
+w-full
+"
 >
 
 
 
 <div
-className={`
+className="
 pt-0
-transition-all
-duration-300
-
-${
-view === "desktop"
-
-?
-
-"rounded-lg shadow-lg w-[1280px]"
-
-:
-
-""
-
-}
-
-`}
+"
 >
 
 
@@ -1201,7 +972,15 @@ text-gray-400
 />
 
 <input
+
+name="name"
+
+value={formData.name}
+
+onChange={handleChange}
+
 placeholder="আপনার নাম"
+  
 className="
 w-full
 pl-10
@@ -1240,7 +1019,15 @@ text-gray-400
 />
 
 <input
+
+name="phone"
+
+value={formData.phone}
+
+onChange={handleChange}
+
 placeholder="ফোন নাম্বার"
+  
 className="
 w-full
 pl-10
@@ -1278,7 +1065,15 @@ text-gray-400
 />
 
 <textarea
+
+name="address"
+
+value={formData.address}
+
+onChange={handleChange}
+
 placeholder="আপনার ঠিকানা"
+  
 rows="3"
 className="
 w-full
@@ -1323,7 +1118,15 @@ text-gray-400
 />
 
 <input
+
+name="thana"
+
+value={formData.thana}
+
+onChange={handleChange}
+
 placeholder="থানা"
+  
 className="
 w-full
 pl-10
@@ -1356,7 +1159,15 @@ text-gray-400
 />
 
 <input
+
+name="district"
+
+value={formData.district}
+
+onChange={handleChange}
+
 placeholder="জেলা"
+  
 className="
 w-full
 pl-10
@@ -1397,7 +1208,15 @@ text-gray-400
 />
 
 <textarea
+
+name="notes"
+
+value={formData.notes}
+
+onChange={handleChange}
+
 placeholder="অতিরিক্ত নোট (যদি থাকে)"
+  
 rows="3"
 className="
 w-full
@@ -1622,14 +1441,35 @@ landing.price,
 
 quantity,
 
+slug,
 
-successMessage:
-landing.successMessage ||
-"আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।"
+customer: formData,
 
-};
+landingId: landing.id,
 
+deliveryCharge: landing.deliveryCharge || 0,
 
+deliveryZone: landing.deliveryZone || "",
+
+total:
+(
+(
+landing.offerPrice > 0
+?
+landing.offerPrice
+:
+landing.price
+)
+*
+quantity
+)
++
+(
+landing.deliveryCharge || 0
+),
+
+  };
+  
 
 sessionStorage.setItem(
 
@@ -1641,9 +1481,7 @@ JSON.stringify(orderData)
 
 
 
-navigate(
-"/admin/landing/order-success-preview"
-);
+window.location.href = "/landing/order-success";
 
 
 }}
