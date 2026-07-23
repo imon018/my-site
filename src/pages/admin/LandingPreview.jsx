@@ -50,7 +50,6 @@ const [fullscreen,setFullscreen] = useState(false);
 
 
 
-
 useEffect(()=>{
 
 
