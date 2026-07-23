@@ -1487,7 +1487,9 @@ landing.deliveryCharge || 0
   notes: formData.notes,
 
   productName: landing.title,
-  heroImages: images,
+  title: landing.title,
+	heroImages: images,
+	slug: slug,
   quantity,
 
   price: orderData.price,
