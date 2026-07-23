@@ -22,7 +22,7 @@ import {
 
 import {
   getLandingPageBySlug,
-} from "../../services/landingPageService";
+} from "../services/landingPageService";
 
 
 export default function PublicLandingPage(){
