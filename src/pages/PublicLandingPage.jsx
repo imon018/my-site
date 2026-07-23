@@ -24,6 +24,8 @@ import {
   getLandingPageBySlug,
 } from "../services/landingPageService";
 
+import { createOrder } from "../services/orderService";
+
 
 export default function PublicLandingPage(){
 
@@ -1414,7 +1416,7 @@ leading-5
 
 <button
 
-onClick={()=>{
+onClick={async()=>{
 
 
 const orderData = {
@@ -1471,6 +1473,44 @@ landing.deliveryCharge || 0
   };
   
 
+
+
+  const orderId = await createOrder({
+  landingId: landing.id,
+  landingSlug: slug,
+
+  customerName: formData.name,
+  phone: formData.phone,
+  address: formData.address,
+  thana: formData.thana,
+  district: formData.district,
+  notes: formData.notes,
+
+  productName: landing.title,
+  heroImages: images,
+  quantity,
+
+  price: orderData.price,
+  regularPrice: orderData.regularPrice,
+
+  deliveryCharge: orderData.deliveryCharge,
+  total: orderData.total,
+
+  status: "Pending",
+  paymentStatus: "Unpaid",
+
+  createdAt: new Date(),
+});
+
+await incrementLandingOrders(
+  landing.id,
+  orderData.total
+);
+
+orderData.orderId = orderId;
+
+
+  
 sessionStorage.setItem(
 
 "landingOrderSuccessPreviewData",
