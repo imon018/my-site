@@ -1014,11 +1014,6 @@ transition
 <div
 className="
 mt-5
-bg-white
-rounded-xl
-border
-border-gray-200
-overflow-hidden
 "
 >
 
@@ -1105,20 +1100,25 @@ ml-1
     <div className="mx-5 text-gray-300">|</div>
 
     <div
-    className="
-    flex
-    items-center
-    gap-2
-    text-gray-700
-    font-medium
-    "
-    >
+className="
+flex
+items-center
+gap-2
+text-green-700
+font-medium
+"
+>
 
-      <FiTruck size={20} />
+  <FiTruck
+  size={20}
+  className="text-green-700"
+  />
 
-      ক্যাশ অন ডেলিভারি
+  <span className="text-green-700">
+    ক্যাশ অন ডেলিভারি
+  </span>
 
-    </div>
+</div>
 
   </div>
 
