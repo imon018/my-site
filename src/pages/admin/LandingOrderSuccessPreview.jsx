@@ -36,6 +36,52 @@ const navigate = useNavigate();
 const [order,setOrder] = useState(null);
 
 
+const confetti = [
+  {
+    left:"20%",
+    top:"15%",
+    color:"bg-green-400",
+    delay:"0s"
+  },
+  {
+    left:"35%",
+    top:"8%",
+    color:"bg-yellow-400",
+    delay:"0.3s"
+  },
+  {
+    left:"50%",
+    top:"12%",
+    color:"bg-purple-500",
+    delay:"0.6s"
+  },
+  {
+    left:"65%",
+    top:"10%",
+    color:"bg-blue-400",
+    delay:"0.9s"
+  },
+  {
+    left:"80%",
+    top:"20%",
+    color:"bg-orange-400",
+    delay:"1.2s"
+  },
+  {
+    left:"25%",
+    top:"35%",
+    color:"bg-purple-400",
+    delay:"1.5s"
+  },
+  {
+    left:"75%",
+    top:"35%",
+    color:"bg-green-400",
+    delay:"1.8s"
+  }
+];
+
+
 
 useEffect(()=>{
 
@@ -282,49 +328,105 @@ Landing Page Order Confirmation
 
 <div
 className="
-bg-green-50
-rounded-lg
-border
-border-green-200
-p-6
+relative
+bg-white
+py-8
 text-center
+overflow-hidden
 "
 >
+
+
+{/* CONFETTI / FIRE CRACKER EFFECT */}
+
+<div
+className="
+absolute
+inset-0
+pointer-events-none
+"
+>
+
+
+{
+confetti.map((item,index)=>(
+
+<span
+
+key={index}
+
+style={{
+left:item.left,
+top:item.top,
+animationDelay:item.delay
+}}
+
+className={`
+absolute
+w-3
+h-3
+${item.color}
+rounded-sm
+animate-confetti
+`}
+>
+
+</span>
+
+))
+
+}
+
+
+</div>
+
+
+
+
+
+{/* CHECK ICON */}
 
 
 <div
-
 className="
-bg-green-50
-p-6
-text-center
+relative
+z-10
+w-28
+h-28
+mx-auto
+rounded-full
+bg-green-600
+flex
+items-center
+justify-center
 "
-
 >
-
 
 <FiCheckCircle
 
-size={60}
+size={75}
 
 className="
-mx-auto
-text-green-600
+text-white
 "
 
 />
 
+</div>
+
+
+
 
 
 <h2
-
 className="
-text-2xl
+relative
+z-10
+mt-6
+text-3xl
 font-black
-text-gray-900
-mt-4
+text-green-700
 "
-
 >
 
 অর্ডার সফল হয়েছে
@@ -333,25 +435,26 @@ mt-4
 
 
 
-<p
 
+
+<p
 className="
+relative
+z-10
+mt-3
 text-gray-600
-mt-2
 leading-7
 "
-
 >
 
-{
-order.successMessage
-}
+আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।
+
+<br/>
+
+ধন্যবাদ আমাদের উপর আস্থা রাখার জন্য।
 
 </p>
 
-
-
-</div>
 
 
 </div>
