@@ -15,7 +15,6 @@ import {
   FiCalendar,
   FiTruck,
   FiCreditCard,
-  FiHash,
   FiShoppingBag,
   FiHome,
   FiFileText,
@@ -222,7 +221,6 @@ p-0
 
 className="
 w-full
-space-y-4
 "
 
 >
@@ -333,6 +331,7 @@ bg-[#fffaf0]
 py-8
 text-center
 overflow-hidden
+rounded-t-lg
 "
 >
 
@@ -461,6 +460,246 @@ leading-7
 
 
 
+  {/* ORDER INFORMATION */}
+
+<div
+className="
+-mt-px
+bg-gray-50
+rounded-b-lg
+border
+border-gray-200
+overflow-hidden
+"
+>
+
+  {/* ORDER ID */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-between
+  px-5
+  py-4
+  bg-white
+  "
+  >
+
+    <div
+    className="
+    flex
+    items-center
+    gap-4
+    "
+    >
+
+      <FiPackage
+      size={26}
+      className="
+      text-green-600
+      "
+      />
+
+      <div>
+
+        <p
+        className="
+        text-sm
+        text-gray-500
+        "
+        >
+        অর্ডার নম্বর
+        </p>
+
+        <p
+        className="
+        text-2xl
+        font-black
+        text-green-700
+        "
+        >
+        {orderId}
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div className="border-t border-gray-200"/>
+
+
+
+  {/* ORDER DATE */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-between
+  px-5
+  py-4
+  bg-white
+  "
+  >
+
+    <div
+    className="
+    flex
+    items-center
+    gap-4
+    "
+    >
+
+      <FiCalendar
+      size={22}
+      className="
+      text-gray-600
+      "
+      />
+
+      <p
+      className="
+      text-gray-700
+      font-medium
+      "
+      >
+      অর্ডারের তারিখ
+      </p>
+
+    </div>
+
+    <p
+    className="
+    text-gray-700
+    font-medium
+    "
+    >
+    {orderDate}
+    </p>
+
+  </div>
+
+
+
+  <div className="border-t border-gray-200"/>
+
+
+
+  {/* PAYMENT */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-between
+  px-5
+  py-4
+  bg-white
+  "
+  >
+
+    <div
+    className="
+    flex
+    items-center
+    gap-4
+    "
+    >
+
+      <FiCreditCard
+      size={22}
+      className="
+      text-gray-600
+      "
+      />
+
+      <p
+      className="
+      text-gray-700
+      font-medium
+      "
+      >
+      পেমেন্ট মেথড
+      </p>
+
+    </div>
+
+    <p
+    className="
+    text-gray-700
+    font-medium
+    "
+    >
+    Cash on Delivery
+    </p>
+
+  </div>
+
+
+
+  <div className="border-t border-gray-200"/>
+
+
+
+  {/* DELIVERY */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-between
+  px-5
+  py-4
+  bg-white
+  "
+  >
+
+    <div
+    className="
+    flex
+    items-center
+    gap-4
+    "
+    >
+
+      <FiTruck
+      size={22}
+      className="
+      text-gray-600
+      "
+      />
+
+      <p
+      className="
+      text-gray-700
+      font-medium
+      "
+      >
+      ডেলিভারি টাইম
+      </p>
+
+    </div>
+
+    <p
+    className="
+    text-gray-700
+    font-medium
+    "
+    >
+    2 - 4 কর্মদিবস
+    </p>
+
+  </div>
+
+</div>
+  
+  
+  
 
 {/* PRODUCT CARD */}
 
@@ -742,435 +981,33 @@ Regular Price: ৳{order.regularPrice}
 
 
 
-  {/* ORDER INFORMATION */}
 
 
-<div
 
-className="
-bg-white
-rounded-xl
-border
-border-purple-200
-shadow-sm
-p-5
-"
 
->
 
 
-<div
 
-className="
-flex
-items-center
-gap-2
-mb-5
-"
 
->
 
 
-<FiPackage
 
-size={22}
 
-className="
-text-purple-700
-"
 
-/>
 
 
-<h2
 
-className="
-text-lg
-font-black
-"
 
->
 
-Order Information
 
-</h2>
 
 
 
-</div>
 
 
 
 
 
-
-<div
-
-className="
-space-y-4
-"
-
->
-
-
-
-{/* ORDER ID */}
-
-
-<div
-
-className="
-flex
-items-center
-gap-4
-p-4
-rounded-xl
-bg-gray-50
-border
-"
-
->
-
-
-<div
-
-className="
-w-10
-h-10
-rounded-lg
-bg-purple-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiHash
-
-className="
-text-purple-700
-"
-
-size={20}
-
-/>
-
-</div>
-
-
-
-<div>
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Order ID
-
-</p>
-
-
-<p
-
-className="
-font-bold
-text-gray-900
-"
-
->
-
-{orderId}
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-{/* ORDER DATE */}
-
-
-<div
-
-className="
-flex
-items-center
-gap-4
-p-4
-rounded-xl
-bg-gray-50
-border
-"
-
->
-
-
-<div
-
-className="
-w-10
-h-10
-rounded-lg
-bg-blue-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiCalendar
-
-className="
-text-blue-600
-"
-
-size={20}
-
-/>
-
-</div>
-
-
-
-<div>
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Order Date
-
-</p>
-
-
-
-<p
-
-className="
-font-bold
-text-gray-900
-"
-
->
-
-{orderDate}
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-{/* PAYMENT METHOD */}
-
-
-<div
-
-className="
-flex
-items-center
-gap-4
-p-4
-rounded-xl
-bg-gray-50
-border
-"
-
->
-
-
-<div
-
-className="
-w-10
-h-10
-rounded-lg
-bg-green-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiCreditCard
-
-className="
-text-green-600
-"
-
-size={20}
-
-/>
-
-</div>
-
-
-
-<div>
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Payment Method
-
-</p>
-
-
-
-<p
-
-className="
-font-bold
-text-gray-900
-"
-
->
-
-Cash on Delivery
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-{/* DELIVERY TIME */}
-
-
-<div
-
-className="
-flex
-items-center
-gap-4
-p-4
-rounded-xl
-bg-gray-50
-border
-"
-
->
-
-
-<div
-
-className="
-w-10
-h-10
-rounded-lg
-bg-orange-100
-flex
-items-center
-justify-center
-"
-
->
-
-<FiTruck
-
-className="
-text-orange-600
-"
-
-size={20}
-
-/>
-
-</div>
-
-
-
-<div>
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Delivery Time
-
-</p>
-
-
-
-<p
-
-className="
-font-bold
-text-gray-900
-"
-
->
-
-2 - 4 কর্মদিবস
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-</div>
 
 
 
