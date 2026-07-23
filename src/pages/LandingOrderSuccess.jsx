@@ -35,6 +35,8 @@ export default function LandingOrderSuccessPreview(){
 
 const navigate = useNavigate();
 
+const { orderId } = useParams();
+
 const [currentImage,setCurrentImage] = useState(0);
 
 const [order,setOrder] = useState(null);
@@ -202,8 +204,7 @@ Order Preview Data পাওয়া যায়নি
 
 
 
-
-const orderId =
+const displayOrderId =
 order.orderId
 ? "DM-" + order.orderId.slice(0, 8).toUpperCase()
 : "";
@@ -213,27 +214,19 @@ order.orderId
 
 
 const orderDate =
-
-new Date()
-.toLocaleString(
-
-"en-GB",
-
-{
-
-day:"2-digit",
-
-month:"short",
-
-year:"numeric",
-
-hour:"2-digit",
-
-minute:"2-digit",
-
-}
-
-);
+order.createdAt
+? new Date(
+    order.createdAt.seconds
+      ? order.createdAt.seconds * 1000
+      : order.createdAt
+  ).toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+  })
+: "";
 
 
 
@@ -554,7 +547,7 @@ overflow-hidden
         text-green-700
         "
         >
-        {orderId}
+        {displayOrderId}
         </p>
 
       </div>
