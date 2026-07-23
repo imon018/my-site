@@ -13,7 +13,6 @@ import { db } from "../firebase/firestore";
 
 
 import {
-  FiArrowLeft,
   FiCheckCircle,
   FiPackage,
   FiCalendar,
@@ -253,98 +252,6 @@ w-full
 
 >
 
-
-
-{/* HEADER */}
-
-
-<div
-
-className="
-bg-white
-rounded-lg
-border
-border-purple-200
-shadow-sm
-p-5
-"
-
->
-
-
-<div
-className="
-flex
-items-center
-gap-3
-"
-
->
-
-
-<button
-
-onClick={()=>navigate(-1)}
-
-className="
-w-10
-h-10
-rounded-full
-border
-flex
-items-center
-justify-center
-bg-white
-"
-
->
-
-<FiArrowLeft size={20}/>
-
-</button>
-
-
-
-<div>
-
-<h1
-
-className="
-text-2xl
-font-black
-text-gray-900
-"
-
->
-
-Order Success Preview
-
-</h1>
-
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-Landing Page Order Confirmation
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
 
 
 
