@@ -83,8 +83,6 @@ const [facebookPixel,setFacebookPixel]=useState("");
 
 const [googleAnalytics,setGoogleAnalytics]=useState("");
 
-const [successMessage,setSuccessMessage]=useState("");
-
 const [collectName,setCollectName]=useState(true);
 
 const [collectPhone,setCollectPhone]=useState(true);
@@ -403,8 +401,6 @@ facebookPixel,
 
 googleAnalytics,
 
-successMessage,
-
 orderForm:{
 
 collectName,
@@ -446,8 +442,6 @@ status,
 facebookPixel,
 
 googleAnalytics,
-
-successMessage,
 
 collectName,
 
@@ -2034,53 +2028,6 @@ rounded-lg
 border
 border-amber-200
 px-4
-outline-none
-focus:border-amber-500
-focus:ring-4
-focus:ring-amber-100
-"
-
-/>
-
-</div>
-
-<div>
-
-<label
-className="
-block
-font-semibold
-mb-2
-"
->
-
-Order Success Message
-
-</label>
-
-<textarea
-
-rows={4}
-
-value={successMessage}
-
-onChange={(e)=>
-
-setSuccessMessage(
-e.target.value
-)
-
-}
-
-placeholder="Thank you. Your order has been placed successfully."
-
-className="
-w-full
-rounded-lg
-border
-border-amber-200
-p-4
-resize-none
 outline-none
 focus:border-amber-500
 focus:ring-4
