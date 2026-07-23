@@ -976,7 +976,7 @@ discount > 0 && (
 className="
 px-4
 py-2
-rounded-xl
+rounded-lg
 font-bold
 text-red-600
 bg-white/40
@@ -1006,7 +1006,7 @@ landing.price > 0
 className="
 text-4xl
 font-black
-text-red-500
+text-purple-700
 "
 >
 ৳{landing.price}
