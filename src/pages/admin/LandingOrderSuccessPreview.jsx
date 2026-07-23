@@ -389,25 +389,24 @@ animate-confetti
 
 <div
 className="
-relative
-z-10
-w-28
-h-28
+w-24
+h-24
 mx-auto
 rounded-full
-bg-green-600
+bg-green-100
 flex
 items-center
 justify-center
+success-icon-animation
 "
 >
 
 <FiCheckCircle
 
-size={75}
+size={65}
 
 className="
-text-white
+text-green-600
 "
 
 />
