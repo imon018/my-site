@@ -5,7 +5,11 @@ import {
 
 import {
   useNavigate,
+  useParams,
 } from "react-router-dom";
+
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../firebase/firestore";
 
 
 import {
@@ -24,12 +28,14 @@ import {
 
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 
-import { useSettings } from "../../context/SettingsContext";
+import { useSettings } from "../context/SettingsContext";
 
 export default function LandingOrderSuccessPreview(){
 
 
 const navigate = useNavigate();
+
+const { slug, orderId } = useParams();
 
 const [currentImage,setCurrentImage] = useState(0);
 
@@ -106,32 +112,42 @@ return ()=>clearInterval(interval);
 
   
 
-useEffect(()=>{
+useEffect(() => {
 
+  async function loadOrder() {
 
-const data = sessionStorage.getItem(
-"landingOrderSuccessPreviewData"
-);
+    try {
 
+      const snap = await getDoc(
+        doc(db, "orders", orderId)
+      );
 
+      if (!snap.exists()) {
+        setOrder(null);
+        return;
+      }
 
-if(data){
+      const data = snap.data();
 
+setOrder({
+  orderId: snap.id,
+  ...data,
+  heroImages: data.heroImages || [],
+  title: data.title || data.productName || "",
+});
 
-const parsed =
-JSON.parse(data);
+    } catch (error) {
+      console.log(error);
+      setOrder(null);
+    }
 
+  }
 
+  if (orderId) {
+    loadOrder();
+  }
 
-setOrder(parsed);
-
-
-}
-
-
-
-},[]);
-
+}, [orderId]);
 
 
 
@@ -190,12 +206,9 @@ Order Preview Data পাওয়া যায়নি
 
 
 const orderId =
-
-"DM-" +
-
-Date.now()
-.toString()
-.slice(-8);
+order.orderId
+? "DM-" + order.orderId.slice(0, 8).toUpperCase()
+: "";
 
 
 
@@ -947,6 +960,7 @@ leading-5
 <button
 
 type="button"
+onClick={() => navigate("/")}
 
 className="
 mt-5
@@ -979,7 +993,7 @@ gap-2
 
 type="button"
 
-onClick={()=>navigate("/")}
+onClick={() => navigate("/shop")}
 
 className="
 mt-3
