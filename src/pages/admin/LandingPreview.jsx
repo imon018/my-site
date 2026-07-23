@@ -1305,7 +1305,7 @@ resize-none
 
 
 {
-landing.orderForm?.collectAddress && (
+landing.orderForm?.collectCity && (
 
 <>
   
