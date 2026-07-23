@@ -1,4 +1,5 @@
 import { db } from "../firebase/firestore";
+
 import {
   collection,
   addDoc,
@@ -73,12 +74,6 @@ export const createLandingPage = async (data) => {
     offerPrice:
     Number(data.offerPrice)||0,
 
-    deliveryCharge:
-    Number(data.deliveryCharge)||0,
-
-    cashOnDelivery:
-    data.cashOnDelivery,
-
     orderForm:
     data.orderForm||{},
 
@@ -87,9 +82,6 @@ export const createLandingPage = async (data) => {
 
     googleAnalytics:
     data.googleAnalytics||"",
-
-    successMessage:
-    data.successMessage||"",
 
     status:
     data.status||
