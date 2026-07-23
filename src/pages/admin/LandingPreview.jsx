@@ -575,6 +575,8 @@ text-white
 text-center
 font-bold
 z-20
+relative
+overflow-visible
 "
 >
 
@@ -590,17 +592,21 @@ OFF
 
 <div
 className="
+absolute
+bottom-[-18px]
+left-0
 w-0
 h-0
 border-l-[32px]
 border-r-[32px]
 border-t-[18px]
-border-l-transparent
-border-r-transparent
-border-t-indigo-700
+border-l-indigo-700
+border-r-indigo-700
+border-t-transparent
 "
 />
 
+  
 </div>
 
   
@@ -652,7 +658,9 @@ gap-3
 mt-4
 overflow-x-auto
 pb-0
-border-none
+[-ms-overflow-style:none]
+[scrollbar-width:none]
+[&::-webkit-scrollbar]:hidden
 "
 >
 
@@ -768,7 +776,7 @@ formattedText(landing.heroDescription)
 key={index}
 className="
 flex
-items-start
+items-center
 gap-3
 mb-3
 "
@@ -869,12 +877,16 @@ discount > 0 &&
 
 <span
 className="
-bg-red-100
-text-red-600
-px-3
-py-1
-rounded-lg
+px-4
+py-2
+rounded-xl
 font-bold
+text-red-600
+bg-white/40
+backdrop-blur-md
+border
+border-white/60
+shadow-lg
 "
 >
 
@@ -929,6 +941,7 @@ text-red-500
 <div
 className="
 mt-5
+mb-0
 border
 border-gray-200
 rounded-lg
@@ -1039,9 +1052,6 @@ font-bold
 
 <div
 className="
-my-8
-h-6
-bg-gray-50
 border-t
 border-gray-200
 "
@@ -1055,9 +1065,10 @@ border-gray-200
 
 <div
 className="
-mt-0
 bg-gray-50
-p-5
+pt-5
+px-5
+pb-5
 "
 >
 
