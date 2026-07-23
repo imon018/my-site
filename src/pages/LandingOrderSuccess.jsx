@@ -35,8 +35,6 @@ export default function LandingOrderSuccessPreview(){
 
 const navigate = useNavigate();
 
-const { slug, orderId } = useParams();
-
 const [currentImage,setCurrentImage] = useState(0);
 
 const [order,setOrder] = useState(null);
