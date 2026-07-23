@@ -16,6 +16,7 @@ import {
   FiTruck,
   FiCreditCard,
   FiShoppingBag,
+  FiHeadphones,
   FiHome,
   FiFileText,
 } from "react-icons/fi";
@@ -23,7 +24,7 @@ import {
 
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 
-
+import { useSettings } from "../../context/SettingsContext";
 
 export default function LandingOrderSuccessPreview(){
 
@@ -33,6 +34,8 @@ const navigate = useNavigate();
 const [currentImage,setCurrentImage] = useState(0);
 
 const [order,setOrder] = useState(null);
+
+const { settings } = useSettings();
 
 const confetti = [
   {
@@ -924,13 +927,12 @@ leading-6
 <p
 className="
 mt-1
-text-[14px]
+text-[13px]
 text-gray-600
-leading-6
+leading-5
 "
 >
 আমাদের টিম দ্রুত আপনার অর্ডারটি প্রসেস করছে।
-<br/>
 আপনার সাথে শীঘ্রই যোগাযোগ করা হবে।
 </p>
 
@@ -1007,7 +1009,123 @@ transition
 
 
 
+{/* SUPPORT & FEATURES */}
 
+<div
+className="
+mt-5
+bg-white
+rounded-xl
+border
+border-gray-200
+overflow-hidden
+"
+>
+
+  {/* Help Line */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-center
+  gap-3
+  py-5
+  "
+  >
+
+    <FiHeadphones
+    size={28}
+    className="text-gray-700"
+    />
+
+    <div>
+
+      <p
+      className="
+      text-gray-800
+      font-bold
+      "
+      >
+      কোনো প্রশ্ন আছে?
+      </p>
+
+      <p
+      className="
+      text-[15px]
+      text-gray-600
+      "
+      >
+      হেল্প লাইন:
+      <span
+className="
+text-purple-700
+font-bold
+ml-1
+"
+>
+{settings?.phone || settings?.phoneNumber || ""}
+</span>
+      </p>
+
+    </div>
+
+  </div>
+
+  <div className="border-t border-gray-200" />
+
+  {/* Bottom Features */}
+
+  <div
+  className="
+  flex
+  items-center
+  justify-center
+  py-4
+  text-[14px]
+  "
+  >
+
+    <div
+    className="
+    flex
+    items-center
+    gap-2
+    text-green-700
+    font-medium
+    "
+    >
+
+      <IoShieldCheckmarkSharp size={20} />
+
+      নিরাপদ পেমেন্ট
+
+    </div>
+
+    <div className="mx-5 text-gray-300">|</div>
+
+    <div
+    className="
+    flex
+    items-center
+    gap-2
+    text-gray-700
+    font-medium
+    "
+    >
+
+      <FiTruck size={20} />
+
+      ক্যাশ অন ডেলিভারি
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
 
 
 </div>
