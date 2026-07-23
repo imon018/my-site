@@ -1162,7 +1162,7 @@ rounded-lg
 
 <div className="relative mb-3">
 
-<FiHone
+<FiHome
 className="
 absolute
 left-3
