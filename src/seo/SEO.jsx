@@ -22,13 +22,13 @@ const siteUrl =
   SITE_SEO.siteUrl;
 
 const siteLogo =
+  settings.seoImage ||
   settings.logoUrl ||
   SITE_SEO.defaultImage;
   
   const pageTitle = title
-    ? SITE_SEO.titleTemplate.replace("%s", title)
-    : SITE_SEO.defaultTitle;
-
+  ? `${title} | ${siteName}`
+  : `${siteName} | Dress Your Dream Live Your Style Online Shopping`;
   const pageDescription =
     description || SITE_SEO.defaultDescription;
 
@@ -36,16 +36,18 @@ const siteLogo =
     keywords || SITE_SEO.defaultKeywords.join(", ");
 
   const pageImage =
-    image
-      ? image.startsWith("http")
-        ? image
-        : `${SITE_SEO.siteUrl}${image}`
-      : `${SITE_SEO.siteUrl}${SITE_SEO.defaultImage}`;
+  image
+    ? image.startsWith("http")
+      ? image
+      : `${siteUrl}${image}`
+    : siteLogo.startsWith("http")
+      ? siteLogo
+      : `${siteUrl}${siteLogo}`;
 
   const canonical =
-    url
-      ? `${SITE_SEO.siteUrl}${url}`
-      : SITE_SEO.siteUrl;
+  url
+    ? `${siteUrl}${url}`
+    : siteUrl;
 
   return (
     <Helmet>
@@ -82,9 +84,9 @@ const siteLogo =
       />
 
       <meta
-        property="og:site_name"
-        content={SITE_SEO.siteName}
-      />
+  property="og:site_name"
+  content={siteName}
+/>
 
       <meta
         property="og:title"
