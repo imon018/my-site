@@ -319,21 +319,46 @@ Previous
 
 {
 
-Array.from({length:totalPages}).map((_,index)=>(
+{[...Array(totalPages)].map((_, index) => {
 
+const pageNumber = index + 1;
+
+const showPage =
+pageNumber === 1 ||
+pageNumber === totalPages ||
+Math.abs(pageNumber - page) <= 1;
+
+const showDots =
+(pageNumber === 2 && page > 4) ||
+(pageNumber === totalPages - 1 && page < totalPages - 3);
+
+if (showDots) {
+return (
+<span key={pageNumber} className="px-2">
+...
+</span>
+);
+}
+
+if (!showPage) return null;
+
+return (
 <button
-key={index}
-onClick={()=>setPage(index+1)}
+key={pageNumber}
+onClick={() => setPage(pageNumber)}
 className={`w-10 h-10 rounded-lg font-bold ${
-page===index+1
+page === pageNumber
 ? "bg-amber-500 text-white"
 : "bg-white border"
 }`}
 >
-{index+1}
+{pageNumber}
 </button>
+);
 
-))
+})}
+
+  
 
 }
 
