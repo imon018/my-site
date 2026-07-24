@@ -11,13 +11,18 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute";
    USER PAGES
 ========================= */
 
+import Profile from "../pages/Profile";
 import ChangePassword from "../pages/user/ChangePassword";
 import DeleteAccount from "../pages/user/DeleteAccount";
 import ProfileEditPage from "../pages/ProfileEditPage";
+import Wishlist from "../pages/Wishlist";
+import MyOrders from "../pages/MyOrders";
 import UserOrderDetails from "../pages/user/UserOrderDetails";
 import ReturnOrder from "../pages/user/ReturnOrder";
 import MyReturns from "../pages/MyReturns";
 import UserReturnDetails from "../pages/user/UserReturnDetails";
+import PasswordChangeVerify from "../pages/PasswordChangeVerify";
+import DeleteAccountVerify from "../pages/DeleteAccountVerify";
 
 /* =========================
    ADMIN PAGES
@@ -64,17 +69,13 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import ProductDetails from "../pages/ProductDetails";
 import Checkout from "../pages/Checkout";
-import Wishlist from "../pages/Wishlist";
-import Profile from "../pages/Profile";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import OrderSuccess from "../pages/OrderSuccess";
-import MyOrders from "../pages/MyOrders";
 import VerifyEmail from "../pages/VerifyEmail";
 import Notifications from "../pages/common/Notifications";
-import PasswordChangeVerify from "../pages/PasswordChangeVerify";
 import ResetPassword from "../pages/ResetPassword";
-import DeleteAccountVerify from "../pages/DeleteAccountVerify";
+
 
 /* =========================
    POLICIES
