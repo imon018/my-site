@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import SEO from "../seo/SEO";
 
 import {
   FiShield,
@@ -191,6 +192,21 @@ export default function ProductDetailsView() {
 
 
   return (
+  <>
+
+    <SEO
+      title={product.name}
+      description={
+        product.description ||
+        `${product.name} available at ${settings.storeName}.`
+      }
+      image={
+        product.images?.[0] ||
+        product.image
+      }
+      url={`/product/${product.id}`}
+      type="product"
+    />
 
     <div
       className="
@@ -901,6 +917,8 @@ Order
 
 
     </div>
+
+  </>
 
   );
 
