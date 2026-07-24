@@ -44,7 +44,7 @@ export default function Shop() {
 
 
   const [itemsPerPage,setItemsPerPage] =
-    useState(16);
+    useState(24);
 
 
 
@@ -60,13 +60,13 @@ export default function Shop() {
 
       if(window.innerWidth >= 768){
 
-        setItemsPerPage(24);
+        setItemsPerPage(36);
 
       }
 
       else{
 
-        setItemsPerPage(16);
+        setItemsPerPage(24);
 
       }
 
@@ -503,64 +503,143 @@ location.search
           >
 
 
-            {
-              Array.from(
-                {
-                  length: totalPages
-                },
-                (_,i)=>i+1
-              )
-              .map((page)=>(
+            {[...Array(totalPages)].map((_, index) => {
+  const page = index + 1;
+
+  const showPage =
+    page === 1 ||
+    page === totalPages ||
+    Math.abs(page - currentPage) <= 1;
+
+  const showDots =
+    (page === 2 && currentPage > 4) ||
+    (page === totalPages - 1 &&
+      currentPage < totalPages - 3);
+
+  if (showDots) {
+    return (
+      <span
+        key={page}
+        className="px-2 text-gray-500 font-bold"
+      >
+        ...
+      </span>
+    );
+  }
+
+  if (!showPage) return null;
+
+  return (
+    <button
+      key={page}
+      onClick={() => {
+        setCurrentPage(page);
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }}
+      className={`w-10 h-10 rounded-full font-bold transition ${
+        currentPage === page
+          ? "bg-amber-500 text-black"
+          : "bg-white border border-gray-200 text-gray-600"
+      }`}
+    >
+      {page}
+    </button>
+  );
+})}
 
 
-                <button
+                <div
+  className="
+    flex
+    justify-center
+    items-center
+    gap-2
+    mt-12
+    flex-wrap
+  "
+>
 
-                  key={page}
+  {/* Previous Button */}
+  <button
+    disabled={currentPage === 1}
+    onClick={() => {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }}
+    className="px-4 h-10 rounded-full border disabled:opacity-40"
+  >
+    <
+  </button>
+
+  {/* Page Numbers */}
+  {[...Array(totalPages)].map((_, index) => {
+    const page = index + 1;
+
+    const showPage =
+      page === 1 ||
+      page === totalPages ||
+      Math.abs(page - currentPage) <= 1;
+
+    const showDots =
+      (page === 2 && currentPage > 4) ||
+      (page === totalPages - 1 &&
+        currentPage < totalPages - 3);
+
+    if (showDots) {
+      return (
+        <span
+          key={page}
+          className="px-2 text-gray-500 font-bold"
+        >
+          ...
+        </span>
+      );
+    }
+
+    if (!showPage) return null;
+
+    return (
+      <button
+        key={page}
+        onClick={() => {
+          setCurrentPage(page);
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+        className={`w-10 h-10 rounded-full font-bold transition ${
+          currentPage === page
+            ? "bg-amber-500 text-black"
+            : "bg-white border border-gray-200 text-gray-600"
+        }`}
+      >
+        {page}
+      </button>
+    );
+  })}
+
+  {/* Next Button */}
+  <button
+    disabled={currentPage === totalPages}
+    onClick={() => {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }}
+    className="px-4 h-10 rounded-full border disabled:opacity-40"
+  >
+    >
+  </button>
+
+</div>
 
 
-                  onClick={()=>{
-
-                    setCurrentPage(page);
-
-                    window.scrollTo({
-                      top:0,
-                      behavior:"smooth"
-                    });
-
-                  }}
 
 
-                  className={`
-                    w-10
-                    h-10
-                    rounded-full
-                    font-bold
-                    transition
-
-                    ${
-                      currentPage === page
-
-                      ?
-
-                      "bg-amber-500 text-black"
-
-                      :
-
-                      "bg-white border border-gray-200 text-gray-600"
-
-                    }
-
-                  `}
-
-                >
-
-                  {page}
-
-                </button>
-
-
-              ))
-            }
 
 
 
