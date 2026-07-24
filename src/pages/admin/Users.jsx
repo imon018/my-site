@@ -316,31 +316,50 @@ export default function Users() {
               <FiChevronLeft />
             </button>
 
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setPage(index + 1)}
-                className={`
-                  w-10
-                  h-10
-                  rounded-xl
-                  font-bold
-                  text-sm
-                  ${
-                    page === index + 1
-                      ? "bg-amber-500 text-white"
-                      : "bg-white border border-gray-200"
-                  }
-                `}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {[...Array(totalPages)].map((_, index) => {
+  const pageNumber = index + 1;
+
+  const showPage =
+    pageNumber === 1 ||
+    pageNumber === totalPages ||
+    Math.abs(pageNumber - page) <= 1;
+
+  const showDots =
+    (pageNumber === 2 && page > 4) ||
+    (pageNumber === totalPages - 1 && page < totalPages - 3);
+
+  if (showDots) {
+    return (
+      <span
+        key={pageNumber}
+        className="px-2 text-gray-500 font-bold"
+      >
+        ...
+      </span>
+    );
+  }
+
+  if (!showPage) return null;
+
+  return (
+    <button
+      key={pageNumber}
+      onClick={() => setPage(pageNumber)}
+      className={`w-10 h-10 rounded-xl font-bold text-sm ${
+        page === pageNumber
+          ? "bg-amber-500 text-white"
+          : "bg-white border border-gray-200"
+      }`}
+    >
+      {pageNumber}
+    </button>
+  );
+})}
 
             <button
               disabled={page === totalPages}
               onClick={() => setPage(page + 1)}
-              className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center disabled:opacity-40"
+              className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center disabled:opacity-40"
             >
               <FiChevronRight />
             </button>
@@ -366,7 +385,7 @@ export default function Users() {
 
                 <button
                   onClick={removeUser}
-                  className="flex-1 py-3 rounded-xl bg-red-500 text-white"
+                  className="flex-1 py-3 rounded-lg bg-red-500 text-white"
                 >
                   Yes
                 </button>
