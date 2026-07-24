@@ -789,7 +789,75 @@ line-through
 
 
 
+{/* ORDER SUMMARY */}
 
+<div
+  className="
+  mt-4
+  bg-gray-50
+  rounded-lg
+  border
+  border-gray-200
+  p-5
+  "
+>
+
+  <h2
+    className="
+    text-lg
+    font-bold
+    mb-4
+    "
+  >
+    Order Summary
+  </h2>
+
+  <div className="space-y-3">
+
+    <div className="flex justify-between">
+
+      <span>Sub Total</span>
+
+      <span>
+        ৳
+        {(order.price || 0) * (order.quantity || 1)}
+      </span>
+
+    </div>
+
+    <div className="flex justify-between">
+
+      <span>Delivery Charge</span>
+
+      <span>
+        ৳{order.deliveryCharge || 0}
+      </span>
+
+    </div>
+
+    <hr />
+
+    <div
+      className="
+      flex
+      justify-between
+      text-lg
+      font-black
+      text-purple-700
+      "
+    >
+
+      <span>Total</span>
+
+      <span>
+        ৳{order.total || 0}
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
 
 
 
