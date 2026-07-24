@@ -186,7 +186,7 @@ text-gray-800
 "
 >
 
-Order Preview Data পাওয়া যায়নি
+Order Data পাওয়া যায়নি
 
 </h2>
 
@@ -394,7 +394,8 @@ leading-7
 
 
 
-
+<div className="mx-5">
+  
   {/* ORDER INFORMATION */}
 
 <div
@@ -1035,6 +1036,8 @@ font-medium
   </div>
 
 </div>
+
+  </div>
 
 
   
