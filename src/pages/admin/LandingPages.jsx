@@ -16,6 +16,10 @@ export default function LandingPages() {
 
   const [deleteId, setDeleteId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+const itemsPerPage = 10;
+
   useEffect(() => {
     loadLandingPages();
   }, []);
@@ -57,6 +61,16 @@ export default function LandingPages() {
     });
   }, [landingPages, search]);
 
+
+  const totalPages = Math.ceil(
+  filteredLandingPages.length / itemsPerPage
+);
+
+const paginatedLandingPages = filteredLandingPages.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-warm text-amber-600 font-semibold">
@@ -66,7 +80,13 @@ export default function LandingPages() {
   }
 
   const landingData = {
-    landingPages: filteredLandingPages,
+    landingPages: paginatedLandingPages,
+
+    currentPage,
+    
+		setCurrentPage,
+    
+		totalPages,
 
     search,
 
