@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+
 import {
   FiSearch,
   FiEye,
   FiEdit2,
   FiTrash2,
   FiPlus,
+  FiShare2,
 } from "react-icons/fi";
 
 import { toggleLandingPageStatus } from "../../../services/landingPageService";
@@ -27,6 +29,30 @@ export default function DesktopLandingPages({ data }) {
     }
   }
 
+
+  async function shareLanding(slug) {
+
+  const url = `${window.location.origin}/landing/${slug}`;
+
+  if (navigator.share) {
+
+    await navigator.share({
+      title: "Dream Mode Landing Page",
+      url,
+    });
+
+  } else {
+
+    await navigator.clipboard.writeText(url);
+
+    alert("Link copied!");
+
+  }
+
+}
+
+  
+
   return (
     <div className="bg-[#faf9f6] min-h-screen p-6">
 
@@ -48,7 +74,7 @@ export default function DesktopLandingPages({ data }) {
 
         <Link
   to="/admin/landing/create"
-  className="h-11 px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold flex items-center gap-2"
+  className="h-11 px-5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold flex items-center gap-2"
 >
   <FiPlus />
   Create Landing
@@ -68,7 +94,7 @@ export default function DesktopLandingPages({ data }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search Landing Page..."
-          className="w-full h-12 bg-white border border-gray-200 rounded-xl pl-11 pr-4 outline-none"
+          className="w-full h-12 bg-white border border-gray-200 rounded-lg pl-11 pr-4 outline-none"
         />
 
       </div>
@@ -129,10 +155,10 @@ export default function DesktopLandingPages({ data }) {
                   <div className="flex items-center gap-3">
 
                     <img
-                      src={landing.heroImage}
-                      alt={landing.title}
-                      className="w-14 h-14 rounded-lg object-cover"
-                    />
+  src={landing.heroImages?.[0] || landing.heroImage}
+  alt={landing.title}
+  className="w-20 h-20 rounded-lg object-cover"
+/>
 
                     <div>
 
@@ -221,6 +247,13 @@ export default function DesktopLandingPages({ data }) {
                     >
                       <FiTrash2 />
                     </button>
+
+                    <button
+  onClick={() => shareLanding(landing.slug)}
+  className="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"
+>
+  <FiShare2 />
+</button>
 
                   </div>
 
