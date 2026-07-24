@@ -10,6 +10,7 @@ export default function SEO({
   url,
   type,
   noIndex = false,
+  product,
 }) {
 
   const { settings } = useSettings();
@@ -84,6 +85,50 @@ const siteLogo =
     settings.linkedin,
   ].filter(Boolean),
 };
+
+
+
+    const schemaData =
+  type === "product" && product
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+
+        name: product.name,
+
+        description:
+          product.description || "",
+
+        image:
+          product.images?.length
+            ? product.images
+            : [product.image],
+
+        sku: product.id,
+
+        brand: {
+          "@type": "Brand",
+          name: siteName,
+        },
+
+        offers: {
+          "@type": "Offer",
+
+          priceCurrency: "BDT",
+
+          price: product.price,
+
+          availability:
+            product.stock > 0
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+
+          url: canonical,
+        },
+      }
+    : structuredData;
+
+  
 
   return (
     <Helmet>
@@ -170,7 +215,7 @@ const siteLogo =
       />
 
 <script type="application/ld+json">
-  {JSON.stringify(structuredData)}
+  {JSON.stringify(schemaData)}
 </script>
 
     </Helmet>
