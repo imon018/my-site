@@ -83,7 +83,7 @@ export default function MobileLandingPages({ data }) {
           value={search}
           onChange={(e)=>setSearch(e.target.value)}
           placeholder="Search Landing..."
-          className="w-full h-11 bg-white border rounded-xl pl-10 pr-4"
+          className="w-full h-11 bg-white border rounded-lg pl-10 pr-4"
         />
 
       </div>
@@ -96,7 +96,7 @@ export default function MobileLandingPages({ data }) {
 
           <div
             key={landing.id}
-            className="bg-white rounded-xl border p-4 shadow-sm"
+            className="bg-white rounded-lg border p-4 shadow-sm"
           >
 
             <div className="flex gap-3">
@@ -104,7 +104,7 @@ export default function MobileLandingPages({ data }) {
               <img
   src={landing.heroImages?.[0] || landing.heroImage}
   alt={landing.title}
-  className="w-14 h-14 rounded-lg object-cover"
+  className="w-20 h-24 rounded-lg object-cover"
 />
 
               <div className="flex-1">
@@ -152,28 +152,28 @@ export default function MobileLandingPages({ data }) {
                 href={`/landing/${landing.slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"
+                className="h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"
               >
                 <FiEye />
               </a>
 
               <Link
                 to={`/admin/landing-pages/edit/${landing.id}`}
-                className="h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center"
+                className="h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center"
               >
                 <FiEdit2 />
               </Link>
 
               <button
                 onClick={()=>setDeleteId(landing.id)}
-                className="h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"
+                className="h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"
               >
                 <FiTrash2 />
               </button>
 
               <button
   onClick={() => shareLanding(landing.slug)}
-  className="h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"
+  className="h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"
 >
   <FiShare2 />
 </button>
@@ -187,7 +187,7 @@ export default function MobileLandingPages({ data }) {
         {
           landingPages.length===0 && (
 
-            <div className="bg-white rounded-xl p-10 text-center text-gray-400">
+            <div className="bg-white rounded-lg p-10 text-center text-gray-400">
 
               No Landing Pages Found
 
