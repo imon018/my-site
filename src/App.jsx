@@ -246,7 +246,7 @@ export default function App(){
 
 
 
-          <SEOProvider>
+        </SEOProvider>
 
 
 
