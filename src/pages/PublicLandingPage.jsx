@@ -47,6 +47,8 @@ const [ordering, setOrdering] = useState(false);
 
 const [quantity,setQuantity] = useState(1);
 
+const [deliveryCharge, setDeliveryCharge] = useState(80);
+
 const [activeImage,setActiveImage] = useState(null);
 
 const [fullscreen,setFullscreen] = useState(false);
@@ -277,6 +279,20 @@ const handleChange = (e) => {
 };
   
 
+
+  const productPrice =
+  landing.offerPrice > 0
+    ? landing.offerPrice
+    : landing.price;
+
+const subTotal =
+  productPrice * quantity;
+
+const total =
+  subTotal + deliveryCharge;
+
+
+  
 
 const formattedText = (text)=>{
 
@@ -1328,9 +1344,170 @@ border-gray-200
 "
 /></div>
 
+  
 
 
 
+{/* DELIVERY CHARGE */}
+
+<div
+className="
+bg-gray-50
+px-5
+pb-5
+"
+>
+
+<div
+className="
+bg-white
+border
+border-gray-200
+rounded-lg
+p-5
+"
+>
+
+<h2
+className="
+text-xl
+font-bold
+mb-4
+"
+>
+ডেলিভারি চার্জ
+</h2>
+
+<select
+
+value={deliveryCharge}
+
+onChange={(e)=>
+setDeliveryCharge(
+Number(e.target.value)
+)
+}
+
+className="
+w-full
+border
+rounded-lg
+px-4
+py-3
+outline-none
+"
+
+>
+
+<option value={80}>
+ঢাকা - ৳৮০
+</option>
+
+<option value={100}>
+ঢাকা সাব এরিয়া - ৳১০০
+</option>
+
+<option value={120}>
+ঢাকার বাইরে - ৳১২০
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+
+
+
+{/* ORDER SUMMARY */}
+
+<div
+className="
+bg-gray-50
+px-5
+pb-5
+"
+>
+
+<div
+className="
+bg-white
+border
+border-gray-200
+rounded-lg
+p-5
+"
+>
+
+<h2
+className="
+text-xl
+font-bold
+mb-4
+"
+>
+
+Order Summary
+
+</h2>
+
+<div className="space-y-3">
+
+<div className="flex justify-between">
+
+<span>
+Sub Total
+</span>
+
+<span>
+৳{subTotal}
+</span>
+
+</div>
+
+<div className="flex justify-between">
+
+<span>
+Delivery Charge
+</span>
+
+<span>
+৳{deliveryCharge}
+</span>
+
+</div>
+
+<hr/>
+
+<div
+className="
+flex
+justify-between
+text-lg
+font-black
+text-purple-700
+"
+>
+
+<span>
+Total
+</span>
+
+<span>
+৳{total}
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+  
 
 
 {/* OUR PROMISE */}
@@ -1461,26 +1638,9 @@ customer: formData,
 
 landingId: landing.id,
 
-deliveryCharge: landing.deliveryCharge || 0,
+deliveryCharge: deliveryCharge,
 
-deliveryZone: landing.deliveryZone || "",
-
-total:
-(
-(
-landing.offerPrice > 0
-?
-landing.offerPrice
-:
-landing.price
-)
-*
-quantity
-)
-+
-(
-landing.deliveryCharge || 0
-),
+total: total,
 
   };
   
