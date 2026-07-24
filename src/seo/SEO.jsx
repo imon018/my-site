@@ -11,6 +11,20 @@ export default function SEO({
   type,
   noIndex = false,
 }) {
+
+  const { settings } = useSettings();
+
+const siteName =
+  settings.storeName || "";
+
+const siteUrl =
+  settings.websiteUrl ||
+  SITE_SEO.siteUrl;
+
+const siteLogo =
+  settings.logoUrl ||
+  SITE_SEO.defaultImage;
+  
   const pageTitle = title
     ? SITE_SEO.titleTemplate.replace("%s", title)
     : SITE_SEO.defaultTitle;
