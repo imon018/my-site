@@ -5,6 +5,7 @@ import {
 } from "react";
 
 import {
+  useNavigate,
   useParams,
 } from "react-router-dom";
 
@@ -33,23 +34,25 @@ import { createOrder } from "../services/orderService";
 export default function PublicLandingPage(){
 
 
+
+const navigate = useNavigate();
+
 const { slug } = useParams();
 
 const [landing,setLanding] = useState(null);
 
 const [loading,setLoading] = useState(true);
 
+const [ordering, setOrdering] = useState(false);
 
 const [quantity,setQuantity] = useState(1);
 
-
 const [activeImage,setActiveImage] = useState(null);
-
 
 const [fullscreen,setFullscreen] = useState(false);
 
-
 const [formData, setFormData] = useState({
+
   name: "",
   phone: "",
   address: "",
@@ -896,7 +899,7 @@ className="
 w-6
 h-6
 rounded-lg
-bg-amber-500
+bg-purple-700
 text-white
 font-bold
 "
@@ -1334,6 +1337,7 @@ border-gray-200
 
 <div
 className="
+mx-5
 bg-purple-200
 backdrop-blur-xl
 border-t
@@ -1416,10 +1420,16 @@ leading-5
 {/* ORDER BUTTON FULL WIDTH */}
 
 
+<div className="mx-5 mt-2">
+
 <button
 
+disabled={ordering}
 onClick={async()=>{
 
+setOrdering(true);
+
+try {
 
 const orderData = {
 
@@ -1525,13 +1535,21 @@ orderData.orderId = orderId;
 
 
 
-window.location.href = `/landing/${slug}/success/${orderId}`;
+navigate(`/landing/${slug}/success/${orderId}`);
+
+} catch (error) {
+
+  console.error(error);
+
+  setOrdering(false);
+
+}
+
 
 
 }}
 
 className="
-mt-2
 w-full
 bg-purple-700
 text-white
@@ -1539,14 +1557,15 @@ py-2.5
 rounded-lg
 font-bold
 text-lg
+text-center
 "
-
 >
 
-অর্ডার করুন এখনই
+{ordering ? "অর্ডার হচ্ছে..." : "অর্ডার করুন"}
 
 </button>
 
+</div>
 
 
   
