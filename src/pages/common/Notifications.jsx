@@ -104,6 +104,10 @@ export default function Notifications() {
 
   const menuRef = useRef(null);
 
+  const [page, setPage] = useState(1);
+
+	const notificationsPerPage = 20;
+
   useEffect(() => {
     function closeMenu(e) {
       if (
@@ -122,6 +126,15 @@ export default function Notifications() {
         closeMenu
       );
   }, []);
+
+
+
+useEffect(() => {
+  setPage(1);
+}, [search, tab]);
+
+
+
 
   const filteredNotifications = useMemo(() => {
     let data = [...notifications];
@@ -146,6 +159,21 @@ export default function Notifications() {
 
     return data;
   }, [notifications, tab, search]);
+
+
+
+const totalPages = Math.ceil(
+  filteredNotifications.length / notificationsPerPage
+);
+
+const currentNotifications = filteredNotifications.slice(
+  (page - 1) * notificationsPerPage,
+  page * notificationsPerPage
+);
+
+
+
+
 
   if (loading) {
     return (
@@ -305,7 +333,7 @@ export default function Notifications() {
       ) : (
         <div className="space-y-4">
 
-          {filteredNotifications.map((item) => (
+          {currentNotifications.map((item) => (
 
             <Link
   key={item.id}
@@ -439,6 +467,48 @@ export default function Notifications() {
           ))}
 
         </div>
+
+
+{totalPages > 1 && (
+  <div className="flex justify-center items-center gap-2 mt-6">
+
+    <button
+      disabled={page === 1}
+      onClick={() => setPage(page - 1)}
+      className="px-4 py-2 rounded-lg border disabled:opacity-40"
+    >
+      Previous
+    </button>
+
+    {Array.from({ length: totalPages }).map((_, index) => (
+      <button
+        key={index}
+        onClick={() => setPage(index + 1)}
+        className={`w-10 h-10 rounded-lg font-bold ${
+          page === index + 1
+            ? "bg-amber-500 text-white"
+            : "bg-white border"
+        }`}
+      >
+        {index + 1}
+      </button>
+    ))}
+
+    <button
+      disabled={page === totalPages}
+      onClick={() => setPage(page + 1)}
+      className="px-4 py-2 rounded-lg border disabled:opacity-40"
+    >
+      Next
+    </button>
+
+  </div>
+)}
+
+
+
+
+
       )}
 
     </div>
