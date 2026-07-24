@@ -29,6 +29,10 @@ export default function MyOrders() {
 
   const navigate = useNavigate();
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+	const ordersPerPage = 10;
+
   const [orders, setOrders] =
     useState([]);
 
@@ -40,6 +44,13 @@ export default function MyOrders() {
 
   const [filterOpen, setFilterOpen] =
     useState(false);
+
+
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [filter]);
+
 
 
 
@@ -130,6 +141,21 @@ export default function MyOrders() {
       orders,
       filter,
     ]);
+
+
+
+
+const totalPages = Math.ceil(
+  filteredOrders.length / ordersPerPage
+);
+
+const currentOrders = filteredOrders.slice(
+  (currentPage - 1) * ordersPerPage,
+  currentPage * ordersPerPage
+);
+
+
+
 
 
 
@@ -485,7 +511,7 @@ export default function MyOrders() {
 
         {
 
-          filteredOrders.map((order)=>{
+          currentOrders.map((order)=>{
 
             const item =
               order.items?.[0];
@@ -727,7 +753,67 @@ pt-2
 
         }
 
-      </div>
+            </div>
+
+      {/* PAGINATION */}
+
+      {
+        totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 pt-6">
+
+            <button
+              onClick={() =>
+                setCurrentPage((p) => Math.max(p - 1, 1))
+              }
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg border bg-white disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            {Array.from(
+              { length: totalPages },
+              (_, index) => (
+                <button
+                  key={index}
+                  onClick={() =>
+                    setCurrentPage(index + 1)
+                  }
+                  className={`w-10 h-10 rounded-lg font-bold ${
+                    currentPage === index + 1
+                      ? "bg-amber-500 text-white"
+                      : "bg-white border"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              )
+            )}
+
+            <button
+              onClick={() =>
+                setCurrentPage((p) =>
+                  Math.min(p + 1, totalPages)
+                )
+              }
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg border bg-white disabled:opacity-50"
+            >
+              Next
+            </button>
+
+          </div>
+        )
+      }
+
+    </div>
+
+  </div>
+
+
+
+
+    
 
     </div>
 
