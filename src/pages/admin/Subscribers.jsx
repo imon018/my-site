@@ -46,6 +46,11 @@ deleteId,
 setDeleteId
 ]=useState(null);
 
+
+const [page, setPage] = useState(1);
+
+const subscribersPerPage = 10;
+
   
 
 useEffect(()=>{
@@ -56,6 +61,13 @@ load();
 
 
 
+
+
+  useEffect(() => {
+  setPage(1);
+}, [search]);
+
+  
 
 
 const load = async()=>{
@@ -136,7 +148,15 @@ search.toLowerCase()
 
 
 
+const totalPages = Math.max(
+  1,
+  Math.ceil(filtered.length / subscribersPerPage)
+);
 
+const currentSubscribers = filtered.slice(
+  (page - 1) * subscribersPerPage,
+  page * subscribersPerPage
+);
 
 
 
@@ -430,8 +450,7 @@ Action
 {
 
 
-filtered.map(
-(item)=>(
+currentSubscribers.map((item) => (
 
 
 <div
@@ -607,7 +626,7 @@ item.createdAt
 
 {
 
-filtered.length===0 &&
+currentSubscribers.length===0 &&
 
 <div
 
