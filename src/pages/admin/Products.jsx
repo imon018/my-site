@@ -31,6 +31,11 @@ const [search,setSearch]=useState("");
 const [deleteId,setDeleteId]=useState(null);
 
 
+const [page, setPage] = useState(1);
+
+const productsPerPage = 10;
+
+
 
 
 useEffect(()=>{
@@ -40,7 +45,9 @@ loadProducts();
 },[]);
 
 
-
+useEffect(() => {
+  setPage(1);
+}, [search]);
 
 
 async function loadProducts(){
@@ -139,6 +146,19 @@ search
 
 
 
+  const totalPages = Math.max(
+  1,
+  Math.ceil(filteredProducts.length / productsPerPage)
+);
+
+const currentProducts = filteredProducts.slice(
+  (page - 1) * productsPerPage,
+  page * productsPerPage
+);
+
+  
+
+
 
 if(loading){
 
@@ -178,9 +198,9 @@ Loading Products...
 
 
 
-const productData={
+const productData = {
 
-products:filteredProducts,
+products: currentProducts,
 
 search,
 
@@ -190,7 +210,7 @@ handleDelete,
 
 setDeleteId,
 
-reload:loadProducts
+reload: loadProducts
 
 };
 
@@ -280,6 +300,57 @@ data={productData}
 />
 
 </div>
+
+
+
+
+    {
+totalPages > 1 && (
+
+<div className="flex justify-center items-center gap-2 mt-6">
+
+<button
+disabled={page===1}
+onClick={()=>setPage(page-1)}
+className="px-4 py-2 rounded-lg border disabled:opacity-40"
+>
+Previous
+</button>
+
+{
+
+Array.from({length:totalPages}).map((_,index)=>(
+
+<button
+key={index}
+onClick={()=>setPage(index+1)}
+className={`w-10 h-10 rounded-lg font-bold ${
+page===index+1
+? "bg-amber-500 text-white"
+: "bg-white border"
+}`}
+>
+{index+1}
+</button>
+
+))
+
+}
+
+<button
+disabled={page===totalPages}
+onClick={()=>setPage(page+1)}
+className="px-4 py-2 rounded-lg border disabled:opacity-40"
+>
+Next
+</button>
+
+</div>
+
+)
+}
+
+    
 
 
 
