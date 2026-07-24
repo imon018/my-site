@@ -5,6 +5,7 @@ const {
 
 const {
   onCall,
+  onRequest,
   HttpsError
 } = require("firebase-functions/v2/https");
 
@@ -1845,3 +1846,66 @@ error.message
 }
 
 );
+
+
+
+// =================================================
+// SITEMAP.XML
+// =================================================
+
+exports.sitemap = onRequest(async (req, res) => {
+
+  const settingsSnap = await admin
+    .firestore()
+    .collection("settings")
+    .doc("store")
+    .get();
+
+  const settings = settingsSnap.data() || {};
+
+  const site = (
+    settings.websiteUrl ||
+    "https://dream-mode-site-eight.vercel.app"
+  ).replace(/\/$/, "");
+
+  const products = await admin
+    .firestore()
+    .collection("products")
+    .get();
+
+  let urls = "";
+
+  products.forEach((doc) => {
+
+    urls += `
+<url>
+  <loc>${site}/product/${doc.id}</loc>
+</url>`;
+
+  });
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+  <loc>${site}</loc>
+</url>
+
+<url>
+  <loc>${site}/products</loc>
+</url>
+
+<url>
+  <loc>${site}/categories</loc>
+</url>
+
+${urls}
+
+</urlset>`;
+
+  res.set("Content-Type", "application/xml");
+
+  res.send(xml);
+
+});
