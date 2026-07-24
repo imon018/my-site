@@ -491,21 +491,7 @@ location.search
         {
           totalPages > 1 && (
 
-          <div
-            className="
-              flex
-              justify-center
-              items-center
-              gap-2
-              mt-12
-              flex-wrap
-            "
-          >
-
-
-            
-
-
+         
                 <div
   className="
     flex
