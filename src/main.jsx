@@ -10,10 +10,12 @@ import "swiper/css/pagination";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HelmetProvider>
+  <HelmetProvider>
+    <SettingsProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </HelmetProvider>
-  </React.StrictMode>
+    </SettingsProvider>
+  </HelmetProvider>
+</React.StrictMode>
 );
