@@ -50,6 +50,41 @@ const siteLogo =
     ? `${siteUrl}${url}`
     : siteUrl;
 
+  const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Store",
+
+  name: siteName,
+
+  url: siteUrl,
+
+  logo: pageImage,
+
+  image: pageImage,
+
+  description: pageDescription,
+
+  telephone: settings.phone || "",
+
+  email: settings.email || "",
+
+  address: {
+    "@type": "PostalAddress",
+
+    streetAddress: settings.address || "",
+
+    addressCountry: "BD",
+  },
+
+  sameAs: [
+    settings.facebook,
+    settings.instagram,
+    settings.youtube,
+    settings.tiktok,
+    settings.linkedin,
+  ].filter(Boolean),
+};
+
   return (
     <Helmet>
 
@@ -133,6 +168,10 @@ const siteLogo =
         name="twitter:image"
         content={pageImage}
       />
+
+<script type="application/ld+json">
+  {JSON.stringify(structuredData)}
+</script>
 
     </Helmet>
   );
